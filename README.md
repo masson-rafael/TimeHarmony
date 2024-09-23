@@ -13,4 +13,7 @@ On retrouve également 4 dossiers :
   - js -> contient les scripts JavaScript
 
 ## 💻 Technologies
-[![My Skills](https://skillicons.dev/icons?i=js,html,css,git,mysql,php)](https://skillicons.dev)
+
+[![My Skills](https://skillicons.dev/icons?i=js,html,css,git,github,mysql,php)](https://skillicons.dev)
+
+JavaScript / HTML / CSS / Git / GitHub / MySQL / PHP
