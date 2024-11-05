@@ -6,6 +6,7 @@ class Agenda {
     private string|null $couleur;
     private string|null $nom;
     private int|null $idUtilisateur;
+    //private array|null $creneauxLibres;       -> nécessaire ?
 
     /* ------------- CONSTRUCTEUR ------------- */
     public function __construct(int $id, string $url, string $couleur, string $nom, int $idUtilisateur) {

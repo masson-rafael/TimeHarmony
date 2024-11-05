@@ -8,6 +8,7 @@ class Utilisateur {
     private string|null $motDePasse;
     private string|null $photoDeProfil;
     private bool|null $estAdmin;
+    //private array|null $agendas;        -> nécessaire ?
 
     /* ------------- CONSTRUCTEUR ------------- */
     public function __construct(int $id, string $nom, string $prenom, string $email, string $motDePasse, string|null $photoDeProfil, bool $estAdmin = false) {

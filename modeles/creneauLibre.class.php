@@ -5,6 +5,10 @@ class CreneauLibre {
     private DateTime|null $dateCreneau;
     private DateTime|null $heureDebut;
     private DateTime|null $heureFin;
+
+    //private DateTime|null $dateDebut;     -> mieux car résultat algo principal
+    //private DateTime|null $dateFin;
+
     private int|null $idAgenda;
 
     /* ------------- CONSTRUCTEUR ------------- */
