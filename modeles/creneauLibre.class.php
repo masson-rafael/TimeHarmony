@@ -2,21 +2,16 @@
 
 class CreneauLibre {
     private int|null $id;
-    private DateTime|null $dateCreneau;
-    private DateTime|null $heureDebut;
-    private DateTime|null $heureFin;
-
-    //private DateTime|null $dateDebut;     -> mieux car résultat algo principal
-    //private DateTime|null $dateFin;
+    private DateTime|null $dateDebut;     //  -> mieux car résultat algo principal
+    private DateTime|null $dateFin;
 
     private int|null $idAgenda;
 
     /* ------------- CONSTRUCTEUR ------------- */
-    public function __construct(int $id, DateTime $dateCreneau, DateTime $heureDebut, DateTime $heureFin, int $idAgenda) {
+    public function __construct(int $id, DateTime $dateDebut, DateTime $dateFin, int $idAgenda) {
         $this->id = $id;
-        $this->dateCreneau = $dateCreneau;
-        $this->heureDebut = $heureDebut;
-        $this->heureFin = $heureFin;
+        $this->dateDebut = $dateDebut;
+        $this->dateFin = $dateFin;
         $this->idAgenda = $idAgenda;
     }
 
@@ -25,16 +20,12 @@ class CreneauLibre {
         return $this->id;
     }
 
-    public function getDateCreneau(): DateTime {
-        return $this->dateCreneau;
+    public function getDateDebut(): DateTime {
+        return $this->dateDebut;
     }
 
-    public function getHeureDebut(): DateTime {
-        return $this->heureDebut;
-    }
-
-    public function getHeureFin(): DateTime {
-        return $this->heureFin;
+    public function getDateFin(): DateTime {
+        return $this->dateFin;
     }
 
     public function getIdAgenda(): int {
@@ -46,16 +37,12 @@ class CreneauLibre {
         $this->id = $id;
     }
 
-    public function setDateCreneau(DateTime $dateCreneau): void {
-        $this->dateCreneau = $dateCreneau;
+    public function setDateDebut(DateTime $dateDebut): void {
+        $this->dateDebut = $dateDebut;
     }
 
-    public function setHeureDebut(DateTime $heureDebut): void {
-        $this->heureDebut = $heureDebut;
-    }
-
-    public function setHeureFin(DateTime $heureFin): void {
-        $this->heureFin = $heureFin;
+    public function setDateFin(DateTime $dateFin): void {
+        $this->dateFin = $dateFin;
     }
 
     public function setIdAgenda(int $idAgenda): void {
