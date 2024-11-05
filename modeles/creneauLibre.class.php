@@ -1,11 +1,11 @@
 <?php
 
 class CreneauLibre {
-    private int $id;
-    private DateTime $dateCreneau;
-    private DateTime $heureDebut;
-    private DateTime $heureFin;
-    private int $idAgenda;
+    private int|null $id;
+    private DateTime|null $dateCreneau;
+    private DateTime|null $heureDebut;
+    private DateTime|null $heureFin;
+    private int|null $idAgenda;
 
     /* ------------- CONSTRUCTEUR ------------- */
     public function __construct(int $id, DateTime $dateCreneau, DateTime $heureDebut, DateTime $heureFin, int $idAgenda) {

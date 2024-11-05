@@ -1,13 +1,13 @@
 <?php 
 
 class Utilisateur {
-    private int $id;
-    private string $nom;
-    private string $prenom;
-    private string $email;
-    private string $motDePasse;
-    private string $photoDeProfil;
-    private bool $estAdmin;
+    private int|null $id;
+    private string|null $nom;
+    private string|null $prenom;
+    private string|null $email;
+    private string|null $motDePasse;
+    private string|null $photoDeProfil;
+    private bool|null $estAdmin;
 
     /* ------------- CONSTRUCTEUR ------------- */
     public function __construct(int $id, string $nom, string $prenom, string $email, string $motDePasse, string|null $photoDeProfil, bool $estAdmin = false) {

@@ -1,11 +1,11 @@
 <?php
 
 class Agenda {
-    private int $id;
-    private string $url;
-    private string $couleur;
-    private string $nom;
-    private int $idUtilisateur;
+    private int|null $id;
+    private string|null $url;
+    private string|null $couleur;
+    private string|null $nom;
+    private int|null $idUtilisateur;
 
     /* ------------- CONSTRUCTEUR ------------- */
     public function __construct(int $id, string $url, string $couleur, string $nom, int $idUtilisateur) {
@@ -41,7 +41,7 @@ class Agenda {
     public function setId(int $id): void {
         $this->id = $id;
     }
-    
+
     public function setUrl(string $url): void {
         $this->url = $url;
     }
