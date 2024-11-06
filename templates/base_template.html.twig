@@ -1,45 +1,90 @@
 <!DOCTYPE html>
 <html lang="{{ constant('WEBSITE_LANGUAGE')}}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="CSS/styles.css">
-    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
-   <meta name="description" content="{%if description is defined %} {{description}} {% else %} {{constant('WEBSITE_DESCRIPTION')}} {% endif %}">
-    {% block css %} {% endblock %}
-    <title>{% block title %} {{ constant('WEBSITE_TITLE')}}{% endblock %}</title>
-</head>
-<body class="container">   
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="CSS/styles.css">
+		<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+		<meta name="description" content="{%if description is defined %} {{description}} {% else %} {{constant('WEBSITE_DESCRIPTION')}} {% endif %}"> {% block css %}{% endblock %}
+		<title>
+			{% block title %}
+				{{ constant('WEBSITE_TITLE')}}
+			{% endblock %}
+		</title>
+	</head>
+	<body class="container-fluid">
 
-    
-    <header>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.php">{{ constant('WEBSITE_TITLE')}}</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                <a class="nav-link {% if menu=='index' %} active {% endif %}" aria-current="page" href="index.php">Catégories</a>
-                </li>
-                
-            </ul>
-            </div>
-        </div>
-    </nav>
-    </header>
 
-    {% block content %}
-    {% endblock %}
-   
-    <footer class="text-body-secondary py-5">
-            <p><a href="licence.php">Les licences des images</a></p>
-    </footer>
-        {% block script %} {% endblock %}
-</body>
+		<header>
+			<nav class="navbar navbar-expand-lg bg-primary py-4">
+				<div class="container-fluid">
+					<a class="navbar-brand" href="index.php"><img src="../image/logo.png" alt="logo"></a>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarNavDropdown">
+						<ul class="navbar-nav">
+							<li class="nav-item">
+								<a class="nav-link {% if menu=='recherche' %} active {% endif %}" aria-current="page" href="#">Rechercher un créneau</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">Agendas</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">Groupes</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">Contacts</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#"><img src="../image/notif.png" alt="notification"></a>
+							</li>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									<img src="../image/utilisateur.png" alt="photoDeProfil">
+								</a>
+								<ul class="dropdown-menu">
+									<li>
+										<a class="dropdown-item" href="#">Profil</a>
+									</li>
+									<li>
+										<a class="dropdown-item" href="#">Préférences du profil</a>
+									</li>
+									<li>
+										<a class="dropdown-item" href="#">Administration</a>
+									</li>
+									<li>
+										<a class="dropdown-item" href="#">Déconnexion</a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+
+		</header>
+
+		{% block content %}{% endblock %}
+
+		<footer class="container-fluid bg-primary py-4">
+	
+				<div class="row">
+					<div class="col-md-3">
+						<p>&copy; 2024 - TimeHarmony</p>
+					</div>
+					<div class="col-md-3">
+						<p>A Propos</p>
+					</div>
+					<div class="col-md-3">  
+						<p>Conditions générales d'utilisation</p>
+					</div>
+                    <div class="col-md-3">  
+						<p>Nous contacter</p>
+					</div>
+				</div>
+		
+		</footer>
+		{% block script %}{% endblock %}
+	</body>
 </html>
-
-
-
