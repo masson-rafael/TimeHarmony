@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="{{ constant('WEBSITE_LANGUAGE')}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="CSS/styles.css">
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+   <meta name="description" content="{%if description is defined %} {{description}} {% else %} {{constant('WEBSITE_DESCRIPTION')}} {% endif %}">
+    {% block css %} {% endblock %}
+    <title>{% block title %} {{ constant('WEBSITE_TITLE')}}{% endblock %}</title>
+</head>
+<body class="container">   
+
+    
+    <header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.php">{{ constant('WEBSITE_TITLE')}}</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                <a class="nav-link {% if menu=='index' %} active {% endif %}" aria-current="page" href="index.php">Catégories</a>
+                </li>
+                
+            </ul>
+            </div>
+        </div>
+    </nav>
+    </header>
+
+    {% block content %}
+    {% endblock %}
+   
+    <footer class="text-body-secondary py-5">
+            <p><a href="licence.php">Les licences des images</a></p>
+    </footer>
+        {% block script %} {% endblock %}
+</body>
+</html>
+
+
+

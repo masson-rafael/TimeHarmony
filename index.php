@@ -2,6 +2,16 @@
 
 require_once 'include.php';
 
+
+
+$template = $twig->load('index.html.twig');
+
+echo $template->render(array(
+    'menu' => 'index'
+));
+
+
+
 use ICal\ICal;
 
 function obtenirCreneauxLibres($urlIcs, $debut, $fin) {
@@ -68,4 +78,8 @@ $creneauxLibres = obtenirCreneauxLibres($urlIcs, $debut, $fin);
 foreach ($creneauxLibres as $creneau) {
     echo "Créneau libre de : " . $creneau['debut'] . " à " . $creneau['fin'] . "\n <br> <br>";
 }
+
+
+
+
 ?>
