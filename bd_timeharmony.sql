@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
     `estAdmin` boolean DEFAULT false NOT NULL,
     `mdp` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 --
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `categorie` (
     `id` int NOT NULL,
     `categorie` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table 'categorie'
@@ -82,9 +82,9 @@ CREATE TABLE IF NOT EXISTS `agenda` (
     `idUtilisateur` int NOT NULL,
     `idCategorie` int NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`id`),
-    FOREIGN KEY (`idCategorie`) REFERENCES `categorie` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`idCategorie`) REFERENCES `categorie` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table 'agenda'
@@ -104,8 +104,8 @@ CREATE TABLE IF NOT EXISTS `creneauLibre` (
     `hFin` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     `idAgenda` int NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`idAgenda`) REFERENCES `agenda` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    FOREIGN KEY (`idAgenda`) REFERENCES `agenda` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table 'creneauLibre'
@@ -126,8 +126,8 @@ CREATE TABLE IF NOT EXISTS `preferences` (
     `disponibilite` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     `idUtilisateur` int NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table 'preferences'
@@ -147,8 +147,8 @@ CREATE TABLE IF NOT EXISTS `groupe` (
     `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     `chef` int NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`chef`) REFERENCES `utilisateur` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    FOREIGN KEY (`chef`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table 'groupe'
@@ -166,8 +166,8 @@ CREATE TABLE IF NOT EXISTS `contacter` (
     `idUtilisateur1` int NOT NULL,
     `idUtilisateur2` int NOT NULL,
     PRIMARY KEY (`idUtilisateur1`, `idUtilisateur2`),
-    FOREIGN KEY (`idUtilisateur1`) REFERENCES `utilisateur` (`id`),
-    FOREIGN KEY (`idUtilisateur2`) REFERENCES `utilisateur` (`id`)
+    FOREIGN KEY (`idUtilisateur1`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`idUtilisateur2`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -185,8 +185,8 @@ CREATE TABLE IF NOT EXISTS `demander` (
     `idUtilisateur1` int NOT NULL,
     `idUtilisateur2` int NOT NULL,
     PRIMARY KEY (`idUtilisateur1`, `idUtilisateur2`),
-    FOREIGN KEY (`idUtilisateur1`) REFERENCES `utilisateur` (`id`),
-    FOREIGN KEY (`idUtilisateur2`) REFERENCES `utilisateur` (`id`)
+    FOREIGN KEY (`idUtilisateur1`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`idUtilisateur2`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -195,7 +195,9 @@ CREATE TABLE IF NOT EXISTS `demander` (
 
 -- --------------------------------------------------------
 
-
+ALTER TABLE `agenda`
+    ADD CONSTRAINT `agenda_ibfk_1` FOREIGN KEY (`idAgenda`) REFERENCES `utilisateur` (`id`) ON DELETE SET NULL;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
