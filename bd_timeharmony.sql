@@ -48,6 +48,25 @@ INSERT INTO `utilisateur` (`id`, `email`, `nom`, `prenom`, `pdp`, `estAdmin`, `m
 (1, 'ff', 'ff', 'ff', 'ff', false, 'abcde'),
 (2, 'ff', 'ff', 'ff', 'ff', true, 'fghij');
 
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table 'categorie'
+--
+
+DROP TABLE IF EXISTS `categorie`;
+CREATE TABLE IF NOT EXISTS `categorie` (
+    `id` int NOT NULL,
+    `categorie` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table 'categorie'
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -172,23 +191,6 @@ CREATE TABLE IF NOT EXISTS `demander` (
 
 --
 -- Déchargement des données de la table 'demander'
---
-
--- --------------------------------------------------------
-
---
--- Structure de la table 'categorie'
---
-
-DROP TABLE IF EXISTS `categorie`;
-CREATE TABLE IF NOT EXISTS `categorie` (
-    `id` int NOT NULL,
-    `categorie` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table 'categorie'
 --
 
 -- --------------------------------------------------------
