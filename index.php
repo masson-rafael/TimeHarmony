@@ -2,15 +2,11 @@
 
 require_once 'include.php';
 
-
-
 $template = $twig->load('index.html.twig');
 
 echo $template->render(array(
     'menu' => 'index'
 ));
-
-
 
 use ICal\ICal;
 
@@ -28,7 +24,7 @@ function obtenirCreneauxLibres($urlIcs, $debut, $fin) {
         $dateDebutB = new DateTime($b->dtstart);
         return $dateDebutA <=> $dateDebutB;
         /*L'opérateur <=> compare les deux valeurs et renvoie :
-       -1 si $dateDebutA est inférieur à $dateDebutB,
+        -1 si $dateDebutA est inférieur à $dateDebutB,
         0 si $dateDebutA est égal à $dateDebutB,
         1 si $dateDebutA est supérieur à $dateDebutB.*/
     });
@@ -78,8 +74,4 @@ $creneauxLibres = obtenirCreneauxLibres($urlIcs, $debut, $fin);
 foreach ($creneauxLibres as $creneau) {
     echo "Créneau libre de : " . $creneau['debut'] . " à " . $creneau['fin'] . "\n <br> <br>";
 }
-
-
-
-
 ?>
