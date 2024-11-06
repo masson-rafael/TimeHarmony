@@ -24,26 +24,27 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Structure de la table 'article'
+-- Structure de la table 'utilisateur'
 --
 
-DROP TABLE IF EXISTS 'utilisateur';
-CREATE TABLE IF NOT EXISTS 'utilisateur' (
-    'id' int NOT NULL AUTO_INCREMENT,
-    'email' varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-    'nom' text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-    'prenom' text COLLATE utf8mb4_unicode_ci,
-    'pdp' varchar(255) NOT NULL,
-    'estAdmin' boolean DEFAULT false NOT NULL,
-    'mdp' VARCHAR(255) NOT NULL,
-    PRIMARY KEY ('id'),
+DROP TABLE IF EXISTS `utilisateur`;
+CREATE TABLE IF NOT EXISTS `utilisateur` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+    `nom` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+    `prenom` text COLLATE utf8mb4_unicode_ci,
+    `pdp` varchar(255) NOT NULL,
+    `estAdmin` boolean DEFAULT false NOT NULL,
+    `mdp` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 --
 -- Déchargement des données de la table 'article'
 --
 
-INSERT INTO 'utilisateur' ('id', 'email', 'nom', 'prenom', 'pdp', 'estAdmin', 'mdp') VALUES
+INSERT INTO `utilisateur` (`id`, `email`, `nom`, `prenom`, `pdp`, `estAdmin`, `mdp`) VALUES
 (1, 'ff', 'ff', 'ff', 'ff', false, 'abcde'),
 (2, 'ff', 'ff', 'ff', 'ff', true, 'fghij');
 
@@ -53,17 +54,17 @@ INSERT INTO 'utilisateur' ('id', 'email', 'nom', 'prenom', 'pdp', 'estAdmin', 'm
 -- Structure de la table 'agenda'
 --
 
-DROP TABLE IF EXISTS 'agenda';
-CREATE TABLE IF NOT EXISTS 'agenda' (
-    'id' int NOT NULL AUTO_INCREMENT,
-    'url' varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    'couleur' varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    'nom' varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    'idUtilisateur' int NOT NULL,
-    'idCategorie' int NOT NULL,
-    PRIMARY KEY ('id'),
-    FOREIGN KEY ('idUtilisateur') REFERENCES 'utilisateur' ('id'),
-    FOREIGN KEY ('idCategorie') REFERENCES 'categorie' ('id')
+DROP TABLE IF EXISTS `agenda`;
+CREATE TABLE IF NOT EXISTS `agenda` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `couleur` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `idUtilisateur` int NOT NULL,
+    `idCategorie` int NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`id`),
+    FOREIGN KEY (`idCategorie`) REFERENCES `categorie` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -76,15 +77,15 @@ CREATE TABLE IF NOT EXISTS 'agenda' (
 -- Structure de la table 'creneauLibre'
 --
 
-DROP TABLE IF EXISTS 'creneauLibre';
-CREATE TABLE IF NOT EXISTS 'creneauLibre' (
-    'id' int NOT NULL AUTO_INCREMENT,
-    'dateCreneau' varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    'hDeb' varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    'hFin' varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    'idAgenda' int NOT NULL,
-    PRIMARY KEY ('id'),
-    FOREIGN KEY ('idAgenda') REFERENCES 'agenda' ('id')
+DROP TABLE IF EXISTS `creneauLibre`;
+CREATE TABLE IF NOT EXISTS `creneauLibre` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `dateCreneau` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `hDeb` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `hFin` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `idAgenda` int NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`idAgenda`) REFERENCES `agenda` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -97,16 +98,16 @@ CREATE TABLE IF NOT EXISTS 'creneauLibre' (
 -- Structure de la table 'preferences'
 --
 
-DROP TABLE IF EXISTS 'preferences';
-CREATE TABLE IF NOT EXISTS 'preferences' (
-    'id' int NOT NULL AUTO_INCREMENT,
-    'jour' varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    'heureDeb' varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    'heureFin' varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    'disponibilite' varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    'idUtilisateur' int NOT NULL,
-    PRIMARY KEY ('id'),
-    FOREIGN KEY ('idUtilisateur') REFERENCES 'utilisateur' ('id')
+DROP TABLE IF EXISTS `preferences`;
+CREATE TABLE IF NOT EXISTS `preferences` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `jour` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `heureDeb` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `heureFin` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `disponibilite` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `idUtilisateur` int NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -120,14 +121,14 @@ CREATE TABLE IF NOT EXISTS 'preferences' (
 -- Structure de la table 'groupe'
 --
 
-DROP TABLE IF EXISTS 'groupe';
-CREATE TABLE IF NOT EXISTS 'groupe' (
-    'id' int NOT NULL AUTO_INCREMENT,
-    'nom' varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    'description' varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    'chef'  int NOT NULL,
-    PRIMARY KEY ('id'),
-    FOREIGN KEY ('chef') REFERENCES 'utilisateur' ('id')
+DROP TABLE IF EXISTS `groupe`;
+CREATE TABLE IF NOT EXISTS `groupe` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `chef` int NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`chef`) REFERENCES `utilisateur` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -141,14 +142,14 @@ CREATE TABLE IF NOT EXISTS 'groupe' (
 -- Structure de la table 'contacter'
 --
 
-DROP TABLE IF EXISTS 'contacter';
-CREATE TABLE IF NOT EXISTS 'contacter' (
-    'idUtilisateur1' int NOT NULL,
-    'idUtilisateur2' int NOT NULL,
-    PRIMARY KEY ('idUtilisateur1, idUtilisateur2'),
-    FOREIGN KEY ('idUtilisateur1') REFERENCES 'utilisateur' ('id'),
-    FOREIGN KEY ('idUtilisateur2') REFERENCES 'utilisateur' ('id')
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `contacter`;
+CREATE TABLE IF NOT EXISTS `contacter` (
+    `idUtilisateur1` int NOT NULL,
+    `idUtilisateur2` int NOT NULL,
+    PRIMARY KEY (`idUtilisateur1`, `idUtilisateur2`),
+    FOREIGN KEY (`idUtilisateur1`) REFERENCES `utilisateur` (`id`),
+    FOREIGN KEY (`idUtilisateur2`) REFERENCES `utilisateur` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table 'contacter'
@@ -160,14 +161,14 @@ CREATE TABLE IF NOT EXISTS 'contacter' (
 -- Structure de la table 'demander'
 --
 
-DROP TABLE IF EXISTS 'demander';
-CREATE TABLE IF NOT EXISTS 'demander' (
-    'idUtilisateur1' int NOT NULL,
-    'idUtilisateur2' int NOT NULL,
-    PRIMARY KEY ('idUtilisateur1, idUtilisateur2'),
-    FOREIGN KEY ('idUtilisateur1') REFERENCES 'utilisateur' ('id'),
-    FOREIGN KEY ('idUtilisateur2') REFERENCES 'utilisateur' ('id')
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `demander`;
+CREATE TABLE IF NOT EXISTS `demander` (
+    `idUtilisateur1` int NOT NULL,
+    `idUtilisateur2` int NOT NULL,
+    PRIMARY KEY (`idUtilisateur1`, `idUtilisateur2`),
+    FOREIGN KEY (`idUtilisateur1`) REFERENCES `utilisateur` (`id`),
+    FOREIGN KEY (`idUtilisateur2`) REFERENCES `utilisateur` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table 'demander'
@@ -179,11 +180,11 @@ CREATE TABLE IF NOT EXISTS 'demander' (
 -- Structure de la table 'categorie'
 --
 
-DROP TABLE IF EXISTS 'categorie';
-CREATE TABLE IF NOT EXISTS 'categorie' (
-    'id' int NOT NULL,
-    'categorie' varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    PRIMARY KEY ('id'),
+DROP TABLE IF EXISTS `categorie`;
+CREATE TABLE IF NOT EXISTS `categorie` (
+    `id` int NOT NULL,
+    `categorie` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
