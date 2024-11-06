@@ -2,6 +2,12 @@
 
 require_once 'include.php';
 
+$template = $twig->load('index.html.twig');
+
+echo $template->render(array(
+    'menu' => 'index'
+));
+
 use ICal\ICal;
 
 function obtenirCreneauxLibres($urlIcs, $debut, $fin) {
