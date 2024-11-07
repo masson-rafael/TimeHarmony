@@ -20,7 +20,9 @@ try  {
         // $controllerName='index';
         // $methode='lister';
         $template = $twig->load('index.html.twig');
-        echo $template->render();
+        echo $template->render(array('etat' => 'nonconnecte',));
+        //echo $template->render(array('etat' => 'connecte',));
+        // a terme, il faudra verifier si on est connecte avec la bd
     }
     else if ($controllerName == '' ){
         throw new Exception('Le controleur n\'est pas défini');
