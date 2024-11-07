@@ -13,8 +13,12 @@ require_once 'config/twig.php';
 require_once 'modeles/bd.class.php';
 
 //Ajout des contrôleurs
+require_once 'controllers/controller_factory.class.php';
+require_once 'controllers/controller.class.php';
+require_once 'controllers/controller_creneauLibre.class.php';
 
 //Ajout des modèles
+//require_once 'bd.class.php';
 require_once 'modeles/utilisateur.class.php';
 require_once 'modeles/agenda.class.php';
 require_once 'modeles/creneauLibre.class.php'; 
