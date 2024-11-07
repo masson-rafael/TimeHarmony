@@ -9,7 +9,12 @@ class ControllerUtilisateur extends Controller
         parent::__construct($twig, $loader);
     }
 
-    function connexion() {}
+    function connexion() {
+
+
+        $template = $this->getTwig()->load('connection.html.twig');
+        echo $template->render();
+    }
 
     function inscription()
     {

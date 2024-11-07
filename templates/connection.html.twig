@@ -1,0 +1,22 @@
+{% extends 'base_template.html.twig' %}
+
+{% block title %}Connection -
+	{{ constant('WEBSITE_TITLE')}}
+{% endblock %}
+
+
+{% block content %}
+{# {{ dump(creneauxLibres) }} #}
+    <main>
+        
+            <h1>Connection</h1>
+    <form action="connection.php" method="post">
+        <p>Pseudo: <input type="text" name="pseudo" placeholder="Pseudo d'utilisateur" required></p>
+        <p>Mot de Passe: <input type="password" name="mot_de_passe" placeholder="Mot de Passe" required></p>
+        <input type="submit" class="btn btn-success" name="login" value="Connexion">
+    </form>
+    </main>
+{% endblock %}
+
+
+
