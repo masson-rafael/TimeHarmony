@@ -73,7 +73,7 @@ class ControllerCreneauLibre extends Controller
 
     function genererVue(?array $creneaux) {
         //Génération de la vue
-        $template = $this->getTwig()->load('creneauLibre_template.html.twig');
+        $template = $this->getTwig()->load('creneauLibre.html.twig');
         echo $template->render(array(
             'creneauxLibres' => $creneaux
         ));

@@ -30,12 +30,12 @@ try  {
     }
     else {
         $controller = ControllerFactory::getController($controllerName, $loader, $twig);
-  
+    
         $controller->call($methode);
     }
     
 }catch (Exception $e) {
-   die('Erreur : ' . $e->getMessage());
+    die('Erreur : ' . $e->getMessage());
 }
 
 
