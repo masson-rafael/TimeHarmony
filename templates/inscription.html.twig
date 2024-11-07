@@ -13,14 +13,27 @@
             <div class="col-md-4 mt-5"> <!-- Ajout de la marge en haut -->
                 <form action="login.php" method="post">
                     <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Identifiant</label>
+                        <label for="exampleInputEmail1" class="form-label">Nom</label>
+                        <input type="text" name="nom" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Prenom</label>
+                        <input type="text" name="prenom" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">E-mail</label>
                         <input type="text" name="login" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputPassword1" class="form-label">Mot de passe</label>
                         <input type="password" name="pwd" class="form-control" id="exampleInputPassword1">
                     </div>
-                    <button type="submit" class="btn btn-primary">Se connecter</button>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Confirmer mot de passe</label>
+                        <input type="password" name="pwdConfirme" class="form-control" id="exampleInputPassword1">
+                    </div>
+                    <a class="mb-3" href="index.php?controleur=utilisateur&methode=connexion">Deja un compte ? Se connecter</a>
+                    <button type="submit" class="btn btn-primary">S'inscrire</button>
                 </form>
             </div>
         </div>
