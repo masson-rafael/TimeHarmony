@@ -2,7 +2,7 @@
 
 // Connexion à la base de données (logins wamp)
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'timeharmony_bd');
+define('DB_NAME', 'bd_test');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 

@@ -33,6 +33,17 @@
             <br>
 
         {% endfor %}
+        {{dump(res)}}
+        {% for r in res %}           
+
+            {# Afficher les créneaux libres #}
+            <p> Créneau libre de {{r}} à </p> 
+            
+            <br>
+
+        {% endfor %}
+
+        <a href="index.php?controleur=utilisateur&methode=listerContacts"><p>ff</p></a>
     </main>
 {% endblock %}
 

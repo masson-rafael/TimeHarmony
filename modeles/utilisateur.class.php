@@ -11,7 +11,7 @@ class Utilisateur {
     //private array|null $agendas;        -> nécessaire ?
 
     /* ------------- CONSTRUCTEUR ------------- */
-    public function __construct(int $id, string $nom, string $prenom, string $email, string $motDePasse, ?string $photoDeProfil, bool $estAdmin = false) {
+    public function __construct(int $id, string $nom, string $prenom, string $email, string $motDePasse, string $photoDeProfil, bool $estAdmin = false) {
         $this->id = $id;
         $this->nom = $nom;
         $this->prenom = $prenom;
