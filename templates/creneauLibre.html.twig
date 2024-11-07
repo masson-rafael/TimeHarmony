@@ -8,14 +8,31 @@
 {% block content %}
 {# {{ dump(creneauxLibres) }} #}
     <main>
-        
-            {% for creneau in creneauxLibres %}           
+        <div class="container py-5">
+        <form action="index.php?controleur=creneauLibre&methode=obtenir" method="post">
+            <div class="mb-3">
+                <label for="formGroupExampleInput" class="form-label">URL de l'agenda</label>
+                <input name="urlIcs" type="text" class="form-control" id="formGroupExampleInput" placeholder="Ex : https://calendar.google.com/calendar/ical/thibault.latxague%40gmail.com/public/basic.ics">
+            </div>
+            <div class="mb-3">
+                <label for="formGroupExampleInput" class="form-label">Debut de la recherche</label>
+                <input name="debut" type="text" class="form-control" id="formGroupExampleInput" placeholder="Ex : 2024-10-07 00:00:00">
+            </div>
+            <div class="mb-3">
+                <label for="formGroupExampleInput2" class="form-label">Fin de la recherche</label>
+                <input name="fin" type="text" class="form-control" id="formGroupExampleInput2" placeholder="Ex : 2024-10-11 00:00:00">
+            </div>
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </form>
+        </div>
 
-                {# Afficher les créneaux libres #}
-                <p> Créneau libre de {{creneau['debut']}} à {{creneau['fin']}}</p> 
-                <br>
+        {% for creneau in creneauxLibres %}           
 
-            {% endfor %}
+            {# Afficher les créneaux libres #}
+            <p> Créneau libre de {{creneau['debut']}} à {{creneau['fin']}}</p> 
+            <br>
+
+        {% endfor %}
     </main>
 {% endblock %}
 

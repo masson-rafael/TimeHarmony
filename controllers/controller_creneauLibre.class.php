@@ -12,12 +12,14 @@ class ControllerCreneauLibre extends Controller
 
     function obtenir()
     {
+        extract($_POST, EXTR_OVERWRITE);
+
         //function obtenir($urlIcs, $debut, $fin) {
         // Exemple d'utilisation
-        $urlIcs = "https://calendar.google.com/calendar/ical/thibault.latxague%40gmail.com/public/basic.ics"; // URL de votre calendrier ICS
-        // Dates de début et de fin pour vérifier les créneaux libres
-        $debut = '2024-10-07 00:00:00';
-        $fin = '2024-10-12 18:45:00';
+        // $urlIcs = "https://calendar.google.com/calendar/ical/thibault.latxague%40gmail.com/public/basic.ics"; // URL de votre calendrier ICS
+        // // Dates de début et de fin pour vérifier les créneaux libres
+        // $debut = '2024-10-07 00:00:00';
+        // $fin = '2024-10-12 18:45:00';
 
         // Récupérer les événements de l'agenda
         $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
@@ -34,7 +36,7 @@ class ControllerCreneauLibre extends Controller
         
         // Générer la vue
         // Nouvel appel du tableau car fonction precedente a modifié le tableau grâce à & (passage par référence)
-        $this->genererVue($tabCreneaux[0]);
+        $this->genererVueCreneaux($tabCreneaux[0]);
     }
 
     function recherche(?String $timeZone, ?string $debut, ?string $fin, ?array $evenements): ?array {
@@ -71,11 +73,18 @@ class ControllerCreneauLibre extends Controller
         }
     }
 
-    function genererVue(?array $creneaux) {
+    function genererVueCreneaux(?array $creneaux) {
         //Génération de la vue
         $template = $this->getTwig()->load('creneauLibre.html.twig');
         echo $template->render(array(
             'creneauxLibres' => $creneaux
+        ));
+    }
+
+    function genererVue() {
+        //Génération de la vue
+        $template = $this->getTwig()->load('creneauLibre.html.twig');
+        echo $template->render(array(
         ));
     }
 
@@ -99,5 +108,9 @@ class ControllerCreneauLibre extends Controller
         1 si $dateDebutA est supérieur à $dateDebutB.*/
         });
         return $evenement;
+    }
+
+    function methodeTest() {
+        $this->genererVue();
     }
 }
