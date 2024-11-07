@@ -12,58 +12,57 @@ class ControllerCreneauLibre extends Controller
 
     function obtenir()
     {
-        extract($_POST, EXTR_OVERWRITE);
+        if (isset($_POST['urlIcs'])) {
+            extract($_POST, EXTR_OVERWRITE);
 
-        //function obtenir($urlIcs, $debut, $fin) {
-        // Exemple d'utilisation
-        // $urlIcs = "https://calendar.google.com/calendar/ical/thibault.latxague%40gmail.com/public/basic.ics"; // URL de votre calendrier ICS
-        // // Dates de début et de fin pour vérifier les créneaux libres
-        // $debut = '2024-10-07 00:00:00';
-        // $fin = '2024-10-12 18:45:00';
+            // Récupérer les événements de l'agenda
+            $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
 
-        // Récupérer les événements de l'agenda
-        $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
+            // Trier les événements par date de début
+            $evenements = $this->triEvenementsOrdreArrivee($evenements);
 
-        // Trier les événements par date de début
-        $evenements = $this->triEvenementsOrdreArrivee($evenements);
+            // Recherche des créneaux libres
+            $tabCreneaux = $this->recherche('Europe/Paris', $debut, $fin, $evenements);
 
-        // Recherche des créneaux libres
-        $tabCreneaux = $this->recherche('Europe/Paris', $debut, $fin, $evenements);
+            // Vérifier s'il reste des créneaux libres après le dernier événement
+            // La fonction recherche renvoie un tableau avec 3 éléments, d'où leur accès avec []
+            $this->verifCreneauDernierEvent($tabCreneaux[1], $tabCreneaux[2], $tabCreneaux[0]);
 
-        // Vérifier s'il reste des créneaux libres après le dernier événement
-        // La fonction recherche renvoie un tableau avec 3 éléments, d'où leur accès avec []
-        $this->verifCreneauDernierEvent($tabCreneaux[1], $tabCreneaux[2], $tabCreneaux[0]);
-        
-        // Générer la vue
-        // Nouvel appel du tableau car fonction precedente a modifié le tableau grâce à & (passage par référence)
-        $this->genererVueCreneaux($tabCreneaux[0]);
-    }
-
-    function recherche(?String $timeZone, ?string $debut, ?string $fin, ?array $evenements): ?array {
-        $fuseauHoraire = new DateTimeZone($timeZone);
-        $debutCourant = new DateTime($debut, $fuseauHoraire);
-        $finCourant = new DateTime($fin, $fuseauHoraire);
-        // Recherche des créneaux libres
-        $creneauxLibres = array();
-
-        foreach ($evenements as $evenement) {
-            // Convertir les heures d'événements en fuseau horaire local
-            $debutEvenement = new DateTime($evenement->dtstart, new DateTimeZone('UTC'));
-            $finEvenement = new DateTime($evenement->dtend, new DateTimeZone('UTC'));
-            $debutEvenement->setTimezone($fuseauHoraire);
-            $finEvenement->setTimezone($fuseauHoraire);
-            if ($debutEvenement > $debutCourant) {
-                $creneauxLibres[] = [
-                    'debut' => $debutCourant->format('Y-m-d H:i:s'),
-                    'fin' => $debutEvenement->format('Y-m-d H:i:s'),
-                ];
-            }
-            $debutCourant = max($debutCourant, $finEvenement);
+            // Générer la vue
+            // Nouvel appel du tableau car fonction precedente a modifié le tableau grâce à & (passage par référence)
+            $this->genererVueCreneaux($tabCreneaux[0]);
+        } else {
+            $this->genererVue();
         }
-        return [$creneauxLibres, $debutCourant, $finCourant];
     }
 
-    function verifCreneauDernierEvent(?DateTime $debutCourant, ?DateTime $finCourant, ?array &$creneauxLibres) {
+        function recherche(?String $timeZone, ?string $debut, ?string $fin, ?array $evenements): ?array
+        {
+            $fuseauHoraire = new DateTimeZone($timeZone);
+            $debutCourant = new DateTime($debut, $fuseauHoraire);
+            $finCourant = new DateTime($fin, $fuseauHoraire);
+            // Recherche des créneaux libres
+            $creneauxLibres = array();
+
+            foreach ($evenements as $evenement) {
+                // Convertir les heures d'événements en fuseau horaire local
+                $debutEvenement = new DateTime($evenement->dtstart, new DateTimeZone('UTC'));
+                $finEvenement = new DateTime($evenement->dtend, new DateTimeZone('UTC'));
+                $debutEvenement->setTimezone($fuseauHoraire);
+                $finEvenement->setTimezone($fuseauHoraire);
+                if ($debutEvenement > $debutCourant) {
+                    $creneauxLibres[] = [
+                        'debut' => $debutCourant->format('Y-m-d H:i:s'),
+                        'fin' => $debutEvenement->format('Y-m-d H:i:s'),
+                    ];
+                }
+                $debutCourant = max($debutCourant, $finEvenement);
+            }
+            return [$creneauxLibres, $debutCourant, $finCourant];
+    }
+
+    function verifCreneauDernierEvent(?DateTime $debutCourant, ?DateTime $finCourant, ?array &$creneauxLibres)
+    {
         // Vérifier s'il reste des créneaux libres après le dernier événement
         if ($debutCourant < $finCourant) {
             $creneauxLibres[] = [
@@ -73,7 +72,8 @@ class ControllerCreneauLibre extends Controller
         }
     }
 
-    function genererVueCreneaux(?array $creneaux) {
+    function genererVueCreneaux(?array $creneaux)
+    {
         //Génération de la vue
         $template = $this->getTwig()->load('creneauLibre.html.twig');
         echo $template->render(array(
@@ -81,22 +81,40 @@ class ControllerCreneauLibre extends Controller
         ));
     }
 
-    function genererVue() {
+    function genererVue()
+    {
         //Génération de la vue
         $template = $this->getTwig()->load('creneauLibre.html.twig');
-        echo $template->render(array(
-        ));
+        echo $template->render(array());
     }
 
-    function recuperationEvenementsAgenda(?string $url, ?string $debut, ?string $fin): ?array {
+    function recuperationEvenementsAgenda(?string $url, ?string $debut, ?string $fin): ?array
+    {
         // Charger le calendrier ICS via l'URL
-        $calendrier = new ICal($url);
-        // Récupérer tous les événements
-        $evenements = $calendrier->eventsFromRange($debut, $fin);
+        if (!$this->testerValiditeUrl($url)) {
+            $this->genererVue();
+            throw new Exception("L'URL n'est pas valide");
+        } else {
+            $calendrier = new ICal($url);
+            // Récupérer tous les événements
+            $evenements = $calendrier->eventsFromRange($debut, $fin);
+        }
         return $evenements;
     }
 
-    function triEvenementsOrdreArrivee(?array $evenement): ?array {
+    function testerValiditeUrl(?string $url): bool
+    {
+        try {
+            // @ nécessaire pour enlever les erreurs
+            @$calendrier = new ICal($url);
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    function triEvenementsOrdreArrivee(?array $evenement): ?array
+    {
         // Trier les événements par date de début
         usort($evenement, function ($a, $b) {
             $dateDebutA = new DateTime($a->dtstart);
@@ -110,7 +128,8 @@ class ControllerCreneauLibre extends Controller
         return $evenement;
     }
 
-    function methodeTest() {
+    function methodeTest()
+    {
         $this->genererVue();
     }
 }
