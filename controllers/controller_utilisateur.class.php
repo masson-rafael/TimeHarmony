@@ -41,7 +41,7 @@ class ControllerUtilisateur extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
 
-        $utilisateurs = $manager->find(1);
+        $utilisateurs = $manager->find(2);
 
         $template = $this->getTwig()->load('creneauLibre.html.twig');
         echo $template->render(

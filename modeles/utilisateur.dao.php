@@ -21,11 +21,27 @@ class UtilisateurDao{
 
     public function find(?int $id): ?Utilisateur
     {
-        $sql="SELECT * FROM ".PREFIXE_TABLE."utilisateur WHERE id= :id";
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."utilisateur WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(array("id"=>$id));
-        $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Utilisateur');
-        $utilisateur = $pdoStatement->fetch();
+        $pdoStatement->execute(array("id" => $id));
+        
+        // On récupère sous forme de tableau associatif
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$result) {
+            return null;
+        }
+        
+        // On crée un nouvel objet Utilisateur avec les données
+        $utilisateur = new Utilisateur();
+        $utilisateur->setId($result['id']);
+        $utilisateur->setNom($result['nom']);
+        $utilisateur->setPrenom($result['prenom']);
+        $utilisateur->setEmail($result['email']);
+        $utilisateur->setMotDePasse($result['motDePasse']);
+        $utilisateur->setPhotoDeProfil($result['photoDeProfil']);
+        $utilisateur->setEstAdmin($result['estAdmin']);
+        
         return $utilisateur;
     }
 

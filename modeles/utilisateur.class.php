@@ -8,17 +8,30 @@ class Utilisateur {
     private string|null $motDePasse;
     private string|null $photoDeProfil;
     private bool|null $estAdmin;
-    //private array|null $agendas;        -> nécessaire ?
 
-    /* ------------- CONSTRUCTEUR ------------- */
-    public function __construct(int $id, string $nom, string $prenom, string $email, string $motDePasse, string $photoDeProfil, bool $estAdmin = false) {
-        $this->id = $id;
-        $this->nom = $nom;
-        $this->prenom = $prenom;
-        $this->email = $email;
-        $this->motDePasse = $motDePasse;
-        $this->photoDeProfil = $photoDeProfil;
-        $this->estAdmin = $estAdmin;
+    /* Constructeur par défaut */
+    public function __construct() {
+        // Initialisation avec des valeurs par défaut
+        $this->id = null;
+        $this->nom = null;
+        $this->prenom = null;
+        $this->email = null;
+        $this->motDePasse = null;
+        $this->photoDeProfil = null;
+        $this->estAdmin = false;
+    }
+
+    /* Méthode de création avec paramètres */
+    public static function createAvecParam(int $id, string $nom, string $prenom, string $email, string $motDePasse, string $photoDeProfil, bool $estAdmin = false): self {
+        $instance = new self();
+        $instance->id = $id;
+        $instance->nom = $nom;
+        $instance->prenom = $prenom;
+        $instance->email = $email;
+        $instance->motDePasse = $motDePasse;
+        $instance->photoDeProfil = $photoDeProfil;
+        $instance->estAdmin = $estAdmin;
+        return $instance;
     }
 
     /* ------------- SETTERS ------------- */
@@ -51,6 +64,10 @@ class Utilisateur {
     }
 
     /* ------------- SETTERS ------------- */
+    public function setId(int $id): void {
+        $this->id = $id;
+    }
+
     public function setNom(string $nom): void {
         $this->nom = $nom;
     }
