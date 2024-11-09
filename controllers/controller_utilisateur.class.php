@@ -19,14 +19,12 @@ class ControllerUtilisateur extends Controller
     {
         //Génération de la vue
         $pdo = $this->getPdo();
-        $existe = false;
 
         if (isset($_POST['email']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['pwd']) && isset($_POST['pwdConfirme'])) {
             $manager = new UtilisateurDao($pdo); //Lien avec PDO
             $utilisateurExiste = $manager->findMail($_POST['email']); //Appel fonction et stocke bool pour savoir si utilisateur existe deja avec email
-            var_dump($utilisateurExiste);
 
-            if (!$utilisateurExiste) {
+            if (!$utilisateurExiste && $_POST['pwd'] == $_POST['pwdConfirme']) {
                 $nouvelUtilisateur = new Utilisateur();
                 $nouvelUtilisateur->setEmail($_POST['email']);
                 $nouvelUtilisateur->setNom($_POST['nom']);
@@ -37,8 +35,9 @@ class ControllerUtilisateur extends Controller
                 $manager->ajouterUtilisateur($nouvelUtilisateur); //Appel du script pour ajouter utilisateur dans bd
                 
                 $this->genererVue($_POST['email'], $utilisateurExiste, "INSCRIPTION REUSSIE");
-            }
-            else {
+            } else if (!$utilisateurExiste) {
+                $this->genererVue($_POST['email'], $utilisateurExiste, "MOTS DE PASSE NON IDENTIQUES");
+            } else {
                 $this->genererVue($_POST['email'], $utilisateurExiste, "UTILISATEUR EXISTE DEJA");
             }
         }
