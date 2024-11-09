@@ -24,13 +24,33 @@ class ControllerUtilisateur extends Controller
             $manager = new UtilisateurDao($pdo);
             $existe = $manager->findMail($_POST['email']);
         }
-        $template = $this->getTwig()->load('inscription.html.twig');
-        echo $template->render(
-            array(
-                'mail' => $_POST['email'],
-                'existe' => $existe,
-            )
-        );
+        if ($existe) {
+            $template = $this->getTwig()->load('inscription.html.twig');
+            echo $template->render(
+                array(
+                    'mail' => $_POST['email'],
+                    'existe' => $existe,
+                )
+            );
+        } else if (isset($_POST['email']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['pwd']) && isset($_POST['pwdConfirme'])) {
+            $template = $this->getTwig()->load('inscription.html.twig');
+            echo $template->render(
+                array(
+                    'mail' => $_POST['email'],
+                    'existe' => $existe,
+                    'message' => "NOUVEL UTILISATEUR",
+                )
+            );
+        } else {
+            $template = $this->getTwig()->load('inscription.html.twig');
+            echo $template->render(
+                array(
+                    'mail' => $_POST['email'],
+                    'existe' => $existe,
+                    'message' => "ERREUR",
+                )
+            );
+        }
     }
 
     function listerContacts() {
