@@ -20,36 +20,40 @@ class ControllerUtilisateur extends Controller
         //Génération de la vue
         $pdo = $this->getPdo();
         $existe = false;
-        if (isset($_POST['email'])) {
-            $manager = new UtilisateurDao($pdo);
-            $existe = $manager->findMail($_POST['email']);
-        }
-        if ($existe) {
-            $template = $this->getTwig()->load('inscription.html.twig');
-            echo $template->render(
-                array(
-                    'mail' => $_POST['email'],
-                    'existe' => $existe,
-                )
-            );
-        } else if (isset($_POST['email']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['pwd']) && isset($_POST['pwdConfirme'])) {
-            $template = $this->getTwig()->load('inscription.html.twig');
-            echo $template->render(
-                array(
-                    'mail' => $_POST['email'],
-                    'existe' => $existe,
-                    'message' => "NOUVEL UTILISATEUR",
-                )
-            );
-        } else {
-            $template = $this->getTwig()->load('inscription.html.twig');
-            echo $template->render(
-                array(
-                    'mail' => $_POST['email'],
-                    'existe' => $existe,
-                    'message' => "ERREUR",
-                )
-            );
+
+        if (isset($_POST['email']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['pwd']) && isset($_POST['pwdConfirme'])) {
+            $manager = new UtilisateurDao($pdo); //Lien avec PDO
+            $utilisateurExiste = $manager->findMail($_POST['email']); //Appel fonction et stocke bool pour savoir si utilisateur existe deja avec email
+            var_dump($utilisateurExiste);
+
+            if (!$utilisateurExiste) {
+                $nouvelUtilisateur = new Utilisateur();
+                $nouvelUtilisateur->setEmail($_POST['email']);
+                $nouvelUtilisateur->setNom($_POST['nom']);
+                $nouvelUtilisateur->setPrenom($_POST['prenom']);
+                $nouvelUtilisateur->setMotDePasse($_POST['pwd']);
+                $nouvelUtilisateur->setPhotoDeProfil("photoProfil.jpg");
+                $nouvelUtilisateur->setEstAdmin(false);
+                $manager->ajouterUtilisateur($nouvelUtilisateur);
+                $template = $this->getTwig()->load('inscription.html.twig');
+                echo $template->render(
+                    array(
+                        'mail' => $_POST['email'],
+                        'existe' => $utilisateurExiste,
+                        'message' => "NOUVEL UTILISATEUR",
+                    )
+                );
+            }
+            else {
+                $template = $this->getTwig()->load('inscription.html.twig');
+                echo $template->render(
+                    array(
+                        'mail' => $_POST['email'],
+                        'existe' => $utilisateurExiste,
+                        'message' => "ERREUR",
+                    )
+                );
+            }
         }
     }
 

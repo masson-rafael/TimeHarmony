@@ -35,7 +35,7 @@ class Utilisateur {
     }
 
     /* ------------- SETTERS ------------- */
-    public function getId(): int {
+    public function getId(): ?int {
         return $this->id;
     }
 
@@ -90,5 +90,9 @@ class Utilisateur {
 
     public function setEstAdmin(bool $estAdmin): void {
         $this->estAdmin = $estAdmin;
+    }
+
+    public function toString(): string {
+        return "Utilisateur : " . $this->id . " " . $this->nom . " " . $this->prenom . " " . $this->email . " " . $this->motDePasse . " " . $this->photoDeProfil . " " . $this->estAdmin;
     }
 }

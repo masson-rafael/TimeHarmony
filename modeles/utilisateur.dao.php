@@ -52,20 +52,33 @@ class UtilisateurDao{
         $pdoStatement->execute(array("email"=>$mail));
         $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
 
-        $return = false;
-        if ($result){
-            $return = true;
+        $utilisateurExiste = false;
+        if($result){
+            $utilisateurExiste = true;
         }
 
-        return $return;
+        return $utilisateurExiste;
     }
 
-    public function findAll(){
+    public function findAll() : ?array{
         $sql="SELECT * FROM ".PREFIXE_TABLE."utilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
         $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Utilisateur');
         $utilisateur = $pdoStatement->fetchAll();
         return $utilisateur;
+    }
+
+    public function ajouterUtilisateur(Utilisateur $utilisateur){
+        $sql = "INSERT INTO ".PREFIXE_TABLE."utilisateur (nom, prenom, email, motDePasse, photoDeProfil, estAdmin) VALUES (:nom, :prenom, :email, :motDePasse, :photoDeProfil, :estAdmin)";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array(
+            "nom" => $utilisateur->getNom(),
+            "prenom" => $utilisateur->getPrenom(),
+            "email" => $utilisateur->getEmail(),
+            "motDePasse" => $utilisateur->getMotDePasse(),
+            "photoDeProfil" => $utilisateur->getPhotoDeProfil(),
+            "estAdmin" => $utilisateur->getEstAdmin()
+        ));
     }
 }
