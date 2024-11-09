@@ -70,6 +70,7 @@ class UtilisateurDao{
     }
 
     public function ajouterUtilisateur(Utilisateur $utilisateur){
+        //Insertion d'un utilisateur classique
         $sql = "INSERT INTO ".PREFIXE_TABLE."utilisateur (nom, prenom, email, motDePasse, photoDeProfil, estAdmin) VALUES (:nom, :prenom, :email, :motDePasse, :photoDeProfil, :estAdmin)";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array(

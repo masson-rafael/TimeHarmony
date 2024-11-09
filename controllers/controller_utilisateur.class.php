@@ -34,35 +34,32 @@ class ControllerUtilisateur extends Controller
                 $nouvelUtilisateur->setMotDePasse($_POST['pwd']);
                 $nouvelUtilisateur->setPhotoDeProfil("photoProfil.jpg");
                 $nouvelUtilisateur->setEstAdmin(false);
-                $manager->ajouterUtilisateur($nouvelUtilisateur);
-                $template = $this->getTwig()->load('inscription.html.twig');
-                echo $template->render(
-                    array(
-                        'mail' => $_POST['email'],
-                        'existe' => $utilisateurExiste,
-                        'message' => "NOUVEL UTILISATEUR",
-                    )
-                );
+                $manager->ajouterUtilisateur($nouvelUtilisateur); //Appel du script pour ajouter utilisateur dans bd
+                
+                $this->genererVue($_POST['email'], $utilisateurExiste, "INSCRIPTION REUSSIE");
             }
             else {
-                $template = $this->getTwig()->load('inscription.html.twig');
-                echo $template->render(
-                    array(
-                        'mail' => $_POST['email'],
-                        'existe' => $utilisateurExiste,
-                        'message' => "ERREUR",
-                    )
-                );
+                $this->genererVue($_POST['email'], $utilisateurExiste, "UTILISATEUR EXISTE DEJA");
             }
         }
+    }
+
+    public function genererVue(?string $mail, ?bool $existe, ?string $message) {
+        //Génération de la vue
+        $template = $this->getTwig()->load('inscription.html.twig');
+        echo $template->render(
+            array(
+                'mail' => $mail,
+                'existe' => $existe,
+                'message' => $message,
+            )
+        );
     }
 
     function listerContacts() {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
-
         $utilisateurs = $manager->find(2);
-
         $template = $this->getTwig()->load('creneauLibre.html.twig');
         echo $template->render(
             array(

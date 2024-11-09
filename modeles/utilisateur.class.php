@@ -23,6 +23,7 @@ class Utilisateur {
 
     /* Méthode de création avec paramètres */
     public static function createAvecParam(int $id, string $nom, string $prenom, string $email, string $motDePasse, string $photoDeProfil, bool $estAdmin = false): self {
+        //Static pour appel sans instance puis création et renvoie de cette instance
         $instance = new self();
         $instance->id = $id;
         $instance->nom = $nom;
