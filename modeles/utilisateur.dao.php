@@ -45,14 +45,19 @@ class UtilisateurDao{
         return $utilisateur;
     }
 
-    public function findMail(?string $mail): ?Utilisateur
+    public function findMail(?string $mail) : ?bool
     {
         $sql="SELECT * FROM ".PREFIXE_TABLE."utilisateur WHERE email= :email";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("email"=>$mail));
-        $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Utilisateur');
-        $utilisateur = $pdoStatement->fetch();
-        return $utilisateur;
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+
+        $return = false;
+        if ($result){
+            $return = true;
+        }
+
+        return $return;
     }
 
     public function findAll(){

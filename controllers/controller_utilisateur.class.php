@@ -18,17 +18,13 @@ class ControllerUtilisateur extends Controller
     function inscription()
     {
         //Génération de la vue
-        $template = $this->getTwig()->load('inscription.html.twig');
         $pdo = $this->getPdo();
         $existe = false;
         if (isset($_POST['email'])) {
             $manager = new UtilisateurDao($pdo);
-            $result = $manager->findMail();
-            if ($result != null) {
-                echo "Cet email est déjà utilisé";
-                $existe = true;
-            }
+            $existe = $manager->findMail($_POST['email']);
         }
+        $template = $this->getTwig()->load('inscription.html.twig');
         echo $template->render(
             array(
                 'mail' => $_POST['email'],
