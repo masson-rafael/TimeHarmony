@@ -19,7 +19,22 @@ class ControllerUtilisateur extends Controller
     {
         //Génération de la vue
         $template = $this->getTwig()->load('inscription.html.twig');
-        echo $template->render();
+        $pdo = $this->getPdo();
+        $existe = false;
+        if (isset($_POST['email'])) {
+            $manager = new UtilisateurDao($pdo);
+            $result = $manager->findMail();
+            if ($result != null) {
+                echo "Cet email est déjà utilisé";
+                $existe = true;
+            }
+        }
+        echo $template->render(
+            array(
+                'mail' => $_POST['email'],
+                'existe' => $existe,
+            )
+        );
     }
 
     function listerContacts() {
