@@ -93,6 +93,7 @@ class ControllerUtilisateur extends Controller
         echo $template->render(
             array(
                 'message' => $message,
+                'etat' => "connecte",
             )
         );
     }
