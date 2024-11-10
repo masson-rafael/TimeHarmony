@@ -11,14 +11,32 @@ class ControllerUtilisateur extends Controller
 
     function connexion() {
         //Génération de la vue
-        $template = $this->getTwig()->load('connexion.html.twig');
-        echo $template->render();
+        $pdo = $this->getPdo();
+
+        if (isset($_POST['email']) && isset($_POST['pwd'])) {
+            $manager = new UtilisateurDao($pdo);
+            $utilisateurConnecte = $manager->connexionReussie($_POST['email'], $_POST['pwd']);
+
+            if ($utilisateurConnecte[0]) {
+                $utilisateur = new Utilisateur($utilisateurConnecte[1]);
+                //$utilisateur = $utilisateurConnecte[1];
+                $this->genererVueConnexion("CONNEXION REUSSIE");
+            } else {
+                $this->genererVueConnexion("CONNEXION ECHOUEE");
+            }
+        }
     }
 
     function premiereInscription() {
         //Création d'une fonction appellee 1 seule fois pour ne pas avoir de double twig
         $this->genererVueVide();
         $this->inscription();
+    }
+
+    function premiereConnexion() {
+        //Création d'une fonction appellee 1 seule fois pour ne pas avoir de double twig
+        $this->genererVueVideConnexion();
+        $this->connexion();
     }
 
     function inscription()
@@ -57,11 +75,31 @@ class ControllerUtilisateur extends Controller
         );
     }
 
+    //////////////////////////////////////////////////////////////// OPTIMISER CETTE MERDE
+
     public function genererVueVide() {
         //Génération de la vue
         $template = $this->getTwig()->load('inscription.html.twig');
         echo $template->render(
             array()
+        );
+    }
+
+    public function genererVueVideConnexion() {
+        //Génération de la vue
+        $template = $this->getTwig()->load('connexion.html.twig');
+        echo $template->render(
+            array()
+        );
+    }
+
+    function genererVueConnexion(?string $message) {
+        //Génération de la vue
+        $template = $this->getTwig()->load('connexion.html.twig');
+        echo $template->render(
+            array(
+                'message' => $message,
+            )
         );
     }
 

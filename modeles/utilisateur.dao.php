@@ -82,4 +82,18 @@ class UtilisateurDao{
             "estAdmin" => $utilisateur->getEstAdmin()
         ));
     }
+
+    public function connexionReussie(?string $mail, ?string $passwd) : ?array {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."utilisateur WHERE email = :email AND motDePasse = :motDePasse";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("email" => $mail, "motDePasse" => $passwd));
+        $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Utilisateur');
+
+        if($pdoStatement->rowCount() == 0){
+            return [false, null];
+        }
+
+        $utilisateur = $pdoStatement->fetch();
+        return [true, $utilisateur];
+    }
 }
