@@ -8,21 +8,35 @@ class Utilisateur {
     private string|null $motDePasse;
     private string|null $photoDeProfil;
     private bool|null $estAdmin;
-    //private array|null $agendas;        -> nécessaire ?
 
-    /* ------------- CONSTRUCTEUR ------------- */
-    public function __construct(int $id, string $nom, string $prenom, string $email, string $motDePasse, ?string $photoDeProfil, bool $estAdmin = false) {
-        $this->id = $id;
-        $this->nom = $nom;
-        $this->prenom = $prenom;
-        $this->email = $email;
-        $this->motDePasse = $motDePasse;
-        $this->photoDeProfil = $photoDeProfil;
-        $this->estAdmin = $estAdmin;
+    /* Constructeur par défaut */
+    public function __construct() {
+        // Initialisation avec des valeurs par défaut
+        $this->id = null;
+        $this->nom = null;
+        $this->prenom = null;
+        $this->email = null;
+        $this->motDePasse = null;
+        $this->photoDeProfil = null;
+        $this->estAdmin = false;
+    }
+
+    /* Méthode de création avec paramètres */
+    public static function createAvecParam(int $id = null, string $nom, string $prenom, string $email, string $motDePasse, string $photoDeProfil, bool $estAdmin = false): self {
+        //Static pour appel sans instance puis création et renvoie de cette instance
+        $instance = new self();
+        $instance->id = $id;
+        $instance->nom = $nom;
+        $instance->prenom = $prenom;
+        $instance->email = $email;
+        $instance->motDePasse = $motDePasse;
+        $instance->photoDeProfil = $photoDeProfil;
+        $instance->estAdmin = $estAdmin;
+        return $instance;
     }
 
     /* ------------- SETTERS ------------- */
-    public function getId(): int {
+    public function getId(): ?int {
         return $this->id;
     }
 
@@ -51,6 +65,10 @@ class Utilisateur {
     }
 
     /* ------------- SETTERS ------------- */
+    public function setId(int $id): void {
+        $this->id = $id;
+    }
+
     public function setNom(string $nom): void {
         $this->nom = $nom;
     }
@@ -73,5 +91,9 @@ class Utilisateur {
 
     public function setEstAdmin(bool $estAdmin): void {
         $this->estAdmin = $estAdmin;
+    }
+
+    public function toString(): string {
+        return "Utilisateur : " . $this->id . " " . $this->nom . " " . $this->prenom . " " . $this->email . " " . $this->motDePasse . " " . $this->photoDeProfil . " " . $this->estAdmin;
     }
 }

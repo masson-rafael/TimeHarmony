@@ -8,14 +8,44 @@
 {% block content %}
 {# {{ dump(creneauxLibres) }} #}
     <main>
-        
-            <h1>Inscription</h1>
-    <form action="inscription.php" method="post">
-        <p>Email: <input type="text" name="Email" placeholder="Email" required></p>
-        <p>Nom: <input type="text" name="nom" placeholder="Nom complet" required></p>
-        <p>Mot de Passe: <input type="password" name="mot_de_passe" placeholder="Mot de Passe" required></p>
-        <input type="submit" class="btn btn-success" name="sm" value="Inscription">
-    </form>
+    <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-4 mt-5"> <!-- Ajout de la marge en haut -->
+                    <form action="index.php?controleur=utilisateur&methode=inscription" method="post" required>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Nom</label>
+                            <input type="text" name="nom" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Prenom</label>
+                            <input type="text" name="prenom" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">E-mail</label>
+                            <input type="text" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Mot de passe</label>
+                            <input type="password" name="pwd" class="form-control" id="exampleInputPassword1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Confirmer mot de passe</label>
+                            <input type="password" name="pwdConfirme" class="form-control" id="exampleInputPassword1" required>
+                        </div>
+                        <a class="mb-3" href="index.php?controleur=utilisateur&methode=premiereConnexion">Deja un compte ? Se connecter</a>
+                        <button type="submit" class="btn btn-primary">S'inscrire</button>
+                    </form>
+                </div>
+                {% if message %}
+                <div class="mt-5">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </main>
 {% endblock %}
 
