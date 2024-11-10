@@ -14,11 +14,11 @@
                 <form action="index.php?controleur=utilisateur&methode=connexion" method="post">
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">E-mail</label>
-                        <input type="text" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                        <input type="text" name="email" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputPassword1" class="form-label">Mot de passe</label>
-                        <input type="password" name="pwd" class="form-control" id="exampleInputPassword1">
+                        <input type="password" name="pwd" class="form-control" required>
                     </div>
                     <a class="mb-3" href="index.php?controleur=utilisateur&methode=premiereInscription">Pas encore de compte ? S'inscrire</a>
                     <button type="submit" class="btn btn-primary">Se connecter</button>
