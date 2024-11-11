@@ -36,6 +36,36 @@ class ControllerCreneauLibre extends Controller
         }
     }
 
+    /*--------------------------------------------------------- Fonctions ----------------------------------------------------------- */
+
+    function recuperationEvenementsAgenda(?string $url, ?string $debut, ?string $fin): ?array
+    {
+        // Charger le calendrier ICS via l'URL
+        if (!$this->testerValiditeUrl($url)) {
+            $this->genererVue();
+            throw new Exception("L'URL n'est pas valide");
+        } else {
+            $calendrier = new ICal($url);
+            // Récupérer tous les événements
+            $evenements = $calendrier->eventsFromRange($debut, $fin);
+        }
+        return $evenements;
+    }
+    function triEvenementsOrdreArrivee(?array $evenement): ?array
+    {
+        // Trier les événements par date de début
+        usort($evenement, function ($a, $b) {
+            $dateDebutA = new DateTime($a->dtstart);
+            $dateDebutB = new DateTime($b->dtstart);
+            return $dateDebutA <=> $dateDebutB;
+            /*L'opérateur <=> compare les deux valeurs et renvoie :
+        -1 si $dateDebutA est inférieur à $dateDebutB,
+        0 si $dateDebutA est égal à $dateDebutB,
+        1 si $dateDebutA est supérieur à $dateDebutB.*/
+        });
+        return $evenement;
+    }
+
         function recherche(?String $timeZone, ?string $debut, ?string $fin, ?array $evenements): ?array
         {
             $fuseauHoraire = new DateTimeZone($timeZone);
@@ -88,20 +118,7 @@ class ControllerCreneauLibre extends Controller
         echo $template->render(array());
     }
 
-    function recuperationEvenementsAgenda(?string $url, ?string $debut, ?string $fin): ?array
-    {
-        // Charger le calendrier ICS via l'URL
-        if (!$this->testerValiditeUrl($url)) {
-            $this->genererVue();
-            throw new Exception("L'URL n'est pas valide");
-        } else {
-            $calendrier = new ICal($url);
-            // Récupérer tous les événements
-            $evenements = $calendrier->eventsFromRange($debut, $fin);
-        }
-        return $evenements;
-    }
-
+    
     function testerValiditeUrl(?string $url): bool
     {
         try {
@@ -113,23 +130,10 @@ class ControllerCreneauLibre extends Controller
         }
     }
 
-    function triEvenementsOrdreArrivee(?array $evenement): ?array
-    {
-        // Trier les événements par date de début
-        usort($evenement, function ($a, $b) {
-            $dateDebutA = new DateTime($a->dtstart);
-            $dateDebutB = new DateTime($b->dtstart);
-            return $dateDebutA <=> $dateDebutB;
-            /*L'opérateur <=> compare les deux valeurs et renvoie :
-        -1 si $dateDebutA est inférieur à $dateDebutB,
-        0 si $dateDebutA est égal à $dateDebutB,
-        1 si $dateDebutA est supérieur à $dateDebutB.*/
-        });
-        return $evenement;
-    }
+    
 
-    function methodeTest()
-    {
-        $this->genererVue();
-    }
+    // function methodeTest()
+    // {
+    //     $this->genererVue();
+    // }
 }
