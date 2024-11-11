@@ -96,13 +96,13 @@ CREATE TABLE IF NOT EXISTS `timeharmony_agenda` (
 
 CREATE TABLE IF NOT EXISTS `timeharmony_creneauLibre` (
     `id` int NOT NULL AUTO_INCREMENT,
-    `dateCreneau` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    `hDeb` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    `hFin` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `dateDebut` DATE NOT NULL,
+    `dateFin` DATE NOT NULL,
     `idAgenda` int NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`idAgenda`) REFERENCES `timeharmony_agenda` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 --
 -- Déchargement des données de la table 'creneauLibre'
