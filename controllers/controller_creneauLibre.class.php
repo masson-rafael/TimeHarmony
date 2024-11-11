@@ -124,7 +124,7 @@ class ControllerCreneauLibre extends Controller
         $creneaux = $managerCreneau->hydrateAll($tableau);
 
         //Génération de la vue
-        $template = $this->getTwig()->load('creneauLibre.html.twig');
+        $template = $this->getTwig()->load('resultat.html.twig');
         echo $template->render(array(
             'creneauxLibres' => $creneaux
         ));
