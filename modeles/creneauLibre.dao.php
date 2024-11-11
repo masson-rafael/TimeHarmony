@@ -18,7 +18,14 @@ class CreneauLibreDao{
         $this->pdo = $pdo;
     }
 
+    public function supprimerCreneauxLibres(): void {
+        $sql = "DELETE FROM ".PREFIXE_TABLE."creneaulibre";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute();
+    }
+
     public function ajouterCreneauLibre(CreneauLibre $creneauLibre){
+
         // Préparation de la requête SQL
         $sql = "INSERT INTO ".PREFIXE_TABLE."creneaulibre (dateDebut, dateFin, idAgenda) VALUES (:dateDebut, :dateFin, :idAgenda)";
         $pdoStatement = $this->pdo->prepare($sql);

@@ -71,6 +71,9 @@ class ControllerCreneauLibre extends Controller
             $pdo = $this->getPdo();
             $managerCreneau = new CreneauLibreDao($pdo);
 
+            // Vider la table pour éviter les récurrences
+            $managerCreneau->supprimerCreneauxLibres();
+
             $fuseauHoraire = new DateTimeZone($timeZone);
             $debutCourant = new DateTime($debut, $fuseauHoraire);
             $finCourant = new DateTime($fin, $fuseauHoraire);
