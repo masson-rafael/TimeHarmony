@@ -30,7 +30,7 @@ class ControllerCreneauLibre extends Controller
 
             // Générer la vue
             // Nouvel appel du tableau car fonction precedente a modifié le tableau grâce à & (passage par référence)
-            $this->genererVueCreneaux($tabCreneaux[0]);
+            $this->genererVueCreneaux();
         } else {
             $this->genererVue();
         }
@@ -68,6 +68,9 @@ class ControllerCreneauLibre extends Controller
 
         function recherche(?String $timeZone, ?string $debut, ?string $fin, ?array $evenements): ?array
         {
+            $pdo = $this->getPdo();
+            $managerCreneau = new CreneauLibreDao($pdo);
+
             $fuseauHoraire = new DateTimeZone($timeZone);
             $debutCourant = new DateTime($debut, $fuseauHoraire);
             $finCourant = new DateTime($fin, $fuseauHoraire);
@@ -76,34 +79,50 @@ class ControllerCreneauLibre extends Controller
 
             foreach ($evenements as $evenement) {
                 // Convertir les heures d'événements en fuseau horaire local
-                $debutEvenement = new DateTime($evenement->dtstart, new DateTimeZone('UTC'));
-                $finEvenement = new DateTime($evenement->dtend, new DateTimeZone('UTC'));
+                $debutEvenement = new DateTime($evenement->dtstart, $fuseauHoraire);
+                $finEvenement = new DateTime($evenement->dtend, $fuseauHoraire);
                 $debutEvenement->setTimezone($fuseauHoraire);
                 $finEvenement->setTimezone($fuseauHoraire);
                 if ($debutEvenement > $debutCourant) {
                     $creneauxLibres[] = [
+                        //$creneau = new CreneauLibre(null,$debutCourant, $finCourant)
                         'debut' => $debutCourant->format('Y-m-d H:i:s'),
                         'fin' => $debutEvenement->format('Y-m-d H:i:s'),
+
                     ];
+                    $managerCreneau->ajouterCreneauLibre(new CreneauLibre(null,$debutCourant,$debutEvenement,1));
                 }
                 $debutCourant = max($debutCourant, $finEvenement);
             }
+            
             return [$creneauxLibres, $debutCourant, $finCourant];
     }
 
     function verifCreneauDernierEvent(?DateTime $debutCourant, ?DateTime $finCourant, ?array &$creneauxLibres)
     {
+        $pdo = $this->getPdo();
+        $managerCreneau = new CreneauLibreDao($pdo);
+
         // Vérifier s'il reste des créneaux libres après le dernier événement
         if ($debutCourant < $finCourant) {
-            $creneauxLibres[] = [
-                'debut' => $debutCourant->format('Y-m-d H:i:s'),
-                'fin' => $finCourant->format('Y-m-d H:i:s'),
-            ];
+            // $creneauxLibres[] = [
+            //     // $creneau = new CreneauLibre(null,$debutCourant, $finCourant)
+            //     'debut' => $debutCourant->format('Y-m-d H:i:s'),
+            //     'fin' => $finCourant->format('Y-m-d H:i:s'),
+            // ];
+            $managerCreneau->ajouterCreneauLibre(new CreneauLibre(null,$debutCourant,$finCourant,1));
         }
     }
 
-    function genererVueCreneaux(?array $creneaux)
+    function genererVueCreneaux()
     {
+        $pdo = $this->getPdo();
+        $managerCreneau = new CreneauLibreDao($pdo);
+
+        // $creneaux = $managerCreneau->findAll();
+        $tableau = $managerCreneau->findAllAssoc();
+        $creneaux = $managerCreneau->hydrateAll($tableau);
+
         //Génération de la vue
         $template = $this->getTwig()->load('creneauLibre.html.twig');
         echo $template->render(array(
