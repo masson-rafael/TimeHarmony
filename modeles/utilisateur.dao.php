@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Thibault Latxague et Rafael Masson
- * @describe Controller de la page de recherche de créneaux libres
+ * @describe Classe des utilisateurs (DAO)
  * @version 0.1
  */
 

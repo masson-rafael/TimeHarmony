@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Thibault Latxague
- * @describe Controller de la page d'agendas
+ * @describe Classe des agendas
  * @version 0.1
  */
 
