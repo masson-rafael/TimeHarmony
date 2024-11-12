@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Félix Autant
- * @describe Controller de la page d'agendas
+ * @describe Classe des créneaux libres
  * @version 0.1
  */
 
