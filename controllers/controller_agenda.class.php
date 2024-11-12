@@ -11,7 +11,7 @@ use ICal\ICal;
 /**
  * Undocumented class
  */
-class ControllerCreneauLibre extends Controller
+class ControllerAgenda extends Controller
 {
     /**
      * Constructeur par défaut
@@ -155,7 +155,7 @@ class ControllerCreneauLibre extends Controller
      */
     function genererVue() {
         //Génération de la vue
-        $template = $this->getTwig()->load('creneauLibre.html.twig');
+        $template = $this->getTwig()->load('agenda.html.twig');
         echo $template->render(array());
     }
 
