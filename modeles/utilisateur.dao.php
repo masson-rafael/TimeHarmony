@@ -12,12 +12,10 @@ class UtilisateurDao{
         return $this->pdo;
     }
 
-
     public function setPdo($pdo): void
     {
         $this->pdo = $pdo;
     }
-
 
     public function find(?int $id): ?Utilisateur
     {
@@ -76,17 +74,17 @@ class UtilisateurDao{
         ));
     }
 
-    public function connexionReussie(?string $mail, ?string $passwd) : ?array {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."utilisateur WHERE email = :email AND motDePasse = :motDePasse";
+    public function connexionReussie(?string $mail) : ?array {
+        $sql = "SELECT motDePasse FROM ".PREFIXE_TABLE."utilisateur WHERE email = :email";
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(array("email" => $mail, "motDePasse" => $passwd));
-        $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Utilisateur');
+        $pdoStatement->execute(array("email" => $mail));
+        //$pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Utilisateur');
 
         if($pdoStatement->rowCount() == 0){
             return [false, null];
         }
 
-        $utilisateur = $pdoStatement->fetch();
-        return [true, $utilisateur];
+        $motDePasse = $pdoStatement->fetch();
+        return [true, $motDePasse[0]];
     }
 }

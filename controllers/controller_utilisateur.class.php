@@ -15,11 +15,11 @@ class ControllerUtilisateur extends Controller
 
         if (isset($_POST['email']) && isset($_POST['pwd'])) {
             $manager = new UtilisateurDao($pdo);
-            $utilisateurConnecte = $manager->connexionReussie($_POST['email'], $_POST['pwd']);
+            $motDePasse = $manager->connexionReussie($_POST['email']);
+            $mavar = password_verify($_POST['pwd'], $motDePasse[1]);
+            var_dump($mavar);
 
-            if ($utilisateurConnecte[0]) {
-                $utilisateur = new Utilisateur($utilisateurConnecte[1]);
-                //$utilisateur = $utilisateurConnecte[1];
+            if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
                 $this->genererVueConnexion("CONNEXION REUSSIE");
             } else {
                 $this->genererVueConnexion("CONNEXION ECHOUEE");
@@ -50,7 +50,8 @@ class ControllerUtilisateur extends Controller
             $mdpContientBonsCaracteres = preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,16}$/', $_POST['pwd']);
 
             if (!$utilisateurExiste && $_POST['pwd'] == $_POST['pwdConfirme'] && $mdpContientBonsCaracteres && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-                $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $_POST['pwd'], "photoProfil.jpg", false); //Création d'un nouvel utilisateur (instance)
+                $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
+                $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "photoProfil.jpg", false); //Création d'un nouvel utilisateur (instance)
                 $manager->ajouterUtilisateur($nouvelUtilisateur); //Appel du script pour ajouter utilisateur dans bd
                 $this->genererVue($_POST['email'], $utilisateurExiste, "INSCRIPTION REUSSIE");
             } else if (!$utilisateurExiste && $_POST['pwd'] != $_POST['pwdConfirme']) {
