@@ -18,10 +18,25 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : 'bd_test'
+-- Base de données : 'timeharmony'
 --
 
 -- --------------------------------------------------------
+
+--
+-- Suppression de toutes les tables
+--
+
+DROP TABLE IF EXISTS `timeharmony_contacter`;
+DROP TABLE IF EXISTS `timeharmony_demander`;
+DROP TABLE IF EXISTS `timeharmony_composer`;
+DROP TABLE IF EXISTS `timeharmony_ajouter`;
+DROP TABLE IF EXISTS `timeharmony_groupe`;
+DROP TABLE IF EXISTS `timeharmony_preferences`;
+DROP TABLE IF EXISTS `timeharmony_creneauLibre`;
+DROP TABLE IF EXISTS `timeharmony_agenda`;
+DROP TABLE IF EXISTS `timeharmony_categorie`;
+DROP TABLE IF EXISTS `timeharmony_utilisateur`;
 
 --
 -- Structure de la table 'utilisateur'
@@ -29,25 +44,19 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `timeharmony_utilisateur` (
     `id` int NOT NULL AUTO_INCREMENT,
-    `nom` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-    `prenom` text COLLATE utf8mb4_unicode_ci,
-    `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+    `nom` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+    `prenom` text COLLATE utf8mb4_general_ci,
+    `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
     `motDePasse` VARCHAR(255) NOT NULL,
     `photoDeProfil` varchar(255) NOT NULL,
     `estAdmin` boolean DEFAULT false NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 --
 -- Déchargement des données de la table 'article'
 --
-
-INSERT INTO `timeharmony_utilisateur` (`id`, `nom`, `prenom`, `email`, `motDePasse`, `photoDeProfil`, `estAdmin`) VALUES
-(1, 'ff', 'ff', 'ff', 'ff', false, 'abcde'),
-(2, 'ff', 'ff', 'ff', 'ff', true, 'fghij');
-
 
 -- --------------------------------------------------------
 
@@ -57,14 +66,13 @@ INSERT INTO `timeharmony_utilisateur` (`id`, `nom`, `prenom`, `email`, `motDePas
 
 CREATE TABLE IF NOT EXISTS `timeharmony_categorie` (
     `id` int NOT NULL,
-    `categorie` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table 'categorie'
 --
-
 
 -- --------------------------------------------------------
 
@@ -74,15 +82,15 @@ CREATE TABLE IF NOT EXISTS `timeharmony_categorie` (
 
 CREATE TABLE IF NOT EXISTS `timeharmony_agenda` (
     `id` int NOT NULL AUTO_INCREMENT,
-    `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    `couleur` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    `couleur` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
     `idUtilisateur` int NOT NULL,
     `idCategorie` int NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`idUtilisateur`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE,
     FOREIGN KEY (`idCategorie`) REFERENCES `timeharmony_categorie` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table 'agenda'
@@ -96,12 +104,12 @@ CREATE TABLE IF NOT EXISTS `timeharmony_agenda` (
 
 CREATE TABLE IF NOT EXISTS `timeharmony_creneauLibre` (
     `id` int NOT NULL AUTO_INCREMENT,
-    `dateDebut` DATE NOT NULL,
-    `dateFin` DATE NOT NULL,
+    `dateDebut` DATETIME NOT NULL,
+    `dateFin` DATETIME NOT NULL,
     `idAgenda` int NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`idAgenda`) REFERENCES `timeharmony_agenda` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 --
@@ -116,14 +124,13 @@ CREATE TABLE IF NOT EXISTS `timeharmony_creneauLibre` (
 
 CREATE TABLE IF NOT EXISTS `timeharmony_preferences` (
     `id` int NOT NULL AUTO_INCREMENT,
-    `jour` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    `heureDeb` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    `heureFin` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    `disponibilite` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `dateDebut` DATETIME NOT NULL,
+    `dateFin` DATETIME NOT NULL,
+    `disponibilite` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
     `idUtilisateur` int NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`idUtilisateur`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table 'preferences'
@@ -138,17 +145,51 @@ CREATE TABLE IF NOT EXISTS `timeharmony_preferences` (
 
 CREATE TABLE IF NOT EXISTS `timeharmony_groupe` (
     `id` int NOT NULL AUTO_INCREMENT,
-    `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    `chef` int NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`chef`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    `idChef` int NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table 'groupe'
 --
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table 'composer'
+--
+
+CREATE TABLE IF NOT EXISTS `timeharmony_composer` (
+    `idGroupe` int NOT NULL,
+    `idUtilisateur` int NOT NULL,
+    PRIMARY KEY (`idGroupe`,`idUtilisateur`),
+    FOREIGN KEY (`idGroupe`) REFERENCES `timeharmony_groupe` (`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`idUtilisateur`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table 'composer'
+--
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table 'ajouter'
+--
+
+CREATE TABLE IF NOT EXISTS `timeharmony_ajouter` (
+    `idGroupe` int NOT NULL,
+    `idUtilisateur` int NOT NULL,
+    PRIMARY KEY (`idGroupe`,`idUtilisateur`),
+    FOREIGN KEY (`idGroupe`) REFERENCES `timeharmony_groupe` (`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`idUtilisateur`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table 'ajouter'
+--
 
 -- --------------------------------------------------------
 
@@ -162,7 +203,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_contacter` (
     PRIMARY KEY (`idUtilisateur1`, `idUtilisateur2`),
     FOREIGN KEY (`idUtilisateur1`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE,
     FOREIGN KEY (`idUtilisateur2`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table 'contacter'
@@ -180,7 +221,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_demander` (
     PRIMARY KEY (`idUtilisateur1`, `idUtilisateur2`),
     FOREIGN KEY (`idUtilisateur1`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE,
     FOREIGN KEY (`idUtilisateur2`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table 'demander'
@@ -191,3 +232,13 @@ CREATE TABLE IF NOT EXISTS `timeharmony_demander` (
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+-- --------------------------------------------------------
+
+--
+-- Ajout de données si besoin
+--
+
+INSERT INTO `timeharmony_utilisateur` (`nom`, `prenom`, `email`, `motDePasse`, `photoDeProfil`, `estAdmin`) VALUES
+ ('latxague', 'thibault', 'tlaxtague@iutbayonne.univ-pau.fr', 'admin', 'photo.jpg', true),
+ ('masson', 'rafael', 'rmasson003@iutbayonne.univ-pau.fr', 'nimad', 'photo.jpg', false);
