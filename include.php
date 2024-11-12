@@ -22,7 +22,8 @@ require_once 'controllers/controller_utilisateur.class.php';
 require_once 'modeles/utilisateur.class.php';
 require_once 'modeles/utilisateur.dao.php';
 require_once 'modeles/agenda.class.php';
-require_once 'modeles/creneauLibre.class.php'; 
+require_once 'modeles/creneauLibre.class.php';
+require_once 'modeles/creneauLibre.dao.php'; 
 
 //Ajout des fonctions à part
 require_once 'config/fonctions.php';
