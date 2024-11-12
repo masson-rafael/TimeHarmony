@@ -12,6 +12,13 @@ class ControllerCreneauLibre extends Controller
 
     function obtenir()
     {
+
+        $pdo = $this->getPdo();
+            $managerCreneau = new CreneauLibreDao($pdo);
+
+            // Vider la table pour éviter les récurrences
+            $managerCreneau->supprimerCreneauxLibres();
+
         if (isset($_POST['urlIcs'])) {
             extract($_POST, EXTR_OVERWRITE);
 
@@ -22,15 +29,9 @@ class ControllerCreneauLibre extends Controller
             $evenements = $this->triEvenementsOrdreArrivee($evenements);
 
             // Recherche des créneaux libres
-            $tabCreneaux = $this->recherche('Europe/Paris', $debut, $fin, $evenements);
+            $this->recherche($managerCreneau,'Europe/Paris', $debut, $fin, $evenements);
 
-            // Vérifier s'il reste des créneaux libres après le dernier événement
-            // La fonction recherche renvoie un tableau avec 3 éléments, d'où leur accès avec []
-            $this->verifCreneauDernierEvent($tabCreneaux[1], $tabCreneaux[2], $tabCreneaux[0]);
-
-            // Générer la vue
-            // Nouvel appel du tableau car fonction precedente a modifié le tableau grâce à & (passage par référence)
-            $this->genererVueCreneaux();
+            $this->genererVueCreneaux($managerCreneau);
         } else {
             $this->genererVue();
         }
@@ -66,19 +67,12 @@ class ControllerCreneauLibre extends Controller
         return $evenement;
     }
 
-        function recherche(?String $timeZone, ?string $debut, ?string $fin, ?array $evenements): ?array
+        function recherche(?CreneauLibreDao $managerCreneau ,?String $timeZone, ?string $debut, ?string $fin, ?array $evenements)
         {
-            $pdo = $this->getPdo();
-            $managerCreneau = new CreneauLibreDao($pdo);
-
-            // Vider la table pour éviter les récurrences
-            $managerCreneau->supprimerCreneauxLibres();
 
             $fuseauHoraire = new DateTimeZone($timeZone);
             $debutCourant = new DateTime($debut, $fuseauHoraire);
             $finCourant = new DateTime($fin, $fuseauHoraire);
-            // Recherche des créneaux libres
-            $creneauxLibres = array();
 
             foreach ($evenements as $evenement) {
                 // Convertir les heures d'événements en fuseau horaire local
@@ -86,43 +80,20 @@ class ControllerCreneauLibre extends Controller
                 $finEvenement = new DateTime($evenement->dtend, $fuseauHoraire);
                 $debutEvenement->setTimezone($fuseauHoraire);
                 $finEvenement->setTimezone($fuseauHoraire);
-                if ($debutEvenement > $debutCourant) {
-                    $creneauxLibres[] = [
-                        //$creneau = new CreneauLibre(null,$debutCourant, $finCourant)
-                        'debut' => $debutCourant->format('Y-m-d H:i:s'),
-                        'fin' => $debutEvenement->format('Y-m-d H:i:s'),
 
-                    ];
+                if ($debutEvenement > $debutCourant) {
                     $managerCreneau->ajouterCreneauLibre(new CreneauLibre(null,$debutCourant,$debutEvenement,1));
                 }
                 $debutCourant = max($debutCourant, $finEvenement);
             }
-            
-            return [$creneauxLibres, $debutCourant, $finCourant];
-    }
 
-    function verifCreneauDernierEvent(?DateTime $debutCourant, ?DateTime $finCourant, ?array &$creneauxLibres)
-    {
-        $pdo = $this->getPdo();
-        $managerCreneau = new CreneauLibreDao($pdo);
-
-        // Vérifier s'il reste des créneaux libres après le dernier événement
-        if ($debutCourant < $finCourant) {
-            // $creneauxLibres[] = [
-            //     // $creneau = new CreneauLibre(null,$debutCourant, $finCourant)
-            //     'debut' => $debutCourant->format('Y-m-d H:i:s'),
-            //     'fin' => $finCourant->format('Y-m-d H:i:s'),
-            // ];
-            $managerCreneau->ajouterCreneauLibre(new CreneauLibre(null,$debutCourant,$finCourant,1));
+                // Vérifier s'il reste des créneaux libres après le dernier événement
+                if ($debutCourant < $finCourant) {
+                    $managerCreneau->ajouterCreneauLibre(new CreneauLibre(null,$debutCourant,$finCourant,1));
         }
     }
-
-    function genererVueCreneaux()
+    function genererVueCreneaux(?CreneauLibreDao $managerCreneau)
     {
-        $pdo = $this->getPdo();
-        $managerCreneau = new CreneauLibreDao($pdo);
-
-        // $creneaux = $managerCreneau->findAll();
         $tableau = $managerCreneau->findAllAssoc();
         $creneaux = $managerCreneau->hydrateAll($tableau);
 

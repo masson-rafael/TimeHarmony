@@ -8,7 +8,7 @@ class CreneauLibre {
     private int|null $idAgenda;
 
     /* ------------- CONSTRUCTEUR ------------- */
-    public function __construct(?int $id=null, ?DateTime $dateDebut=null, ?DateTime $dateFin=null, ?int $idAgenda=null) {
+    public function __construct(?int $id, ?DateTime $dateDebut, ?DateTime $dateFin, ?int $idAgenda) {
         $this->id = $id;
         $this->dateDebut = $dateDebut;
         $this->dateFin = $dateFin;
