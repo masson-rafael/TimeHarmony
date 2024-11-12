@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Thibault Latxague
- * @describe Controller de la page de recherche de créneaux libres
+ * @describe Controller de la page des utilisateur
  * @version 0.1
  */
 
