@@ -1,11 +1,15 @@
 <?php
+/**
+ * @author Félix Autant
+ * @describe Controller de la page de recherche de créneaux libres
+ * @todo Verifier que le undocumented class soit pas à remplir. S'il existe même
+ * @version 0.1
+ */
 
 use ICal\ICal;
 
 /**
- * @author Félix Autant
- * @describe Controller de la page de recherche de créneaux libres
- * @version 1.0
+ * Undocumented class
  */
 class ControllerCreneauLibre extends Controller
 {
