@@ -14,54 +14,81 @@
 		</title>
 	</head>
 			{% if etat=='connecte' %}
-			<nav class="navbar navbar-expand-lg bg-primary py-4">
-				<div class="container">
-					<a class="navbar-brand" href="index.php"><img src="image/logo.png" alt="logo"></a>
-					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<div class="collapse navbar-collapse" id="navbarNavDropdown">
-						<ul class="navbar-nav">
-							<li class="nav-item">
-								<a class="nav-link {% if menu=='recherche' %} active {% endif %}" aria-current="page" href="index.php?controleur=creneauLibre&methode=obtenir">Rechercher un créneau</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">Agendas</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">Groupes</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">Contacts</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#"><img src="image/notif.png" alt="notification"></a>
-							</li>
-							<li class="nav-item dropdown">
+			<nav class="navbar navbar-expand-lg bg-primary py-2">
+				<div class="container-fluid">
+					<div class="row w-100 align-items-center">
+						<!-- Logo -->
+						<div class="col-auto">
+							<a class="navbar-brand" href="index.php">
+								<img src="image/logo.png" alt="logo">
+							</a>
+						</div>
+						<!-- Menu principal avec espace entre les éléments -->
+						<div class="col">
+							<ul class="navbar-nav row w-100 justify-content-center text-center">
+								<li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
+									<a class="nav-link {% if menu=='recherche' %} active {% endif %}" aria-current="page" href="index.php?controleur=creneauLibre&methode=obtenir">Rechercher un créneau</a>
+								</li>
+								<li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
+									<a class="nav-link" href="#">Agendas</a>
+								</li>
+								<li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
+									<a class="nav-link" href="#">Groupes</a>
+								</li>
+								<li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
+									<a class="nav-link" href="#">Contacts</a>
+								</li>
+							</ul>
+						</div>
+						<!-- Menu aligné à droite -->
+						<div class="col-auto">
+							<ul class="navbar-nav ms-auto d-flex flex-row">
+								<li class="nav-item d-flex justify-content-center align-items-center">
+									<a class="nav-link" href="#"><img src="image/notif.png" class="img-fluid w-50" alt="notification"></a>
+								</li>
+								<li class="nav-item dropdown d-flex justify-content-center align-items-center">
 								<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 									<img src="image/utilisateurBase.png" alt="photoDeProfil">
 								</a>
-								<ul class="dropdown-menu">
-									<li>
-										<a class="dropdown-item" href="#">Profil</a>
-									</li>
-									<li>
-										<a class="dropdown-item" href="#">Préférences du profil</a>
-									</li>
-									<li>
-										<a class="dropdown-item" href="#">Administration</a>
-									</li>
-									<li>
-										<a class="dropdown-item" href="#">Déconnexion</a>
-									</li>
+								<ul class="dropdown-menu dropdown-menu-custom dropdown-menu-start">
+									<li><a class="dropdown-item" href="#">Profil</a></li>
+									<li><a class="dropdown-item" href="#">Préférences du profil</a></li>
+									<li><a class="dropdown-item" href="#">Administration</a></li>
+									<li><a class="dropdown-item" href="#">Déconnexion</a></li>
 								</ul>
-							</li>
-						</ul>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</nav>
+
+
+
 			{% else %}
-			<nav class="navbar navbar-expand-lg bg-primary py-4">
+			<nav class="navbar navbar-expand-lg bg-primary py-2">
+				<div class="container-fluid">
+					<div class="row w-100 align-items-center">
+						<!-- Logo -->
+						<div class="col-auto">
+							<a class="navbar-brand" href="index.php">
+								<img src="image/logo.png" alt="logo">
+							</a>
+						</div>
+						<!-- Menu -->
+						<div class="col">
+							<ul class="navbar-nav row w-100 justify-content-center text-center">
+								<li class="col nav-item d-flex justify-content-center align-items-center">
+									<a class="nav-link" href="index.php?controleur=utilisateur&methode=premiereInscription">S'inscrire</a>
+								</li>
+								<li class="col nav-item d-flex justify-content-center align-items-center">
+									<a class="nav-link" href="index.php?controleur=utilisateur&methode=premiereConnexion">Se connecter</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</nav>
+			{# <nav class="navbar navbar-expand-lg bg-primary py-3">
 				<div class="container">
 					<a class="navbar-brand" href="index.php"><img src="image/logo.png" alt="logo"></a>
 					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,28 +105,30 @@
 						</ul>
 					</div>
 				</div>
-			</nav>
+			</nav> #}
+
 			{% endif %}
 		{% block content %}{% endblock %}
 
-		{# <footer class="bg-primary py-5 mt-5 fixed-bottom">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-3">
-						<p>&copy; 2024 - TimeHarmony</p>
-					</div>
-					<div class="col-md-3">
-						<p>A Propos</p>
-					</div>
-					<div class="col-md-3">  
-						<p>Conditions générales d'utilisation</p>
-					</div>
-                    <div class="col-md-3">  
-						<p>Nous contacter</p>
-					</div>
-				</div>
-			</div>
-		</footer> #}
+		<footer class="text-muted py-3 bg-primary mt-5 fixed-bottom small-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col d-flex align-items-center justify-content-center">
+                <p class="mb-1">&copy; 2024 - TimeHarmony</p>
+            </div>
+            <div class="col d-flex align-items-center justify-content-center">
+                <p class="mb-1">A Propos</p>
+            </div>
+            <div class="col d-flex align-items-center justify-content-center">  
+                <p class="mb-1">Conditions générales d'utilisation</p>
+            </div>
+            <div class="col d-flex align-items-center justify-content-center">  
+                <p class="mb-1">Nous contacter</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
 		{% block script %}{% endblock %}
 	</body>
 </html>
