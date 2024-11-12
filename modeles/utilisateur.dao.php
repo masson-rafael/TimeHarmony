@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Delix autant
+ * @author Thibault Latxague et Rafael Masson
  * @describe Controller de la page de recherche de créneaux libres
  * @version 0.1
  */
