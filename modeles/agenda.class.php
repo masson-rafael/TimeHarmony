@@ -6,10 +6,34 @@
  */
 
 class Agenda {
+    /**
+     *
+     * @var integer|null id de l'agenda
+     */
     private int|null $id;
+
+    /**
+     *
+     * @var string|null url de l'agenda
+     */
     private string|null $url;
+
+    /**
+     *
+     * @var string|null couleur de l'agenda
+     */
     private string|null $couleur;
+
+    /**
+     *
+     * @var string|null nom de l'agenda
+     */
     private string|null $nom;
+
+    /**
+     *
+     * @var integer|null idUtilisateur de l'utilisateur à qui appartient l'agenda
+     */
     private int|null $idUtilisateur;
 
     /**
