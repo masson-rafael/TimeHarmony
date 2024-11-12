@@ -33,14 +33,7 @@ class UtilisateurDao{
         }
         
         // On crée un nouvel objet Utilisateur avec les données
-        $utilisateur = new Utilisateur();
-        $utilisateur->setId($result['id']);
-        $utilisateur->setNom($result['nom']);
-        $utilisateur->setPrenom($result['prenom']);
-        $utilisateur->setEmail($result['email']);
-        $utilisateur->setMotDePasse($result['motDePasse']);
-        $utilisateur->setPhotoDeProfil($result['photoDeProfil']);
-        $utilisateur->setEstAdmin($result['estAdmin']);
+        $utilisateur = new Utilisateur($result['id'], $result['nom'], $result['prenom'], $result['email'], $result['motDePasse'], $result['photoDeProfil'], $result['estAdmin']);
         
         return $utilisateur;
     }
