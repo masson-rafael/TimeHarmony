@@ -29,6 +29,8 @@ SET time_zone = "+00:00";
 
 DROP TABLE IF EXISTS `timeharmony_contacter`;
 DROP TABLE IF EXISTS `timeharmony_demander`;
+DROP TABLE IF EXISTS `timeharmony_composer`;
+DROP TABLE IF EXISTS `timeharmony_ajouter`;
 DROP TABLE IF EXISTS `timeharmony_groupe`;
 DROP TABLE IF EXISTS `timeharmony_preferences`;
 DROP TABLE IF EXISTS `timeharmony_creneauLibre`;
@@ -52,7 +54,6 @@ CREATE TABLE IF NOT EXISTS `timeharmony_utilisateur` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-
 --
 -- Déchargement des données de la table 'article'
 --
@@ -65,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_utilisateur` (
 
 CREATE TABLE IF NOT EXISTS `timeharmony_categorie` (
     `id` int NOT NULL,
-    `categorie` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -103,8 +104,8 @@ CREATE TABLE IF NOT EXISTS `timeharmony_agenda` (
 
 CREATE TABLE IF NOT EXISTS `timeharmony_creneauLibre` (
     `id` int NOT NULL AUTO_INCREMENT,
-    `dateDebut` DATE NOT NULL,
-    `dateFin` DATE NOT NULL,
+    `dateDebut` DATETIME NOT NULL,
+    `dateFin` DATETIME NOT NULL,
     `idAgenda` int NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`idAgenda`) REFERENCES `timeharmony_agenda` (`id`) ON DELETE CASCADE
@@ -123,9 +124,8 @@ CREATE TABLE IF NOT EXISTS `timeharmony_creneauLibre` (
 
 CREATE TABLE IF NOT EXISTS `timeharmony_preferences` (
     `id` int NOT NULL AUTO_INCREMENT,
-    `jour` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-    `heureDeb` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-    `heureFin` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    `dateDebut` DATETIME NOT NULL,
+    `dateFin` DATETIME NOT NULL,
     `disponibilite` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
     `idUtilisateur` int NOT NULL,
     PRIMARY KEY (`id`),
@@ -147,15 +147,49 @@ CREATE TABLE IF NOT EXISTS `timeharmony_groupe` (
     `id` int NOT NULL AUTO_INCREMENT,
     `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
     `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-    `chef` int NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`chef`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE
+    `idChef` int NOT NULL,
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table 'groupe'
 --
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table 'composer'
+--
+
+CREATE TABLE IF NOT EXISTS `timeharmony_composer` (
+    `idGroupe` int NOT NULL,
+    `idUtilisateur` int NOT NULL,
+    PRIMARY KEY (`idGroupe`,`idUtilisateur`),
+    FOREIGN KEY (`idGroupe`) REFERENCES `timeharmony_groupe` (`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`idUtilisateur`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table 'composer'
+--
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table 'ajouter'
+--
+
+CREATE TABLE IF NOT EXISTS `timeharmony_ajouter` (
+    `idGroupe` int NOT NULL,
+    `idUtilisateur` int NOT NULL,
+    PRIMARY KEY (`idGroupe`,`idUtilisateur`),
+    FOREIGN KEY (`idGroupe`) REFERENCES `timeharmony_groupe` (`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`idUtilisateur`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table 'ajouter'
+--
 
 -- --------------------------------------------------------
 
