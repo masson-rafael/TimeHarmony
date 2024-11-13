@@ -178,4 +178,16 @@ class ControllerUtilisateur extends Controller
             )
         );
     }
+
+    function lister() {
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $utilisateurs = $manager->findAll();
+        $template = $this->getTwig()->load('administration.html.twig');
+        echo $template->render(
+            array(
+                'listeUtilisateurs' => $utilisateurs,
+            )
+        );
+    }
 }
