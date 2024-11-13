@@ -48,7 +48,7 @@ class CreneauLibre {
     /**
      * Get l'id du créneau libre
      *
-     * @return integer
+     * @return integer $id du créneau libre
      */
     public function getId(): int {
         return $this->id;
@@ -57,7 +57,7 @@ class CreneauLibre {
     /**
      * Get la date de début du créneau libre
      *
-     * @return DateTime
+     * @return DateTime $dateDebut du créneau libre
      */
     public function getDateDebut(): DateTime {
         return $this->dateDebut;
@@ -66,7 +66,7 @@ class CreneauLibre {
     /**
      * get la date de fin du créneau libre
      *
-     * @return DateTime
+     * @return DateTime $dateFin du créneau libre
      */
     public function getDateFin(): DateTime {
         return $this->dateFin;
@@ -75,7 +75,7 @@ class CreneauLibre {
     /**
      * get l'idAgenda de l'agenda auquel appartient le créneau libre
      *
-     * @return integer
+     * @return integer $idAgenda de l'agenda auquel appartient le créneau libre
      */
     public function getIdAgenda(): int {
         return $this->idAgenda;

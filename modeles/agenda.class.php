@@ -56,7 +56,7 @@ class Agenda {
     /**
      * Get l'id de l'agenda
      *
-     * @return integer
+     * @return integer $id de l'agenda
      */
     public function getId(): int {
         return $this->id;
@@ -65,7 +65,7 @@ class Agenda {
     /**
      * Get l'url de l'agenda
      *
-     * @return string
+     * @return string $url de l'agenda
      */
     public function getUrl(): string {
         return $this->url;
@@ -74,7 +74,7 @@ class Agenda {
     /**
      * Get la couleur de l'agenda
      *
-     * @return string
+     * @return string $couleur de l'agenda
      */
     public function getCouleur(): string {
         return $this->couleur;
@@ -82,9 +82,9 @@ class Agenda {
 
     /**
      * Get le nom de l'agenda
-     *
-     * @return string
-     */
+     * 
+     * @return string $nom de l'agenda
+     */ 
     public function getNom(): string {
         return $this->nom;
     }
@@ -92,7 +92,7 @@ class Agenda {
     /**
      * Get l'id de l'utilisateur à qui appartient l'agenda
      *
-     * @return integer
+     * @return integer $idUtilisateur de l'utilisateur
      */
     public function getIdUtilisateur(): int {
         return $this->idUtilisateur;

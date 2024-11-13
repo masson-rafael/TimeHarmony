@@ -1,6 +1,15 @@
 <?php
 
-function redimage($img_src, $img_dest, $dst_w, $dst_h) {
+/**
+ * Redimensionne une image
+ *
+ * @param string|null $img_src Chemin de l'image source
+ * @param string|null $img_dest Chemin de l'image de destination
+ * @param string|null $dst_w Largeur de l'image de destination
+ * @param string|null $dst_h Hauteur de l'image de destination
+ * @return string|null Chemin de l'image recadree
+ */
+function redimage(?string $img_src, ?string $img_dest, ?string $dst_w, ?string $dst_h): ?string {
     // Lit les dimensions de l'image
     $size = GetImageSize("$img_src");
     $src_w = $size[0]; $src_h = $size[1];
