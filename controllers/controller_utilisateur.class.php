@@ -23,17 +23,19 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
     function connexion() {
-        //Génération de la vue
         $pdo = $this->getPdo();
 
-        // Si le mdp et mail renseignés dans le form
+        /**
+         * Verifie que l'email et le mdp sont bien remplis
+         * Verifie ensuite si l'email existe dans la bd
+         * Verifie si le mdp clair correspond au hachage dans bd
+         */
         if (isset($_POST['email']) && isset($_POST['pwd'])) {
             $manager = new UtilisateurDao($pdo);
             // On recupere un tuple avec un booleen et le mdp hache
             $motDePasse = $manager->connexionReussie($_POST['email']);
             // On verifie que le mdp est bon 
             $mavar = password_verify($_POST['pwd'], $motDePasse[1]);
-            var_dump($mavar);
 
             // Si les mdp sont les mêmes
             if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
