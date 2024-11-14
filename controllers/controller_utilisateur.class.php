@@ -166,7 +166,7 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
     // Dans votre contrôleur ou gestionnaire de connexion
-    function genererVueConnexion(?string $message, ?Utilisateur $utilisateur = null): void {
+    public function genererVueConnexion(?string $message, ?Utilisateur $utilisateur = null): void {
         global $twig;
         
         if ($utilisateur !== null) {
@@ -186,7 +186,7 @@ class ControllerUtilisateur extends Controller
      *
      * @return void
      */
-    function listerContacts() {
+    public function listerContacts() {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $utilisateurs = $manager->find(2);
@@ -203,7 +203,7 @@ class ControllerUtilisateur extends Controller
      *
      * @return void
      */
-    function lister() {
+    public function lister() {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $utilisateurs = $manager->findAll();
@@ -213,5 +213,18 @@ class ControllerUtilisateur extends Controller
                 'listeUtilisateurs' => $utilisateurs,
             )
         );
+    }
+
+    /**
+     * Fonction appellee par la corbeille pour supprimer un utilisateur (panel admin)
+     *
+     * @return void
+     */
+    public function supprimer() {
+        $id = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $manager->supprimerUtilisateur($id);
+        $this->lister();
     }
 }
