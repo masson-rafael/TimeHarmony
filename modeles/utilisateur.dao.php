@@ -149,4 +149,16 @@ class UtilisateurDao{
         $motDePasse = $pdoStatement->fetch();
         return [true, $motDePasse[0]];
     }
+
+    /**
+     * Suppression de l'utilisateur dans la BD
+     * 
+     * @param integer|null $id de l'utilisateur
+     * @return void
+     */
+    public function supprimerUtilisateur(?int $id){
+        $sql = "DELETE FROM ".PREFIXE_TABLE."utilisateur WHERE id = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("id" => $id));
+    }
 }
