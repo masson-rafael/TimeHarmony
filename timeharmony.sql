@@ -4,6 +4,7 @@
 --
 -- Hôte : 127.0.0.1:3306
 -- Généré le : sam. 19 oct. 2024 à 14:05
+-- Modifier par : Rafael Masson
 -- Version du serveur : 8.3.0
 -- Version de PHP : 8.2.18
 
@@ -112,12 +113,12 @@ CREATE TABLE IF NOT EXISTS `timeharmony_utilisateur` (
 --
 
 INSERT INTO `timeharmony_utilisateur` (`nom`, `prenom`, `email`, `motDePasse`, `photoDeProfil`, `estAdmin`) VALUES
- ('latxague', 'thibault', 'tlaxtague@iutbayonne.univ-pau.fr', '$2y$10$XMRLFPcotg8st2.axtMYKuxsrkSKgatvVdfOMyLf/F0QW7puyfj5C', 'photo.jpg', true),
- ('masson', 'rafael', 'rmasson003@iutbayonne.univ-pau.fr', '$2y$10$XMRLFPcotg8st2.axtMYKuxsrkSKgatvVdfOMyLf/F0QW7puyfj5C', 'photo.jpg', true),
- ('keita', 'mouhamadou', 'mkmouhamadou@iutbayonne.univ-pau.fr', '$2y$10$XMRLFPcotg8st2.axtMYKuxsrkSKgatvVdfOMyLf/F0QW7puyfj5C', 'photo.jpg', false),
- ('autant', 'félix', 'fautant@iutbayonne.univ-pau.fr', '$2y$10$XMRLFPcotg8st2.axtMYKuxsrkSKgatvVdfOMyLf/F0QW7puyfj5C', 'photo.jpg', false),
- ('etcheverry', 'patrick', 'patrick.etcheverry@iutbayonne.univ-pau.fr', '$2y$10$XMRLFPcotg8st2.axtMYKuxsrkSKgatvVdfOMyLf/F0QW7puyfj5C', 'photo.jpg', false),
- ('moulin', 'antoine', 'antoine.moulin@iutbayonne.univ-pau.fr', '$2y$10$XMRLFPcotg8st2.axtMYKuxsrkSKgatvVdfOMyLf/F0QW7puyfj5C', 'photo.jpg', false);
+ ('latxague', 'thibault', 'tlaxtague@iutbayonne.univ-pau.fr', '$2y$10$qvncYojGHH/dKVUuOn.rH.v5CgT4pjjAPWzN/Pa467mUelIxAPs5i', 'photoProfil.jpg', true),
+ ('masson', 'rafael', 'rmasson003@iutbayonne.univ-pau.fr', '$2y$10$xbOlwSyP7aYhW14EtImaUuOo4pBjJ2Z4RoQSTmlG9/Kt0JAvW./h.', 'photoProfil.jpg', true),
+ ('keita', 'mouhamadou', 'mkmouhamadou@iutbayonne.univ-pau.fr', '$2y$10$Ez.7guQv7jseSeGwzXBWJe3qTVig.U9NR2PvkdnZwUjuAG82RY.Ru', 'photoProfil.jpg', false),
+ ('autant', 'félix', 'fautant@iutbayonne.univ-pau.fr', '$2y$10$.qzWFHVUE3cpUVy3TAs1yO/.QVNp.gjKqwoKSgV0kpnUvwTsSW1r2', 'photoProfil.jpg', false),
+ ('etcheverry', 'patrick', 'patrick.etcheverry@iutbayonne.univ-pau.fr', '$2y$10$mBTdsf6nYV6ZAYm7wuD4p.lyH1xlxHCBFZxFQrjp9MQTCWPmndupi', 'photoProfil.jpg', false),
+ ('moulin', 'antoine', 'antoine.moulin@iutbayonne.univ-pau.fr', '$2y$10$zkyNPYF7XebIXxNH4QW6veoVeeGWUbWhRcVKRlQF0UG9cvbVp/Shu', 'photoProfil.jpg', false);
 
 --
 -- Déchargement des données de la table 'utilisateur'
@@ -143,8 +144,8 @@ CREATE TABLE IF NOT EXISTS `timeharmony_groupe` (
 --
 
 INSERT INTO `timeharmony_groupe` (`nom`, `description`, `idChef`) VALUES
-('Réunion avec Monsieur Etcheverry', 'Groupe de l\'équipe TimeHarmony avec notre tuteur, Monsieur Etcheverry', 1),
-('Equipe TimeHarmony', 'Groupe de l\'équipe TimeHarmony', 2);
+ ('Réunion avec Monsieur Etcheverry', 'Groupe de l\'équipe TimeHarmony avec notre tuteur, Monsieur Etcheverry', 1),
+ ('Equipe TimeHarmony', 'Groupe de l\'équipe TimeHarmony', 2);
 
 --
 -- Déchargement des données de la table 'groupe'
@@ -171,7 +172,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_agenda` (
 --
 
 INSERT INTO `timeharmony_agenda` (`url`, `couleur`, `nom`, `idUtilisateur`) VALUES
-('https://calendar.google.com/calendar/ical/thibault.latxague%40gmail.com/public/basic.ics', '#FF0000', 'Agenda de Thibault', 1);
+ ('https://calendar.google.com/calendar/ical/thibault.latxague%40gmail.com/public/basic.ics', '#FF0000', 'Agenda de Thibault', 1);
 
 --
 -- Déchargement des données de la table 'agenda'
@@ -197,11 +198,11 @@ CREATE TABLE IF NOT EXISTS `timeharmony_creneauLibre` (
 --
 
 INSERT INTO `timeharmony_creneauLibre` (`dateDebut`, `dateFin`, `idAgenda`) VALUES
-('2024-10-07 00:00:00','2024-10-07 08:15:00', 1),
-('22024-10-07 14:30:00','2024-10-07 16:30:00', 1),
-('2024-10-08 08:00:00','2024-10-09 10:45:00', 1),
-('2024-10-09 15:00:00','2024-10-10 15:30:00', 1),
-('2024-10-10 19:00:00','2024-10-12 00:00:00', 1);
+ ('2024-10-07 00:00:00','2024-10-07 08:15:00', 1),
+ ('2024-10-07 14:30:00','2024-10-07 16:30:00', 1),
+ ('2024-10-08 08:00:00','2024-10-09 10:45:00', 1),
+ ('2024-10-09 15:00:00','2024-10-10 15:30:00', 1),
+ ('2024-10-10 19:00:00','2024-10-12 00:00:00', 1);
 
 --
 -- Déchargement des données de la table 'creneauLibre'
@@ -229,10 +230,10 @@ CREATE TABLE IF NOT EXISTS `timeharmony_preference` (
 --
 
 INSERT INTO `timeharmony_preference` (`dateDebut`, `dateFin`, `idUtilisateur`, `idDisponibilite`) VALUES
-('2024-10-07 00:00:00','2024-10-09 00:00:00', 1, 1),
-('2024-10-09 00:00:00','2024-10-09 12:00:00', 1, 3),
-('2024-10-09 12:00:00','2024-10-11 00:00:00', 1, 1),
-('2024-10-11 00:00:00','2024-10-13 23:59:59', 1, 3);
+ ('2024-10-07 00:00:00','2024-10-09 00:00:00', 1, 1),
+ ('2024-10-09 00:00:00','2024-10-09 12:00:00', 1, 3),
+ ('2024-10-09 12:00:00','2024-10-11 00:00:00', 1, 1),
+ ('2024-10-11 00:00:00','2024-10-13 23:59:59', 1, 3);
 -- ces dates du 7 octobre au 13 octobre reprensentes une semaine type, de lundi 00h à dimanche 23h59
 
 --
@@ -258,7 +259,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_demander` (
 --
 
 INSERT INTO `timeharmony_demander` (`idUtilisateur1`, `idUtilisateur2`) VALUES
-(1, 6), (1, 3), (2, 6), (3, 2);
+ (1, 6), (1, 3), (2, 6), (3, 2);
 
 --
 -- Déchargement des données de la table 'demander'
@@ -283,7 +284,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_composer` (
 --
 
 INSERT INTO `timeharmony_composer` (`idGroupe`, `idUtilisateur`) VALUES
-(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (2, 1), (2, 2), (2, 3), (2, 4);
+ (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (2, 1), (2, 2), (2, 3), (2, 4);
 
 --
 -- Déchargement des données de la table 'composer'
@@ -308,7 +309,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_ajouter` (
 --
 
 INSERT INTO `timeharmony_ajouter` (`idGroupe`, `idUtilisateur`) VALUES
-(1, 6), (2, 6);
+ (1, 6), (2, 6);
 
 --
 -- Déchargement des données de la table 'ajouter'
@@ -335,7 +336,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_trouver` (
 --
 
 INSERT INTO `timeharmony_trouver` (`idCreneauRdv`, `idUtilisateur`, `idDisponibilite`) VALUES
-(1, 1, 1), (1, 2, 1), (1, 3, 1), (1, 4, 1), (1, 5, 1);
+ (1, 1, 1), (1, 2, 1), (1, 3, 1), (1, 4, 1), (1, 5, 1);
 
 --
 -- Déchargement des données de la table 'trouver'
