@@ -155,21 +155,6 @@ class ControllerAgenda extends Controller
      *
      * @return void
      */
-    function genererVue() {
-        //Génération de la vue
-        $template = $this->getTwig()->load('agenda.html.twig');
-        echo $template->render(array());
-    }
-
-    public function genererVueAgenda(?string $message) {
-        //Génération de la vue agenda
-        $template = $this->getTwig()->load('agenda.html.twig');
-        echo $template->render(
-            array(
-                'message' => $message
-            )
-        );
-    }
 
     public function ajouterAgenda()
     {
@@ -177,10 +162,8 @@ class ControllerAgenda extends Controller
     
         // Vérifier si tous les champs du formulaire sont remplis
         if (isset($_POST['url'], $_POST['couleur'], $_POST['nom'])) {
-            // Sanitize et valider les données
-            $url = filter_var($_POST['url'], FILTER_SANITIZE_URL); // Sanitize l'URL
-            $couleur = htmlspecialchars($_POST['couleur'], ENT_QUOTES, 'UTF-8'); // Sanitize la couleur
-            $nom = htmlspecialchars($_POST['nom'], ENT_QUOTES, 'UTF-8'); // Sanitize le nom
+            // Initialise et valider les données
+            $url = filter_var($_POST['url'], FILTER_SANITIZE_URL); // Initialise l'URL
     
             // Validation de l'URL
             if (!filter_var($url, FILTER_VALIDATE_URL)) {
@@ -213,6 +196,22 @@ class ControllerAgenda extends Controller
         }
     }
 
+    public function lister() {
+        //recupération des catégories
+        $manager = new AgendaDao($this->getPdo());
+        $tableau = $manager->findAllAssoc();
+        $agendas = $manager->hydrateAll($tableau);
+
+        //Choix du template
+        $template = $this->getTwig()->load('agenda.html.twig');
+
+
+        //Affichage de la page
+        echo $template->render(array(
+            'agendas' => $agendas
+        ));
+    }
+
     /**
      * Tester la validité de l'URL d'un Agenda
      *
@@ -231,9 +230,19 @@ class ControllerAgenda extends Controller
     }
 
 
+    function genererVue() {
+        //Génération de la vue
+        $template = $this->getTwig()->load('agenda.html.twig');
+        echo $template->render(array());
+    }
 
-    // function methodeTest()
-    // {
-    //     $this->genererVue();
-    // }
+    public function genererVueAgenda(?string $message) {
+        //Génération de la vue agenda
+        $template = $this->getTwig()->load('agenda.html.twig');
+        echo $template->render(
+            array(
+                'message' => $message
+            )
+        );
+    }
 }

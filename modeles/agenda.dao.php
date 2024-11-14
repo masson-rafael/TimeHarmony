@@ -61,8 +61,9 @@ class AgendaDao{
         $sql="SELECT * FROM ".PREFIXE_TABLE."agenda";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
-        $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Agenda');
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $agenda = $pdoStatement->fetchAll();
+        // var_dump($agenda);
         return $agenda;
     }
     public function ajouterAgenda(Agenda $agenda)
@@ -80,6 +81,29 @@ class AgendaDao{
         ]);
     }
     
+    public function findAllAssoc(){
+        $sql="SELECT * FROM ".PREFIXE_TABLE."agenda";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute();
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $agenda = $pdoStatement->fetchAll();
+        return $agenda;
+    }
+
+    public function hydrate($tableauAssoc): ?Agenda
+    {
+        $agenda = new Agenda($tableauAssoc['id'],$tableauAssoc['url'],$tableauAssoc['couleur'],$tableauAssoc['nom'],$tableauAssoc['idUtilisateur']);
+        return $agenda;
+    }
+
+    public function hydrateAll($tableau): ?array{
+        $agendas = [];
+        foreach($tableau as $tableauAssoc){
+            $agenda = $this->hydrate($tableauAssoc);
+            $agendas[] = $agenda;
+        }
+        return $agendas;
+    }
 
 
 }
