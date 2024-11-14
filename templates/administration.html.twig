@@ -30,9 +30,14 @@
                             <td>{{ utilisateur.getPrenom }}</td>
                             <td>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</td>
                             <td>{{ utilisateur.getPhotoDeProfil }}</td>
-                            <td><a href="">Modifier</a><a href="mod">Supprimer</a></td>
-                        </tr>
-                        
+                            <td>
+                                <a class="" role="button" href="" aria-expanded="false">
+                                    <img src="image/modification.png" alt="modifier" style="width: 50px;">
+                                </a>
+                                <a class="" role="button" href="" aria-expanded="false">
+                                    <img src="image/corbeille.png" alt="supprimer" style="width: 50px;">
+                                </a>                        
+                            </tr>
                     {% endfor %}
                 </tbody>
             </table>

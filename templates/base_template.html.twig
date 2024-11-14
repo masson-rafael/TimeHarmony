@@ -51,7 +51,9 @@
                         <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-start">
                             <li><a class="dropdown-item" href="#">Profil</a></li>
                             <li><a class="dropdown-item" href="#">Préférences du profil</a></li>
+                            {% if utilisateurGlobal.getEstAdmin == false%}
                             <li><a class="dropdown-item" href="index.php?controleur=utilisateur&methode=lister">Administration</a></li>
+                            {% endif %}
                             <li><a class="dropdown-item" href="index.php?controleur=utilisateur&methode=deconnecter">Déconnexion</a></li>
                         </ul>
                     </li>

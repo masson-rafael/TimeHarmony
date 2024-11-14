@@ -111,9 +111,6 @@ class ControllerUtilisateur extends Controller
                 // Si l'utilisateur existe deja
                 $this->genererVue($_POST['email'], $utilisateurExiste, "UTILISATEUR EXISTE DEJA");
             }
-        } else {
-            // Si le formulaire n'est pas rempli
-            $this->genererVue('email', false, "FORMULAIRE NON REMPLI");
         }
     }
 
