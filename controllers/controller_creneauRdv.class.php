@@ -75,7 +75,7 @@ class ControllerCreneauRDV extends Controller
         // Vider la table pour éviter les récurrences
         $managerCreneau->supprimerCreneauxLibres();
 
-        if (isset($_POST['urlIcs'])) {
+        if (isset($_POST['urlIcs']) && !empty($_POST['urlIcs'])) {
             // Récupérer les données du formulaire
             extract($_POST, EXTR_OVERWRITE);
             // Récupérer les événements de l'agenda
@@ -207,7 +207,7 @@ class ControllerCreneauRDV extends Controller
 
     function genererVue() {
         //Génération de la vue
-        $template = $this->getTwig()->load('recherche.html.twig');
+        $template = $this->getTwig()->load('index.html.twig');
         echo $template->render(array());
     }
 }
