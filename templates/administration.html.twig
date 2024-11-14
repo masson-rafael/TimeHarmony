@@ -31,13 +31,35 @@
                             <td>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</td>
                             <td>{{ utilisateur.getPhotoDeProfil }}</td>
                             <td>
-                                <a class="" role="button" href="" aria-expanded="false">
+                                <a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModale{{utilisateur.getId}}" aria-expanded="false">
                                     <img src="image/modification.png" alt="modifier" style="width: 50px;">
                                 </a>
                                 <a class="" role="button" href="index.php?controleur=utilisateur&methode=supprimer&id={{ utilisateur.getId }}" aria-expanded="false">
                                     <img src="image/corbeille.png" alt="supprimer" style="width: 50px;">
                                 </a>                        
                             </tr>
+                        <div class="modal fade" id="fenetreModale{{utilisateur.getId}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg"> <!-- Utilisation d'une modale large -->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{utilisateur.getNom}}</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="text-center"> <!-- Centrer le contenu -->
+                                            {# <img src="<?= htmlspecialchars($article['chemin']) ?>" alt="<?= htmlspecialchars($article['alt']) ?>" class="img-fluid mb-3" style="max-height: 300px;"> <!-- Image responsive --> #}
+                                        </div>
+                                        <p><strong>ID:</strong></p>
+                                        <p><strong>Description:</strong></p>
+                                        <p><strong>Prix:</strong></p>
+                                        <p><strong>Quantité disponible:</strong></p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fermer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     {% endfor %}
                 </tbody>
             </table>
