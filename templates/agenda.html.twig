@@ -9,7 +9,7 @@
 {# {{ dump(creneauxLibres) }} #}
     <main>
         <div class="container py-5">
-        <form action="index.php?controleur=creneauLibre&methode=obtenir" method="post">
+        <form action="index.php?controleur=agenda&methode=obtenir" method="post">
             <div class="mb-3">
                 <label for="formGroupExampleInput" class="form-label">URL de l'agenda</label>
                 <input name="urlIcs" type="text" class="form-control" id="formGroupExampleInput" placeholder="Ex : https://calendar.google.com/calendar/ical/thibault.latxague%40gmail.com/public/basic.ics">
@@ -28,22 +28,16 @@
 
         {% for creneau in creneauxLibres %}           
 
-            {# Afficher les créneaux libres #}
-            <p> Créneau libre de {{creneau['debut']}} à {{creneau['fin']}}</p> 
-            <br>
+            {# Enlever 2 heures à la dateDebut et dateFin #}
+            {% set dateDebut = creneau.dateDebut|date_modify('-2 hours') %}
+            {% set dateFin = creneau.dateFin|date_modify('-2 hours') %}
 
-        {% endfor %}
-        {{dump(res)}}
-        {% for r in res %}           
-
-            {# Afficher les créneaux libres #}
-            <p> Créneau libre de {{r}} à </p> 
-            
-            <br>
-
+            <p>Créneau libre de {{ dateDebut|date('Y-m-d H:i:s') }} à {{ dateFin|date('Y-m-d H:i:s') }}</p>
         {% endfor %}
 
-        <a href="index.php?controleur=utilisateur&methode=listerContacts"><p>ff</p></a>
+
+
+        {# <a href="index.php?controleur=utilisateur&methode=listerContacts"><p>ff</p></a> #}
     </main>
 {% endblock %}
 
