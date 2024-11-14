@@ -3,6 +3,7 @@
  * @author Thibault Latxague
  * @describe Controller de la page des utilisateur
  * @version 0.1
+ * @todo POURQUOI LA MESSAGE BOX NE FONCTIONNE PAS ?????? (a cause de l'insertion des scripts ? dans base_template)
  */
 
 class ControllerUtilisateur extends Controller
@@ -39,9 +40,11 @@ class ControllerUtilisateur extends Controller
 
             // Si les mdp sont les mêmes
             if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
-                $this->genererVueConnexion("CONNEXION REUSSIE");
+                // On recupere l'utilisateur
+                $utilisateur = $manager->getUserMail($_POST['email']);
+                $this->genererVueConnexion("CONNEXION REUSSIE", $utilisateur);
             } else {
-                $this->genererVueConnexion("CONNEXION ECHOUEE");
+                $this->genererVueConnexion("CONNEXION ECHOUEE", null);
             }
         }
     }
@@ -108,7 +111,21 @@ class ControllerUtilisateur extends Controller
                 // Si l'utilisateur existe deja
                 $this->genererVue($_POST['email'], $utilisateurExiste, "UTILISATEUR EXISTE DEJA");
             }
-        } 
+        } else {
+            // Si le formulaire n'est pas rempli
+            $this->genererVue('email', false, "FORMULAIRE NON REMPLI");
+        }
+    }
+
+    /**
+     * Deconnexion de l'utilisateur et unset de la session
+     *
+     * @return void
+     */
+    function deconnecter() {
+        $this->getTwig()->addGlobal('utilisateurGlobal', null);
+        unset($_SESSION['utilisateur']);
+        $this->genererVueVide('menu');
     }
 
     /**
@@ -151,19 +168,24 @@ class ControllerUtilisateur extends Controller
      * @param string|null $message de succes ou erreur détaillé
      * @return void
      */
-    function genererVueConnexion(?string $message) {
-        //Génération de la vue
-        $template = $this->getTwig()->load('connexion.html.twig');
-        echo $template->render(
-            array(
-                'message' => $message,
-                'etat' => "connecte",
-            )
-        );
+    // Dans votre contrôleur ou gestionnaire de connexion
+    function genererVueConnexion(?string $message, ?Utilisateur $utilisateur = null): void {
+        global $twig;
+        
+        if ($utilisateur !== null) {
+            // Stockage en session et définition de la variable globale
+            $_SESSION['utilisateur'] = $utilisateur;
+            $twig->addGlobal('utilisateurGlobal', $utilisateur);
+        }
+        
+        $template = $twig->load('connexion.html.twig');
+        echo $template->render([
+            'message' => $message
+        ]);
     }
 
     /**
-     * Listage de tous les utilisateurs
+     * Listage de l'utilisateur ayant l'id 2
      *
      * @return void
      */
@@ -179,6 +201,11 @@ class ControllerUtilisateur extends Controller
         );
     }
 
+    /**
+     * Listage de tous les utilisateurs
+     *
+     * @return void
+     */
     function lister() {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
