@@ -184,22 +184,22 @@ class ControllerUtilisateur extends Controller
         ]);
     }
 
-    /**
-     * Listage de l'utilisateur ayant l'id 2
-     *
-     * @return void
-     */
-    function listerContacts() {
-        $pdo = $this->getPdo();
-        $manager = new UtilisateurDao($pdo);
-        $utilisateurs = $manager->find(2);
-        $template = $this->getTwig()->load('creneauLibre.html.twig');
-        echo $template->render(
-            array(
-                'res' => $utilisateurs,
-            )
-        );
-    }
+    // /**
+    //  * Listage de l'utilisateur ayant l'id 2
+    //  *
+    //  * @return void
+    //  */
+    // function listerContacts() {
+    //     $pdo = $this->getPdo();
+    //     $manager = new UtilisateurDao($pdo);
+    //     $utilisateurs = $manager->find(2);
+    //     $template = $this->getTwig()->load('creneauLibre.html.twig');
+    //     echo $template->render(
+    //         array(
+    //             'res' => $utilisateurs,
+    //         )
+    //     );
+    // }
 
     /**
      * Listage de tous les utilisateurs
@@ -217,4 +217,5 @@ class ControllerUtilisateur extends Controller
             )
         );
     }
+
 }
