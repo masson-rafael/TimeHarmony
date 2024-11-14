@@ -1,26 +1,52 @@
 <?php
+/**
+ * @author Thibault Latxague et Rafael Masson
+ * @describe Classe des utilisateurs (DAO)
+ * @version 0.1
+ */
 
 class UtilisateurDao{
+    /**
+     *
+     * @var PDO|null pdo
+     */
     private ?PDO $pdo;
 
+    /**
+     * Constructeur par défaut
+     *
+     * @param PDO|null $pdo
+     */
     public function __construct(?PDO $pdo=null){
         $this->pdo = $pdo;
     }
 
-    public function getPdo(): ?PDO
-    {
+    /**
+     * Get la valeur du pdo
+     *
+     * @return PDO|null
+     */
+    public function getPdo(): ?PDO {
         return $this->pdo;
     }
 
-
-    public function setPdo($pdo): void
-    {
+    /**
+     * Set la valeur du pdo
+     *
+     * @param PDO|null $pdo
+     * @return void
+     */
+    public function setPdo(?PDO $pdo): void {
         $this->pdo = $pdo;
     }
 
-
-    public function find(?int $id): ?Utilisateur
-    {
+    /**
+     * Trouver un utilisateur par son id
+     *
+     * @param integer|null $id de l'ustilisateur
+     * @return Utilisateur|null objet utiisateur
+     */
+    public function find(?int $id): ?Utilisateur {
         $sql = "SELECT * FROM ".PREFIXE_TABLE."utilisateur WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
@@ -33,22 +59,21 @@ class UtilisateurDao{
         }
         
         // On crée un nouvel objet Utilisateur avec les données
-        $utilisateur = new Utilisateur();
-        $utilisateur->setId($result['id']);
-        $utilisateur->setNom($result['nom']);
-        $utilisateur->setPrenom($result['prenom']);
-        $utilisateur->setEmail($result['email']);
-        $utilisateur->setMotDePasse($result['motDePasse']);
-        $utilisateur->setPhotoDeProfil($result['photoDeProfil']);
-        $utilisateur->setEstAdmin($result['estAdmin']);
+        $utilisateur = new Utilisateur($result['id'], $result['nom'], $result['prenom'], $result['email'], $result['motDePasse'], $result['photoDeProfil'], $result['estAdmin']);
         
         return $utilisateur;
     }
 
-    public function findMail(?string $mail) : ?bool
-    {
+    /**
+     * Recupere un booleen si le mail existe dans la BD
+     * 
+     * @param string|null $mail de l'utilisateur
+     * @return boolean|null si l'utilisateur existe
+     */
+    public function findMail(?string $mail) : ?bool {
         $sql="SELECT * FROM ".PREFIXE_TABLE."utilisateur WHERE email= :email";
         $pdoStatement = $this->pdo->prepare($sql);
+        // Ajout des parametres
         $pdoStatement->execute(array("email"=>$mail));
         $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
 
@@ -60,6 +85,22 @@ class UtilisateurDao{
         return $utilisateurExiste;
     }
 
+    public function getUserMail(?string $mail) : ?Utilisateur {
+        $sql="SELECT * FROM ".PREFIXE_TABLE."utilisateur WHERE email= :email";
+        $pdoStatement = $this->pdo->prepare($sql);
+        // Ajout des parametres
+        $pdoStatement->execute(array("email"=>$mail));
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        $utilisateur = new Utilisateur($result['id'], $result['nom'], $result['prenom'], $result['email'], $result['motDePasse'], $result['photoDeProfil'], $result['estAdmin']);
+
+        return $utilisateur;
+    }
+
+    /**
+     * Renvoie tous les utilisateurs
+     *
+     * @return array|null tableau d'utilisateurs
+     */
     public function findAll() : ?array{
         $sql="SELECT * FROM ".PREFIXE_TABLE."utilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -69,10 +110,17 @@ class UtilisateurDao{
         return $utilisateur;
     }
 
+    /**
+     * Requete d'insertion d'un utilisateur dans la BD
+     *
+     * @param Utilisateur $utilisateur que l'on veut ajouter
+     * @return void
+     */
     public function ajouterUtilisateur(Utilisateur $utilisateur){
         //Insertion d'un utilisateur classique
         $sql = "INSERT INTO ".PREFIXE_TABLE."utilisateur (nom, prenom, email, motDePasse, photoDeProfil, estAdmin) VALUES (:nom, :prenom, :email, :motDePasse, :photoDeProfil, :estAdmin)";
         $pdoStatement = $this->pdo->prepare($sql);
+        // Parametrage de la requete
         $pdoStatement->execute(array(
             "nom" => $utilisateur->getNom(),
             "prenom" => $utilisateur->getPrenom(),
@@ -83,17 +131,22 @@ class UtilisateurDao{
         ));
     }
 
-    public function connexionReussie(?string $mail, ?string $passwd) : ?array {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."utilisateur WHERE email = :email AND motDePasse = :motDePasse";
+    /**
+     * Verifie que la connexion s'est bien passée
+     *
+     * @param string|null $mail de l'utilisateur
+     * @return array|null tableau contenant un booleen et soit null soit le mot de passe crypté
+     */
+    public function connexionReussie(?string $mail) : ?array {
+        $sql = "SELECT motDePasse FROM ".PREFIXE_TABLE."utilisateur WHERE email = :email";
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(array("email" => $mail, "motDePasse" => $passwd));
-        $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Utilisateur');
+        $pdoStatement->execute(array("email" => $mail));
 
         if($pdoStatement->rowCount() == 0){
             return [false, null];
         }
 
-        $utilisateur = $pdoStatement->fetch();
-        return [true, $utilisateur];
+        $motDePasse = $pdoStatement->fetch();
+        return [true, $motDePasse[0]];
     }
 }

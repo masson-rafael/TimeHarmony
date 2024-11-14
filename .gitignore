@@ -54,6 +54,9 @@
 .*
 ~*
 
+# ignore Doxygen files
+docs/
+
 # ignore node/grunt dependency directories
 /node_modules
 

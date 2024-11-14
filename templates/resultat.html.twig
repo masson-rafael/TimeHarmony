@@ -1,0 +1,25 @@
+{% extends 'base_template.html.twig' %}
+
+{% block title %}Index -
+	{{ constant('WEBSITE_TITLE')}}
+{% endblock %}
+
+
+{% block content %}
+{# {{ dump(creneauxLibres) }} #}
+    <main>
+
+        {% for creneau in creneauxLibres %}           
+
+            {# Enlever 2 heures à la dateDebut et dateFin #}
+            {% set dateDebut = creneau.dateDebut|date_modify('-2 hours') %}
+            {% set dateFin = creneau.dateFin|date_modify('-2 hours') %}
+
+            <p>Créneau libre de {{ dateDebut|date('Y-m-d H:i:s') }} à {{ dateFin|date('Y-m-d H:i:s') }}</p>
+        {% endfor %}
+
+
+
+        {# <a href="index.php?controleur=utilisateur&methode=listerContacts"><p>ff</p></a> #}
+    </main>
+{% endblock %}

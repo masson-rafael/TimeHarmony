@@ -13,6 +13,14 @@ $twig = new Twig\Environment($loader, [
     'debug' => true,
 ]);
 
+// Dans votre fichier d'initialisation (par exemple index.php ou bootstrap.php)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Initialisation unique de la variable utilisateur globale
+$twig->addGlobal('utilisateurGlobal', $_SESSION['utilisateur'] ?? null);
+
 //Définition de la timezone pour que les filtres date tiennent compte du fuseau horaire français.
 $twig->getExtension(\Twig\Extension\CoreExtension::class)->setTimezone('Europe/Paris');
 

@@ -1,70 +1,141 @@
 <?php
-
-use ICal\ICal;
+/**
+ * @author Thibault Latxague
+ * @describe Controller de la page des utilisateur
+ * @version 0.1
+ * @todo POURQUOI LA MESSAGE BOX NE FONCTIONNE PAS ?????? (a cause de l'insertion des scripts ? dans base_template)
+ */
 
 class ControllerUtilisateur extends Controller
 {
-    public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
-    {
+    /**
+     * Constructeur par défaut
+     *
+     * @param \Twig\Environment $twig Environnement twig
+     * @param \Twig\Loader\FilesystemLoader $loader Loader de fichier
+     */
+    public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader) {
         parent::__construct($twig, $loader);
     }
 
+    /**
+     * Fonction de connexion au site à partir de la BD
+     *
+     * @return void
+     */
     function connexion() {
-        //Génération de la vue
         $pdo = $this->getPdo();
 
+        /**
+         * Verifie que l'email et le mdp sont bien remplis
+         * Verifie ensuite si l'email existe dans la bd
+         * Verifie si le mdp clair correspond au hachage dans bd
+         */
         if (isset($_POST['email']) && isset($_POST['pwd'])) {
             $manager = new UtilisateurDao($pdo);
-            $utilisateurConnecte = $manager->connexionReussie($_POST['email'], $_POST['pwd']);
+            // On recupere un tuple avec un booleen et le mdp hache
+            $motDePasse = $manager->connexionReussie($_POST['email']);
+            // On verifie que le mdp est bon 
+            $mavar = password_verify($_POST['pwd'], $motDePasse[1]);
 
-            if ($utilisateurConnecte[0]) {
-                $utilisateur = new Utilisateur($utilisateurConnecte[1]);
-                //$utilisateur = $utilisateurConnecte[1];
-                $this->genererVueConnexion("CONNEXION REUSSIE");
+            // Si les mdp sont les mêmes
+            if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
+                // On recupere l'utilisateur
+                $utilisateur = $manager->getUserMail($_POST['email']);
+                $this->genererVueConnexion("CONNEXION REUSSIE", $utilisateur);
             } else {
-                $this->genererVueConnexion("CONNEXION ECHOUEE");
+                $this->genererVueConnexion("CONNEXION ECHOUEE", null);
             }
         }
     }
 
+    /**
+     * Premiere inscription lorsqu'on clique sur inscription sur la navbar pour éviter double twig
+     *
+     * @return void
+     */
     function premiereInscription() {
-        //Création d'une fonction appellee 1 seule fois pour ne pas avoir de double twig
         $this->genererVueVide('inscription');
         $this->inscription();
     }
-
+    
+    /**
+     * Premiere connexion lorsqu'on clique sur connexion sur la navbar pour éviter double twig
+     *
+     * @return void
+     */
     function premiereConnexion() {
-        //Création d'une fonction appellee 1 seule fois pour ne pas avoir de double twig
         $this->genererVueVide('connexion');
         $this->connexion();
     }
 
-    function inscription()
-    {
+    /**
+     * Inscription de l'utilisateur à la BD
+     *
+     * @return void
+     */
+    function inscription() {
         $pdo = $this->getPdo();
 
         //Vérification que le form est bien rempli
         if (isset($_POST['email']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['pwd']) && isset($_POST['pwdConfirme'])) {
             $manager = new UtilisateurDao($pdo); //Lien avec PDO
-            $utilisateurExiste = $manager->findMail($_POST['email']); //Appel fonction et stocke bool pour savoir si utilisateur existe deja avec email
+            // Appel fonction et stocke bool pour savoir si utilisateur existe deja avec email
+            $utilisateurExiste = $manager->findMail($_POST['email']); 
+            // Verifie que le mdp contient les bons caracteres
             $mdpContientBonsCaracteres = preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,16}$/', $_POST['pwd']);
 
+            /**
+             * Verifie que l'utilisateur n'existe pas, 
+             * que les mdp sont identiques, que le mdp contient les bons caracteres 
+             * et que l'email est valide
+             */
             if (!$utilisateurExiste && $_POST['pwd'] == $_POST['pwdConfirme'] && $mdpContientBonsCaracteres && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-                $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $_POST['pwd'], "photoProfil.jpg", false); //Création d'un nouvel utilisateur (instance)
-                $manager->ajouterUtilisateur($nouvelUtilisateur); //Appel du script pour ajouter utilisateur dans bd
+                // Hachage du mot de passe
+                $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
+                // Création d'un nouvel utilisateur (instance)
+                $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "photoProfil.jpg", false); 
+                // Appel du script pour ajouter utilisateur dans bd
+                $manager->ajouterUtilisateur($nouvelUtilisateur);
                 $this->genererVue($_POST['email'], $utilisateurExiste, "INSCRIPTION REUSSIE");
             } else if (!$utilisateurExiste && $_POST['pwd'] != $_POST['pwdConfirme']) {
+                // Si les mdp ne sont pas identiques
                 $this->genererVue($_POST['email'], $utilisateurExiste, "MOTS DE PASSE NON IDENTIQUES");
             } else if (!$utilisateurExiste && !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
+                // Si l'email n'est pas valide
                 $this->genererVue($_POST['email'], $utilisateurExiste, "ADRESSE MAIL NON VALIDE");
             }else if (!$utilisateurExiste) {
+                // Si le mdp ne contient pas les bons caracteres
                 $this->genererVue($_POST['email'], $utilisateurExiste, "MOTS DE PASSE NE SUIT PAS LA REGLE");
             } else {
+                // Si l'utilisateur existe deja
                 $this->genererVue($_POST['email'], $utilisateurExiste, "UTILISATEUR EXISTE DEJA");
             }
-        } 
+        } else {
+            // Si le formulaire n'est pas rempli
+            $this->genererVue('email', false, "FORMULAIRE NON REMPLI");
+        }
     }
 
+    /**
+     * Deconnexion de l'utilisateur et unset de la session
+     *
+     * @return void
+     */
+    function deconnecter() {
+        $this->getTwig()->addGlobal('utilisateurGlobal', null);
+        unset($_SESSION['utilisateur']);
+        $this->genererVueVide('menu');
+    }
+
+    /**
+     * Genere la vue du twig
+     *
+     * @param string|null $mail de la personne qui s'inscrit
+     * @param boolean|null $existe si l'utilisateur existe deja
+     * @param string|null $message le message renvoyé par les fonctions (erreur détaillée ou reussite)
+     * @return void
+     */
     public function genererVue(?string $mail, ?bool $existe, ?string $message) {
         //Génération de la vue
         $template = $this->getTwig()->load('inscription.html.twig');
@@ -77,8 +148,12 @@ class ControllerUtilisateur extends Controller
         );
     }
 
-    //////////////////////////////////////////////////////////////// OPTIMISER CETTE MERDE
-
+    /**
+     * Genere le twig de la page vide
+     *
+     * @param string|null $page web dont on veut generer le twig
+     * @return void
+     */
     public function genererVueVide(?string $page) {
         //Génération de la vue
         $template = $this->getTwig()->load($page . '.html.twig');
@@ -87,17 +162,33 @@ class ControllerUtilisateur extends Controller
         );
     }
 
-    function genererVueConnexion(?string $message) {
-        //Génération de la vue
-        $template = $this->getTwig()->load('connexion.html.twig');
-        echo $template->render(
-            array(
-                'message' => $message,
-                'etat' => "connecte",
-            )
-        );
+    /**
+     * Genere la vue de la connexion
+     *
+     * @param string|null $message de succes ou erreur détaillé
+     * @return void
+     */
+    // Dans votre contrôleur ou gestionnaire de connexion
+    function genererVueConnexion(?string $message, ?Utilisateur $utilisateur = null): void {
+        global $twig;
+        
+        if ($utilisateur !== null) {
+            // Stockage en session et définition de la variable globale
+            $_SESSION['utilisateur'] = $utilisateur;
+            $twig->addGlobal('utilisateurGlobal', $utilisateur);
+        }
+        
+        $template = $twig->load('connexion.html.twig');
+        echo $template->render([
+            'message' => $message
+        ]);
     }
 
+    /**
+     * Listage de l'utilisateur ayant l'id 2
+     *
+     * @return void
+     */
     function listerContacts() {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
@@ -110,5 +201,20 @@ class ControllerUtilisateur extends Controller
         );
     }
 
-
+    /**
+     * Listage de tous les utilisateurs
+     *
+     * @return void
+     */
+    function lister() {
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $utilisateurs = $manager->findAll();
+        $template = $this->getTwig()->load('administration.html.twig');
+        echo $template->render(
+            array(
+                'listeUtilisateurs' => $utilisateurs,
+            )
+        );
+    }
 }
