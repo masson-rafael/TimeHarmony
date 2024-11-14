@@ -14,7 +14,8 @@
 			{% endblock %}
 		</title>
 	</head>
-			{% if etat=='connecte' %}
+	<body>
+			{% if utilisateurGlobal is not null %}
 			<nav class="navbar navbar-expand-lg bg-primary py-2">
 				<div class="container-fluid">
 					<div class="row w-100 align-items-center">
@@ -55,7 +56,7 @@
 									<li><a class="dropdown-item" href="#">Profil</a></li>
 									<li><a class="dropdown-item" href="#">Préférences du profil</a></li>
 									<li><a class="dropdown-item" href="index.php?controleur=utilisateur&methode=lister">Administration</a></li>
-									<li><a class="dropdown-item" href="#">Déconnexion</a></li>
+									<li><a class="dropdown-item" href="index.php?controleur=utilisateur&methode=deconnecter">Déconnexion</a></li>
 								</ul>
 							</ul>
 						</div>
@@ -108,7 +109,7 @@
 				</div>
 			</nav> #}
 
-			{% endif %}
+		{% endif %}
 		{% block content %}{% endblock %}
 
 		<footer class="text-muted py-3 bg-primary mt-5 fixed-bottom small-footer">
@@ -130,7 +131,7 @@
     </div>
 </footer>
 
-		{% block javascripts %}
+	{% block javascripts %}
 	</body>
 	<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 	<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>

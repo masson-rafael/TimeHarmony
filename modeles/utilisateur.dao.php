@@ -85,6 +85,17 @@ class UtilisateurDao{
         return $utilisateurExiste;
     }
 
+    public function getUserMail(?string $mail) : ?Utilisateur {
+        $sql="SELECT * FROM ".PREFIXE_TABLE."utilisateur WHERE email= :email";
+        $pdoStatement = $this->pdo->prepare($sql);
+        // Ajout des parametres
+        $pdoStatement->execute(array("email"=>$mail));
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        $utilisateur = new Utilisateur($result['id'], $result['nom'], $result['prenom'], $result['email'], $result['motDePasse'], $result['photoDeProfil'], $result['estAdmin']);
+
+        return $utilisateur;
+    }
+
     /**
      * Renvoie tous les utilisateurs
      *

@@ -12,25 +12,27 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Email</th>
                         <th>Nom</th>
                         <th>Prenom</th>
-                        <th>Email</th>
-                        <th>Mot de passe</th>
+                        <th>Rôle</th>
                         <th>Photo de profil</th>
-                        <th>Est admin</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for utilisateur in listeUtilisateurs %}
                         <tr>
+                            {# Appel des méthodes de la classe utilisateur #}
                             <td>{{ utilisateur.getId }}</td>
+                            <td>{{ utilisateur.getEmail }}</td>
                             <td>{{ utilisateur.getNom }}</td>
                             <td>{{ utilisateur.getPrenom }}</td>
-                            <td>{{ utilisateur.getEmail }}</td>
-                            <td>{{ utilisateur.getMotDePasse }}</td>
+                            <td>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</td>
                             <td>{{ utilisateur.getPhotoDeProfil }}</td>
-                            <td>{{ utilisateur.estAdmin ? 'vrai' : 'faux' }}</td>
+                            <td><a href="">Modifier</a><a href="mod">Supprimer</a></td>
                         </tr>
+                        
                     {% endfor %}
                 </tbody>
             </table>
