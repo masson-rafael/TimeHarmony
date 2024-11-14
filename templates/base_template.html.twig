@@ -14,82 +14,116 @@
 			{% endblock %}
 		</title>
 	</head>
-	<body>
 			{% if utilisateurGlobal is not null %}
-			<nav class="navbar navbar-expand-lg bg-primary py-2">
-				<div class="container-fluid">
-					<div class="row w-100 align-items-center">
-						<!-- Logo -->
-						<div class="col-auto">
-							<a class="navbar-brand" href="index.php">
-								<img src="image/logo.png" alt="logo">
-							</a>
-						</div>
-						<!-- Menu principal avec espace entre les éléments -->
-						<div class="col">
-							<ul class="navbar-nav row w-100 justify-content-center text-center">
-								<li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
-									<a class="nav-link {% if menu=='recherche' %} active {% endif %}" aria-current="page" href="index.php?controleur=agenda&methode=obtenir">Rechercher un créneau</a>
-								</li>
-								<li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
-									<a class="nav-link" href="#">Agendas</a>
-								</li>
-								<li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
-									<a class="nav-link" href="#">Groupes</a>
-								</li>
-								<li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
-									<a class="nav-link" href="#">Contacts</a>
-								</li>
-							</ul>
-						</div>
-						<!-- Menu aligné à droite -->
-						<div class="col-auto">
-							<ul class="navbar-nav ms-auto d-flex flex-row">
-								<li class="nav-item d-flex justify-content-center align-items-center">
-									<a class="nav-link" href="#"><img src="image/notif.png" class="img-fluid w-50" alt="notification"></a>
-								</li>
-								<li class="nav-item dropdown d-flex justify-content-center align-items-center">
-								<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-									<img src="image/utilisateurBase.png" alt="photoDeProfil">
-								</a>
-								<ul class="dropdown-menu dropdown-menu-custom dropdown-menu-start">
-									<li><a class="dropdown-item" href="#">Profil</a></li>
-									<li><a class="dropdown-item" href="#">Préférences du profil</a></li>
-									<li><a class="dropdown-item" href="index.php?controleur=utilisateur&methode=lister">Administration</a></li>
-									<li><a class="dropdown-item" href="index.php?controleur=utilisateur&methode=deconnecter">Déconnexion</a></li>
-								</ul>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</nav>
+			<nav class="navbar navbar-expand-lg bg-primary py-2" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+    <div class="container-fluid">
+        <div class="row w-100 align-items-center">
+            <!-- Logo -->
+            <div class="col-auto">
+                <a class="navbar-brand" href="index.php">
+                    <img src="image/logo.png" alt="logo" style="width: 70px;">
+                </a>
+            </div>
+            <!-- Menu principal avec espace entre les éléments -->
+            <div class="col">
+                <ul class="navbar-nav row w-100 justify-content-center text-center">
+                    <li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
+                        <a class="nav-link {% if menu=='recherche' %} active {% endif %}" aria-current="page" href="index.php?controleur=agenda&methode=obtenir">Rechercher un créneau</a>
+                    </li>
+                    <li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
+                        <a class="nav-link" {% if menu=='agenda' %} active {% endif %}" aria-current="page" href="index.php?controleur=agenda&methode=ajouterAgenda">Agendas</a>
+                    </li>
+                    <li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
+                        <a class="nav-link" href="#">Groupes</a>
+                    </li>
+                    <li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
+                        <a class="nav-link" href="#">Contacts</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- Menu aligné à droite -->
+            <div class="col-auto me-3">
+                <ul class="navbar-nav ms-auto d-flex flex-row">
+                    <li class="nav-item dropdown d-flex justify-content-center align-items-center">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="image/utilisateurBase.png" alt="photoDeProfil">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-start">
+                            <li><a class="dropdown-item" href="#">Profil</a></li>
+                            <li><a class="dropdown-item" href="#">Préférences du profil</a></li>
+                            <li><a class="dropdown-item" href="index.php?controleur=utilisateur&methode=lister">Administration</a></li>
+                            <li><a class="dropdown-item" href="index.php?controleur=utilisateur&methode=deconnecter">Déconnexion</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item d-flex justify-content-center align-items-center">
+                        <div style="position: relative; left: 15px;">
+                            <a class="nav-link" href="#"><img src="image/notification.png" style="width: 30px;" alt="notification"></a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
 
 
 
 			{% else %}
-			<nav class="navbar navbar-expand-lg bg-primary py-2">
-				<div class="container-fluid">
-					<div class="row w-100 align-items-center">
-						<!-- Logo -->
+			{# <nav class="navbar navbar-expand-lg bg-primary py-2">
+				<div class="container">
+					<div class="row">
+					<!-- Logo -->
 						<div class="col-auto">
 							<a class="navbar-brand" href="index.php">
 								<img src="image/logo.png" alt="logo">
 							</a>
 						</div>
-						<!-- Menu -->
+						<!-- Menu aligné à droite -->
 						<div class="col">
-							<ul class="navbar-nav row w-100 justify-content-center text-center">
-								<li class="col nav-item d-flex justify-content-center align-items-center">
+							<ul>
+								<li class="col">
 									<a class="nav-link" href="index.php?controleur=utilisateur&methode=premiereInscription">S'inscrire</a>
 								</li>
-								<li class="col nav-item d-flex justify-content-center align-items-center">
+								<li class="col">
 									<a class="nav-link" href="index.php?controleur=utilisateur&methode=premiereConnexion">Se connecter</a>
 								</li>
 							</ul>
 						</div>
 					</div>
 				</div>
-			</nav>
+			</nav> #}
+			<nav class="navbar navbar-expand-lg bg-primary py-2" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+    <div class="container-fluid">
+        <div class="row w-100 align-items-center">
+            <!-- Logo -->
+            <div class="col-auto me-5">
+                <a class="navbar-brand" href="index.php">
+                    <img src="image/logo.png" alt="logo" style="width: 70px;">
+                </a>
+            </div>
+            <!-- Image de la marque centrée -->
+            <div class="col text-center ms-5">
+                <img src="image/marque.png" alt="logo" style="width: 300px;">
+            </div>
+            <!-- Liens de connexion et d'inscription alignés à droite -->
+            <div class="col-auto ms-auto">
+                <ul class="navbar-nav d-flex flex-row">
+                    <li class="nav-item d-flex justify-content-center align-items-center fs-4 me-3">
+                        <a class="nav-link" href="index.php?controleur=utilisateur&methode=premiereConnexion">Se connecter</a>
+                    </li>
+                    <li class="nav-item d-flex justify-content-center align-items-center fs-4">
+                        <a class="nav-link" href="index.php?controleur=utilisateur&methode=premiereInscription">S'inscrire</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+
+
+
 			{# <nav class="navbar navbar-expand-lg bg-primary py-3">
 				<div class="container">
 					<a class="navbar-brand" href="index.php"><img src="image/logo.png" alt="logo"></a>
@@ -112,7 +146,7 @@
 		{% endif %}
 		{% block content %}{% endblock %}
 
-		<footer class="text-muted py-3 bg-primary mt-5 fixed-bottom small-footer">
+		<footer class="text-muted py-3 bg-primary mt-5 fixed-bottom small-footer" style="box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);">
     <div class="container">
         <div class="row">
             <div class="col d-flex align-items-center justify-content-center">

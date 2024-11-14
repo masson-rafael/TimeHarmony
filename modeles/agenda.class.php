@@ -10,34 +10,34 @@ class Agenda {
      *
      * @var integer|null id de l'agenda
      */
-    private int|null $id;
-
+    private ?int $id;
+  
     /**
      *
-     * @var string|null url de l'agenda
+     * @var string url de l'agenda
      */
-    private string|null $url;
-
+    private string $url;
+  
     /**
      *
-     * @var string|null couleur de l'agenda
+     * @var string couleur de l'agenda
      */
-    private string|null $couleur;
-
+    private string $couleur;
+  
     /**
      *
-     * @var string|null nom de l'agenda
+     * @var string nom de l'agenda
      */
-    private string|null $nom;
-
+    private string $nom;
+  
     /**
      *
      * @var integer|null idUtilisateur de l'utilisateur à qui appartient l'agenda
      */
-    private int|null $idUtilisateur;
+    private ?int $idUtilisateur;
 
     /**
-     * Constructeur par défaut
+     * Constructeur par défaut (avec idUtilisateur par défaut)
      *
      * @param integer $id de l'agenda
      * @param string $url permettant d'accéder à l'agenda
@@ -45,20 +45,22 @@ class Agenda {
      * @param string $nom de l'agenda
      * @param integer $idUtilisateur de l'utilisateur à qui appartient l'agenda
      */
-    public function __construct(int $id, string $url, string $couleur, string $nom, int $idUtilisateur) {
-        $this->id = $id;
+    public function __construct(?int $id = null, string $url, string $couleur, string $nom, ?int $idUtilisateur = 1)
+    {
+        $this->id = $id; 
         $this->url = $url;
         $this->couleur = $couleur;
         $this->nom = $nom;
-        $this->idUtilisateur = $idUtilisateur;
+        $this->idUtilisateur = $idUtilisateur; 
     }
 
+    /* ------------- GETTERS ------------- */
     /**
      * Get l'id de l'agenda
      *
      * @return integer $id de l'agenda
      */
-    public function getId(): int {
+    public function getId(): ?int {
         return $this->id;
     }
 
@@ -94,7 +96,7 @@ class Agenda {
      *
      * @return integer $idUtilisateur de l'utilisateur
      */
-    public function getIdUtilisateur(): int {
+    public function getIdUtilisateur(): ?int {
         return $this->idUtilisateur;
     }
 
