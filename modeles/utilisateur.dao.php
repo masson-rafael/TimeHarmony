@@ -161,4 +161,15 @@ class UtilisateurDao{
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
     }
+
+    public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?bool $estAdmin){
+        $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET nom = :nom, prenom = :prenom, estAdmin = :estAdmin WHERE id = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array(
+            "nom" => $nom,
+            "prenom" => $prenom,
+            "estAdmin" => $estAdmin,
+            "id" => $id
+        ));
+    }
 }

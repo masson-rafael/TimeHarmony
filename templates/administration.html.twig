@@ -38,28 +38,45 @@
                                     <img src="image/corbeille.png" alt="supprimer" style="width: 50px;">
                                 </a>                        
                             </tr>
-                        <div class="modal fade" id="fenetreModale{{utilisateur.getId}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-lg"> <!-- Utilisation d'une modale large -->
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{utilisateur.getNom}}</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="text-center"> <!-- Centrer le contenu -->
-                                            {# <img src="<?= htmlspecialchars($article['chemin']) ?>" alt="<?= htmlspecialchars($article['alt']) ?>" class="img-fluid mb-3" style="max-height: 300px;"> <!-- Image responsive --> #}
+                            <div class="modal fade" id="fenetreModale{{utilisateur.getId}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel"> Modification de l'utilisateur {{utilisateur.getEmail}}</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <p><strong>ID:</strong></p>
-                                        <p><strong>Description:</strong></p>
-                                        <p><strong>Prix:</strong></p>
-                                        <p><strong>Quantité disponible:</strong></p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fermer</button>
+                                        <form action="index.php?controleur=utilisateur&methode=modifier&id={{ utilisateur.getId }}" method="POST" enctype="multipart/form-data">
+                                            <div class="modal-body">
+                                                <div class="container mt-2">
+                                                    <div class="form-group">
+                                                        <label for="nom">Nom</label>
+                                                        <input type="text" class="form-control" id="nom" name="nom" value="{{utilisateur.getNom}}" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="prenom">Prenom</label>
+                                                        <input type="text" class="form-control" id="prenom" name="prenom" value="{{utilisateur.getPrenom}}" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="role">Role</label>
+                                                        <select class="form-control" id="role" name="role">
+                                                            <option>User</option>
+                                                            <option>Admin</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="image">Image de profil</label>
+                                                        <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary" name="update_article">Mettre à jour</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                     {% endfor %}
                 </tbody>
             </table>
