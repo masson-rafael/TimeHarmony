@@ -17,12 +17,16 @@ require_once 'controllers/controller_factory.class.php';
 require_once 'controllers/controller.class.php';
 require_once 'controllers/controller_creneauLibre.class.php';
 require_once 'controllers/controller_utilisateur.class.php';
+require_once 'controllers/controller_agenda.class.php';
+
 
 //Ajout des modèles
 require_once 'modeles/utilisateur.class.php';
 require_once 'modeles/utilisateur.dao.php';
 require_once 'modeles/agenda.class.php';
 require_once 'modeles/creneauLibre.class.php'; 
+require_once 'modeles/agenda.dao.php'; 
+
 
 //Ajout des fonctions à part
 require_once 'config/fonctions.php';

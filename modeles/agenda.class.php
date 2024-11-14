@@ -1,24 +1,24 @@
 <?php
 
 class Agenda {
-    private int|null $id;
-    private string|null $url;
-    private string|null $couleur;
-    private string|null $nom;
-    private int|null $idUtilisateur;
-    //private array|null $creneauxLibres;       -> nécessaire ?
+    private ?int $id;
+    private string $url;
+    private string $couleur;
+    private string $nom;
+    private ?int $idUtilisateur;
 
-    /* ------------- CONSTRUCTEUR ------------- */
-    public function __construct(int $id, string $url, string $couleur, string $nom, int $idUtilisateur) {
-        $this->id = $id;
+    // Modifié pour avoir un idUtilisateur par défaut 
+    public function __construct(?int $id = null, string $url, string $couleur, string $nom, ?int $idUtilisateur = 1)
+    {
+        $this->id = $id; 
         $this->url = $url;
         $this->couleur = $couleur;
         $this->nom = $nom;
-        $this->idUtilisateur = $idUtilisateur;
+        $this->idUtilisateur = $idUtilisateur; 
     }
 
     /* ------------- GETTERS ------------- */
-    public function getId(): int {
+    public function getId(): ?int {
         return $this->id;
     }
 
@@ -34,7 +34,7 @@ class Agenda {
         return $this->nom;
     }
 
-    public function getIdUtilisateur(): int {
+    public function getIdUtilisateur(): ?int {
         return $this->idUtilisateur;
     }
 
