@@ -42,7 +42,6 @@ class ControllerUtilisateur extends Controller
             if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
                 // On recupere l'utilisateur
                 $utilisateur = $manager->getUserMail($_POST['email']);
-                var_dump($utilisateur);
                 $this->genererVueConnexion("CONNEXION REUSSIE", $utilisateur);
             } else {
                 $this->genererVueConnexion("CONNEXION ECHOUEE", null);
