@@ -116,8 +116,8 @@ CREATE TABLE IF NOT EXISTS `timeharmony_utilisateur` (
 INSERT INTO `timeharmony_utilisateur` (`nom`, `prenom`, `email`, `motDePasse`, `photoDeProfil`, `estAdmin`) VALUES
  ('latxague', 'thibault', 'tlaxtague@iutbayonne.univ-pau.fr', '$2y$10$qvncYojGHH/dKVUuOn.rH.v5CgT4pjjAPWzN/Pa467mUelIxAPs5i', 'photoProfil.jpg', true),
  ('masson', 'rafael', 'rmasson003@iutbayonne.univ-pau.fr', '$2y$10$xbOlwSyP7aYhW14EtImaUuOo4pBjJ2Z4RoQSTmlG9/Kt0JAvW./h.', 'photoProfil.jpg', true),
- ('keita', 'mouhamadou', 'mkmouhamadou@iutbayonne.univ-pau.fr', '$2y$10$Ez.7guQv7jseSeGwzXBWJe3qTVig.U9NR2PvkdnZwUjuAG82RY.Ru', 'photoProfil.jpg', false),
- ('autant', 'félix', 'fautant@iutbayonne.univ-pau.fr', '$2y$10$.qzWFHVUE3cpUVy3TAs1yO/.QVNp.gjKqwoKSgV0kpnUvwTsSW1r2', 'photoProfil.jpg', false),
+ ('keita', 'mouhamadou', 'mkmouhamadou@iutbayonne.univ-pau.fr', '$2y$10$Ez.7guQv7jseSeGwzXBWJe3qTVig.U9NR2PvkdnZwUjuAG82RY.Ru', 'photoProfil.jpg', true),
+ ('autant', 'félix', 'fautant@iutbayonne.univ-pau.fr', '$2y$10$.qzWFHVUE3cpUVy3TAs1yO/.QVNp.gjKqwoKSgV0kpnUvwTsSW1r2', 'photoProfil.jpg', true),
  ('etcheverry', 'patrick', 'patrick.etcheverry@iutbayonne.univ-pau.fr', '$2y$10$mBTdsf6nYV6ZAYm7wuD4p.lyH1xlxHCBFZxFQrjp9MQTCWPmndupi', 'photoProfil.jpg', false),
  ('moulin', 'antoine', 'antoine.moulin@iutbayonne.univ-pau.fr', '$2y$10$zkyNPYF7XebIXxNH4QW6veoVeeGWUbWhRcVKRlQF0UG9cvbVp/Shu', 'photoProfil.jpg', false);
 
@@ -244,6 +244,35 @@ INSERT INTO `timeharmony_preference` (`dateDebut`, `dateFin`, `idUtilisateur`, `
 -- --------------------------------------------------------
 
 --
+-- Structure de la table 'contacter'
+--
+
+CREATE TABLE IF NOT EXISTS `timeharmony_contacter` (
+    `idUtilisateur1` int NOT NULL,
+    `idUtilisateur2` int NOT NULL,
+    PRIMARY KEY (`idUtilisateur1`, `idUtilisateur2`),
+    FOREIGN KEY (`idUtilisateur1`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`idUtilisateur2`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Chargement des données de la table 'contacter'
+--
+
+INSERT INTO `timeharmony_contacter` (`idUtilisateur1`, `idUtilisateur2`) VALUES
+ (1, 2), (1, 3), (1, 4), (1, 5), 
+ (2, 1), (2, 3), (2, 4), (2, 5), 
+ (3, 1), (3, 2), (3, 4), 
+ (4, 1), (4, 2), (4, 3), 
+ (5, 1), (5, 2);
+
+--
+-- Déchargement des données de la table 'contacter'
+--
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table 'demander'
 --
 
@@ -260,7 +289,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_demander` (
 --
 
 INSERT INTO `timeharmony_demander` (`idUtilisateur1`, `idUtilisateur2`) VALUES
- (1, 6), (1, 3), (2, 6), (3, 2);
+ (1, 6), (2, 6), (3, 5);
 
 --
 -- Déchargement des données de la table 'demander'

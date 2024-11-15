@@ -111,9 +111,6 @@ class ControllerUtilisateur extends Controller
                 // Si l'utilisateur existe deja
                 $this->genererVue($_POST['email'], $utilisateurExiste, "UTILISATEUR EXISTE DEJA");
             }
-        } else {
-            // Si le formulaire n'est pas rempli
-            $this->genererVue('email', false, "FORMULAIRE NON REMPLI");
         }
     }
 
@@ -169,44 +166,43 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
     // Dans votre contrôleur ou gestionnaire de connexion
-    function genererVueConnexion(?string $message, ?Utilisateur $utilisateur = null): void {
-        global $twig;
-        
+    public function genererVueConnexion(?string $message, ?Utilisateur $utilisateur): void {
         if ($utilisateur !== null) {
             // Stockage en session et définition de la variable globale
+            // $utilisateur = new Utilisateur($utilisateur->getId(), $utilisateur->getNom(), $utilisateur->getPrenom(), $utilisateur->getEmail(), $utilisateur->getMotDePasse(), $utilisateur->getPhotoDeProfil(), $utilisateur->getEstAdmin());
             $_SESSION['utilisateur'] = $utilisateur;
-            $twig->addGlobal('utilisateurGlobal', $utilisateur);
+            $this->getTwig()->addGlobal('utilisateurGlobal', $_SESSION['utilisateur']);
         }
         
-        $template = $twig->load('connexion.html.twig');
+        $template = $this->getTwig()->load('connexion.html.twig');
         echo $template->render([
             'message' => $message
         ]);
     }
 
-    // /**
-    //  * Listage de l'utilisateur ayant l'id 2
-    //  *
-    //  * @return void
-    //  */
-    // function listerContacts() {
-    //     $pdo = $this->getPdo();
-    //     $manager = new UtilisateurDao($pdo);
-    //     $utilisateurs = $manager->find(2);
-    //     $template = $this->getTwig()->load('creneauLibre.html.twig');
-    //     echo $template->render(
-    //         array(
-    //             'res' => $utilisateurs,
-    //         )
-    //     );
-    // }
+    /**
+     * Listage de l'utilisateur ayant l'id 2
+     *
+     * @return void
+     */
+    public function listerContacts() {
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $utilisateurs = $manager->find(2);
+        $template = $this->getTwig()->load('creneauLibre.html.twig');
+        echo $template->render(
+            array(
+                'res' => $utilisateurs,
+            )
+        );
+    }
 
     /**
      * Listage de tous les utilisateurs
      *
      * @return void
      */
-    function lister() {
+    public function lister() {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $utilisateurs = $manager->findAll();
@@ -218,4 +214,39 @@ class ControllerUtilisateur extends Controller
         );
     }
 
+    /**
+     * Fonction appellee par la corbeille pour supprimer un utilisateur (panel admin)
+     *
+     * @return void
+     */
+    public function supprimer() {
+        // Récupération de l'id envoyé en parametre du lien
+        $id = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $manager->supprimerUtilisateur($id);
+        $this->lister();
+    }
+
+    /**
+     * Fonction appellee par le bouton de mise a jour d'un utilisateur (panel admin)
+     *
+     * @return void
+     */
+    public function modifier() {
+        $id = $_GET['id'];
+        $nom = $_POST['nom'];
+        $prenom = $_POST['prenom'];
+        $role = $_POST['role'];
+
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        if($role == 'User') {
+            $role = false;
+        } else {
+            $role = true;
+        }
+        $manager->modifierUtilisateur($id, $nom, $prenom, $role);
+        $this->lister();
+    }
 }

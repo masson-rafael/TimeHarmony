@@ -100,8 +100,7 @@ class UtilisateurDao{
         // Ajout des parametres
         $pdoStatement->execute(array("email"=>$mail));
         $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
-        $utilisateur = new Utilisateur($result['id'], $result['nom'], $result['prenom'], $result['email'], $result['motDePasse'], $result['photoDeProfil'], $result['estAdmin']);
-
+        $utilisateur = Utilisateur::createAvecParam($result['id'], $result['nom'], $result['prenom'], $result['email'], $result['motDePasse'], $result['photoDeProfil'], $result['estAdmin']);
         return $utilisateur;
     }
 
@@ -190,5 +189,26 @@ class UtilisateurDao{
             $utilisateurs[] = $utilisateur;
         }
         return $utilisateurs;
+
+     * Suppression de l'utilisateur dans la BD
+     * 
+     * @param integer|null $id de l'utilisateur
+     * @return void
+     */
+    public function supprimerUtilisateur(?int $id){
+        $sql = "DELETE FROM ".PREFIXE_TABLE."utilisateur WHERE id = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("id" => $id));
+    }
+
+    public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?bool $estAdmin){
+        $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET nom = :nom, prenom = :prenom, estAdmin = :estAdmin WHERE id = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array(
+            "nom" => $nom,
+            "prenom" => $prenom,
+            "estAdmin" => $estAdmin,
+            "id" => $id
+        ));
     }
 }
