@@ -35,7 +35,7 @@ class Groupe {
      * @param string $description de l'agenda
      * @param integer $idUtilisateur de l'utilisateur à qui appartient l'agenda (chef de groupe)
      */
-    public function __construct(int $id, string $nom, string $description, int $idUtilisateur) {
+    public function __construct(int $id=null, string $nom=null, string $description=null, int $idUtilisateur=null) {
         $this->id = $id;
         $this->nom = $nom;
         $this->description = $description;

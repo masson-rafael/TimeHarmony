@@ -298,6 +298,31 @@ INSERT INTO `timeharmony_demander` (`idUtilisateur1`, `idUtilisateur2`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Structure de la table 'contacter'
+--
+
+CREATE TABLE IF NOT EXISTS `timeharmony_contacter` (
+    `idUtilisateur1` int NOT NULL,
+    `idUtilisateur2` int NOT NULL,
+    PRIMARY KEY (`idUtilisateur1`, `idUtilisateur2`),
+    FOREIGN KEY (`idUtilisateur1`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`idUtilisateur2`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Chargement des données de la table 'demander'
+--
+
+INSERT INTO `timeharmony_contacter` (`idUtilisateur1`, `idUtilisateur2`) VALUES
+ (1, 6), (1, 3), (2, 6), (4, 2);
+
+--
+-- Déchargement des données de la table 'demander'
+--
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table 'composer'
 --
 

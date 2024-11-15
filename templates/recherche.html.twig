@@ -4,39 +4,129 @@
 	{{ constant('WEBSITE_TITLE')}}
 {% endblock %}
 
-
 {% block content %}
     <main>
-    
-    <div class="container py-5">
-        <form action="index.php?controleur=creneauRdv&methode=obtenir" method="post">
-            <div class="mb-3">
-                <label for="formGroupExampleInput" class="form-label">URL de l'agenda</label>
-                <input name="urlIcs" type="text" class="form-control" id="formGroupExampleInput" placeholder="Ex : https://calendar.google.com/calendar/ical/thibault.latxague%40gmail.com/public/basic.ics">
-            </div>
-            <div class="mb-3">
-                <label for="formGroupExampleInput" class="form-label">Debut de la recherche</label>
-                <input name="debut" type="text" class="form-control" id="formGroupExampleInput" placeholder="Ex : 2024-10-07 00:00:00">
-            </div>
-            <div class="mb-3">
-                <label for="formGroupExampleInput2" class="form-label">Fin de la recherche</label>
-                <input name="fin" type="text" class="form-control" id="formGroupExampleInput2" placeholder="Ex : 2024-10-11 00:00:00">
-            </div>
-            <button type="submit" class="btn btn-primary">Rechercher</button>
-        </form>
+    <div class="container">
+        <div class="row text-center mt-3 mb-3">
+            <h1>Recherche d'un créneau</h1>
         </div>
+        <form action="index.php?controleur=creneauRDV&methode=obtenir" method="post">
+            <div class="row">
+                <div class="col">
+                    <div class="row text-center mt-6">
+                        <h5>Choisir ses collaborateurs :</h5>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table w-auto">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Prénom</th>
+                                    <th scope="col">Nom</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for contact in contacts %}  
+                                        <div class="form-check">
+                                        <tr>
+                                            <td>
+                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                            </td>
+                                                <label class="form-check-label" for="flexCheckDefault"> <td>{{ contact.getPrenom }}</td> <td>{{ contact.getNom }}</td> </label>
+                                            </td>
+                                        </tr>
+                                        </div>         
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
 
-        {% for creneau in creneauxLibres %}           
+                        <div class="col">
+                            <table class="table w-auto">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Nom</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for groupe in groupes %}
+                                        <div class="form-check">
+                                            <tr>
+                                                <td>
+                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                </td>
+                                                    <label class="form-check-label" for="flexCheckDefault"> <td>{{ groupe.getNom }}</td></label>
+                                                </td>
+                                            </tr>
+                                        </div> 
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col">
+                    <h5 class="text-center">Période de recherche :</h5>
+                        <div class="mb-3 mt-3 d-flex align-items-center">
+                            <h5><label for="formGroupExampleInput" class="form-label me-2">Début</label></h5>
+                            <input name="debut" type="text" class="form-control" id="formGroupExampleInput" placeholder="Ex : 2024-10-07 00:00:00">
+                        </div>
 
-            {# Enlever 2 heures à la dateDebut et dateFin #}
-            {% set dateDebut = creneau.dateDebut|date_modify('-2 hours') %}
-            {% set dateFin = creneau.dateFin|date_modify('-2 hours') %}
+                        <div class="mb-3 mb-5 d-flex align-items-center">
+                            <h5><label for="formGroupExampleInput" class="form-label me-2">Fin</label></h5>
+                            <input name="fin" type="text" class="form-control" id="formGroupExampleInput" placeholder="Ex : 2024-10-07 00:00:00">
+                        </div>
+                    
+                    <h5 class="text-center">Durée minimal de rende-vous :</h5>
+                    <div class="row mb-3 mt-3">
+                        <div class="col-md-6 d-flex align-items-center justify-content-end p-0">
+                            <input name="fin" type="text" class="form-control w-auto" id="formGroupExampleInput" placeholder="Ex : 1">
+                            <h5><label for="formGroupExampleInput" class="form-label ms-2 me-2 mb-0">H</label></h5>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center justify-content-start p-0">
+                            <input name="fin" type="text" class="form-control w-auto" id="formGroupExampleInput2" placeholder="Ex : 30">
+                            <h5><label for="formGroupExampleInput2" class="form-label ms-2 mb-0">Min</label></h5>
+                        </div>
+                    </div>
 
-            <p>Créneau libre de {{ dateDebut|date('Y-m-d H:i:s') }} à {{ dateFin|date('Y-m-d H:i:s') }}</p>
-        {% endfor %}
 
 
 
-        {# <a href="index.php?controleur=utilisateur&methode=listerContacts"><p>ff</p></a> #}
-    </main>
+                </div>
+                
+
+                    
+            </div>
+            <div class="row">
+                <div class="mb-3">
+                    <label for="formGroupExampleInput" class="form-label">URL de l'agenda</label>
+                    <input name="urlIcs" type="text" class="form-control" id="formGroupExampleInput" placeholder="Ex : https://calendar.google.com/calendar/ical/thibault.latxague%40gmail.com/public/basic.ics">
+                </div>
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+            </div>
+            
+        </form>    
+    </div>
+</main>
 {% endblock %}
+
+
+
+{# {% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            $('#myTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
+                },
+                "pageLength": 10,
+                "ordering": true,
+                "responsive": true
+            });
+        });
+    </script>
+{% endblock %} #}

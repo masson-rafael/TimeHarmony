@@ -5,7 +5,7 @@
  * @version 0.1
  */
 
-class AgendaDAO {
+class GroupeDao {
     /**
      *
      * @var PDO|null pdo
@@ -38,5 +38,43 @@ class AgendaDAO {
      */
     public function setPdo(?PDO $pdo): void {
         $this->pdo = $pdo;
+    }
+
+    public function findAll(?int $id): array {
+        $sql="SELECT idGroupe FROM ".PREFIXE_TABLE."composer WHERE idUtilisateur= :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        // Ajout des parametres
+        $pdoStatement->execute(array("id"=>$id));
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $result = $pdoStatement->fetchAll();
+
+        return $result;
+    }
+
+    public function find(?int $id): ?Groupe {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."groupe WHERE id = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("id" => $id));
+        
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $tableau = $pdoStatement->fetch();
+        $groupe = $this->hydrate($tableau);
+    
+        
+        if (!$groupe) {
+            return null;
+        }
+        
+        return $groupe;
+        
+    }
+
+    public function hydrate(array $tableau): Groupe{
+        $groupe = new Groupe();
+        $groupe->setId($tableau['id']);
+        $groupe->setNom($tableau['nom']);
+        $groupe->setDescription($tableau['description']);
+        
+        return $groupe;
     }
 }

@@ -51,15 +51,12 @@ class UtilisateurDao{
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
         
-        // On récupère sous forme de tableau associatif
-        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Utilisateur');
+        $utilisateur = $pdoStatement->fetch();
         
-        if (!$result) {
+        if (!$utilisateur) {
             return null;
         }
-        
-        // On crée un nouvel objet Utilisateur avec les données
-        $utilisateur = new Utilisateur($result['id'], $result['nom'], $result['prenom'], $result['email'], $result['motDePasse'], $result['photoDeProfil'], $result['estAdmin']);
         
         return $utilisateur;
     }
@@ -83,6 +80,18 @@ class UtilisateurDao{
         }
 
         return $utilisateurExiste;
+    }
+
+    public function findAllContact(?int $id): array {
+        $sql="SELECT idUtilisateur2 FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur1= :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        // Ajout des parametres
+        $pdoStatement->execute(array("id"=>$id));
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $result = $pdoStatement->fetchAll();
+
+
+        return $result;
     }
 
     public function getUserMail(?string $mail) : ?Utilisateur {
@@ -150,6 +159,37 @@ class UtilisateurDao{
     }
 
     /**
+     * set a hydrater le tableau associatif
+     *
+     * @param array|null $tableauAssoc tableau associatif
+     * @return CreneauLibre|null créneau libre
+     */
+    public function hydrate(?array $tableauAssoc): ?Utilisateur {
+        $utilisateur = new Utilisateur();
+        $utilisateur->setId($tableauAssoc['id']);
+        $utilisateur->setNom($tableauAssoc['nom']);
+        $utilisateur->setPrenom($tableauAssoc['prenom']);
+        $utilisateur->setEmail($tableauAssoc['email']);
+        $utilisateur->setMotDePasse($tableauAssoc['motDePasse']);
+        $utilisateur->setPhotoDeProfil($tableauAssoc['photoDeProfil']);
+        $utilisateur->setEstAdmin($tableauAssoc['estAdmin']);
+        return $utilisateur;
+    }
+
+    /**
+     * set a hydrater tous les créneaux libres
+     *
+     * @param array|null $tableau tableau associatif
+     * @return array|null tableau des créneaux libres
+     */
+    public function hydrateAll(?array $tableau): ?array{
+        $utilisateurs = [];
+        foreach($tableau as $tableauAssoc){
+            $utilisateur = $this->hydrate($tableauAssoc);
+            $utilisateurs[] = $utilisateur;
+        }
+        return $utilisateurs;
+
      * Suppression de l'utilisateur dans la BD
      * 
      * @param integer|null $id de l'utilisateur

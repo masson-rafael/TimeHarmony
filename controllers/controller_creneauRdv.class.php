@@ -26,6 +26,44 @@ class ControllerCreneauRdv extends Controller
         parent::__construct($twig, $loader);
     }
 
+
+    function genererVueRecherche() {
+        $contacts = $this->recupererContact(1);
+        $groupes = $this->recupererGroupe(1);
+        //Génération de la vue
+        $template = $this->getTwig()->load('recherche.html.twig');
+        echo $template->render(array(
+            'contacts' => $contacts,
+            'groupes' => $groupes
+        ));        
+
+    }
+
+    function recupererContact($idUtilisateur): array {
+        $pdo = $this->getPdo();
+
+        $managerUtilisateur = new UtilisateurDao($pdo);
+        $contactsId = $managerUtilisateur->findAllContact($idUtilisateur);  
+        $contacts=array();     
+        foreach ($contactsId as $contact) {
+            $contacts[] = $managerUtilisateur->find($contact['idUtilisateur2']);
+        }
+        return $contacts;
+    }
+
+    function recupererGroupe($idUtilisateur): array {
+        $pdo = $this->getPdo();
+
+        $managerGroupe = new GroupeDao($pdo);
+        $groupesId = $managerGroupe->findAll($idUtilisateur);  
+        $groupes=array();     
+        foreach ($groupesId as $groupe) {
+            $groupes[] = $managerGroupe->find($groupe['idGroupe']);
+        }
+        return $groupes;
+    }
+
+
     /**
      * Fonction d'obtention des créneaux libres
      *
@@ -37,7 +75,7 @@ class ControllerCreneauRdv extends Controller
         // Vider la table pour éviter les récurrences
         $managerCreneau->supprimerCreneauxLibres();
 
-        if (isset($_POST['urlIcs'])) {
+        if (isset($_POST['urlIcs']) && !empty($_POST['urlIcs'])) {
             // Récupérer les données du formulaire
             extract($_POST, EXTR_OVERWRITE);
             // Récupérer les événements de l'agenda
@@ -169,7 +207,7 @@ class ControllerCreneauRdv extends Controller
 
     function genererVue() {
         //Génération de la vue
-        $template = $this->getTwig()->load('recherche.html.twig');
+        $template = $this->getTwig()->load('index.html.twig');
         echo $template->render(array());
     }
 }
