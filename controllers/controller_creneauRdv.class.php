@@ -12,7 +12,7 @@ use ICal\ICal;
 /**
  * Undocumented class
  */
-class ControllerCreneauRDV extends Controller
+class ControllerCreneauRdv extends Controller
 {
     /**
      * Constructeur par défaut

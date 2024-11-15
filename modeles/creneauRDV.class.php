@@ -1,29 +1,29 @@
 <?php
 /**
  * @author Thibault Latxague
- * @describe Classe des creneaux de RDV
+ * @describe Classe des creneaux de Rdv
  * @version 0.1
  */
 
-class CreneauRDV {
+class CreneauRdv {
     /**
      *
-     * @var integer|null id du creneau de RDV
+     * @var integer|null id du creneau de Rdv
      */
     private int|null $id;
     /**
      *
-     * @var DateTime|null date de début du creneau de RDV
+     * @var DateTime|null date de début du creneau de Rdv
      */
     private DateTime|null $dateDeb;
     /**
      *
-     * @var DateTime|null date de fin du creneau de RDV
+     * @var DateTime|null date de fin du creneau de Rdv
      */
     private DateTime|null $dateFin;
     /**
      *
-     * @var string|null heure de fin du creneau de RDV
+     * @var string|null heure de fin du creneau de Rdv
      */
     private string|null $heureFin;
     /**
@@ -35,10 +35,10 @@ class CreneauRDV {
     /**
      * Constructeur par défaut
      *
-     * @param integer|null $id du creneau de RDV
-     * @param DateTime|null $dateDeb du creneau de RDV
-     * @param DateTime|null $dateFin du creneau de RDV
-     * @param string|null $heureFin du creneau de RDV
+     * @param integer|null $id du creneau de Rdv
+     * @param DateTime|null $dateDeb du creneau de Rdv
+     * @param DateTime|null $dateFin du creneau de Rdv
+     * @param string|null $heureFin du creneau de Rdv
      * @param integer|null $pourcentageCoincidence utilisateur du groupe sur ceux disponibles
      */
     public function __construct(?int $id, ?DateTime $dateDeb, ?DateTime $dateFin, ?string $heureFin, ?int $pourcentageCoincidence) {
@@ -50,36 +50,36 @@ class CreneauRDV {
     }
 
     /**
-     * Get l'id du creneau de RDV
+     * Get l'id du creneau de Rdv
      *
-     * @return integer $id du creneau de RDV
+     * @return integer $id du creneau de Rdv
      */
     public function getId(): int {
         return $this->id;
     }
 
     /**
-     * Get la date de début du creneau de RDV
+     * Get la date de début du creneau de Rdv
      *
-     * @return DateTime $dateDeb du creneau de RDV
+     * @return DateTime $dateDeb du creneau de Rdv
      */
     public function getDateDeb(): DateTime {
         return $this->dateDeb;
     }
 
     /**
-     * Get la date de fin du creneau de RDV
+     * Get la date de fin du creneau de Rdv
      *
-     * @return DateTime $dateFin du creneau de RDV
+     * @return DateTime $dateFin du creneau de Rdv
      */
     public function getDateFin(): DateTime {
         return $this->dateFin;
     }
 
     /**
-     * Get l'heure de fin du creneau de RDV
+     * Get l'heure de fin du creneau de Rdv
      *
-     * @return string $heureFin du creneau de RDV
+     * @return string $heureFin du creneau de Rdv
      */
     public function getHeureFin(): string {
         return $this->heureFin;
@@ -95,27 +95,27 @@ class CreneauRDV {
     }
 
     /**
-     * Set l'id du creneau de RDV
+     * Set l'id du creneau de Rdv
      *
-     * @param integer $id du creneau de RDV
+     * @param integer $id du creneau de Rdv
      */
     public function setId(int $id): void {
         $this->id = $id;
     }
 
     /**
-     * Set la date de début du creneau de RDV
+     * Set la date de début du creneau de Rdv
      *
-     * @param DateTime $dateDeb du creneau de RDV
+     * @param DateTime $dateDeb du creneau de Rdv
      */
     public function setDateDeb(DateTime $dateDeb): void {
         $this->dateDeb = $dateDeb;
     }
 
     /**
-     * Set la date de fin du creneau de RDV
+     * Set la date de fin du creneau de Rdv
      *
-     * @param DateTime $dateFin du creneau de RDV
+     * @param DateTime $dateFin du creneau de Rdv
      */
     public function setDateFin(DateTime $dateFin): void {
         $this->dateFin = $dateFin;

@@ -1,11 +1,11 @@
 <?php
 /**
  * @author Thibault Latxague
- * @describe Classe DAO des creneaux de RDV
+ * @describe Classe DAO des creneaux de Rdv
  * @version 0.1
  */
 
-class CreneauRDVDAO {
+class CreneauRdvDAO {
     /**
      *
      * @var PDO|null pdo
