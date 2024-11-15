@@ -189,7 +189,8 @@ class UtilisateurDao{
             $utilisateurs[] = $utilisateur;
         }
         return $utilisateurs;
-
+    }
+     /**
      * Suppression de l'utilisateur dans la BD
      * 
      * @param integer|null $id de l'utilisateur
