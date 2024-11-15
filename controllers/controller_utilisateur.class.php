@@ -228,4 +228,26 @@ class ControllerUtilisateur extends Controller
         $manager->supprimerUtilisateur($id);
         $this->lister();
     }
+
+    /**
+     * Fonction appellee par le bouton de mise a jour d'un utilisateur (panel admin)
+     *
+     * @return void
+     */
+    public function modifier() {
+        $id = $_GET['id'];
+        $nom = $_POST['nom'];
+        $prenom = $_POST['prenom'];
+        $role = $_POST['role'];
+
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        if($role == 'User') {
+            $role = false;
+        } else {
+            $role = true;
+        }
+        $manager->modifierUtilisateur($id, $nom, $prenom, $role);
+        $this->lister();
+    }
 }

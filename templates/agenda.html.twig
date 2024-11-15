@@ -6,7 +6,7 @@
 
 
 {% block content %}
-{# {{ dump(creneauxLibres) }} #}
+{# {{ dump(agendas) }} #}
     <main>
     <div class="container">
             <div class="row justify-content-center">
@@ -19,6 +19,10 @@
                 </div>
                 {% endif %}
                 
+                {% for agenda in agendas %}
+                    <p>url = {{agenda.url}}, nom = {{agenda.nom}} et couleur = {{agenda.couleur}}</p>
+                {% endfor %}
+
                 <div class="col-md-4 mt-5"> <!-- Ajout de la marge en haut -->
                     <form action="index.php?controleur=agenda&methode=ajouterAgenda" method="post" required>
                         <div class="mb-3">
@@ -40,36 +44,6 @@
                 
             </div>
         </div>
-
-        <div class="container py-5">
-        <form action="index.php?controleur=agenda&methode=obtenir" method="post">
-            <div class="mb-3">
-                <label for="formGroupExampleInput" class="form-label">URL de l'agenda</label>
-                <input name="urlIcs" type="text" class="form-control" id="formGroupExampleInput" placeholder="Ex : https://calendar.google.com/calendar/ical/thibault.latxague%40gmail.com/public/basic.ics">
-            </div>
-            <div class="mb-3">
-                <label for="formGroupExampleInput" class="form-label">Debut de la recherche</label>
-                <input name="debut" type="text" class="form-control" id="formGroupExampleInput" placeholder="Ex : 2024-10-07 00:00:00">
-            </div>
-            <div class="mb-3">
-                <label for="formGroupExampleInput2" class="form-label">Fin de la recherche</label>
-                <input name="fin" type="text" class="form-control" id="formGroupExampleInput2" placeholder="Ex : 2024-10-11 00:00:00">
-            </div>
-            <button type="submit" class="btn btn-primary">Rechercher</button>
-        </form>
-        </div>
-
-        {% for creneau in creneauxLibres %}           
-
-            {# Enlever 2 heures à la dateDebut et dateFin #}
-            {% set dateDebut = creneau.dateDebut|date_modify('-2 hours') %}
-            {% set dateFin = creneau.dateFin|date_modify('-2 hours') %}
-
-            <p>Créneau libre de {{ dateDebut|date('Y-m-d H:i:s') }} à {{ dateFin|date('Y-m-d H:i:s') }}</p>
-        {% endfor %}
-
-
-
         {# <a href="index.php?controleur=utilisateur&methode=listerContacts"><p>ff</p></a> #}
     </main>
 {% endblock %}

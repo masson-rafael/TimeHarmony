@@ -17,6 +17,7 @@ require_once 'controllers/controller_factory.class.php';
 require_once 'controllers/controller.class.php';
 require_once 'controllers/controller_utilisateur.class.php';
 require_once 'controllers/controller_agenda.class.php';
+require_once 'controllers/controller_creneauRdv.class.php';
 
 //Ajout des modèles
 require_once 'modeles/utilisateur.class.php';
