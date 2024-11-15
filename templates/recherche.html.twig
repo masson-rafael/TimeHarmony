@@ -17,50 +17,47 @@
                         <h5>Choisir ses collaborateurs :</h5>
                     </div>
                     <div class="row">
+                        <!-- Colonne Contacts -->
                         <div class="col">
                             <table class="table w-auto">
                                 <thead>
                                     <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Prénom</th>
-                                    <th scope="col">Nom</th>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Prénom</th>
+                                        <th scope="col">Nom</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for contact in contacts %}  
-                                        <div class="form-check">
-                                        <tr>
-                                            <td>
-                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                            </td>
-                                                <label class="form-check-label" for="flexCheckDefault"> <td>{{ contact.getPrenom }}</td> <td>{{ contact.getNom }}</td> </label>
-                                            </td>
-                                        </tr>
-                                        </div>         
+                                    <tr>
+                                        <td>
+                                            <input class="form-check-input" type="checkbox" value="" id="contactCheck{{ loop.index }}">
+                                        </td>
+                                        <td>{{ contact.getPrenom }}</td>
+                                        <td>{{ contact.getNom }}</td>
+                                    </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
 
+                        <!-- Colonne Groupes -->
                         <div class="col">
                             <table class="table w-auto">
                                 <thead>
                                     <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Nom</th>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Nom</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for groupe in groupes %}
-                                        <div class="form-check">
-                                            <tr>
-                                                <td>
-                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                </td>
-                                                    <label class="form-check-label" for="flexCheckDefault"> <td>{{ groupe.getNom }}</td></label>
-                                                </td>
-                                            </tr>
-                                        </div> 
+                                    <tr>
+                                        <td>
+                                            <input class="form-check-input" type="checkbox" value="" id="groupeCheck{{ loop.index }}">
+                                        </td>
+                                        <td>{{ groupe.getNom }}</td>
+                                    </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
