@@ -91,8 +91,7 @@ class UtilisateurDao{
         // Ajout des parametres
         $pdoStatement->execute(array("email"=>$mail));
         $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
-        $utilisateur = new Utilisateur($result['id'], $result['nom'], $result['prenom'], $result['email'], $result['motDePasse'], $result['photoDeProfil'], $result['estAdmin']);
-
+        $utilisateur = Utilisateur::createAvecParam($result['id'], $result['nom'], $result['prenom'], $result['email'], $result['motDePasse'], $result['photoDeProfil'], $result['estAdmin']);
         return $utilisateur;
     }
 

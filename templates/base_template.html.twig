@@ -51,7 +51,7 @@
                         <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-start">
                             <li><a class="dropdown-item" href="#">Profil</a></li>
                             <li><a class="dropdown-item" href="#">Préférences du profil</a></li>
-                            {% if utilisateurGlobal.getEstAdmin == false%}
+                            {% if utilisateurGlobal.getEstAdmin%}
                             <li><a class="dropdown-item" href="index.php?controleur=utilisateur&methode=lister">Administration</a></li>
                             {% endif %}
                             <li><a class="dropdown-item" href="index.php?controleur=utilisateur&methode=deconnecter">Déconnexion</a></li>
@@ -148,7 +148,7 @@
 		{% endif %}
 		{% block content %}{% endblock %}
 
-		<footer class="text-muted py-3 bg-primary mt-5 fixed-bottom small-footer" style="box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);">
+		{# <footer class="text-muted py-3 bg-primary mt-5 fixed-bottom small-footer" style="box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);">
     <div class="container">
         <div class="row">
             <div class="col d-flex align-items-center justify-content-center">
@@ -165,7 +165,7 @@
             </div>
         </div>
     </div>
-</footer>
+</footer> #}
 
 	{% block javascripts %}
 	</body>

@@ -42,6 +42,7 @@ class ControllerUtilisateur extends Controller
             if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
                 // On recupere l'utilisateur
                 $utilisateur = $manager->getUserMail($_POST['email']);
+                var_dump($utilisateur);
                 $this->genererVueConnexion("CONNEXION REUSSIE", $utilisateur);
             } else {
                 $this->genererVueConnexion("CONNEXION ECHOUEE", null);
@@ -166,16 +167,15 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
     // Dans votre contrôleur ou gestionnaire de connexion
-    public function genererVueConnexion(?string $message, ?Utilisateur $utilisateur = null): void {
-        global $twig;
-        
+    public function genererVueConnexion(?string $message, ?Utilisateur $utilisateur): void {
         if ($utilisateur !== null) {
             // Stockage en session et définition de la variable globale
+            // $utilisateur = new Utilisateur($utilisateur->getId(), $utilisateur->getNom(), $utilisateur->getPrenom(), $utilisateur->getEmail(), $utilisateur->getMotDePasse(), $utilisateur->getPhotoDeProfil(), $utilisateur->getEstAdmin());
             $_SESSION['utilisateur'] = $utilisateur;
-            $twig->addGlobal('utilisateurGlobal', $utilisateur);
+            $this->getTwig()->addGlobal('utilisateurGlobal', $_SESSION['utilisateur']);
         }
         
-        $template = $twig->load('connexion.html.twig');
+        $template = $this->getTwig()->load('connexion.html.twig');
         echo $template->render([
             'message' => $message
         ]);
@@ -221,6 +221,7 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
     public function supprimer() {
+        // Récupération de l'id envoyé en parametre du lien
         $id = $_GET['id'];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
