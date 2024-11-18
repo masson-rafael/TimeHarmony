@@ -1,5 +1,7 @@
 <?php
 
+require_once 'modeles/utilisateur.class.php';
+
 //ajout de la classe IntlExtension et creation de l’alias IntlExtension
 use Twig\Extra\Intl\IntlExtension;
 
@@ -18,8 +20,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Initialisation unique de la variable utilisateur globale
-$twig->addGlobal('utilisateurGlobal', $_SESSION['utilisateur'] ?? null);
+if (isset($_SESSION['utilisateur']) && ! empty($_SESSION['utilisateur'])) {
+    $twig->addGlobal('utilisateurGlobal', $_SESSION['utilisateur']);
+} else {
+    $twig->addGlobal('utilisateurGlobal', null);
+}
 
 //Définition de la timezone pour que les filtres date tiennent compte du fuseau horaire français.
 $twig->getExtension(\Twig\Extension\CoreExtension::class)->setTimezone('Europe/Paris');

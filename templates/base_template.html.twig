@@ -10,10 +10,11 @@
 		<meta name="description" content="{%if description is defined %} {{description}} {% else %} {{constant('WEBSITE_DESCRIPTION')}} {% endif %}"> {% block css %}{% endblock %}
 		<title>
 			{% block title %}
-				{{ constant('WEBSITE_TITLE')}}
+				{{constant('WEBSITE_TITLE')}}
 			{% endblock %}
 		</title>
 	</head>
+    <body>
 			{% if utilisateurGlobal is not null %}
 			<nav class="navbar navbar-expand-lg bg-primary py-2" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
     <div class="container-fluid">
