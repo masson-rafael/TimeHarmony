@@ -118,7 +118,6 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
     function deconnecter() {
-        var_dump($_SESSION['utilisateur']);
         $this->getTwig()->addGlobal('utilisateurGlobal', null);
         unset($_SESSION['utilisateur']);
         $this->genererVueVide('menu');

@@ -21,8 +21,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (isset($_SESSION['utilisateur']) && ! empty($_SESSION['utilisateur'])) {
-    var_dump($_SESSION['utilisateur']);
-    //$utilisateur = Utilisateur::createAvecParam($_SESSION['utilisateur'][0], $_SESSION['utilisateur'][1], $_SESSION['utilisateur'][2], $_SESSION['utilisateur'][3], $_SESSION['utilisateur'][4], $_SESSION['utilisateur'][5]);
     $twig->addGlobal('utilisateurGlobal', $_SESSION['utilisateur']);
 } else {
     $twig->addGlobal('utilisateurGlobal', null);
