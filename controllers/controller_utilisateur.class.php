@@ -35,8 +35,6 @@ class ControllerUtilisateur extends Controller
             $manager = new UtilisateurDao($pdo);
             // On recupere un tuple avec un booleen et le mdp hache
             $motDePasse = $manager->connexionReussie($_POST['email']);
-            // On verifie que le mdp est bon 
-            $mavar = password_verify($_POST['pwd'], $motDePasse[1]);
 
             // Si les mdp sont les mêmes
             if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
@@ -120,6 +118,7 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
     function deconnecter() {
+        var_dump($_SESSION['utilisateur']);
         $this->getTwig()->addGlobal('utilisateurGlobal', null);
         unset($_SESSION['utilisateur']);
         $this->genererVueVide('menu');
@@ -169,9 +168,9 @@ class ControllerUtilisateur extends Controller
     public function genererVueConnexion(?string $message, ?Utilisateur $utilisateur): void {
         if ($utilisateur !== null) {
             // Stockage en session et définition de la variable globale
-            // $utilisateur = new Utilisateur($utilisateur->getId(), $utilisateur->getNom(), $utilisateur->getPrenom(), $utilisateur->getEmail(), $utilisateur->getMotDePasse(), $utilisateur->getPhotoDeProfil(), $utilisateur->getEstAdmin());
+            $utilisateur = Utilisateur::createAvecParam($utilisateur->getId(), $utilisateur->getNom(), $utilisateur->getPrenom(), $utilisateur->getEmail(), $utilisateur->getMotDePasse(), $utilisateur->getPhotoDeProfil(), $utilisateur->getEstAdmin());
             $_SESSION['utilisateur'] = $utilisateur;
-            $this->getTwig()->addGlobal('utilisateurGlobal', $_SESSION['utilisateur']);
+            $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
         }
         
         $template = $this->getTwig()->load('connexion.html.twig');
