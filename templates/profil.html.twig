@@ -20,22 +20,23 @@
                         </div>
                         <!-- Formulaire -->
                         <div class="flex-grow-1">
-                            <form>
+                            <form method="POST" action="index.php?controleur=utilisateur&methode=modifier&id={{utilisateurGlobal.getId}}&type='util'">
                                 <div class="mb-3">
                                     {# ms-2 sur les labels ? Pour que textes soient alignés #}
                                     <label for="nom" class="form-label">Nom</label>
-                                    <input type="text" class="form-control" id="nom" value="Arandia">
+                                    <input type="text" class="form-control" id="nom" name="nom" value="{{utilisateurGlobal.getNom}}">
                                 </div>
                                 <div class="mb-3">
                                     <label for="prenom" class="form-label">Prénom</label>
-                                    <input type="text" class="form-control" id="prenom" value="Iban">
+                                    <input type="text" class="form-control" id="prenom" name="prenom" value="{{utilisateurGlobal.getPrenom}}">
                                 </div>
                                 <div class="mb-3">
                                     <label for="email" class="form-label">E-mail</label>
-                                    <input type="email" class="form-control" id="email" value="arandialban@gmail.com">
+                                    <p>{{utilisateurGlobal.getEmail}}</p>
+                                    <input class="form-control" id="role" name="role" value="{{utilisateurGlobal.getEstAdmin}}" hidden>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <button type="button" class="btn btn-primary">Enregistrer les modifications</button>
+                                    <button type="submit" class="btn btn-primary">Modifier mon profil</button>
                                     <button type="button" class="btn btn-secondary">Modifier mon mot de passe</button>
                                 </div>
                             </form>
@@ -49,5 +50,6 @@
             </div>
         </div>
     </div>
+    {{dump(utilisateurGlobal)}}
 </body>
 {% endblock %}

@@ -1,4 +1,7 @@
 <?php
+
+use Twig\Profiler\Dumper\BaseDumper;
+
 /**
  * @author Thibault Latxague
  * @describe Controller de la page des utilisateur
@@ -233,6 +236,7 @@ class ControllerUtilisateur extends Controller
      */
     public function modifier() {
         $id = $_GET['id'];
+        $type = $_GET['type'];
         $nom = $_POST['nom'];
         $prenom = $_POST['prenom'];
         $role = $_POST['role'];
@@ -244,8 +248,17 @@ class ControllerUtilisateur extends Controller
         } else {
             $role = true;
         }
+
         $manager->modifierUtilisateur($id, $nom, $prenom, $role);
-        $this->lister();
+        $util = $manager->find($id);
+        $_SESSION['utilisateur'] = $util;
+        $this->getTwig()->addGlobal('utilisateurGlobal', $util);
+
+        if($type == 'admin') {
+            $this->lister();
+        } else {
+            $this->afficherProfil();
+        }  
     }
 
     /**
@@ -258,6 +271,18 @@ class ControllerUtilisateur extends Controller
         $manager = new UtilisateurDao($pdo);
         $utilisateur = $manager->getUserMail($_SESSION['utilisateur']->getEmail());
         $template = $this->getTwig()->load('profil.html.twig');
+        echo $template->render(
+            array(
+                'utilisateur' => $utilisateur,
+            )
+        );
+    }
+
+    public function modifierProfil() {
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $utilisateur = $manager->getUserMail($_SESSION['utilisateur']->getEmail());
+        $template = $this->getTwig()->load('modifierProfil.html.twig');
         echo $template->render(
             array(
                 'utilisateur' => $utilisateur,
