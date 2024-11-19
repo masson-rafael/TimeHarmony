@@ -1,0 +1,53 @@
+{% extends 'base_template.html.twig' %}
+
+{% block title %}Profil -
+{{ constant('WEBSITE_TITLE')}}
+{% endblock %}
+
+{% block content %}
+<body>
+            <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="">
+                    <h3 class="text-center mb-4">Profil</h3>
+                    <div class="d-flex align-items-center">
+                        <!-- Image cercle -->
+                        <div class="me-4">
+                            <a href="#" class="d-block mt-2">                            
+                                <img src="image/utilisateurBase.png" alt="Photo de profil" class="rounded-circle" style="width: 100px; height: 100px;">
+                            </a>
+                        </div>
+                        <!-- Formulaire -->
+                        <div class="flex-grow-1">
+                            <form>
+                                <div class="mb-3">
+                                    {# ms-2 sur les labels ? Pour que textes soient alignés #}
+                                    <label for="nom" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="nom" value="Arandia">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="prenom" class="form-label">Prénom</label>
+                                    <input type="text" class="form-control" id="prenom" value="Iban">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">E-mail</label>
+                                    <input type="email" class="form-control" id="email" value="arandialban@gmail.com">
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-primary">Enregistrer les modifications</button>
+                                    <button type="button" class="btn btn-secondary">Modifier mon mot de passe</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Bouton supprimer -->
+                    <div class="text-center mt-4">
+                        <button type="button" class="btn btn-danger">Supprimer mon compte</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}
