@@ -163,7 +163,6 @@ class ControllerUtilisateur extends Controller
      * @param string|null $message de succes ou erreur détaillé
      * @return void
      */
-    // Dans votre contrôleur ou gestionnaire de connexion
     public function genererVueConnexion(?string $message, ?Utilisateur $utilisateur): void {
         if ($utilisateur !== null) {
             // Stockage en session et définition de la variable globale
@@ -246,5 +245,22 @@ class ControllerUtilisateur extends Controller
         }
         $manager->modifierUtilisateur($id, $nom, $prenom, $role);
         $this->lister();
+    }
+
+    /**
+     * Affiche le profil de l'utilisateur connecté (page profil)
+     *
+     * @return void
+     */
+    public function afficherProfil():void {
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $utilisateur = $manager->getUserMail($_SESSION['utilisateur']->getEmail());
+        $template = $this->getTwig()->load('profil.html.twig');
+        echo $template->render(
+            array(
+                'utilisateur' => $utilisateur,
+            )
+        );
     }
 }
