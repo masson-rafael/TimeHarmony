@@ -1,4 +1,5 @@
 <?php
+use ICal\ICal;
 
 
 /**
@@ -26,7 +27,7 @@ class ControllerCreneauRdv extends Controller
     }
 
 
-    function genererVueRecherche() {
+    public function genererVueRecherche(): void {
         $contacts = $this->recupererContact(1);
         $groupes = $this->recupererGroupe(1);
         //Génération de la vue
@@ -38,7 +39,7 @@ class ControllerCreneauRdv extends Controller
 
     }
 
-    function recupererContact($idUtilisateur): array {
+    public function recupererContact($idUtilisateur): array {
         $pdo = $this->getPdo();
 
         $managerUtilisateur = new UtilisateurDao($pdo);
@@ -50,7 +51,7 @@ class ControllerCreneauRdv extends Controller
         return $contacts;
     }
 
-    function recupererGroupe($idUtilisateur): array {
+    public function recupererGroupe($idUtilisateur): array {
         $pdo = $this->getPdo();
 
         $managerGroupe = new GroupeDao($pdo);
@@ -62,34 +63,103 @@ class ControllerCreneauRdv extends Controller
         return $groupes;
     }
     
-    public function obtenir() {
+    public function obtenir(): void {
         $pdo = $this->getPdo();
-        $manager = new CreneauLibreDao($pdo);
-        $creneaux = $manager->findAllAssoc();
-        // $controllerAgenda = new ControllerAgenda($this->getTwig(),$this->getLoader());
-        $tableau = array();
+        $idAgenda=0;
+        // if (isset($_POST['urlIcs']) && !empty($_POST['urlIcs'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Récupérer les données du formulaire
+            extract($_POST, EXTR_OVERWRITE);
 
-        foreach ($creneaux as $creneau) {
-            // echo $creneau['dateDebut'] . '<br>';
+            var_dump($_POST['contacts']);
+            $managerCreneau = new CreneauLibreDao($pdo);
+            $managerCreneau->supprimerCreneauxLibres();
+
+            
+            $controllerAgenda = new ControllerAgenda($this->getTwig(),$this->getLoader());
+            $agendas = array();
+            foreach ($_POST['contacts'] as $id) {
+                $managerAgenda = new AgendaDao();
+                $tableau = $managerAgenda->findAllByIdUtilisateur($id,$pdo);
+                $agendas = $managerAgenda->hydrateAll($tableau);
+                // var_dump($agendas);
+
+                echo $id . '<br>' ;
+                // $idAgenda++;
+                $controllerAgenda->obtenir($id, $debut, $fin);
+               
+            }
+            
+            
+            
+            $creneaux = $managerCreneau->findAllAssoc();
+            // var_dump($creneaux);
             
 
+            // Appeler la fonction pour trouver les dates communes
+            $datesCommunes = $this->trouverDatesCommunes($creneaux);
+        
+
+            // var_dump($datesCommunes);
+            
+            // Générer vue
+            $this->genererVueCreneaux($datesCommunes);
         }
-        var_dump($creneaux);
-        $intervals = [
-            ['start' => '2024-11-15 08:00:00', 'end' => '2024-11-15 10:00:00'],
-            ['start' => '2024-11-15 09:00:00', 'end' => '2024-11-15 12:00:00'],
-            ['start' => '2024-11-15 07:30:00', 'end' => '2024-11-15 09:30:00'],
-        ];
-        
-        $commonStart = max(array_map(fn($interval) => strtotime($interval['start']), $intervals));
-        $commonEnd = min(array_map(fn($interval) => strtotime($interval['end']), $intervals));
-        
-        if ($commonStart < $commonEnd) {
-            echo "Intervalle commun : " . date('Y-m-d H:i:s', $commonStart) . " à " . date('Y-m-d H:i:s', $commonEnd);
-        } else {
-            echo "Aucun intervalle commun trouvé.";
+        else {
+            $this->genererVue();
         }
 
 
+        // // Afficher les résultats
+        // echo "Dates communes :\n";
+        // foreach ($datesCommunes as $dateCommune) {
+        //     echo "De : " . $dateCommune['debut'] . " à " . $dateCommune['fin'] . "<br>";
+        // }        
+    }
+
+    // Fonction pour vérifier les chevauchements d'événements
+    public function trouverDatesCommunes($creneaux): array {
+        $datesCommunes = [];
+    
+        // Convertir chaque date en objet DateTime
+        for ($i = 0; $i < count($creneaux); $i++) {
+            for ($j = $i + 1; $j < count($creneaux); $j++) {
+                $debut1 = new DateTime($creneaux[$i]['dateDebut']);
+                $fin1 = new DateTime($creneaux[$i]['dateFin']);
+                $debut2 = new DateTime($creneaux[$j]['dateDebut']);
+                $fin2 = new DateTime($creneaux[$j]['dateFin']);
+    
+                // Vérifier s'il y a un chevauchement
+                if ($debut1 < $fin2 && $debut2 < $fin1) {
+                    // Calculer l'intersection des deux plages de dates
+                    $chevauchementDebut = max($debut1, $debut2);
+                    $chevauchementFin = min($fin1, $fin2);
+    
+                    // Ajouter l'intervalle d'intersection au tableau
+                    $datesCommunes[] = [
+                        'debut' => $chevauchementDebut->format('Y-m-d H:i:s'),
+                        'fin' => $chevauchementFin->format('Y-m-d H:i:s'),
+                    ];
+                }
+            }
+        }
+        return $datesCommunes;
+    }
+
+    public function genererVueCreneaux(Array $creneaux): void {
+
+        //Génération de la vue
+        $template = $this->getTwig()->load('resultat.html.twig');
+        // var_dump($creneaux);
+        echo $template->render(array(
+            'creneauxRDV' => $creneaux
+        ));
+    }
+
+    public function genererVue(): void {
+
+        //Génération de la vue
+        $template = $this->getTwig()->load('index.html.twig');
+        echo $template->render(array());
     }
 }

@@ -93,26 +93,43 @@ class ControllerAgenda extends Controller
      *
      * @return void
      */
-    public function obtenir() {
+    public function obtenir($idUtilisateur, $debut, $fin): void {
         $pdo = $this->getPdo();
         $managerCreneau = new CreneauLibreDao($pdo);
         // Vider la table pour éviter les récurrences
-        $managerCreneau->supprimerCreneauxLibres();
+        // $managerCreneau->supprimerCreneauxLibres();
 
-        if (isset($_POST['urlIcs']) && !empty($_POST['urlIcs'])) {
-            // Récupérer les données du formulaire
-            extract($_POST, EXTR_OVERWRITE);
+        $managerAgenda = new AgendaDao();
+        $tableau = $managerAgenda->findAllByIdUtilisateur($idUtilisateur,$pdo);
+        $agendas = $managerAgenda->hydrateAll($tableau);
+        // var_dump($agendas);
+        
+
+        // if (isset($_POST['urlIcs']) && !empty($_POST['urlIcs'])) {
+        //     // Récupérer les données du formulaire
+        //     extract($_POST, EXTR_OVERWRITE);
+        
+        // foreach ($urlAgenda as $value) {
+        //     echo $value;
+        // }
+
+        foreach ($agendas as $agenda) {
+            $urlIcs = $agenda->getUrl();
+            $idAgenda = $agenda->getId();
+            // var_dump($idAgenda);
             // Récupérer les événements de l'agenda
             $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
             // Trier les événements par date de début
             $evenements = $this->triEvenementsOrdreArrivee($evenements);
             // Recherche des créneaux libres
-            $this->recherche($managerCreneau, 'Europe/Paris', $debut, $fin, $evenements);
-
-            $this->genererVueCreneaux($managerCreneau);
-        } else {
-            $this->genererVue('index');
+            $this->recherche('Europe/Paris', $debut, $fin, $evenements,$idAgenda);
+            // $id++;
         }
+        //     $this->genererVueCreneaux($managerCreneau);
+        // } else {
+        //     $this->genererVue('index');
+        // }
+        // return $id;
     }
 
     /**
@@ -164,37 +181,56 @@ class ControllerAgenda extends Controller
      * @param CreneauLibreDao|null $managerCreneau Manager de créneaux libres afin d'appeler les méthodes DAO
      * @param string|null $timeZone Fuseau horaire de la recherche
      * @param string|null $debut date de debut de la recherche
-     * @param string|null $fin date de fin de la recherche
+     * @param string|null $fin Date de fin de la recherche
      * @param array|null $evenements tableau d'evenements triés
      * @return void
      */
-    public function recherche(?CreneauLibreDao $managerCreneau, ?string $timeZone, ?string $debut, ?string $fin, ?array $evenements)
+    public function recherche(?string $timeZone, ?string $debut, ?string $fin, ?array $evenements, ?int $idAgenda): void
     {
+        
+        $pdo = $this->getPdo();
+        // $pdo = new PDO();
+        $managerCreneau = new CreneauLibreDao($pdo);
+        // var_dump($managerCreneau);
         $fuseauHoraire = new DateTimeZone($timeZone);
         $debutCourant = new DateTime($debut, $fuseauHoraire);
         $finCourant = new DateTime($fin, $fuseauHoraire);
 
         foreach ($evenements as $evenement) {
-            // Convertir les heures d'événements en fuseau horaire local
+            // convertir les heures d'événements en fuseau horaire local
             $debutEvenement = new DateTime($evenement->dtstart, $fuseauHoraire);
             $finEvenement = new DateTime($evenement->dtend, $fuseauHoraire);
             $debutEvenement->setTimezone($fuseauHoraire);
             $finEvenement->setTimezone($fuseauHoraire);
-
+            // var_dump($id);
             if ($debutEvenement > $debutCourant) {
-                $managerCreneau->ajouterCreneauLibre(new CreneauLibre(null, $debutCourant, $debutEvenement, 1));
+                // echo $id;
+                
+                $managerCreneau->ajouterCreneauLibre(new CreneauLibre(null, $debutCourant, $debutEvenement, $idAgenda));
+                // var_dump($idAgenda);
+                // echo " test <br>";
+                
+                // $id++;
+                
             }
             $debutCourant = max($debutCourant, $finEvenement);
         }
 
-        // Vérifier s'il reste des créneaux libres après le dernier événement
+        // vérifier s'il reste des créneaux libres après le dernier événement
         if ($debutCourant < $finCourant) {
-            $managerCreneau->ajouterCreneauLibre(new CreneauLibre(null, $debutCourant, $finCourant, 1));
+            // echo $id;
+            $managerCreneau->ajouterCreneauLibre(new CreneauLibre(null, $debutCourant, $finCourant, $idAgenda));
+            // echo " test <br>";
+            
+            // $id++;
+            
         }
+        // echo "test <br>";
+        // return $id;
     }
 
     /**
-     * Tester la validité de l'URL d'un Agenda
+     * tester la validité de l'URL d'un Agenda
      *
      * @param string|null $url de l'agenda a verifier
      * @throws Exception erreur de l'url si il n'est pas valide
@@ -211,7 +247,7 @@ class ControllerAgenda extends Controller
     }
 
     /**
-     * Generer la vue avec les resultats des creneaux
+     * generer la vue avec les resultats des creneaux
      *
      * @param CreneauLibreDao|null $managerCreneau lien avec le manager de creneaux
      * @return void
@@ -242,6 +278,6 @@ class ControllerAgenda extends Controller
             array(
                 'message' => $message
             )
-        );
+            );
     }
 }

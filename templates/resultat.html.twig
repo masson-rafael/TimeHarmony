@@ -5,19 +5,28 @@
 {% endblock %}
 
 
+
 {% block content %}
-{# {{ dump(creneauxLibres) }} #}
+{# {{ dump(creneauxRDV) }} #}
     <main>
 
-        {% for creneau in creneauxLibres %}           
+        {% for creneau in creneauxLibres %}
 
             {# Enlever 2 heures à la dateDebut et dateFin #}
             {% set dateDebut = creneau.dateDebut|date_modify('-2 hours') %}
             {% set dateFin = creneau.dateFin|date_modify('-2 hours') %}
 
-            <p>Créneau libre de {{ dateDebut|date('Y-m-d H:i:s') }} à {{ dateFin|date('Y-m-d H:i:s') }}</p>
-        {% endfor %}
+            {# <p>Créneau libre de {{ dateDebut|date('Y-m-d H:i:s') }} à {{ dateFin|date('Y-m-d H:i:s') }}</p> #}
+         {% endfor %}
 
+
+        {% if creneauxRDV is empty %}
+            <p>Pas de créneau trouvé</p>
+        {% endif %}
+        
+        {% for creneau in creneauxRDV %}
+            <p>Créneau libre du {{ creneau.debut }} au {{ creneau.fin}}</p>
+        {% endfor %}
 
 
         {# <a href="index.php?controleur=utilisateur&methode=listerContacts"><p>ff</p></a> #}

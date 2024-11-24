@@ -59,15 +59,18 @@ class CreneauLibreDao{
      */
     public function ajouterCreneauLibre(CreneauLibre $creneauLibre): void{
         // Préparation de la requête SQL
+        // var_dump($creneauLibre);
         $sql = "INSERT INTO ".PREFIXE_TABLE."creneaulibre (dateDebut, dateFin, idAgenda) VALUES (:dateDebut, :dateFin, :idAgenda)";
         $pdoStatement = $this->pdo->prepare($sql);
 
         // Exécution de la requête avec les valeurs formatées
         $pdoStatement->execute(array(
+            // "id" => $creneauLibre->getId(),
             "dateDebut" => $creneauLibre->getDateDebut()->format('Y-m-d H:i:s'),
             "dateFin" => $creneauLibre->getDateFin()->format('Y-m-d H:i:s'),
-            "idAgenda" => $creneauLibre->getIdAgenda()  // Si nécessaire
+            "idAgenda" => $creneauLibre->getIdAgenda() // Si nécessaire
         ));
+        // echo "azeoaze";
     }
 
     /**
