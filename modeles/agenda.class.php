@@ -1,4 +1,7 @@
 <?php
+
+use ICal\ICal;
+
 /**
  * @author Thibault Latxague
  * @describe Classe des agendas
@@ -150,4 +153,108 @@ class Agenda {
         $this->idUtilisateur = $idUtilisateur;
     }
     
+    /**
+     * Fonction d'obtention des créneaux libres
+     *
+     * @return void
+     */
+    public function rechercheCreneauxLibres($idAgenda,$urlIcs,$debut, $fin,$pdo): void {
+
+            $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
+            // Trier les événements par date de début
+            $evenements = $this->triEvenementsOrdreArrivee($evenements);
+            // Recherche des créneaux libres
+            $this->recherche('Europe/Paris', $debut, $fin, $evenements,$idAgenda,$pdo);
+    }
+
+    /**
+     * Recupere les eveneùent des agendas
+     *
+     * @param string|null $url de l'agenda
+     * @param string|null $debut date de debut de la recherche
+     * @param string|null $fin date de fin de la recherche
+     * @return array|null tableau des evenements
+     */
+    private function recuperationEvenementsAgenda(?string $url, ?string $debut, ?string $fin): ?array
+    {
+            $calendrier = new ICal($url);
+            $evenements = $calendrier->eventsFromRange($debut, $fin);
+        return $evenements;
+    }
+
+    /**
+     * Trie des evenements par ordre d'arrivee
+     *
+     * @param array|null $evenement tableau d'evenements bruts a trier
+     * @return array|null tableau d'evenements tries
+     */
+    private function triEvenementsOrdreArrivee(?array $evenement): ?array
+    {
+        // Trier les événements par date de début
+        usort($evenement, function ($a, $b) {
+            $dateDebutA = new DateTime($a->dtstart);
+            $dateDebutB = new DateTime($b->dtstart);
+            return $dateDebutA <=> $dateDebutB;
+            /*L'opérateur <=> compare les deux valeurs et renvoie :
+                -1 si $dateDebutA est inférieur à $dateDebutB,
+                0 si $dateDebutA est égal à $dateDebutB,
+                1 si $dateDebutA est supérieur à $dateDebutB.*/
+        });
+        return $evenement;
+    }
+
+    /**
+     * Fonction de recherche des créneaux libres
+     *
+     * @param CreneauLibreDao|null $managerCreneau Manager de créneaux libres afin d'appeler les méthodes DAO
+     * @param string|null $timeZone Fuseau horaire de la recherche
+     * @param string|null $debut date de debut de la recherche
+     * @param string|null $fin Date de fin de la recherche
+     * @param array|null $evenements tableau d'evenements triés
+     * @return void
+     */
+    private function recherche(?string $timeZone, ?string $debut, ?string $fin, ?array $evenements, ?int $idAgenda,$pdo): void
+    {
+        
+        $managerCreneau = new CreneauLibreDao($pdo);
+
+        $fuseauHoraire = new DateTimeZone($timeZone);
+        $debutCourant = new DateTime($debut, $fuseauHoraire);
+        $finCourant = new DateTime($fin, $fuseauHoraire);
+
+        foreach ($evenements as $evenement) {
+            // convertir les heures d'événements en fuseau horaire local
+            $debutEvenement = new DateTime($evenement->dtstart, $fuseauHoraire);
+            $finEvenement = new DateTime($evenement->dtend, $fuseauHoraire);
+            $debutEvenement->setTimezone($fuseauHoraire);
+            $finEvenement->setTimezone($fuseauHoraire);
+            // var_dump($id);
+            if ($debutEvenement > $debutCourant) {
+                $managerCreneau->ajouterCreneauLibre(new CreneauLibre(null, $debutCourant, $debutEvenement, $idAgenda));
+            }
+            $debutCourant = max($debutCourant, $finEvenement);
+        }
+
+        // vérifier s'il reste des créneaux libres après le dernier événement
+        if ($debutCourant < $finCourant) {
+            $managerCreneau->ajouterCreneauLibre(new CreneauLibre(null, $debutCourant, $finCourant, $idAgenda));
+        }
+    }
+
+    /**
+     * tester la validité de l'URL d'un Agenda
+     *
+     * @param string|null $url de l'agenda a verifier
+     * @throws Exception erreur de l'url si il n'est pas valide
+     * @return boolean true si l'url est valide, false sinon
+     */
+    public function testerValiditeUrl(?string $url): bool {
+        try {
+            // @ nécessaire pour enlever les erreurs
+            @$calendrier = new ICal($url);
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
 }

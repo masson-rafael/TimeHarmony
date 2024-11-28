@@ -48,7 +48,10 @@ class UtilisateurDao{
      */
     public function find(?int $id): ?Utilisateur {
         $sql = "SELECT * FROM ".PREFIXE_TABLE."utilisateur WHERE id = :id";
-        $pdoStatement = $this->pdo->prepare($sql);
+        if ($this->getPdo() === null) {
+            throw new Exception('Connexion PDO non initialisée.');
+        }        
+        $pdoStatement = $this->getPdo()->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
         
         $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Utilisateur');
@@ -83,13 +86,21 @@ class UtilisateurDao{
     }
 
     public function findAllContact(?int $id): array {
-        $sql="SELECT idUtilisateur2 FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur1= :id";
+        // $sql="SELECT idUtilisateur2 FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur1= :id";
+        // $pdoStatement = $this->pdo->prepare($sql);
+        // // Ajout des parametres
+        // $pdoStatement->execute(array("id"=>$id));
+        // $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        // $result = $pdoStatement->fetchAll();
+
+        $sql="SELECT * FROM timeharmony_utilisateur INNER JOIN timeharmony_contacter ON id = idUtilisateur2 WHERE idUtilisateur1 = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         // Ajout des parametres
         $pdoStatement->execute(array("id"=>$id));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $pdoStatement->fetchAll();
 
+        
 
         return $result;
     }
