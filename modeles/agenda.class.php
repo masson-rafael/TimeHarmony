@@ -158,14 +158,26 @@ class Agenda {
      *
      * @return void
      */
-    public function rechercheCreneauxLibres($idAgenda,$urlIcs,$debut, $fin,$pdo): void {
+    // public function rechercheCreneauxLibres($idAgenda,$urlIcs,$debut, $fin,$pdo): void {
 
-            $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
-            // Trier les événements par date de début
-            $evenements = $this->triEvenementsOrdreArrivee($evenements);
-            // Recherche des créneaux libres
-            $this->recherche('Europe/Paris', $debut, $fin, $evenements,$idAgenda,$pdo);
-    }
+    //         // $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
+    //         // Trier les événements par date de début
+    //         $evenements = $this->triEvenementsOrdreArrivee($evenements);
+    //         // Recherche des créneaux libres
+    //         $this->recherche('Europe/Paris', $debut, $fin, $evenements,$idAgenda,$pdo);
+    // }
+
+    public function rechercheCreneauxLibres($evenementsByUtilisateur,$debut, $fin,$pdo): array {
+
+                // $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
+                // Trier les événements par date de début
+                $evenements = $this->triEvenementsOrdreArrivee($evenementsByUtilisateur);
+
+                // var_dump($evenements);
+                // Recherche des créneaux libres
+                $evenements =$this->recherche('Europe/Paris', $debut, $fin, $evenements,$pdo);
+                return $evenements;
+        }
 
     /**
      * Recupere les eveneùent des agendas
@@ -213,10 +225,11 @@ class Agenda {
      * @param array|null $evenements tableau d'evenements triés
      * @return void
      */
-    private function recherche(?string $timeZone, ?string $debut, ?string $fin, ?array $evenements, ?int $idAgenda,$pdo): void
+    private function recherche(?string $timeZone, ?string $debut, ?string $fin, ?array $evenements,$pdo): array
     {
         
-        $managerCreneau = new CreneauLibreDao($pdo);
+        // $managerCreneau = new CreneauLibreDao($pdo);
+        $creneauxLibres = array();
 
         $fuseauHoraire = new DateTimeZone($timeZone);
         $debutCourant = new DateTime($debut, $fuseauHoraire);
@@ -230,15 +243,21 @@ class Agenda {
             $finEvenement->setTimezone($fuseauHoraire);
             // var_dump($id);
             if ($debutEvenement > $debutCourant) {
-                $managerCreneau->ajouterCreneauLibre(new CreneauLibre(null, $debutCourant, $debutEvenement, $idAgenda));
+                // $managerCreneau->ajouterCreneauLibre(new CreneauLibre(null, $debutCourant, $debutEvenement, $idAgenda));
+                $creneauxLibres[] = new CreneauLibre(null,$debutCourant,$debutEvenement,null);
             }
             $debutCourant = max($debutCourant, $finEvenement);
         }
 
         // vérifier s'il reste des créneaux libres après le dernier événement
         if ($debutCourant < $finCourant) {
-            $managerCreneau->ajouterCreneauLibre(new CreneauLibre(null, $debutCourant, $finCourant, $idAgenda));
+            // $managerCreneau->ajouterCreneauLibre(new CreneauLibre(null, $debutCourant, $finCourant, $idAgenda));
+            $creneauxLibres[] = new CreneauLibre(null, $debutCourant, $finCourant, null);
         }
+
+        // var_dump($creneauxLibres);
+
+        return $creneauxLibres;
     }
 
     /**

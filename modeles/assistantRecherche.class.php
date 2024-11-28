@@ -54,25 +54,18 @@ class Assistant {
     // Fonction pour vérifier les chevauchements d'événements
     public function trouverDatesCommunes($creneaux): array {
         $datesCommunes = [];
-    
-        // Fusionner les sous-tableaux en un seul tableau plat
-        $creneauxPlats = [];
-        foreach ($creneaux as $group) {
-            foreach ($group as $item) {
-                $creneauxPlats[] = $item;
-            }
-        }
         
-        // var_dump($creneauxPlats);
-
+        // Fusionner les sous-tableaux en un seul tableau plat
+        $creneauxPlats = array_merge(...$creneaux);
+        
         // Trouver les intersections des créneaux
         for ($i = 0; $i < count($creneauxPlats); $i++) {
             for ($j = $i + 1; $j < count($creneauxPlats); $j++) {
-                // var_dump($creneauxPlats[$i]['dateDebut']);
-                $debut1 = new DateTime($creneauxPlats[$i]['dateDebut']);
-                $fin1 = new DateTime($creneauxPlats[$i]['dateFin']);
-                $debut2 = new DateTime($creneauxPlats[$j]['dateDebut']);
-                $fin2 = new DateTime($creneauxPlats[$j]['dateFin']);
+                // Accéder directement aux propriétés de l'objet
+                $debut1 = $creneauxPlats[$i]->getDateDebut();
+                $fin1 = $creneauxPlats[$i]->getDateFin();
+                $debut2 = $creneauxPlats[$j]->getDateDebut();
+                $fin2 = $creneauxPlats[$j]->getDateFin();
     
                 // Vérifier s'il y a un chevauchement
                 if ($debut1 < $fin2 && $debut2 < $fin1) {
@@ -91,6 +84,7 @@ class Assistant {
     
         return $datesCommunes;
     }
+    
     
 
     public function combinerCreneaux($data): array {

@@ -74,29 +74,40 @@ class ControllerAssistant extends Controller
                 $utilisateur = new Utilisateur($utilisateurCourant->getId());
                 $agendas = $utilisateur->getAgendas();
 
+                $allEvents = [];
+
                 foreach ($agendas as $agenda) {  
 
                     $urlIcs = $agenda->getUrl();
+                    // var_dump($urlIcs);
                     $idAgenda = $agenda->getId();
-                    $agenda->rechercheCreneauxLibres($idAgenda,$urlIcs,$_POST['debut'],$_POST['fin'],$pdo);
+                    
+
+                    try {
+                        $ical = new ICal($urlIcs);
+                        $events = $ical->eventsFromRange($_POST['debut'],$_POST['fin']);
+                        
+                        // var_dump($events);
+                        // Récupérer les événements (sans plage => tout)
+                        $allEvents = array_merge($allEvents, $events);
+                    } catch (\Exception $e) {
+                        echo "Erreur de lecture de l'agenda : {$e->getMessage()}\n";
+                    }
+
+                    // $agenda->rechercheCreneauxLibres($idAgenda,$urlIcs,$_POST['debut'],$_POST['fin'],$pdo);
                 }
-                // $evenementsFusionnes = array();
-                // foreach ($agendas as $agenda) {
-                //     var_dump($agenda->getUrl());
-                //     $ical = new ICal($agenda->getUrl());
-                //     $evenements = $ical->eventsFromRange($_POST['debut'],$_POST['fin']); // Extraire tous les événements dans une plage
-                //     var_dump($evenements);
-                //     foreach ($evenements as $evenement) {
-                //         $evenementsFusionnes[] = $evenement; // Ajouter individuellement pour éviter problèmes
-                //     }
-                // }
+               
+                // var_dump($allEvents);
 
                 // var_dump($evenementsFusionnes);
 
-                $agenda->rechercheCreneauxLibres($idAgenda,$urlIcs,$_POST['debut'],$_POST['fin'],$pdo);
+                // $agenda->rechercheCreneauxLibres($idAgenda,$urlIcs,$_POST['debut'],$_POST['fin'],$pdo);
+                $creneauxByUtilisateur[] = $agenda->rechercheCreneauxLibres($allEvents,$_POST['debut'],$_POST['fin'],$pdo);
 
-                $creneauxByUtilisateur = $managerCreneau->findAllByIdUtilisateur($utilisateur->getId());
-                $creneaux[] = $assistantRecherche->combinerCreneaux($creneauxByUtilisateur);
+                var_dump($creneauxByUtilisateur);
+
+                // $creneauxByUtilisateur = $managerCreneau->findAllByIdUtilisateur($utilisateur->getId());
+                // $creneaux[] = $assistantRecherche->combinerCreneaux($creneauxByUtilisateur);
 
                 // Afficher les résultats
                 // echo "Créneaux sans chevauchement :\n";
@@ -108,7 +119,7 @@ class ControllerAssistant extends Controller
             // $creneaux = $managerCreneau->findAllAssoc();
             // var_dump($creneauxByUtilisateur);
             // Appeler la fonction pour trouver les dates communes
-            $datesCommunes = $assistantRecherche->trouverDatesCommunes($creneaux);
+            $datesCommunes = $assistantRecherche->trouverDatesCommunes($creneauxByUtilisateur);
             
             
             // Générer vue
