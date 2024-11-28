@@ -1,4 +1,7 @@
 <?php
+
+use Twig\Profiler\Dumper\BaseDumper;
+
 /**
  * @author Thibault Latxague
  * @describe Controller de la page des utilisateur
@@ -220,10 +223,15 @@ class ControllerUtilisateur extends Controller
     public function supprimer() {
         // Récupération de l'id envoyé en parametre du lien
         $id = $_GET['id'];
+        $type = $_GET['type'];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $manager->supprimerUtilisateur($id);
-        $this->lister();
+        if($type == 'admin') {
+            $this->lister();
+        } else {
+            $this->deconnecter();
+        }
     }
 
     /**
@@ -233,6 +241,7 @@ class ControllerUtilisateur extends Controller
      */
     public function modifier() {
         $id = $_GET['id'];
+        $type = $_GET['type'];
         $nom = $_POST['nom'];
         $prenom = $_POST['prenom'];
         $role = $_POST['role'];
@@ -244,7 +253,50 @@ class ControllerUtilisateur extends Controller
         } else {
             $role = true;
         }
+
         $manager->modifierUtilisateur($id, $nom, $prenom, $role);
-        $this->lister();
+        $util = $manager->find($id);
+        $_SESSION['utilisateur'] = $util;
+        $this->getTwig()->addGlobal('utilisateurGlobal', $util);
+
+        if($type == 'admin') {
+            $this->lister();
+        } else {
+            $this->afficherProfil();
+        }  
+    }
+
+    /**
+     * Affiche le profil de l'utilisateur connecté (page profil)
+     *
+     * @return void
+     */
+    public function afficherProfil():void {
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $utilisateur = $manager->getUserMail($_SESSION['utilisateur']->getEmail());
+        $template = $this->getTwig()->load('profil.html.twig');
+        echo $template->render(
+            array(
+                'utilisateur' => $utilisateur,
+            )
+        );
+    }
+
+    /**
+     * Modifie le profil de l'utilisateur connecté (page modifier profil)
+     *
+     * @return void
+     */
+    public function modifierProfil() {
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $utilisateur = $manager->getUserMail($_SESSION['utilisateur']->getEmail());
+        $template = $this->getTwig()->load('modifierProfil.html.twig');
+        echo $template->render(
+            array(
+                'utilisateur' => $utilisateur,
+            )
+        );
     }
 }

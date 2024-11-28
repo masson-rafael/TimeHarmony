@@ -7,8 +7,8 @@
 
 {% block content %}
 {# {{ dump(creneauxLibres) }} #}
-    <main>
-    <div class="container">
+    <main class="min-vh-100">
+    <div class="container mb-5 pb-4">
             <div class="row justify-content-center">
                 <div class="col-md-4 mt-5"> <!-- Ajout de la marge en haut -->
                     <form action="index.php?controleur=utilisateur&methode=inscription" method="post" required>
@@ -36,7 +36,6 @@
                         <button type="submit" class="btn btn-primary">S'inscrire</button>
                     </form>
                 </div>
-                {{dump(message)}}
                 {% if message %}
                 <div class="mt-5">
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
