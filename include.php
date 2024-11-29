@@ -29,5 +29,3 @@ require_once 'modeles/creneauLibre.dao.php';
 require_once 'modeles/groupe.class.php';
 require_once 'modeles/groupe.dao.php';
 
-//Ajout des fonctions à part
-require_once 'config/fonctions.php';

@@ -192,16 +192,14 @@ class Utilisateur {
         $this->motDePasse = $motDePasse;
     }
 
-    /**
-     * Set la photo de profil de l'utilisateur
-     *
-     * @param string|null $photoDeProfil de l'utilisateur
-     * @return void
-     */
-    public function setPhotoDeProfil(string|null $photoDeProfil): void {
-        $this->photoDeProfil = $photoDeProfil;
-    }
-
+/**
+   * Définit une nouvelle photo de profil pour l'utilisateur.
+   *
+   * @param string $photoDeProfil Le chemin de la photo de profil.
+   */
+  public function setPhotoDeProfil($photoDeProfil) {
+    $this->photoDeProfil = $photoDeProfil;
+}
     /**
      * Set si l'utilisateur est adminé
      *

@@ -245,26 +245,41 @@ class ControllerUtilisateur extends Controller
         $nom = $_POST['nom'];
         $prenom = $_POST['prenom'];
         $role = $_POST['role'];
-
+    
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
-        if($role == 'User') {
+    
+        // Gestion de l'upload de la photo de profil
+        $cheminPhoto = $_SESSION['utilisateur']->getPhotoDeProfil(); // Récupérer l'ancien chemin
+        if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {
+            $dossierDestination = 'C:\wamp64\\www\TimeHarmony\\TimeHarmony\\image\\photo_user\\';
+            $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
+            $cheminPhoto = $dossierDestination . $nomFichier;
+    
+            // Déplacer le fichier uploadé dans le répertoire cible
+            if (move_uploaded_file($_FILES['photo']['tmp_name'], $cheminPhoto)) {
+                // Mettre à jour le chemin de la photo dans la base de données
+                $manager->modifierPhotoProfil($id, $nomFichier);
+                $_SESSION['utilisateur']->setPhotoDeProfil($nomFichier);
+            }
+        }
+    
+        // Mise à jour du profil utilisateur
+        if ($role == 'User') {
             $role = false;
         } else {
             $role = true;
         }
-
+    
         $manager->modifierUtilisateur($id, $nom, $prenom, $role);
-        $util = $manager->find($id);
-        $_SESSION['utilisateur'] = $util;
-        $this->getTwig()->addGlobal('utilisateurGlobal', $util);
-
-        if($type == 'admin') {
+    
+        if ($type == 'admin') {
             $this->lister();
         } else {
             $this->afficherProfil();
-        }  
+        }
     }
+    
 
     /**
      * Affiche le profil de l'utilisateur connecté (page profil)
