@@ -1,52 +1,39 @@
 <?php
 
-function genererSousTableauxBinairesOptimise($lettres, $tailleFixe = null, $seuil = 2) {
+function genererSousTableauxBinairesOptimise($lettres) {
     $n = count($lettres);
-    $seuil = floor($n / $seuil);
+    $seuil = floor($n / 2);
 
     // Parcourir uniquement les combinaisons pertinentes
-    for ($i = 0; $i < (1 << $n); $i++) {
+    for ($i = 0; $i < (1 << $n); $i++) { // Utilisation de bitwise pour éviter `pow(2, $n)`
+        // Compter les bits à 1 directement (plus rapide que `array_sum`)
         $somme = 0;
-        $sousTableau = [];
-
-        // Compter les bits à 1 et construire le sous-tableau en une seule passe
         for ($j = 0; $j < $n; $j++) {
-            if ($i & (1 << $j)) {
+            if ($i & (1 << $j)) { // Teste si le bit $j est à 1
                 $somme++;
-                $sousTableau[$j] = 1;
-            } else {
-                $sousTableau[$j] = 0;
             }
         }
 
-        // Vérifier si la combinaison respecte la tailleFixe ou le seuil
-        if (($tailleFixe !== null && $somme == $tailleFixe) || ($tailleFixe === null && $somme >= $seuil)) {
-            yield $sousTableau;
+        // Si le seuil est respecté, générer la combinaison
+        if ($somme >= $seuil) {
+            $sousTableau = [];
+            for ($j = 0; $j < $n; $j++) {
+                $sousTableau[] = ($i & (1 << $j)) ? 1 : 0;
+            }
+            yield $sousTableau; // Génération paresseuse
+            var_dump(intval($i));
         }
     }
 }
 
 // Exemple d'utilisation
-$lettres = range('A', 'T'); // Génère les lettres A à T - taille 20
-$tailleFixe = 18; // Taille des combinaisons souhaitée
-
-$resultat = [];
-$indexCombinaison = 0;
-
-foreach (genererSousTableauxBinairesOptimise($lettres, $tailleFixe) as $sousTableau) {
+$lettres = range('A', 'F'); // Génère les lettres A à T
+foreach (genererSousTableauxBinairesOptimise($lettres) as $index => $sousTableau) {
     $lettresAssociees = [];
     foreach ($sousTableau as $key => $value) {
         if ($value === 1) {
             $lettresAssociees[] = $lettres[$key];
         }
     }
-    $resultat[] = [
-        'combinaison' => $indexCombinaison++,
-        'lettres' => $lettresAssociees
-    ];
-}
-
-// Affichage des résultats
-foreach ($resultat as $combinaison) {
-    echo "Combinaison {$combinaison['combinaison']} : (" . implode(", ", $combinaison['lettres']) . ")\n<br>";
+    echo "Combinaison $index : (" . implode(", ", $lettresAssociees) . ")\n<br>";
 }
