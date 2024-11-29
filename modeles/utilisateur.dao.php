@@ -159,7 +159,7 @@ class UtilisateurDao{
     }
 
     /**
-     * sert a hydrater le tableau associatif
+     * set a hydrater le tableau associatif
      *
      * @param array|null $tableauAssoc tableau associatif
      * @return CreneauLibre|null créneau libre
@@ -195,7 +195,7 @@ class UtilisateurDao{
      * @param integer|null $id de l'utilisateur
      * @return void
      */
-   function supprimerUtilisateur(?int $id){
+   public function supprimerUtilisateur(?int $id){
         $sql = "DELETE FROM ".PREFIXE_TABLE."utilisateur WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
@@ -212,17 +212,16 @@ class UtilisateurDao{
         ));
     }
 
-  /**
+      /**
    * Met à jour le chemin de la photo de profil de l'utilisateur dans la base de données.
    *
    * @param int $id L'identifiant de l'utilisateur.
    * @param string $cheminPhoto Le chemin de la nouvelle photo de profil.
    */
   public function modifierPhotoProfil($id, $cheminPhoto) {
-    $sql = "UPDATE utilisateurs SET photo_profil = :photo WHERE id = :id";
+    $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET photoDeProfil = :photoDeProfil WHERE id = :id";
     $stmt = $this->pdo->prepare($sql);
-    $stmt->execute(['photo' => $cheminPhoto, 'id' => $id]);
+    $stmt->execute(array('photoDeProfil' => $cheminPhoto, 'id' => $id));
 }
 
-    
 }
