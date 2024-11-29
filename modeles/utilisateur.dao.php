@@ -82,12 +82,6 @@ class UtilisateurDao{
         return $utilisateurExiste;
     }
 
-    /**
-     * Trouve tous les contacts d'un utilisateur dont l'id est donné
-     *
-     * @param integer|null $id de l'utilisateur dont on veut connaitre les contacts
-     * @return array tableau des contacts
-     */
     public function findAllContact(?int $id): array {
         $sql="SELECT idUtilisateur2 FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur1= :id";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -95,15 +89,11 @@ class UtilisateurDao{
         $pdoStatement->execute(array("id"=>$id));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $pdoStatement->fetchAll();
+
+
         return $result;
     }
 
-    /**
-     * Retourne l'utilisateur dont le mail est donné
-     *
-     * @param string|null $mail de l'utilisateur
-     * @return Utilisateur|null utilisateur
-     */
     public function getUserMail(?string $mail) : ?Utilisateur {
         $sql="SELECT * FROM ".PREFIXE_TABLE."utilisateur WHERE email= :email";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -169,7 +159,7 @@ class UtilisateurDao{
     }
 
     /**
-     * set a hydrater le tableau associatif
+     * sert a hydrater le tableau associatif
      *
      * @param array|null $tableauAssoc tableau associatif
      * @return CreneauLibre|null créneau libre
@@ -200,28 +190,17 @@ class UtilisateurDao{
         }
         return $utilisateurs;
     }
-
-    /**
-     * Suppression de l'utilisateur dans la BD
+     /** Suppression de l'utilisateur dans la BD
      * 
      * @param integer|null $id de l'utilisateur
      * @return void
      */
-    public function supprimerUtilisateur(?int $id){
+   function supprimerUtilisateur(?int $id){
         $sql = "DELETE FROM ".PREFIXE_TABLE."utilisateur WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
     }
 
-    /**
-     * Fonction de modification de l'utilisateur appellee par panel admin et profil
-     *
-     * @param integer|null $id de l'utilisateur
-     * @param string|null $nom de l'utilisateur
-     * @param string|null $prenom de l'utilisateur
-     * @param boolean|null $estAdmin de l'utilisateur
-     * @return void
-     */
     public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?bool $estAdmin){
         $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET nom = :nom, prenom = :prenom, estAdmin = :estAdmin WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -232,4 +211,18 @@ class UtilisateurDao{
             "id" => $id
         ));
     }
+
+  /**
+   * Met à jour le chemin de la photo de profil de l'utilisateur dans la base de données.
+   *
+   * @param int $id L'identifiant de l'utilisateur.
+   * @param string $cheminPhoto Le chemin de la nouvelle photo de profil.
+   */
+  public function modifierPhotoProfil($id, $cheminPhoto) {
+    $sql = "UPDATE utilisateurs SET photo_profil = :photo WHERE id = :id";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute(['photo' => $cheminPhoto, 'id' => $id]);
+}
+
+    
 }
