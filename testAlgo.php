@@ -1,6 +1,7 @@
 <?php
 
-function genererSousTableauxBinairesOptimise($lettres, $jsonFilePath) {
+function genererSousTableauxBinairesOptimise($lettre, $jsonFilePath) {
+    $lettres = [$lettre];
     $n = count($lettres);
     $seuil = floor($n / 2);
 
@@ -12,7 +13,7 @@ function genererSousTableauxBinairesOptimise($lettres, $jsonFilePath) {
     }
 
     // Parcourir uniquement les combinaisons pertinentes
-    for ($i = 0; $i < (1 << $n); $i++) { // Utilisation de bitwise pour éviter `pow(2, $n)`
+    for ($i = 0; $i < (1 << $n); $i++) { 
         $somme = 0;
 
         // Compter les bits à 1 directement
@@ -24,7 +25,7 @@ function genererSousTableauxBinairesOptimise($lettres, $jsonFilePath) {
 
         // Si le seuil est respecté, générer la combinaison
         if ($somme >= $seuil) {
-            $tailleTableau = $n; // La taille est toujours le nombre de lettres (fixe ici)
+            $tailleTableau = $n;
             $valEntiere = intval($i);
 
             // Trouver ou créer une entrée pour la taille actuelle
@@ -34,7 +35,7 @@ function genererSousTableauxBinairesOptimise($lettres, $jsonFilePath) {
             foreach ($jsonData['combinaisons'] as &$combinaison) {
                 if (isset($combinaison[$tailleKey])) {
                     // Ajouter la valeur entière à l'entrée existante
-                    if (!in_array($valEntiere, $combinaison[$tailleKey])) { // Éviter les doublons
+                    if (!in_array($valEntiere, $combinaison[$tailleKey])) { 
                         $combinaison[$tailleKey][] = $valEntiere;
                     }
                     $found = true;
@@ -55,13 +56,18 @@ function genererSousTableauxBinairesOptimise($lettres, $jsonFilePath) {
     file_put_contents($jsonFilePath, json_encode($jsonData, JSON_PRETTY_PRINT));
 }
 
-// Exemple d'utilisation
-$lettres = range('A', 'J'); // Génère les lettres A à J
-$jsonFilePath = 'combinaisons.json'; // Chemin vers le fichier JSON
+// Fonction principale pour traiter une lettre unique
+function genererPourUneLettreUnique($lettre) {
+    $jsonFilePath = 'combinaisons.json'; 
 
-// Assurez-vous que le fichier JSON existe avant d'exécuter la fonction
-if (!file_exists($jsonFilePath)) {
-    file_put_contents($jsonFilePath, json_encode(["combinaisons" => []], JSON_PRETTY_PRINT));
+    // Assurez-vous que le fichier JSON existe avant de commencer
+    if (!file_exists($jsonFilePath)) {
+        file_put_contents($jsonFilePath, json_encode(["combinaisons" => []], JSON_PRETTY_PRINT));
+    }
+
+    // Traiter uniquement la lettre passée en paramètre
+    genererSousTableauxBinairesOptimise($lettre, $jsonFilePath);
 }
 
-genererSousTableauxBinairesOptimise($lettres, $jsonFilePath);
+// Exemple d'utilisation : traiter la lettre que l'on veut
+genererPourUneLettreUnique('R');
