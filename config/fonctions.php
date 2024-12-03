@@ -36,3 +36,81 @@ function redimage(?string $img_src, ?string $img_dest, ?string $dst_w, ?string $
     // Return le chemin de l'image recadree
     return $img_dest;
 }
+
+/**
+ * Valide le prenom de l'utilisateur s'il est valide, après série de vérifications
+ *
+ * @param string $prenom Le prénom de l'utilisateur
+ * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
+ * @return boolean Retourne vrai si le prénom est valide, faux sinon
+ */
+function validerPrenom(string $prenom, array &$messagesErreurs): bool {
+    $valide = true;
+
+    return $valide;
+}
+
+/**
+ * Valide le nom de l'utilisateur s'il est valide, après série de vérifications
+ *
+ * @param string $nom Le nom de l'utilisateur
+ * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
+ * @return boolean Retourne vrai si le nom est valide, faux sinon
+ */
+function validerNom(string $nom, array &$messagesErreurs): bool {
+    $valide = true;
+
+    return $valide;
+}
+
+/**
+ * Valide l'email s'il est valide, après série de vérifications
+ *
+ * @param string $email L'email de l'utilisateur
+ * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
+ * @return boolean Retourne vrai si l'email est valide, faux sinon
+ */
+function validerEmail(string $email, array &$messagesErreurs): bool {
+    $valide = true;
+
+    return $valide;
+}
+
+/**
+ * Valide l'URL de l'agenda est valide, après série de vérifications
+ *
+ * @param string $urlAgenda L'URL de l'agenda
+ * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
+ * @return boolean Retourne vrai si l'URL de l'agenda est valide, faux sinon
+ */
+function validerURLAgenda(string $urlAgenda, array &$messagesErreurs): bool {
+    $valide = true;
+
+    return $valide;
+}
+
+/**
+ * Valide la couleur de l'agenda, après série de vérifications
+ *
+ * @param string $couleurAgenda La couleur de l'agenda
+ * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
+ * @return boolean Retourne vrai si la couleur de l'agenda est valide, faux sinon
+ */
+function validerCouleurAgenda(string $couleurAgenda, array &$messagesErreurs): bool {
+    $valide = true;
+
+    return $valide;
+}
+
+/**
+ * Valide le mot de passe de l'utilisateur s'il est valide, après série de vérifications
+ *
+ * @param string $motDePasse Le mot de passe de l'utilisateur
+ * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
+ * @return boolean Retourne vrai si le mot de passe est valide, faux sinon
+ */
+function validerMotDePasse(string $motDePasse, array &$messagesErreurs): bool {
+    $valide = true;
+
+    return $valide;
+}
