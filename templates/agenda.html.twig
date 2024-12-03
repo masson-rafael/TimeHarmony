@@ -27,15 +27,15 @@
                     <form action="index.php?controleur=agenda&methode=ajouterAgenda" method="post" required>
                         <div class="mb-3">
                             <label for="url" class="form-label">URL</label>
-                            <input type="text" name="url" class="form-control" id="url" required placeholder="Entrez une URL valide">
+                            <input type="url" name="url" class="form-control" id="url" required placeholder="Entrez une URL valide">
                         </div>
                         <div class="mb-3">
                             <label for="couleur" class="form-label">Couleur</label>
-                            <input type="text" name="couleur" class="form-control" id="couleur" required placeholder="Entrez la couleur">
+                            <input type="color" name="couleur" class="form-control" id="couleur" required placeholder="Entrez la couleur">
                         </div>
                         <div class="mb-3">
                             <label for="nom" class="form-label">Nom</label>
-                            <input type="text" name="nom" class="form-control" id="nom" required placeholder="Entrez un nom">
+                            <input type="text" name="nom" class="form-control" id="nom" required placeholder="Entrez un nom" maxlength="50">
                         </div>
 
                         <button type="submit" class="btn btn-primary">Ajouter</button>

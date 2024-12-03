@@ -24,20 +24,20 @@
                     <form method="POST" action="index.php?controleur=utilisateur&methode=modifier&id={{ utilisateurGlobal.getId }}&type='util'" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="nom" class="form-label">Nom</label>
-                            <input type="text" class="form-control" id="nom" name="nom" value="{{ utilisateurGlobal.getNom }}">
+                            <input type="text" class="form-control" id="nom" name="nom" value="{{ utilisateurGlobal.getNom }}" maxlength="50">
                         </div>
                         <div class="mb-3">
                             <label for="prenom" class="form-label">Prénom</label>
-                            <input type="text" class="form-control" id="prenom" name="prenom" value="{{ utilisateurGlobal.getPrenom }}">
+                            <input type="text" class="form-control" id="prenom" name="prenom" value="{{ utilisateurGlobal.getPrenom }}" maxlength="50">
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label">E-mail</label>
+                            <label for="email" class="form-label">E-mail</label> <!-- Label donc pas de type -->
                             <p>{{ utilisateurGlobal.getEmail }}</p>
                             <input type="hidden" class="form-control" id="role" name="role" value="{{ utilisateurGlobal.getEstAdmin }}">
                         </div>
                         <div class="mb-3">
                             <label for="photo" class="form-label">Changer la photo de profil</label>
-                            <input type="file" class="form-control" id="photo" name="photo">
+                            <input type="file" class="form-control" id="photo" name="photo" accept=".jpg, .png">
                         </div>
                         <div class="d-flex justify-content-between">
                             <button type="submit" class="btn btn-primary">Modifier mon profil</button>
