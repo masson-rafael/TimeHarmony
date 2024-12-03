@@ -14,23 +14,23 @@
                     <form action="index.php?controleur=utilisateur&methode=inscription" method="post" required>
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Nom</label>
-                            <input type="text" name="nom" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required maxlength="50">
+                            <input type="text" name="nom" class="form-control" aria-describedby="emailHelp" required maxlength="50" title="Entrez votre vrai nom pour votre compte">
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Prenom</label>
-                            <input type="text" name="prenom" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required maxlength="50">
+                            <input type="text" name="prenom" class="form-control" aria-describedby="emailHelp" required maxlength="50" title="Entrez votre vrai prénom pour votre compte">
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">E-mail</label>
-                            <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                            <input type="email" name="email" class="form-control" aria-describedby="emailHelp" required title="Entrez l'adresse email qui sera liée au compte">
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Mot de passe</label>
-                            <input type="password" name="pwd" class="form-control" id="exampleInputPassword1" required>
+                            <input type="password" name="pwd" class="form-control" required title="Entrez le mot de passe permettant d'accéder au compte">
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Confirmer mot de passe</label>
-                            <input type="password" name="pwdConfirme" class="form-control" id="exampleInputPassword1" required>
+                            <input type="password" name="pwdConfirme" class="form-control" id="exampleInputPassword1" required title="Entrez une nouvelle fois le même mot de passe">
                         </div>
                         <a class="mb-3" href="index.php?controleur=utilisateur&methode=premiereConnexion">Deja un compte ? Se connecter</a>
                         <button type="submit" class="btn btn-primary">S'inscrire</button>
