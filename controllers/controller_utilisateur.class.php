@@ -34,7 +34,7 @@ class ControllerUtilisateur extends Controller
          * Verifie ensuite si l'email existe dans la bd
          * Verifie si le mdp clair correspond au hachage dans bd
          */
-        if (isset($_POST['email']) && isset($_POST['pwd'])) {
+        if (isset($_POST['email']) && isset($_POST['pwd'])) {           // @todo vérification email et mdp
             $manager = new UtilisateurDao($pdo);
             // On recupere un tuple avec un booleen et le mdp hache
             $motDePasse = $manager->connexionReussie($_POST['email']);
@@ -72,7 +72,7 @@ class ControllerUtilisateur extends Controller
 
     /**
      * Inscription de l'utilisateur à la BD
-     *
+     * @todo TOUT MODIFIER - Vérification intégrité parametres
      * @return void
      */
     function inscription() {
@@ -222,8 +222,8 @@ class ControllerUtilisateur extends Controller
      */
     public function supprimer() {
         // Récupération de l'id envoyé en parametre du lien
-        $id = $_GET['id'];
-        $type = $_GET['type'];
+        $id = $_GET['id'];              // @todo vérification id
+        $type = $_GET['type'];          // @todo vérification type
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $manager->supprimerUtilisateur($id);
@@ -240,18 +240,18 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
     public function modifier() {
-        $id = $_GET['id'];
-        $type = $_GET['type'];
-        $nom = $_POST['nom'];
-        $prenom = $_POST['prenom'];
-        $role = $_POST['role'];
+        $id = $_GET['id'];              // @todo vérification id
+        $type = $_GET['type'];          // @todo vérification type
+        $nom = $_POST['nom'];           // @todo vérification nom
+        $prenom = $_POST['prenom'];     // @todo vérification prenom
+        $role = $_POST['role'];         // @todo vérification role
     
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
     
         // Gestion de l'upload de la photo de profil
         $cheminPhoto = $_SESSION['utilisateur']->getPhotoDeProfil(); // Récupérer l'ancien chemin
-        if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {
+        if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {        // @todo vérification fichier
             $dossierDestination = 'image\\photo_user\\';
             $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
             $cheminPhoto = $dossierDestination . $nomFichier;

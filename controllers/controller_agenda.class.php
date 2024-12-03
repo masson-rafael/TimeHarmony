@@ -37,7 +37,7 @@ class ControllerAgenda extends Controller
         $pdo = $this->getPdo(); // Récupérer l'instance PDO
     
         // Vérifier si tous les champs du formulaire sont remplis
-        if (isset($_POST['url'], $_POST['couleur'], $_POST['nom'])) {
+        if (isset($_POST['url'], $_POST['couleur'], $_POST['nom'])) {           // @todo vérification des variables
             // Initialise et valider les données
             $url = filter_var($_POST['url'], FILTER_SANITIZE_URL); // Initialise l'URL
     
@@ -55,7 +55,7 @@ class ControllerAgenda extends Controller
     
             if (!$agendaExiste) {
                 // Créer une nouvelle instance d'Agenda avec les données du formulaire
-                $nouvelAgenda = new Agenda(null, $_POST['url'], $_POST['couleur'], $_POST['nom']);
+                $nouvelAgenda = new Agenda(null, $_POST['url'], $_POST['couleur'], $_POST['nom']);          // @todo utilisation des vérifications 
     
                 // Ajouter l'agenda dans la base de données
                 $manager->ajouterAgenda($nouvelAgenda);

@@ -75,9 +75,9 @@ class ControllerCreneauRdv extends Controller
         // Vider la table pour éviter les récurrences
         $managerCreneau->supprimerCreneauxLibres();
 
-        if (isset($_POST['urlIcs']) && !empty($_POST['urlIcs'])) {
+        if (isset($_POST['urlIcs']) && !empty($_POST['urlIcs'])) {          // @todo vérification lien URL agenda
             // Récupérer les données du formulaire
-            extract($_POST, EXTR_OVERWRITE);
+            extract($_POST, EXTR_OVERWRITE);                                // @todo pas de extr_overwrite car pas de vérif OU ALORS apres 
             // Récupérer les événements de l'agenda
             $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
             // Trier les événements par date de début
