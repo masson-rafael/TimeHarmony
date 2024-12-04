@@ -140,16 +140,32 @@ class utilitaire {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        if(empty($email)){
+            $messagesErreurs[] = "L'email est obligatoire";
+            $valide = false;
+        }
 
-        // 2. Type de données : vérifier que le prenom est une chaine de caractères
+        // 2. Type de données : vérifier que l'email est une chaine de caractères
+        if(!is_string($email)){
+            $messagesErreurs[] = "L'email doit être une chaine de caractères";
+            $valide = false;
+        }
 
-        // 3. Longueur de la chaine : vérifier que le prenom est compris entre 2 et 50 caractères
+        // 3. Longueur de la chaine : vérifier que l'email est compris entre 5 et 255 caractères
+        if(strlen($email) < 5 || strlen($email) > 255){
+            $messagesErreurs[] = "L'email doit être compris entre 5 et 255 caractères";
+            $valide = false;
+        }
 
-        // 4. Format des données : vérifier le format du prénom
+        // 4. Format des données : vérifier le format de l'email
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+            $messagesErreurs[] = "L'email n'est pas valide";
+            $valide = false;
+        }
 
-        // 5. Plage des valeurs
+        // 5. Plage des valeurs - non pertinent
 
-        // 6. Fichiers uploadés
+        // 6. Fichiers uploadés - non pertinent
 
         return $valide;
     }
