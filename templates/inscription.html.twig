@@ -26,11 +26,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Mot de passe</label>
-                            <input type="password" name="pwd" class="form-control" required title="Entrez le mot de passe permettant d'accéder au compte">
+                            <input type="password" name="pwd" class="form-control" required minlength="8" maxlength="25" title="Entrez le mot de passe permettant d'accéder au compte">
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Confirmer mot de passe</label>
-                            <input type="password" name="pwdConfirme" class="form-control" id="exampleInputPassword1" required title="Entrez une nouvelle fois le même mot de passe">
+                            <input type="password" name="pwdConfirme" class="form-control" id="exampleInputPassword1" required minlength="8" maxlength="25" title="Entrez une nouvelle fois le même mot de passe">
                         </div>
                         <a class="mb-3" href="index.php?controleur=utilisateur&methode=premiereConnexion">Deja un compte ? Se connecter</a>
                         <button type="submit" class="btn btn-primary">S'inscrire</button>

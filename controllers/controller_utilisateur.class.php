@@ -1,6 +1,7 @@
 <?php
 
 use Twig\Profiler\Dumper\BaseDumper;
+require_once 'include.php';
 
 /**
  * @author Thibault Latxague
@@ -77,6 +78,12 @@ class ControllerUtilisateur extends Controller
      */
     function inscription() {
         $pdo = $this->getPdo();
+        $tableauErreurs = [];
+
+        $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
+        $nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
+        $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $tableauErreurs);
+        $mdpValide = utilitaire::validerMotDePasse($_POST['pwd'], $_POST['pwdConfirme'], $tableauErreurs);
 
         //Vérification que le form est bien rempli
         if (isset($_POST['email']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['pwd']) && isset($_POST['pwdConfirme'])) {
@@ -84,7 +91,7 @@ class ControllerUtilisateur extends Controller
             // Appel fonction et stocke bool pour savoir si utilisateur existe deja avec email
             $utilisateurExiste = $manager->findMail($_POST['email']); 
             // Verifie que le mdp contient les bons caracteres
-            $mdpContientBonsCaracteres = preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,16}$/', $_POST['pwd']);
+            $mdpContientBonsCaracteres = preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $_POST['pwd']);
 
             /**
              * Verifie que l'utilisateur n'existe pas, 

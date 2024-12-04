@@ -13,7 +13,7 @@ class utilitaire {
      * @param string|null $dst_h Hauteur de l'image de destination
      * @return string|null Chemin de l'image recadree
      */
-    static function redimage(?string $img_src, ?string $img_dest, ?string $dst_w, ?string $dst_h): ?string
+    public static function redimage(?string $img_src, ?string $img_dest, ?string $dst_w, ?string $dst_h): ?string
     {
         // Lit les dimensions de l'image
         $size = GetImageSize("$img_src");
@@ -51,7 +51,7 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si le prénom est valide, faux sinon
      */
-    static function validerPrenom(string $prenom, array &$messagesErreurs): bool
+    public static function validerPrenom(string $prenom, array &$messagesErreurs): bool
     {
         $valide = true;
 
@@ -93,7 +93,7 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si le nom est valide, faux sinon
      */
-    static function validerNom(string $nom, array &$messagesErreurs): bool
+    public static function validerNom(string $nom, array &$messagesErreurs): bool
     {
         $valide = true;
 
@@ -135,7 +135,7 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si l'email est valide, faux sinon
      */
-    static function validerEmail(string $email, array &$messagesErreurs): bool
+    public static function validerEmail(string $email, array &$messagesErreurs): bool
     {
         $valide = true;
 
@@ -177,7 +177,7 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si l'URL de l'agenda est valide, faux sinon
      */
-    static function validerURLAgenda(string $urlAgenda, array &$messagesErreurs): bool
+    public static function validerURLAgenda(string $urlAgenda, array &$messagesErreurs): bool
     {
         $valide = true;
 
@@ -218,7 +218,7 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si la couleur de l'agenda est valide, faux sinon
      */
-    static function validerCouleurAgenda(string $couleurAgenda, array &$messagesErreurs): bool
+    public static function validerCouleurAgenda(string $couleurAgenda, array &$messagesErreurs): bool
     {
         $valide = true;
 
@@ -255,26 +255,47 @@ class utilitaire {
 
     /**
      * Valide le mot de passe de l'utilisateur s'il est valide, après série de vérifications
-     *
+     * Pour les points 3 et 4, comparer les 2 mots de passes est inutile car comparaison à la fin s'ils sont identiques
      * @param string $motDePasse Le mot de passe de l'utilisateur
+     * @param string $motDePasse2 Le mot de passe confirmé de l'utilisateur
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si le mot de passe est valide, faux sinon
      */
-    static function validerMotDePasse(string $motDePasse, array &$messagesErreurs): bool
+    public static function validerMotDePasse(string $motDePasse, string $motDePasse2, array &$messagesErreurs): bool
     {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        if(empty($motDePasse) || empty($motDePasse2)){
+            $messagesErreurs[] = "Le mot de passe est obligatoire";
+            $valide = false;
+        }
 
-        // 2. Type de données : vérifier que le prenom est une chaine de caractères
+        // 2. Type de données : vérifier que le mot de passe est une chaine de caractères
+        if(!is_string($motDePasse) || !is_string($motDePasse2)){
+            $messagesErreurs[] = "Le mot de passe doit être une chaine de caractères";
+            $valide = false;
+        }
 
-        // 3. Longueur de la chaine : vérifier que le prenom est compris entre 2 et 50 caractères
+        // 3. Longueur de la chaine : vérifier que le mot de passe est compris entre 8 et 25 caractères
+        if(strlen($motDePasse) < 8 || strlen($motDePasse) > 25){
+            $messagesErreurs[] = "Le mot de passe doit être compris entre 8 et 25 caractères";
+            $valide = false;
+        }
 
-        // 4. Format des données : vérifier le format du prénom
+        // 4. Format des données : vérifier le format du mdp avec preg preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/'
+        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $motDePasse)) {
+            $messagesErreurs[] = "Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial.";
+            $valide = false;
+        }
 
-        // 5. Plage des valeurs
+        // 5. Plage des valeurs : vérifier que les mots de passe sont les mêmes
+        if($motDePasse != $motDePasse2){
+            $messagesErreurs[] = "Les mots de passe ne correspondent pas";
+            $valide = false;
+        }
 
-        // 6. Fichiers uploadés
+        // 6. Fichiers uploadés - non pertinent
 
         return $valide;
     }
