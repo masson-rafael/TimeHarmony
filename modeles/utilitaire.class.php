@@ -51,7 +51,7 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si le prénom est valide, faux sinon
      */
-    public static function validerPrenom(string $prenom, array &$messagesErreurs): bool
+    public static function validerPrenom(?string $prenom, array &$messagesErreurs): bool
     {
         $valide = true;
 
@@ -93,7 +93,7 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si le nom est valide, faux sinon
      */
-    public static function validerNom(string $nom, array &$messagesErreurs): bool
+    public static function validerNom(?string $nom, array &$messagesErreurs): bool
     {
         $valide = true;
 
@@ -135,7 +135,7 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si l'email est valide, faux sinon
      */
-    public static function validerEmail(string $email, array &$messagesErreurs): bool
+    public static function validerEmail(?string $email, array &$messagesErreurs): bool
     {
         $valide = true;
 
@@ -177,7 +177,7 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si l'URL de l'agenda est valide, faux sinon
      */
-    public static function validerURLAgenda(string $urlAgenda, array &$messagesErreurs): bool
+    public static function validerURLAgenda(?string $urlAgenda, array &$messagesErreurs): bool
     {
         $valide = true;
 
@@ -218,7 +218,7 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si la couleur de l'agenda est valide, faux sinon
      */
-    public static function validerCouleurAgenda(string $couleurAgenda, array &$messagesErreurs): bool
+    public static function validerCouleurAgenda(?string $couleurAgenda, array &$messagesErreurs): bool
     {
         $valide = true;
 
@@ -261,7 +261,7 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si le mot de passe est valide, faux sinon
      */
-    public static function validerMotDePasse(string $motDePasse, string $motDePasse2, array &$messagesErreurs): bool
+    public static function validerMotDePasse(?string $motDePasse, string $motDePasse2, array &$messagesErreurs): bool
     {
         $valide = true;
 

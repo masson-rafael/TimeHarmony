@@ -4,7 +4,6 @@
 	{{ constant('WEBSITE_TITLE')}}
 {% endblock %}
 
-
 {% block content %}
 {# {{ dump(creneauxLibres) }} #}
     <main class="min-vh-100">
@@ -36,10 +35,12 @@
                         <button type="submit" class="btn btn-primary">S'inscrire</button>
                     </form>
                 </div>
-                {% if message %}
+                {% if messages %}
                 <div class="mt-5">
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {% for message in messages %}
                         {{ message }}
+                        {% endfor %}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </div>

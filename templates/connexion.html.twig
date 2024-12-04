@@ -14,11 +14,11 @@
                 <form action="index.php?controleur=utilisateur&methode=connexion" method="post">
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">E-mail</label>
-                        <input type="email" name="email" class="form-control" required title="Entrez l'adresse email du compte que vous souhaitez utiliser">
+                        <input type="email" name="email" class="form-control" required maxlength="255" minlength="5" title="Entrez l'adresse email du compte que vous souhaitez utiliser">
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputPassword1" class="form-label">Mot de passe</label>
-                        <input type="password" name="pwd" class="form-control" required title="Entrez le mot de passe associé au compte">
+                        <input type="password" name="pwd" class="form-control" required maxlength="25" minlength="8" title="Entrez le mot de passe associé au compte">
                     </div>
                     <a class="mb-3" href="index.php?controleur=utilisateur&methode=premiereInscription">Pas encore de compte ? S'inscrire</a>
                     <button type="submit" class="btn btn-primary">Se connecter</button>
