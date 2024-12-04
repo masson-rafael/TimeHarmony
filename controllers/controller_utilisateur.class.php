@@ -80,12 +80,6 @@ class ControllerUtilisateur extends Controller
         $pdo = $this->getPdo();
         $tableauErreurs = [];
 
-        var_dump(isset($_POST['email']));
-        var_dump(isset($_POST['pwd']));
-        var_dump(isset($_POST['pwdConfirme']));
-        var_dump(isset($_POST['nom']));
-        var_dump(isset($_POST['prenom']));
-
         if(isset($_POST['email']) && isset($_POST['pwd']) && isset($_POST['pwdConfirme']) && isset($_POST['nom']) && isset($_POST['prenom'])) {
             $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
             $nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
@@ -112,7 +106,7 @@ class ControllerUtilisateur extends Controller
                     // Hachage du mot de passe
                     $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
                     // Création d'un nouvel utilisateur (instance)
-                    $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "image/utilisateurBase.png", false); 
+                    $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "utilisateurBase.png", false); 
                     // Appel du script pour ajouter utilisateur dans bd
                     $manager->ajouterUtilisateur($nouvelUtilisateur);
                     $tableauErreurs[] = "INSCRIPTION REUSSIE";
@@ -145,10 +139,10 @@ class ControllerUtilisateur extends Controller
                 $this->genererVue($_POST['email'], null, $tableauErreurs);
             }
         }
-        // Si le formulaire n'est pas correctement rempli
-        $tableauErreurs[] = "FORMULAIRE NON CORRECTEMENT REMPLI";
-        var_dump($tableauErreurs);
-        $this->genererVue(null, null, $tableauErreurs);
+        // // Si le formulaire n'est pas correctement rempli
+        // $tableauErreurs[] = "FORMULAIRE NON CORRECTEMENT REMPLI";
+        // var_dump($tableauErreurs);
+        // $this->genererVue(null, null, $tableauErreurs);
     }
 
     /**

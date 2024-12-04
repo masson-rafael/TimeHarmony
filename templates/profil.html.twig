@@ -12,7 +12,7 @@
                 <div class="me-4">
                     <a href="#" class="d-block mt-2">
                         <img 
-                            src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" 
+                            src="{{ utilisateurGlobal.getPhotoDeProfil != 'utilisateurBase.png' ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}"
                             alt="Photo de profil" 
                             class="rounded-circle" 
                             style="width: 100px; height: 100px;">
