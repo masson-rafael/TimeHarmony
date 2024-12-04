@@ -182,16 +182,31 @@ class utilitaire {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        if(empty($urlAgenda)){
+            $messagesErreurs[] = "L'URL de l'agenda est obligatoire";
+            $valide = false;
+        }
 
-        // 2. Type de données : vérifier que le prenom est une chaine de caractères
+        // 2. Type de données : vérifier que l'URL est une chaine de caractères
+        if(!is_string($urlAgenda)){
+            $messagesErreurs[] = "L'URL de l'agenda doit être une chaine de caractères";
+            $valide = false;
+        }
 
-        // 3. Longueur de la chaine : vérifier que le prenom est compris entre 2 et 50 caractères
+        // 3. Longueur de la chaine - non pertinent
 
-        // 4. Format des données : vérifier le format du prénom
+        // 4. Format des données : vérifier le format de l'URL
+        if (!filter_var($urlAgenda, FILTER_VALIDATE_URL)) {
+            $messagesErreurs[] = "L'URL de l'agenda n'est pas valide.";
+            $valide = false;
+        } else if (!preg_match('/^https?:\/\/calendar\.google\.com\/calendar\/ical\/.+\/basic\.ics$/', $urlAgenda)) {
+            $messagesErreurs[] = "L'URL doit être une URL Google Agenda iCal valide.";
+            $valide = false;
+        }
 
-        // 5. Plage des valeurs
+        // 5. Plage des valeurs - non pertinent
 
-        // 6. Fichiers uploadés
+        // 6. Fichiers uploadés - non pertinent
 
         return $valide;
     }
