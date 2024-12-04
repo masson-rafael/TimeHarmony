@@ -1,4 +1,7 @@
 <?php
+/**
+ * Undocumented class
+ */
 
 class utilitaire {
     /**
@@ -40,6 +43,7 @@ class utilitaire {
         return $img_dest;
     }
 
+
     /**
      * Valide le prenom de l'utilisateur s'il est valide, après série de vérifications
      *
@@ -51,17 +55,33 @@ class utilitaire {
     {
         $valide = true;
 
-        // 1. Champs obligatoires : vérifier la présence du champ
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        if(empty($prenom)){
+            $messagesErreurs[] = "Le prénom est obligatoire";
+            $valide = false;
+        }
 
         // 2. Type de données : vérifier que le prenom est une chaine de caractères
+        if(!is_string($prenom)){
+            $messagesErreurs[] = "Le prénom doit être une chaine de caractères";
+            $valide = false;
+        }
 
         // 3. Longueur de la chaine : vérifier que le prenom est compris entre 2 et 50 caractères
+        if(strlen($prenom) < 2 || strlen($prenom) > 50){
+            $messagesErreurs[] = "Le prénom doit être compris entre 2 et 50 caractères";
+            $valide = false;
+        }
 
         // 4. Format des données : vérifier le format du prénom
+        if(!preg_match("/^[a-zA-ZÀ-ÿ-]+$/", $prenom)){
+            $messagesErreurs[] = "Le prénom doit être composé de lettres et de tirets";
+            $valide = false;
+        }
 
-        // 5. Plage des valeurs
+        // 5. Plage des valeurs - non pertinent
 
-        // 6. Fichiers uploadés
+        // 6. Fichiers uploadés - non pertinent
 
         return $valide;
     }
@@ -77,17 +97,33 @@ class utilitaire {
     {
         $valide = true;
 
-        // 1. Champs obligatoires : vérifier la présence du champ
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        if(empty($nom)){
+            $messagesErreurs[] = "Le prénom est obligatoire";
+            $valide = false;
+        }
 
-        // 2. Type de données : vérifier que le prenom est une chaine de caractères
+        // 2. Type de données : vérifier que le nom est une chaine de caractères
+        if(!is_string($nom)){
+            $messagesErreurs[] = "Le prénom doit être une chaine de caractères";
+            $valide = false;
+        }
 
-        // 3. Longueur de la chaine : vérifier que le prenom est compris entre 2 et 50 caractères
+        // 3. Longueur de la chaine : vérifier que le nom est compris entre 2 et 50 caractères
+        if(strlen($nom) < 2 || strlen($nom) > 50){
+            $messagesErreurs[] = "Le prénom doit être compris entre 2 et 50 caractères";
+            $valide = false;
+        }
 
-        // 4. Format des données : vérifier le format du prénom
+        // 4. Format des données : vérifier le format du nom
+        if(!preg_match("/^[a-zA-ZÀ-ÿ-]+$/", $nom)){
+            $messagesErreurs[] = "Le prénom doit être composé de lettres et de tirets";
+            $valide = false;
+        }
 
-        // 5. Plage des valeurs
+        // 5. Plage des valeurs - non pertinent
 
-        // 6. Fichiers uploadés
+        // 6. Fichiers uploadés - non pertinent
 
         return $valide;
     }
@@ -103,7 +139,7 @@ class utilitaire {
     {
         $valide = true;
 
-        // 1. Champs obligatoires : vérifier la présence du champ
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
 
         // 2. Type de données : vérifier que le prenom est une chaine de caractères
 
@@ -129,7 +165,7 @@ class utilitaire {
     {
         $valide = true;
 
-        // 1. Champs obligatoires : vérifier la présence du champ
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
 
         // 2. Type de données : vérifier que le prenom est une chaine de caractères
 
@@ -155,7 +191,7 @@ class utilitaire {
     {
         $valide = true;
 
-        // 1. Champs obligatoires : vérifier la présence du champ
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
 
         // 2. Type de données : vérifier que le prenom est une chaine de caractères
 
@@ -181,7 +217,7 @@ class utilitaire {
     {
         $valide = true;
 
-        // 1. Champs obligatoires : vérifier la présence du champ
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
 
         // 2. Type de données : vérifier que le prenom est une chaine de caractères
 
