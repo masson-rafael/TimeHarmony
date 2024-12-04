@@ -56,6 +56,12 @@ class ControllerAgenda extends Controller
             if (!$agendaExiste) {
                 // Créer une nouvelle instance d'Agenda avec les données du formulaire
                 $nouvelAgenda = new Agenda(null, $_POST['url'], $_POST['couleur'], $_POST['nom']);          // @todo utilisation des vérifications 
+                // // Récupérer la couleur sélectionnée
+                // if (!empty($_POST['couleur_custom'])) {
+                //     $couleur = $_POST['couleur_custom'];
+                // } else {
+                //     $couleur = $_POST['couleur'];
+                // }
     
                 // Ajouter l'agenda dans la base de données
                 $manager->ajouterAgenda($nouvelAgenda);

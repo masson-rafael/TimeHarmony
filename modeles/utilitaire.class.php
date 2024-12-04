@@ -223,16 +223,32 @@ class utilitaire {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        if(empty($couleurAgenda)){
+            $messagesErreurs[] = "La couleur de l'agenda est obligatoire";
+            $valide = false;
+        }
 
         // 2. Type de données : vérifier que le prenom est une chaine de caractères
+        if(!is_string($couleurAgenda)){
+            $messagesErreurs[] = "La couleur de l'agenda doit être une chaine de caractères";
+            $valide = false;
+        }
 
-        // 3. Longueur de la chaine : vérifier que le prenom est compris entre 2 et 50 caractères
+        // 3. Longueur de la chaine : vérifier que le prenom a exactement 7 caractères
+        if(strlen($couleurAgenda) != 7){
+            $messagesErreurs[] = "La couleur de l'agenda doit être composée de 7 caractères";
+            $valide = false;
+        }
 
-        // 4. Format des données : vérifier le format du prénom
+        // 4. Format des données : vérifier le format de la couleur
+        if (!preg_match('/^#[a-fA-F0-9]{6}$/', $couleurAgenda)) {
+            $messagesErreurs[] = "La couleur sélectionnée n'est pas valide.";
+            $valide = false;
+        }
 
-        // 5. Plage des valeurs
+        // 5. Plage des valeurs - non pertinent
 
-        // 6. Fichiers uploadés
+        // 6. Fichiers uploadés - non pertinent
 
         return $valide;
     }
