@@ -36,7 +36,6 @@ class ControllerCreneauRdv extends Controller
             'contacts' => $contacts,
             'groupes' => $groupes
         ));        
-
     }
 
     function recupererContact($idUtilisateur): array {
