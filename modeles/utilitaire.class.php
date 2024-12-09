@@ -75,7 +75,7 @@ class utilitaire {
 
         // 4. Format des données : vérifier le format du prénom
         if(!preg_match("/^[a-zA-ZÀ-ÿ-]+$/", $prenom)){
-            $messagesErreurs[] = "Le prénom doit être composé de lettres et de tirets";
+            $messagesErreurs[] = "Le prénom doit être composé de lettres et/ou de tirets";
             $valide = false;
         }
 
@@ -99,25 +99,25 @@ class utilitaire {
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
         if(empty($nom)){
-            $messagesErreurs[] = "Le prénom est obligatoire";
+            $messagesErreurs[] = "Le nom est obligatoire";
             $valide = false;
         }
 
         // 2. Type de données : vérifier que le nom est une chaine de caractères
         if(!is_string($nom)){
-            $messagesErreurs[] = "Le prénom doit être une chaine de caractères";
+            $messagesErreurs[] = "Le nom doit être une chaine de caractères";
             $valide = false;
         }
 
         // 3. Longueur de la chaine : vérifier que le nom est compris entre 2 et 50 caractères
         if(strlen($nom) < 2 || strlen($nom) > 50){
-            $messagesErreurs[] = "Le prénom doit être compris entre 2 et 50 caractères";
+            $messagesErreurs[] = "Le nom doit être compris entre 2 et 50 caractères";
             $valide = false;
         }
 
         // 4. Format des données : vérifier le format du nom
         if(!preg_match("/^[a-zA-ZÀ-ÿ-]+$/", $nom)){
-            $messagesErreurs[] = "Le prénom doit être composé de lettres et de tirets";
+            $messagesErreurs[] = "Le nom doit être composé de lettres et/ou de tirets";
             $valide = false;
         }
 
