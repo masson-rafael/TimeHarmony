@@ -261,8 +261,7 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si le mot de passe est valide, faux sinon
      */
-    public static function validerMotDePasse(?string $motDePasse, string $motDePasse2, array &$messagesErreurs): bool
-    {
+    public static function validerMotDePasseInscription(?string $motDePasse, ?string $motDePasse2, array &$messagesErreurs): bool {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
@@ -294,6 +293,40 @@ class utilitaire {
             $messagesErreurs[] = "Les mots de passe ne correspondent pas";
             $valide = false;
         }
+
+        // 6. Fichiers uploadés - non pertinent
+
+        return $valide;
+    }
+
+    public static function validerMotDePasse(?string $motDePasse, array &$messagesErreurs): bool {
+        $valide = true;
+
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        if(empty($motDePasse)){
+            $messagesErreurs[] = "Le mot de passe est obligatoire";
+            $valide = false;
+        }
+
+        // 2. Type de données : vérifier que le mot de passe est une chaine de caractères
+        if(!is_string($motDePasse)){
+            $messagesErreurs[] = "Le mot de passe doit être une chaine de caractères";
+            $valide = false;
+        }
+
+        // 3. Longueur de la chaine : vérifier que le mot de passe est compris entre 8 et 25 caractères
+        if(strlen($motDePasse) < 8 || strlen($motDePasse) > 25){
+            $messagesErreurs[] = "Le mot de passe doit être compris entre 8 et 25 caractères";
+            $valide = false;
+        }
+
+        // 4. Format des données : vérifier le format du mdp avec preg preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/'
+        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $motDePasse)) {
+            $messagesErreurs[] = "Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial.";
+            $valide = false;
+        }
+
+        // 5. Plage des valeurs : - non pertinent
 
         // 6. Fichiers uploadés - non pertinent
 

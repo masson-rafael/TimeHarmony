@@ -25,21 +25,31 @@
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Mot de passe</label>
-                            <input type="password" name="pwd" class="form-control" required minlength="8" maxlength="25" title="Entrez le mot de passe permettant d'accéder au compte">
+                            <input 
+                                type="password" 
+                                name="pwd" 
+                                class="form-control" 
+                                id="exampleInputPassword1" 
+                                required 
+                                minlength="8" 
+                                maxlength="25" 
+                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$" 
+                                title="Le mot de passe doit contenir au moins : une lettre minuscule, une majuscule, un chiffre et un caractère spécial, et être compris entre 8 et 25 caractères."
+                            >
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Confirmer mot de passe</label>
-                            <input type="password" name="pwdConfirme" class="form-control" id="exampleInputPassword1" required minlength="8" maxlength="25" title="Entrez une nouvelle fois le même mot de passe">
+                            <input type="password" name="pwdConfirme" class="form-control" id="exampleInputPassword1" required minlength="8" maxlength="25" title="Entrez une nouvelle fois le même mot de passe" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$" >
                         </div>
                         <a class="mb-3" href="index.php?controleur=utilisateur&methode=premiereConnexion">Deja un compte ? Se connecter</a>
                         <button type="submit" class="btn btn-primary">S'inscrire</button>
                     </form>
                 </div>
-                {% if messages %}
+                {% if message %}
                 <div class="mt-5">
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {% for message in messages %}
-                        {{ message }}
+                        {% for messages in message %}
+                        {{messages}} <br>
                         {% endfor %}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>

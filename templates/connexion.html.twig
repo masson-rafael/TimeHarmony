@@ -18,7 +18,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputPassword1" class="form-label">Mot de passe</label>
-                        <input type="password" name="pwd" class="form-control" required maxlength="25" minlength="8" title="Entrez le mot de passe associé au compte">
+                        <input type="password" name="pwd" class="form-control" required maxlength="25" minlength="8" title="Entrez le mot de passe associé au compte" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$" >
                     </div>
                     <a class="mb-3" href="index.php?controleur=utilisateur&methode=premiereInscription">Pas encore de compte ? S'inscrire</a>
                     <button type="submit" class="btn btn-primary">Se connecter</button>

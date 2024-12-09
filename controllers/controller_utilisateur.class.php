@@ -29,6 +29,10 @@ class ControllerUtilisateur extends Controller
      */
     function connexion() {
         $pdo = $this->getPdo();
+        $tableauErreurs = [];
+
+        utilitaire::validerEmail($_POST['email'], $tableauErreurs);
+        utilitaire::validerMotDePasse($_POST['pwd'], $_POST['pwdConfirme'], $tableauErreurs);
 
         /**
          * Verifie que l'email et le mdp sont bien remplis
@@ -80,69 +84,37 @@ class ControllerUtilisateur extends Controller
         $pdo = $this->getPdo();
         $tableauErreurs = [];
 
-        if(isset($_POST['email']) && isset($_POST['pwd']) && isset($_POST['pwdConfirme']) && isset($_POST['nom']) && isset($_POST['prenom'])) {
-            $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
-            $nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
-            $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $tableauErreurs);
-            $mdpValide = utilitaire::validerMotDePasse($_POST['pwd'], $_POST['pwdConfirme'], $tableauErreurs);
-            var_dump($tableauErreurs);
-            var_dump($_POST['email']);
-            var_dump($_POST['pwd']);
-            var_dump($_POST['pwdConfirme']);
-            var_dump($_POST['nom']);
-            var_dump($_POST['prenom']);
+        $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
+        $nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
+        $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $tableauErreurs);
+        $mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $_POST['pwdConfirme'], $tableauErreurs);
 
-            //Vérification que le form est bien rempli
-            if ($emailValide && $nomValide && $prenomValide && $mdpValide) {
-                $manager = new UtilisateurDao($pdo); //Lien avec PDO
-                // Appel fonction et stocke bool pour savoir si utilisateur existe deja avec email
-                $utilisateurExiste = $manager->findMail($_POST['email']); 
-                /**
-                 * Verifie que l'utilisateur n'existe pas, 
-                 * que les mdp sont identiques, que le mdp contient les bons caracteres         // CHECK AVEC FONCTIONS VERIF
-                 * et que l'email est valide
-                 */
-                if (!$utilisateurExiste) {
-                    // Hachage du mot de passe
-                    $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
-                    // Création d'un nouvel utilisateur (instance)
-                    $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "utilisateurBase.png", false); 
-                    // Appel du script pour ajouter utilisateur dans bd
-                    $manager->ajouterUtilisateur($nouvelUtilisateur);
-                    $tableauErreurs[] = "INSCRIPTION REUSSIE";
-                    $this->genererVue($_POST['email'], $utilisateurExiste, $tableauErreurs);
-                } 
-                
-                // else if (!$utilisateurExiste && $_POST['pwd'] != $_POST['pwdConfirme']) {
-                //     // Si les mdp ne sont pas identiques
-                //     $this->genererVue($_POST['email'], $utilisateurExiste, "MOTS DE PASSE NON IDENTIQUES");
-                // } else if (!$utilisateurExiste && !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
-                //     // Si l'email n'est pas valide
-                //     $this->genererVue($_POST['email'], $utilisateurExiste, "ADRESSE MAIL NON VALIDE");
-                // }else if (!$utilisateurExiste) {
-                //     // Si le mdp ne contient pas les bons caracteres
-                //     $this->genererVue($_POST['email'], $utilisateurExiste, "MOTS DE PASSE NE SUIT PAS LA REGLE");
-                // } 
-
-                // CA DEGAGE CAR ON A MIS LES VERIFICATIONS DANS LE TABLEAU
-
-
-                else {
-                    // Si l'utilisateur existe deja
-                    $tableauErreurs[] = "UTILISATEUR EXISTE DEJA";
-                    var_dump($tableauErreurs);
-                    $this->genererVue($_POST['email'], $utilisateurExiste, $tableauErreurs);
-                }
+        //Vérification que le form est bien rempli
+        if ($emailValide && $nomValide && $prenomValide && $mdpValide) {
+            $manager = new UtilisateurDao($pdo); //Lien avec PDO
+            // Appel fonction et stocke bool pour savoir si utilisateur existe deja avec email
+            $utilisateurExiste = $manager->findMail($_POST['email']); 
+            /**
+             * Verifie que l'utilisateur n'existe pas, 
+             * que les mdp sont identiques, que le mdp contient les bons caracteres         // CHECK AVEC FONCTIONS VERIF
+             * et que l'email est valide
+             */
+            if (!$utilisateurExiste) {
+                // Hachage du mot de passe
+                $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
+                // Création d'un nouvel utilisateur (instance)
+                $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "utilisateurBase.png", false); 
+                // Appel du script pour ajouter utilisateur dans bd
+                $manager->ajouterUtilisateur($nouvelUtilisateur);
+                $tableauErreurs[] = "INSCRIPTION REUSSIE";
             } else {
-                // Si le formulaire n'est pas correctement rempli
-                var_dump($tableauErreurs);
-                $this->genererVue($_POST['email'], null, $tableauErreurs);
+                // Si l'utilisateur existe deja
+                $tableauErreurs[] = "UTILISATEUR EXISTE DEJA";
             }
         }
-        // // Si le formulaire n'est pas correctement rempli
-        // $tableauErreurs[] = "FORMULAIRE NON CORRECTEMENT REMPLI";
-        // var_dump($tableauErreurs);
-        // $this->genererVue(null, null, $tableauErreurs);
+        // Affichage de la page avec les erreurs ou le message de succès
+        $this->genererVue($_POST['email'], null, $tableauErreurs);
+        
     }
 
     /**
