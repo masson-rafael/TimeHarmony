@@ -1,34 +1,27 @@
 {% extends 'base_template.html.twig' %}
 
-{% block title %}Resultat -
-	{{ constant('WEBSITE_TITLE')}}
-{% endblock %}
-
-
+{% block title %}Resultat - {{ constant('WEBSITE_TITLE') }}{% endblock %}
 
 {% block content %}
-{# {{ dump(creneauxRDV) }} #}
-    <main>
-
-        {% for creneau in creneauxLibres %}
-
-            {# Enlever 2 heures à la dateDebut et dateFin #}
-            {% set dateDebut = creneau.dateDebut|date_modify('-2 hours') %}
-            {% set dateFin = creneau.dateFin|date_modify('-2 hours') %}
-
-            {# <p>Créneau libre de {{ dateDebut|date('Y-m-d H:i:s') }} à {{ dateFin|date('Y-m-d H:i:s') }}</p> #}
-         {% endfor %}
-
-
-        {% if creneauxRDV is empty %}
-            <p>Pas de créneau trouvé</p>
-        {% endif %}
-        
-        {% for creneau in creneauxRDV %}
-            <p>Créneau libre du {{ creneau.debut }} au {{ creneau.fin}}</p>
+<main>
+    {# Vérification de la présence de créneaux réservés #}
+    {% if creneauxRDV is not empty %}
+        {# Boucle pour chaque utilisateur dans creneauxRDV #}
+        {% for userCreneaux in creneauxRDV %}
+            <h4>Utilisateur concerné {{ loop.index }}</h4> {# Affiche le numéro de l'utilisateur #}
+            
+            {# Boucle pour chaque créneau de l'utilisateur #}
+            {% for creneau in userCreneaux %}
+                {# Modification de la date (soustraction de 2 heures) #}
+                {% set dateDebut = creneau.debut|date_modify('-2 hours') %}
+                {% set dateFin = creneau.fin|date_modify('-2 hours') %}
+                
+                <p>Créneau libre de {{ dateDebut|date('Y-m-d H:i:s') }} à {{ dateFin|date('Y-m-d H:i:s') }} avec une durée de {{ creneau.duree }}</p>
+            {% endfor %}
         {% endfor %}
-
-
-        {# <a href="index.php?controleur=utilisateur&methode=listerContacts"><p>ff</p></a> #}
-    </main>
+    {% else %}
+        <p>Pas de créneau réservé trouvé</p>
+    {% endif %}
+    
+</main>
 {% endblock %}

@@ -45,8 +45,11 @@ class ControllerAssistant extends Controller
         ));        
 
     }
-    
+
     public function obtenir(): void {
+
+        $datesCommunes = array();
+
         $pdo = $this->getPdo();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -56,72 +59,87 @@ class ControllerAssistant extends Controller
             $managerCreneau->supprimerCreneauxLibres();
 
             extract($_POST, EXTR_OVERWRITE);
+            $dateDebPeriode = new DateTime($_POST['debut']);
+            $dateFinPeriode = new DateTime($_POST['fin']);
+            $dureeMin = $_POST['dureeMin'];
 
             $managerUtilisateur = new UtilisateurDAO($pdo);
-            // On cree un objet utilisateur par id a la suite de l'envoi du formulaire
+
             foreach($_POST['contacts'] as $idUtilisateurCourant) {
                 
                 $tableauUtilisateur[] = $managerUtilisateur->find($idUtilisateurCourant);
             }
 
-            $creneaux = array();
-            // Pour chaque utilisateur, recherche des créneaux libres par agendas
-            $assistantRecherche = new Assistant(new DateTime($_POST['debut']),new DateTime($_POST['fin']), $tableauUtilisateur);
-            foreach ($assistantRecherche->getUtilisateurs() as $utilisateurCourant) {
-                
+            $tailleTabUser = count($tableauUtilisateur);
 
-                // Voir avec le prof car la methode getAgendas est différentes des getters classiques
-                $utilisateur = new Utilisateur($utilisateurCourant->getId());
-                $agendas = $utilisateur->getAgendas();
+            // Lire le fichier JSON
+            $jsonFile = 'combinaisons.json'; // Chemin du fichier
+            $jsonContent = file_get_contents($jsonFile);
 
-                $allEvents = [];
-
-                foreach ($agendas as $agenda) {  
-
-                    $urlIcs = $agenda->getUrl();
-                    // var_dump($urlIcs);
-                    $idAgenda = $agenda->getId();
-                    
-
-                    try {
-                        $ical = new ICal($urlIcs);
-                        $events = $ical->eventsFromRange($_POST['debut'],$_POST['fin']);
-                        
-                        // var_dump($events);
-                        // Récupérer les événements (sans plage => tout)
-                        $allEvents = array_merge($allEvents, $events);
-                    } catch (\Exception $e) {
-                        echo "Erreur de lecture de l'agenda : {$e->getMessage()}\n";
-                    }
-
-                    // $agenda->rechercheCreneauxLibres($idAgenda,$urlIcs,$_POST['debut'],$_POST['fin'],$pdo);
-                }
-               
-                // var_dump($allEvents);
-
-                // var_dump($evenementsFusionnes);
-
-                // $agenda->rechercheCreneauxLibres($idAgenda,$urlIcs,$_POST['debut'],$_POST['fin'],$pdo);
-                $creneauxByUtilisateur[] = $agenda->rechercheCreneauxLibres($allEvents,$_POST['debut'],$_POST['fin'],$pdo);
-
-                var_dump($creneauxByUtilisateur);
-
-                // $creneauxByUtilisateur = $managerCreneau->findAllByIdUtilisateur($utilisateur->getId());
-                // $creneaux[] = $assistantRecherche->combinerCreneaux($creneauxByUtilisateur);
-
-                // Afficher les résultats
-                // echo "Créneaux sans chevauchement :\n";
-                // foreach ($creneaux as $interval) {
-                //     echo $interval['start'] . " - " . $interval['end'] . "\n <br>";
-                // }
-                // var_dump($creneaux);
+            if ($jsonContent === false) {
+                die("Erreur lors de la lecture du fichier JSON");
             }
-            // $creneaux = $managerCreneau->findAllAssoc();
-            // var_dump($creneauxByUtilisateur);
-            // Appeler la fonction pour trouver les dates communes
-            $datesCommunes = $assistantRecherche->trouverDatesCommunes($creneauxByUtilisateur);
+
+            // Décoder le JSON en tableau associatif
+            $data = json_decode($jsonContent, true); // true pour tableau associatif
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                die("Erreur de décodage JSON : " . json_last_error_msg());
+            }
             
+            // Parcourir les combinaisons et afficher les valeurs pour la clé spécifique
+            foreach ($data['combinaisons'] as $combinaison) {
+                if (array_key_exists($tailleTabUser, $combinaison)) {
+                    // Trier les valeurs en ordre décroissant
+                    $valeurs = $combinaison[$tailleTabUser];
+                    rsort($valeurs);
+                    $codesBinaire = afficherValeursAvecTroisUn($valeurs,3,$tailleTabUser);
+                }
+            }
+
             
+            foreach ($codesBinaire as $codeBinaire) {
+                $creneauxByUtilisateur = array();
+                // var_dump($codeBinaire);
+
+                // Appeler la fonction pour obtenir les utilisateurs sélectionnés
+                $utilisateursSelectionnes = selectionnerUtilisateurs($tableauUtilisateur, $codeBinaire);
+
+                // Afficher les utilisateurs sélectionnés
+                // foreach ($utilisateursSelectionnes as $utilisateur) {
+                //     echo "Utilisateur sélectionné : " . $utilisateur->getNom() . " " . $utilisateur->getPrenom() . "\n <br>";
+                // }
+                // echo "<br>";
+
+                // Pour chaque utilisateur, recherche des créneaux libres par agendas
+                $assistantRecherche = new Assistant($dateDebPeriode,$dateFinPeriode, $utilisateursSelectionnes);
+                foreach ($assistantRecherche->getUtilisateurs() as $utilisateurCourant) {
+                    
+                    // Voir avec le prof car la methode getAgendas est différentes des getters classiques
+                    $utilisateur = new Utilisateur($utilisateurCourant->getId());
+
+                    $agendas = $utilisateur->getAgendas();
+
+                    $allEvents = [];
+
+                    foreach ($agendas as $agenda) {  
+                        $urlIcs = $agenda->getUrl();
+                    
+                        $allEvents = $agenda->recuperationEvenementsAgenda($urlIcs,$debut,$fin,$allEvents);
+                    }
+                    
+                    $mergedEvents = $agenda->mergeAgendas($allEvents);
+                    
+                    $creneauxByUtilisateur[] = $agenda->rechercheCreneauxLibres($mergedEvents,$_POST['debut'],$_POST['fin'],$pdo);
+
+                }
+
+                // Appeler la fonction pour trouver les dates communes
+                $datesCommunes[] = $assistantRecherche->trouverDatesCommunes($creneauxByUtilisateur,$dureeMin);
+
+            }
+
+            // var_dump($datesCommunes);
             // Générer vue
             $this->genererVueCreneaux($datesCommunes);
         }
@@ -147,3 +165,43 @@ class ControllerAssistant extends Controller
         echo $template->render(array());
     }
 }
+
+
+function afficherValeursAvecTroisUn($valeurs, $nbDe1, $nbUtilisateurs): array {
+    $tabDeBinaire = array();
+    foreach ($valeurs as $valeur) {
+        // Convertir la valeur en binaire
+        $binaire = decbin($valeur);
+        
+        // Ajouter des zéros à gauche pour avoir une longueur de 4 bits
+        $binaire = str_pad($binaire, $nbUtilisateurs, '0', STR_PAD_LEFT);
+        
+        // Compter le nombre de '1' dans la représentation binaire
+        $nbUn = substr_count($binaire, '1');
+        
+        // Si le nombre de '1' est exactement 3, ajouter à la liste
+        if ($nbUn == $nbDe1) {
+            $tabDeBinaire[] = $binaire;
+        }
+    }
+    return $tabDeBinaire;
+}
+
+
+
+// Fonction pour sélectionner les utilisateurs en fonction du code binaire
+function selectionnerUtilisateurs($utilisateurs, $codeBinaire) {
+    $utilisateursSelectionnes = [];
+
+    // Parcours du code binaire
+    for ($i = 0; $i < strlen($codeBinaire); $i++) {
+        // Si le bit est '1', on sélectionne l'utilisateur correspondant
+        if ($codeBinaire[$i] == '1') {
+            $utilisateursSelectionnes[] = $utilisateurs[$i];
+        }
+    }
+
+    return $utilisateursSelectionnes;
+}
+
+

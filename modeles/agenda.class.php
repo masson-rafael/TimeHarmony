@@ -171,11 +171,11 @@ class Agenda {
 
                 // $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
                 // Trier les événements par date de début
-                $evenements = $this->triEvenementsOrdreArrivee($evenementsByUtilisateur);
+                // $evenements = $this->triEvenementsOrdreArrivee($evenementsByUtilisateur);
 
                 // var_dump($evenements);
                 // Recherche des créneaux libres
-                $evenements =$this->recherche('Europe/Paris', $debut, $fin, $evenements,$pdo);
+                $evenements =$this->recherche('Europe/Paris', $debut, $fin, $evenementsByUtilisateur,$pdo);
                 return $evenements;
         }
 
@@ -187,11 +187,16 @@ class Agenda {
      * @param string|null $fin date de fin de la recherche
      * @return array|null tableau des evenements
      */
-    private function recuperationEvenementsAgenda(?string $url, ?string $debut, ?string $fin): ?array
+    public function recuperationEvenementsAgenda(?string $urlIcs, ?string $debut, ?string $fin,$allEvents): ?array
     {
-            $calendrier = new ICal($url);
+            // Charger les événements du calendrier à partir de l'URL
+            $calendrier = new ICal($urlIcs);
             $evenements = $calendrier->eventsFromRange($debut, $fin);
-        return $evenements;
+            
+            // Ajouter les événements à un tableau global
+            $allEvents = array_merge($allEvents, $evenements);
+
+        return $allEvents;
     }
 
     /**
@@ -276,4 +281,39 @@ class Agenda {
             return false;
         }
     }
+
+    function mergeAgendas($events) {
+        // Convertir les plages horaires en DateTime et organiser les événements par ordre croissant
+        usort($events, function($a, $b) {
+            return strtotime($a->dtstart) - strtotime($b->dtstart);
+        });
+
+        $mergedEvents = [];
+
+        foreach ($events as $event) {
+            $start = new DateTime($event->dtstart);
+            $end = new DateTime($event->dtend);
+
+            if (empty($mergedEvents)) {
+                // Ajouter le premier événement
+                $mergedEvents[] = $event;
+            } else {
+                // Dernier événement dans la liste fusionnée
+                $lastMerged = end($mergedEvents);
+                $lastMergedStart = new DateTime($lastMerged->dtstart);
+                $lastMergedEnd = new DateTime($lastMerged->dtend);
+
+                if ($start <= $lastMergedEnd) {
+                    // Fusionner si chevauchement
+                    $lastMerged->dtend = max($end, $lastMergedEnd)->format('Ymd\THis\Z');
+                } else {
+                    // Ajouter un nouvel événement
+                    $mergedEvents[] = $event;
+                }
+            }
+        }
+
+        return $mergedEvents;
+    }
+
 }

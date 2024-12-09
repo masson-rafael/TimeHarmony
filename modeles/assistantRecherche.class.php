@@ -52,40 +52,77 @@ class Assistant {
     }
 
     // Fonction pour vérifier les chevauchements d'événements
-    public function trouverDatesCommunes($creneaux): array {
+    public function trouverDatesCommunes(array $creneaux, string $dureeMin): array
+    {
         $datesCommunes = [];
-        
-        // Fusionner les sous-tableaux en un seul tableau plat
-        $creneauxPlats = array_merge(...$creneaux);
-        
-        // Trouver les intersections des créneaux
-        for ($i = 0; $i < count($creneauxPlats); $i++) {
-            for ($j = $i + 1; $j < count($creneauxPlats); $j++) {
-                // Accéder directement aux propriétés de l'objet
-                $debut1 = $creneauxPlats[$i]->getDateDebut();
-                $fin1 = $creneauxPlats[$i]->getDateFin();
-                $debut2 = $creneauxPlats[$j]->getDateDebut();
-                $fin2 = $creneauxPlats[$j]->getDateFin();
     
-                // Vérifier s'il y a un chevauchement
-                if ($debut1 < $fin2 && $debut2 < $fin1) {
-                    // Calculer l'intersection des deux plages de dates
-                    $chevauchementDebut = max($debut1, $debut2);
-                    $chevauchementFin = min($fin1, $fin2);
+        // Convertir la durée minimale (format "H:i") en minutes
+        list($heures, $minutes) = explode(':', $dureeMin);
+        $dureeMinMinutes = ($heures * 60) + $minutes;
     
-                    // Ajouter l'intervalle d'intersection au tableau
-                    $datesCommunes[] = [
-                        'debut' => $chevauchementDebut->format('Y-m-d H:i:s'),
-                        'fin' => $chevauchementFin->format('Y-m-d H:i:s'),
-                    ];
-                }
+        // Obtenir toutes les plages horaires pour chaque sous-tableau
+        $groupesCreneaux = array_map(function ($groupe) {
+            return array_map(function ($creneau) {
+                return [
+                    'debut' => $creneau->getDateDebut(),
+                    'fin' => $creneau->getDateFin(),
+                ];
+            }, $groupe);
+        }, $creneaux);
+    
+        // Trouver l'intersection globale des plages horaires
+        $intersection = $this->intersectionGlobale($groupesCreneaux);
+    
+        // Filtrer les intersections en fonction de la durée minimale
+        foreach ($intersection as $plage) {
+            $interval = $plage['debut']->diff($plage['fin']);
+            $dureeMinutes = ($interval->h * 60) + $interval->i;
+    
+            if ($dureeMinutes >= $dureeMinMinutes) {
+                $datesCommunes[] = [
+                    'debut' => $plage['debut']->format('Y-m-d H:i:s'),
+                    'fin' => $plage['fin']->format('Y-m-d H:i:s'),
+                    'duree' => "{$interval->h}h {$interval->i}m"
+                ];
             }
         }
     
         return $datesCommunes;
     }
     
+    private function intersectionGlobale(array $groupesCreneaux): array
+    {
+        // Initialiser l'intersection avec le premier groupe
+        $intersection = $groupesCreneaux[0];
     
+        // Calculer l'intersection progressive avec chaque groupe
+        for ($i = 1; $i < count($groupesCreneaux); $i++) {
+            $intersection = $this->intersecterDeuxGroupes($intersection, $groupesCreneaux[$i]);
+        }
+    
+        return $intersection;
+    }
+    
+    private function intersecterDeuxGroupes(array $groupe1, array $groupe2): array
+    {
+        $resultat = [];
+    
+        foreach ($groupe1 as $plage1) {
+            foreach ($groupe2 as $plage2) {
+                $debutMax = max($plage1['debut'], $plage2['debut']);
+                $finMin = min($plage1['fin'], $plage2['fin']);
+    
+                if ($debutMax < $finMin) {
+                    $resultat[] = [
+                        'debut' => $debutMax,
+                        'fin' => $finMin,
+                    ];
+                }
+            }
+        }
+    
+        return $resultat;
+    }
 
     public function combinerCreneaux($data): array {
 
