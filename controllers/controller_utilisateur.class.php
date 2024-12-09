@@ -84,10 +84,12 @@ class ControllerUtilisateur extends Controller
         $pdo = $this->getPdo();
         $tableauErreurs = [];
 
-        $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
-        $nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
-        $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $tableauErreurs);
-        $mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $_POST['pwdConfirme'], $tableauErreurs);
+        // TODO CHANGER ARCHI : soit @ a gogo soit vérif de issempty pour affichage unique de twig
+
+        @$emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
+        @$nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
+        @$prenomValide = utilitaire::validerPrenom($_POST['prenom'], $tableauErreurs);
+        @$mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $_POST['pwdConfirme'], $tableauErreurs);
 
         //Vérification que le form est bien rempli
         if ($emailValide && $nomValide && $prenomValide && $mdpValide) {
@@ -113,7 +115,7 @@ class ControllerUtilisateur extends Controller
             }
         }
         // Affichage de la page avec les erreurs ou le message de succès
-        $this->genererVue($_POST['email'], null, $tableauErreurs);
+        //@$this->genererVue($_POST['email'], null, $tableauErreurs);
         
     }
 
@@ -172,7 +174,7 @@ class ControllerUtilisateur extends Controller
     public function genererVueConnexion(?string $message, ?Utilisateur $utilisateur): void {
         if ($utilisateur !== null) {
             // Stockage en session et définition de la variable globale
-            $utilisateur = Utilisateur::createAvecParam($utilisateur->getId(), $utilisateur->getNom(), $utilisateur->getPrenom(), $utilisateur->getEmail(), $utilisateur->getMotDePasse(), $utilisateur->getPhotoDeProfil(), $utilisateur->getEstAdmin());
+            $utilisateur = Utilisateur::createWithCopy($utilisateur);
             $_SESSION['utilisateur'] = $utilisateur;
             $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
         }

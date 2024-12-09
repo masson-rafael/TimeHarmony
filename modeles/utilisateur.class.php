@@ -79,6 +79,18 @@ class Utilisateur {
         return $instance;
     }
 
+    public static function createWithCopy(Utilisateur $utilisateur): self {
+        $instance = new self();
+        $instance->id = $utilisateur->id;
+        $instance->nom = $utilisateur->nom;
+        $instance->prenom = $utilisateur->prenom;
+        $instance->email = $utilisateur->email;
+        $instance->motDePasse = $utilisateur->motDePasse;
+        $instance->photoDeProfil = $utilisateur->photoDeProfil;
+        $instance->estAdmin = $utilisateur->estAdmin;
+        return $instance;
+    }
+
     /**
      * Get l'id de l'utilisateur
      *
