@@ -23,61 +23,6 @@ class ControllerUtilisateur extends Controller
     }
 
     /**
-     * Fonction de connexion au site à partir de la BD
-     *
-     * @return void
-     */
-    public function connexion() {
-        $pdo = $this->getPdo();
-        $tableauErreurs = [];
-
-        /**
-         * Verifie que l'email et le mdp sont bien remplis
-         * Verifie ensuite si l'email existe dans la bd
-         * Verifie si le mdp clair correspond au hachage dans bd
-         */
-        $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
-        $passwdValide = utilitaire::validerMotDePasse($_POST['pwd'], $tableauErreurs);
-
-        if($emailValide && $passwdValide) {
-            $manager = new UtilisateurDao($pdo);
-            // On recupere un tuple avec un booleen et le mdp hache
-            $motDePasse = $manager->connexionReussie($_POST['email']);
-
-            // Si les mdp sont les mêmes
-            if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
-                // On recupere l'utilisateur
-                $utilisateur = $manager->getUserMail($_POST['email']);
-                $tableauErreurs[] = "Connexion réussie !";
-                $this->genererVueConnexion($tableauErreurs, $utilisateur);
-            } else {
-                $tableauErreurs[] = "Mauvaise adresse mail ou mot de passe"; // Mauvais MDP
-                $this->genererVueConnexion($tableauErreurs, null);
-            }
-        } else {
-            $this->genererVueConnexion($tableauErreurs, null);
-        }
-    }
-
-    /**
-     * Cette fonction est appelée lorsqu'on clique sur le bouton "Inscription" sur la navbar
-     *
-     * @return void
-     */
-    public function premiereInscription() {
-        $this->genererVueVide('inscription');
-    }
-    
-    /**
-     * Cette fonction est appelée lorsqu'on clique sur le bouton "Connexion" sur la navbar
-     *
-     * @return void
-     */
-    public function premiereConnexion() {
-        $this->genererVueVide('connexion');
-    }
-
-    /**
      * Inscription de l'utilisateur à la BD. On utilise les fonctions de validation pour vérifier les champs
      * et ensuite on vérifie si l'utilisateur existe déjà dans la BD
      * avant de procéder à l'inscription de l'utilisateur dans la BD
@@ -117,6 +62,63 @@ class ControllerUtilisateur extends Controller
         }
         // Affichage de la page avec les erreurs ou le message de succès
         @$this->genererVue($_POST['email'], null, $tableauErreurs);
+    }
+
+    /**
+     * Fonction de connexion au site à partir de la BD.
+     * On utilise les fonctions de validation pour vérifier les champs email et mdp
+     * et ensuite on vérifie si l'utilisateur existe dans la BD avec le bon mot de passe via password_verify
+     *
+     * @return void
+     */
+    public function connexion() {
+        $pdo = $this->getPdo();
+        $tableauErreurs = [];
+
+        /**
+         * Verifie que l'email et le mdp sont bien remplis et respectent les critères
+         * Verifie ensuite si l'email existe dans la bd
+         * Verifie si le mdp clair correspond au hachage dans bd
+         */
+        @$emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
+        @$passwdValide = utilitaire::validerMotDePasse($_POST['pwd'], $tableauErreurs);
+
+        if($emailValide && $passwdValide) {
+            $manager = new UtilisateurDao($pdo);
+            // On recupere un tuple avec un booleen et le mdp hache
+            $motDePasse = $manager->connexionReussie($_POST['email']);
+
+            // Si les mdp sont les mêmes
+            if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
+                // On recupere l'utilisateur
+                $utilisateur = $manager->getUserMail($_POST['email']);
+                $tableauErreurs[] = "Connexion réussie !";
+                $this->genererVueConnexion($tableauErreurs, $utilisateur);
+            } else {
+                $tableauErreurs[] = "Mauvaise adresse mail ou mot de passe"; // Mauvais MDP
+                $this->genererVueConnexion($tableauErreurs, null);
+            }
+        } else {
+            $this->genererVueConnexion($tableauErreurs, null);
+        }
+    }
+
+    /**
+     * Cette fonction est appelée lorsqu'on clique sur le bouton "Inscription" sur la navbar
+     *
+     * @return void
+     */
+    public function premiereInscription() {
+        $this->genererVueVide('inscription');
+    }
+    
+    /**
+     * Cette fonction est appelée lorsqu'on clique sur le bouton "Connexion" sur la navbar
+     *
+     * @return void
+     */
+    public function premiereConnexion() {
+        $this->genererVueVide('connexion');
     }
 
     /**

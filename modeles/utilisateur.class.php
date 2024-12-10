@@ -79,6 +79,12 @@ class Utilisateur {
         return $instance;
     }
 
+    /**
+     * Création d'un utilisateur à partir d'un autre utilisateur
+     *
+     * @param Utilisateur $utilisateur à copier
+     * @return self instance de la classe
+     */
     public static function createWithCopy(Utilisateur $utilisateur): self {
         $instance = new self();
         $instance->id = $utilisateur->id;

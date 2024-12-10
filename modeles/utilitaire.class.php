@@ -51,38 +51,25 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si le prénom est valide, faux sinon
      */
-    public static function validerPrenom(?string $prenom, array &$messagesErreurs): bool
+    public static function validerPrenom(?string $prenom = null, array &$messagesErreurs): bool
     {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        if(empty($prenom)){
-            $messagesErreurs[] = "Le prénom est obligatoire";
-            $valide = false;
-        }
+        $valide = utilitaire::validerPresence($prenom, $messagesErreurs);
 
         // 2. Type de données : vérifier que le prenom est une chaine de caractères
-        if(!is_string($prenom)){
-            $messagesErreurs[] = "Le prénom doit être une chaine de caractères";
-            $valide = false;
-        }
+        $valide = utilitaire::validerType($prenom, $messagesErreurs);
 
         // 3. Longueur de la chaine : vérifier que le prenom est compris entre 2 et 50 caractères
-        if(strlen($prenom) < 2 || strlen($prenom) > 50){
-            $messagesErreurs[] = "Le prénom doit être compris entre 2 et 50 caractères";
-            $valide = false;
-        }
+        $valide = utilitaire::validerTaille($prenom, 2, 50, $messagesErreurs);
 
         // 4. Format des données : vérifier le format du prénom
         if(!preg_match("/^[a-zA-ZÀ-ÿ-]+$/", $prenom)){
             $messagesErreurs[] = "Le prénom doit être composé de lettres et/ou de tirets";
             $valide = false;
         }
-
-        // 5. Plage des valeurs - non pertinent
-
-        // 6. Fichiers uploadés - non pertinent
-
+        
         return $valide;
     }
 
@@ -98,32 +85,19 @@ class utilitaire {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        if(empty($nom)){
-            $messagesErreurs[] = "Le nom est obligatoire";
-            $valide = false;
-        }
+        $valide = utilitaire::validerPresence($nom, $messagesErreurs);
 
         // 2. Type de données : vérifier que le nom est une chaine de caractères
-        if(!is_string($nom)){
-            $messagesErreurs[] = "Le nom doit être une chaine de caractères";
-            $valide = false;
-        }
+        $valide = utilitaire::validerType($nom, $messagesErreurs);
 
         // 3. Longueur de la chaine : vérifier que le nom est compris entre 2 et 50 caractères
-        if(strlen($nom) < 2 || strlen($nom) > 50){
-            $messagesErreurs[] = "Le nom doit être compris entre 2 et 50 caractères";
-            $valide = false;
-        }
+        $valide = utilitaire::validerTaille($nom, 2, 50, $messagesErreurs);
 
         // 4. Format des données : vérifier le format du nom
         if(!preg_match("/^[a-zA-ZÀ-ÿ-]+$/", $nom)){
             $messagesErreurs[] = "Le nom doit être composé de lettres et/ou de tirets";
             $valide = false;
         }
-
-        // 5. Plage des valeurs - non pertinent
-
-        // 6. Fichiers uploadés - non pertinent
 
         return $valide;
     }
@@ -140,32 +114,19 @@ class utilitaire {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        if(empty($email)){
-            $messagesErreurs[] = "L'email est obligatoire";
-            $valide = false;
-        }
+        $valide = utilitaire::validerPresence($email, $messagesErreurs);
 
         // 2. Type de données : vérifier que l'email est une chaine de caractères
-        if(!is_string($email)){
-            $messagesErreurs[] = "L'email doit être une chaine de caractères";
-            $valide = false;
-        }
+        $valide = utilitaire::validerType($email, $messagesErreurs);
 
         // 3. Longueur de la chaine : vérifier que l'email est compris entre 5 et 255 caractères
-        if(strlen($email) < 5 || strlen($email) > 255){
-            $messagesErreurs[] = "L'email doit être compris entre 5 et 255 caractères";
-            $valide = false;
-        }
+        $valide = utilitaire::validerTaille($email, 5, 255, $messagesErreurs);
 
         // 4. Format des données : vérifier le format de l'email
         if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
             $messagesErreurs[] = "L'email n'est pas valide";
             $valide = false;
         }
-
-        // 5. Plage des valeurs - non pertinent
-
-        // 6. Fichiers uploadés - non pertinent
 
         return $valide;
     }
@@ -182,16 +143,10 @@ class utilitaire {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        if(empty($urlAgenda)){
-            $messagesErreurs[] = "L'URL de l'agenda est obligatoire";
-            $valide = false;
-        }
+        $valide = utilitaire::validerPresence($urlAgenda, $messagesErreurs);
 
         // 2. Type de données : vérifier que l'URL est une chaine de caractères
-        if(!is_string($urlAgenda)){
-            $messagesErreurs[] = "L'URL de l'agenda doit être une chaine de caractères";
-            $valide = false;
-        }
+        $valide = utilitaire::validerType($urlAgenda, $messagesErreurs);
 
         // 3. Longueur de la chaine - non pertinent
 
@@ -203,10 +158,6 @@ class utilitaire {
             $messagesErreurs[] = "L'URL doit être une URL Google Agenda iCal valide.";
             $valide = false;
         }
-
-        // 5. Plage des valeurs - non pertinent
-
-        // 6. Fichiers uploadés - non pertinent
 
         return $valide;
     }
@@ -223,32 +174,19 @@ class utilitaire {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        if(empty($couleurAgenda)){
-            $messagesErreurs[] = "La couleur de l'agenda est obligatoire";
-            $valide = false;
-        }
+        $valide = utilitaire::validerPresence($couleurAgenda, $messagesErreurs);
 
         // 2. Type de données : vérifier que le prenom est une chaine de caractères
-        if(!is_string($couleurAgenda)){
-            $messagesErreurs[] = "La couleur de l'agenda doit être une chaine de caractères";
-            $valide = false;
-        }
+        $valide = utilitaire::validerType($couleurAgenda, $messagesErreurs);
 
         // 3. Longueur de la chaine : vérifier que le prenom a exactement 7 caractères
-        if(strlen($couleurAgenda) != 7){
-            $messagesErreurs[] = "La couleur de l'agenda doit être composée de 7 caractères";
-            $valide = false;
-        }
+        $valide = utilitaire::validerTaille($couleurAgenda, 7, 7, $messagesErreurs);
 
         // 4. Format des données : vérifier le format de la couleur
         if (!preg_match('/^#[a-fA-F0-9]{6}$/', $couleurAgenda)) {
             $messagesErreurs[] = "La couleur sélectionnée n'est pas valide.";
             $valide = false;
         }
-
-        // 5. Plage des valeurs - non pertinent
-
-        // 6. Fichiers uploadés - non pertinent
 
         return $valide;
     }
@@ -265,22 +203,13 @@ class utilitaire {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        if(empty($motDePasse) || empty($motDePasse2)){
-            $messagesErreurs[] = "Le mot de passe est obligatoire";
-            $valide = false;
-        }
+        $valide = utilitaire::validerPresence($motDePasse, $messagesErreurs);
 
         // 2. Type de données : vérifier que le mot de passe est une chaine de caractères
-        if(!is_string($motDePasse) || !is_string($motDePasse2)){
-            $messagesErreurs[] = "Le mot de passe doit être une chaine de caractères";
-            $valide = false;
-        }
+        $valide = utilitaire::validerType($motDePasse, $messagesErreurs);
 
         // 3. Longueur de la chaine : vérifier que le mot de passe est compris entre 8 et 25 caractères
-        if(strlen($motDePasse) < 8 || strlen($motDePasse) > 25){
-            $messagesErreurs[] = "Le mot de passe doit être compris entre 8 et 25 caractères";
-            $valide = false;
-        }
+        $valide = utilitaire::validerTaille($motDePasse, 8, 25, $messagesErreurs);
 
         // 4. Format des données : vérifier le format du mdp avec preg preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/'
         if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $motDePasse)) {
@@ -294,31 +223,27 @@ class utilitaire {
             $valide = false;
         }
 
-        // 6. Fichiers uploadés - non pertinent
-
         return $valide;
     }
 
+    /**
+     * Valide le mot de passe de l'utilisateur, s'il est valide, après série de vérifications
+     *
+     * @param string|null $motDePasse Le mot de passe de l'utilisateur donné dans le formulaire
+     * @param array $messagesErreurs Les messages d'erreurs que l'on pourra retourner si erreur détectée
+     * @return boolean Retourne vrai si le mot de passe est valide, faux sinon
+     */
     public static function validerMotDePasse(?string $motDePasse, array &$messagesErreurs): bool {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        if(empty($motDePasse)){
-            $messagesErreurs[] = "Le mot de passe est obligatoire";
-            $valide = false;
-        }
+        $valide = utilitaire::validerPresence($motDePasse, $messagesErreurs);
 
         // 2. Type de données : vérifier que le mot de passe est une chaine de caractères
-        if(!is_string($motDePasse)){
-            $messagesErreurs[] = "Le mot de passe doit être une chaine de caractères";
-            $valide = false;
-        }
+        $valide = utilitaire::validerType($motDePasse, $messagesErreurs);
 
         // 3. Longueur de la chaine : vérifier que le mot de passe est compris entre 8 et 25 caractères
-        if(strlen($motDePasse) < 8 || strlen($motDePasse) > 25){
-            $messagesErreurs[] = "Le mot de passe doit être compris entre 8 et 25 caractères";
-            $valide = false;
-        }
+        $valide = utilitaire::validerTaille($motDePasse, 8, 25, $messagesErreurs);
 
         // 4. Format des données : vérifier le format du mdp avec preg preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/'
         if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $motDePasse)) {
@@ -326,10 +251,59 @@ class utilitaire {
             $valide = false;
         }
 
-        // 5. Plage des valeurs : - non pertinent
+        return $valide;
+    }
 
-        // 6. Fichiers uploadés - non pertinent
+    /**
+     * Valide la taille de la chaine donnée en paramètre
+     *
+     * @param string|null $chaine La chaine à valider
+     * @param integer $min La taille minimale de la chaine
+     * @param integer $max La taille maximale de la chaine
+     * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
+     * @return boolean Retourne vrai si la taille est valide, faux sinon
+     */
+    public static function validerTaille(?string $chaine, int $min, int $max, array &$messagesErreurs): bool {
+        $valide = true;
+        // 3. Longueur de la chaine : vérifier que le champ est compris entre min et max caractères
+        if(strlen($chaine) < $min || strlen($chaine) > $max){
+            $messagesErreurs[] = "Le champ doit être compris entre $min et $max caractères";
+            $valide = false;
+        }
+        return $valide;
+    }
 
+    /**
+     * Valide la présence du champ donné en paramètre
+     *
+     * @param string|null $chaine La chaine à valider
+     * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
+     * @return boolean Retourne vrai si le champ est présent, faux sinon
+     */
+    public static function validerPresence(?string $chaine, array &$messagesErreurs): bool {
+        $valide = true;
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        if(empty($chaine)){
+            $messagesErreurs[] = "Le champ est obligatoire";
+            $valide = false;
+        }
+        return $valide;
+    }
+
+    /**
+     * Valide le type du paramètre donné en paramètre
+     *
+     * @param string|null $chaine La chaine à valider
+     * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
+     * @return boolean Retourne vrai si le type est valide, faux sinon
+     */
+    public static function validerType(?string $chaine, array &$messagesErreurs): bool {
+        $valide = true;
+        // 2. Type de données : vérifier que le champ est une chaine de caractères
+        if(!is_string($chaine)){
+            $messagesErreurs[] = "Le champ doit être une chaine de caractères";
+            $valide = false;
+        }
         return $valide;
     }
 }

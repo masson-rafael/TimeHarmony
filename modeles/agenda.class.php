@@ -45,7 +45,7 @@ class Agenda {
      * @param string $nom de l'agenda
      * @param integer $idUtilisateur de l'utilisateur à qui appartient l'agenda
      */
-    public function __construct(string $url, string $couleur, string $nom, ?int $idUtilisateur = 1, ?int $id = null)
+    public function __construct(?string $url = null, ?string $couleur = null, ?string $nom = null, ?int $idUtilisateur = 1, ?int $id = null)
     {
         $this->url = $url;
         $this->couleur = $couleur;
