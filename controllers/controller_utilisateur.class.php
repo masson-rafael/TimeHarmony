@@ -32,27 +32,21 @@ class ControllerUtilisateur extends Controller
         $pdo = $this->getPdo();
         $tableauErreurs = [];
 
-        @$emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
-        @$nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
-        @$prenomValide = utilitaire::validerPrenom($_POST['prenom'], $tableauErreurs);
-        @$mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs, $_POST['pwdConfirme']);
+        $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
+        $nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
+        $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $tableauErreurs);
+        $mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs, $_POST['pwdConfirme']);
 
-        //Vérification que le form est bien rempli
-        if ($emailValide && $nomValide && $prenomValide && $mdpValide) {        // IF TABLEAU ERREURS VIDE ?
+        if ($emailValide && $nomValide && $prenomValide && $mdpValide) {
             $manager = new UtilisateurDao($pdo); //Lien avec PDO
-            // Appel fonction et stocke bool pour savoir si utilisateur existe deja avec email
-            $utilisateurExiste = $manager->findMail($_POST['email']); 
             /**
-             * Verifie que l'utilisateur n'existe pas, 
-             * que les mdp sont identiques, que le mdp contient les bons caracteres         // CHECK AVEC FONCTIONS VERIF
-             * et que l'email est valide
+             * Verifie que l'utilisateur n'existe pas.
+             * On hash le mdp, on crée un nouvel utilisateur et on l'ajoute dans la bd
              */
+            $utilisateurExiste = $manager->findMail($_POST['email']); 
             if (!$utilisateurExiste) {
-                // Hachage du mot de passe
                 $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
-                // Création d'un nouvel utilisateur (instance)
                 $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "utilisateurBase.png", false); 
-                // Appel du script pour ajouter utilisateur dans bd
                 $manager->ajouterUtilisateur($nouvelUtilisateur);
                 $tableauErreurs[] = "Inscription réussie !";
             } else {
@@ -105,7 +99,7 @@ class ControllerUtilisateur extends Controller
 
     /**
      * Cette fonction est appelée lorsqu'on clique sur le bouton "Inscription" sur la navbar
-     *
+     * Son but est de générer le page nommée inscription : celle ou l'utilisateur peut remplir le formulaire
      * @return void
      */
     public function premiereInscription() {
@@ -114,7 +108,7 @@ class ControllerUtilisateur extends Controller
     
     /**
      * Cette fonction est appelée lorsqu'on clique sur le bouton "Connexion" sur la navbar
-     *
+     * Son but est de générer le page nommée connexion : celle ou l'utilisateur peut remplir le formulaire
      * @return void
      */
     public function premiereConnexion() {
@@ -122,8 +116,8 @@ class ControllerUtilisateur extends Controller
     }
 
     /**
-     * Cette fonction est appelée lorsqu'on clique sur le bouton "Connexion" sur la navbar
-     *
+     * Cette fonction est appelée lorsqu'on clique sur le logo dans  la navbar
+     * Elle nous envoie donc à la page d'accueil où on peut sélectionner les menus
      * @return void
      */
     public function menuConnecte() {
@@ -132,7 +126,7 @@ class ControllerUtilisateur extends Controller
 
     /**
      * Deconnexion de l'utilisateur et unset de la session
-     *
+     * L'utilisateur est ensuite redirigé vers la page d'accueil où figure une vidéo de présentation de l'application
      * @return void
      */
     public function deconnecter() {
@@ -143,7 +137,7 @@ class ControllerUtilisateur extends Controller
 
     /**
      * Genere la vue du twig
-     *
+     * @todo verifier si useless
      * @param string|null $mail de la personne qui s'inscrit
      * @param boolean|null $existe si l'utilisateur existe deja
      * @param string|null $message le message renvoyé par les fonctions (erreur détaillée ou reussite)
@@ -163,7 +157,7 @@ class ControllerUtilisateur extends Controller
 
     /**
      * Genere le twig de la page vide
-     *
+     * @todo verifier si sous cote. Peut etre utilisé partout si envoi de param dans lien et $_GET
      * @param string|null $page web dont on veut generer le twig
      * @return void
      */
@@ -198,7 +192,7 @@ class ControllerUtilisateur extends Controller
 
     /**
      * Listage de l'utilisateur ayant l'id 2
-     *
+     * @todo après merge : vérifier si utilisée sinon supprimer
      * @return void
      */
     public function listerContacts() {
@@ -215,7 +209,7 @@ class ControllerUtilisateur extends Controller
 
     /**
      * Listage de tous les utilisateurs
-     *
+     * Redirection vers la page d'administration
      * @return void
      */
     public function lister() {
@@ -232,13 +226,14 @@ class ControllerUtilisateur extends Controller
 
     /**
      * Fonction appellee par la corbeille pour supprimer un utilisateur (panel admin)
-     *
+     * Ici, pas besoin de vérifier les paramètres car ils sont passés par un lien
+     * @todo vérifier la ligne else {$this->deconnecter();}. Suspecte car si la personne n'est pas admin on se déconnecte
      * @return void
      */
     public function supprimer() {
-        // Récupération de l'id envoyé en parametre du lien
-        $id = $_GET['id'];              // @todo vérification id
-        $type = $_GET['type'];          // @todo vérification type
+        $id = $_GET['id'];
+        $type = $_GET['type'];
+
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $manager->supprimerUtilisateur($id);
@@ -248,6 +243,26 @@ class ControllerUtilisateur extends Controller
             $this->deconnecter();
         }
     }
+
+    //     /**
+    //  * Fonction appellee par le bouton de mise a jour d'un utilisateur (panel admin)
+    //  * Ici, on vérifie l'intégralité de certains paramètres SAUF l'id et le type qui sont envoyés par lien
+    //  * @todo modifier formulaire pour minlength etc. CTRL C + CTRL V du formulaire inscription
+    //  * @return void
+    //  */
+    // public function modifier() {
+    //     $id = $_GET['id'];
+    //     $type = $_GET['type'];
+    //     $messageErreurs = [];
+
+    //     $nomValide = utilitaire::validerNom($_POST['nom'], $messageErreurs);
+    //     $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
+    //     $roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
+
+    //     if($nomValide && $prenomValide && $roleValide) {
+    //         $pdo = $this->getPdo();
+    //         $manager = new UtilisateurDao($pdo);
+
 
     /**
      * Fonction appellee par le bouton de mise a jour d'un utilisateur (panel admin)

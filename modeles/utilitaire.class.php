@@ -243,6 +243,33 @@ class utilitaire {
     }
 
     /**
+     * Valide le role de l'utilisateur, s'il est valide, après série de vérifications. Changé par les administrateurs
+     *
+     * @param string|null $role Le role de l'utilisateur donné dans le formulaire de modification
+     * @param array $messagesErreurs Les messages d'erreurs que l'on pourra retourner si erreur détectée
+     * @return boolean Retourne vrai si le role est valide, faux sinon
+     */
+    public static function validerRole(?string $role, array &$messagesErreurs): bool{
+        $valide = true;
+
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        $valide = utilitaire::validerPresence($role, $messagesErreurs);
+
+        // 2. Type de données : vérifier que le mot de passe est une chaine de caractères
+        $valide = utilitaire::validerType($role, $messagesErreurs);
+
+        // 3. Longueur de la chaine - non pertinent
+
+        // 4. Format de données : vérifier si le role est utilisateur ou admin
+        if($role != "admin" || $role != "utilisateur"){
+            $messagesErreurs[] = "Le role n'est pas valide";
+            $valide = false;
+        }
+
+        return $valide;
+    }
+
+    /**
      * Valide la taille de la chaine donnée en paramètre
      *
      * @param string|null $chaine La chaine à valider
