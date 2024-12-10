@@ -7,7 +7,7 @@ require_once 'include.php';
  * @author Thibault Latxague
  * @describe Controller de la page des utilisateur
  * @version 0.1
- * @todo POURQUOI LA MESSAGE BOX NE FONCTIONNE PAS ?????? (a cause de l'insertion des scripts ? dans base_template)
+ * @todo POURQUOI LA MESSAGE BOX NE FONCTIONNE PAS ?????? (a cause de l'insertion des scripts ? dans base_template) + detailler doxygen nav connexion inscription
  */
 
 class ControllerUtilisateur extends Controller
@@ -122,6 +122,15 @@ class ControllerUtilisateur extends Controller
     }
 
     /**
+     * Cette fonction est appelée lorsqu'on clique sur le bouton "Connexion" sur la navbar
+     *
+     * @return void
+     */
+    public function menuConnecte() {
+        $this->genererVueVide('menu');
+    }
+
+    /**
      * Deconnexion de l'utilisateur et unset de la session
      *
      * @return void
@@ -129,7 +138,7 @@ class ControllerUtilisateur extends Controller
     public function deconnecter() {
         $this->getTwig()->addGlobal('utilisateurGlobal', null);
         unset($_SESSION['utilisateur']);
-        $this->genererVueVide('menu');
+        $this->genererVueVide('index');
     }
 
     /**
