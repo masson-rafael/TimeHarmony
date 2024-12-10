@@ -35,7 +35,7 @@ class ControllerUtilisateur extends Controller
         @$emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
         @$nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
         @$prenomValide = utilitaire::validerPrenom($_POST['prenom'], $tableauErreurs);
-        @$mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $_POST['pwdConfirme'], $tableauErreurs);
+        @$mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs, $_POST['pwdConfirme']);
 
         //Vérification que le form est bien rempli
         if ($emailValide && $nomValide && $prenomValide && $mdpValide) {        // IF TABLEAU ERREURS VIDE ?
@@ -81,7 +81,7 @@ class ControllerUtilisateur extends Controller
          * Verifie si le mdp clair correspond au hachage dans bd
          */
         @$emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
-        @$passwdValide = utilitaire::validerMotDePasse($_POST['pwd'], $tableauErreurs);
+        @$passwdValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs);
 
         if($emailValide && $passwdValide) {
             $manager = new UtilisateurDao($pdo);

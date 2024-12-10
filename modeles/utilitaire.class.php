@@ -51,7 +51,7 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si le prénom est valide, faux sinon
      */
-    public static function validerPrenom(?string $prenom = null, array &$messagesErreurs): bool
+    public static function validerPrenom(?string $prenom, array &$messagesErreurs): bool
     {
         $valide = true;
 
@@ -65,11 +65,8 @@ class utilitaire {
         $valide = utilitaire::validerTaille($prenom, 2, 50, $messagesErreurs);
 
         // 4. Format des données : vérifier le format du prénom
-        if(!preg_match("/^[a-zA-ZÀ-ÿ-]+$/", $prenom)){
-            $messagesErreurs[] = "Le prénom doit être composé de lettres et/ou de tirets";
-            $valide = false;
-        }
-        
+        $valide = utilitaire::validerPreg($prenom, "/^[a-zA-ZÀ-ÿ-]+$/", $messagesErreurs);
+
         return $valide;
     }
 
@@ -94,10 +91,7 @@ class utilitaire {
         $valide = utilitaire::validerTaille($nom, 2, 50, $messagesErreurs);
 
         // 4. Format des données : vérifier le format du nom
-        if(!preg_match("/^[a-zA-ZÀ-ÿ-]+$/", $nom)){
-            $messagesErreurs[] = "Le nom doit être composé de lettres et/ou de tirets";
-            $valide = false;
-        }
+        $valide = utilitaire::validerPreg($nom, "/^[a-zA-ZÀ-ÿ-]+$/", $messagesErreurs);
 
         return $valide;
     }
@@ -154,9 +148,8 @@ class utilitaire {
         if (!filter_var($urlAgenda, FILTER_VALIDATE_URL)) {
             $messagesErreurs[] = "L'URL de l'agenda n'est pas valide.";
             $valide = false;
-        } else if (!preg_match('/^https?:\/\/calendar\.google\.com\/calendar\/ical\/.+\/basic\.ics$/', $urlAgenda)) {
-            $messagesErreurs[] = "L'URL doit être une URL Google Agenda iCal valide.";
-            $valide = false;
+        } else {
+            $valide = utilitaire::validerPreg($urlAgenda, '/^https?:\/\/calendar\.google\.com\/calendar\/ical\/.+\/basic\.ics$/', $messagesErreurs);
         }
 
         return $valide;
@@ -183,10 +176,7 @@ class utilitaire {
         $valide = utilitaire::validerTaille($couleurAgenda, 7, 7, $messagesErreurs);
 
         // 4. Format des données : vérifier le format de la couleur
-        if (!preg_match('/^#[a-fA-F0-9]{6}$/', $couleurAgenda)) {
-            $messagesErreurs[] = "La couleur sélectionnée n'est pas valide.";
-            $valide = false;
-        }
+        $valide = utilitaire::validerPreg($couleurAgenda, "/^#[a-fA-F0-9]{6}$/", $messagesErreurs);
 
         return $valide;
     }
@@ -199,26 +189,27 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return boolean Retourne vrai si le mot de passe est valide, faux sinon
      */
-    public static function validerMotDePasseInscription(?string $motDePasse, ?string $motDePasse2, array &$messagesErreurs): bool {
+    public static function validerMotDePasseInscription(?string $motDePasse, array &$messagesErreurs, ?string $motDePasse2 = null): bool {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
         $valide = utilitaire::validerPresence($motDePasse, $messagesErreurs);
+        $motDePasse2 != null ? $valide = utilitaire::validerPresence($motDePasse2, $messagesErreurs) : $valide = true;
 
         // 2. Type de données : vérifier que le mot de passe est une chaine de caractères
         $valide = utilitaire::validerType($motDePasse, $messagesErreurs);
+        $motDePasse2 != null ? $valide = utilitaire::validerType($motDePasse2, $messagesErreurs) : $valide = true;
 
         // 3. Longueur de la chaine : vérifier que le mot de passe est compris entre 8 et 25 caractères
         $valide = utilitaire::validerTaille($motDePasse, 8, 25, $messagesErreurs);
+        $motDePasse2 != null ? $valide = utilitaire::validerTaille($motDePasse2, 8, 25, $messagesErreurs) : $valide = true;
 
         // 4. Format des données : vérifier le format du mdp avec preg preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/'
-        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $motDePasse)) {
-            $messagesErreurs[] = "Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial.";
-            $valide = false;
-        }
+        $valide = utilitaire::validerPreg($motDePasse, '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $messagesErreurs);
+        $motDePasse2 != null ? $valide = utilitaire::validerPreg($motDePasse2, '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $messagesErreurs) : $valide = true;
 
         // 5. Plage des valeurs : vérifier que les mots de passe sont les mêmes
-        if($motDePasse != $motDePasse2){
+        if(($motDePasse != $motDePasse2) && $motDePasse2 != null){
             $messagesErreurs[] = "Les mots de passe ne correspondent pas";
             $valide = false;
         }
@@ -246,10 +237,7 @@ class utilitaire {
         $valide = utilitaire::validerTaille($motDePasse, 8, 25, $messagesErreurs);
 
         // 4. Format des données : vérifier le format du mdp avec preg preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/'
-        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $motDePasse)) {
-            $messagesErreurs[] = "Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial.";
-            $valide = false;
-        }
+        $valide = utilitaire::validerPreg($motDePasse, '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $messagesErreurs);
 
         return $valide;
     }
@@ -302,6 +290,24 @@ class utilitaire {
         // 2. Type de données : vérifier que le champ est une chaine de caractères
         if(!is_string($chaine)){
             $messagesErreurs[] = "Le champ doit être une chaine de caractères";
+            $valide = false;
+        }
+        return $valide;
+    }
+
+    /**
+     * Valide le format du paramètre donné en paramètre
+     *
+     * @param string|null $chaine La chaine à valider
+     * @param string $pattern Le pattern à respecter que l'on donne au preg_match
+     * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
+     * @return boolean Retourne vrai si le format est valide, faux sinon
+     */
+    public static function validerPreg(?string $chaine, string $pattern, array &$messagesErreurs): bool {
+        $valide = true;
+        // 2. Type de données : vérifier que le champ est une chaine de caractères
+        if(!preg_match($pattern, $chaine)){
+            $messagesErreurs[] = "Le champ ne respecte pas le format attendu";
             $valide = false;
         }
         return $valide;
