@@ -27,7 +27,7 @@ class ControllerUtilisateur extends Controller
      *
      * @return void
      */
-    function connexion() {
+    public function connexion() {
         $pdo = $this->getPdo();
         $tableauErreurs = [];
 
@@ -36,99 +36,87 @@ class ControllerUtilisateur extends Controller
          * Verifie ensuite si l'email existe dans la bd
          * Verifie si le mdp clair correspond au hachage dans bd
          */
-        if (isset($_POST['email']) && isset($_POST['pwd'])) {           // @todo vérification email et mdp
-            $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
-            $passwdValide = utilitaire::validerMotDePasse($_POST['pwd'], $tableauErreurs);
+        $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
+        $passwdValide = utilitaire::validerMotDePasse($_POST['pwd'], $tableauErreurs);
 
-            if($emailValide && $passwdValide) {
-                $manager = new UtilisateurDao($pdo);
-                // On recupere un tuple avec un booleen et le mdp hache
-                $motDePasse = $manager->connexionReussie($_POST['email']);
+        if($emailValide && $passwdValide) {
+            $manager = new UtilisateurDao($pdo);
+            // On recupere un tuple avec un booleen et le mdp hache
+            $motDePasse = $manager->connexionReussie($_POST['email']);
 
-                // Si les mdp sont les mêmes
-                if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
-                    // On recupere l'utilisateur
-                    $utilisateur = $manager->getUserMail($_POST['email']);
-                    $tableauErreurs[] = "CONNEXION REUSSIE";
-                    $this->genererVueConnexion($tableauErreurs, $utilisateur);
-                } else {
-                    $tableauErreurs[] = "CONNEXION ECHOUÉE"; // Mauvais MDP
-                    $this->genererVueConnexion($tableauErreurs, null);
-                }
+            // Si les mdp sont les mêmes
+            if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
+                // On recupere l'utilisateur
+                $utilisateur = $manager->getUserMail($_POST['email']);
+                $tableauErreurs[] = "Connexion réussie !";
+                $this->genererVueConnexion($tableauErreurs, $utilisateur);
             } else {
+                $tableauErreurs[] = "Mauvaise adresse mail ou mot de passe"; // Mauvais MDP
                 $this->genererVueConnexion($tableauErreurs, null);
             }
         } else {
-            $this->genererVueVide('connexion');
+            $this->genererVueConnexion($tableauErreurs, null);
         }
     }
 
     /**
-     * Premiere inscription lorsqu'on clique sur inscription sur la navbar pour éviter double twig
+     * Cette fonction est appelée lorsqu'on clique sur le bouton "Inscription" sur la navbar
      *
      * @return void
      */
-    function premiereInscription() {
-        //$this->genererVueVide('inscription');
-        $this->inscription();
+    public function premiereInscription() {
+        $this->genererVueVide('inscription');
     }
     
     /**
-     * Premiere connexion lorsqu'on clique sur connexion sur la navbar pour éviter double twig
+     * Cette fonction est appelée lorsqu'on clique sur le bouton "Connexion" sur la navbar
      *
      * @return void
      */
-    function premiereConnexion() {
-        //$this->genererVueVide('connexion');
-        $this->connexion();
+    public function premiereConnexion() {
+        $this->genererVueVide('connexion');
     }
 
     /**
-     * Inscription de l'utilisateur à la BD
-     * @todo TOUT MODIFIER - Vérification intégrité parametres
+     * Inscription de l'utilisateur à la BD. On utilise les fonctions de validation pour vérifier les champs
+     * et ensuite on vérifie si l'utilisateur existe déjà dans la BD
+     * avant de procéder à l'inscription de l'utilisateur dans la BD
      * @return void
      */
-    function inscription() {
+    public function inscription() {
         $pdo = $this->getPdo();
         $tableauErreurs = [];
 
-        // TODO CHANGER ARCHI : soit @ a gogo soit vérif de issempty pour affichage unique de twig
+        @$emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
+        @$nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
+        @$prenomValide = utilitaire::validerPrenom($_POST['prenom'], $tableauErreurs);
+        @$mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $_POST['pwdConfirme'], $tableauErreurs);
 
-        if(isset($_POST['email']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['pwd']) && isset($_POST['pwdConfirme'])) {
-            @$emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
-            @$nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
-            @$prenomValide = utilitaire::validerPrenom($_POST['prenom'], $tableauErreurs);
-            @$mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $_POST['pwdConfirme'], $tableauErreurs);
-
-            //Vérification que le form est bien rempli
-            if ($emailValide && $nomValide && $prenomValide && $mdpValide) {
-                $manager = new UtilisateurDao($pdo); //Lien avec PDO
-                // Appel fonction et stocke bool pour savoir si utilisateur existe deja avec email
-                $utilisateurExiste = $manager->findMail($_POST['email']); 
-                /**
-                 * Verifie que l'utilisateur n'existe pas, 
-                 * que les mdp sont identiques, que le mdp contient les bons caracteres         // CHECK AVEC FONCTIONS VERIF
-                 * et que l'email est valide
-                 */
-                if (!$utilisateurExiste) {
-                    // Hachage du mot de passe
-                    $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
-                    // Création d'un nouvel utilisateur (instance)
-                    $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "utilisateurBase.png", false); 
-                    // Appel du script pour ajouter utilisateur dans bd
-                    $manager->ajouterUtilisateur($nouvelUtilisateur);
-                    $tableauErreurs[] = "INSCRIPTION REUSSIE";
-                } else {
-                    // Si l'utilisateur existe deja
-                    $tableauErreurs[] = "UTILISATEUR EXISTE DEJA";
-                }
+        //Vérification que le form est bien rempli
+        if ($emailValide && $nomValide && $prenomValide && $mdpValide) {        // IF TABLEAU ERREURS VIDE ?
+            $manager = new UtilisateurDao($pdo); //Lien avec PDO
+            // Appel fonction et stocke bool pour savoir si utilisateur existe deja avec email
+            $utilisateurExiste = $manager->findMail($_POST['email']); 
+            /**
+             * Verifie que l'utilisateur n'existe pas, 
+             * que les mdp sont identiques, que le mdp contient les bons caracteres         // CHECK AVEC FONCTIONS VERIF
+             * et que l'email est valide
+             */
+            if (!$utilisateurExiste) {
+                // Hachage du mot de passe
+                $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
+                // Création d'un nouvel utilisateur (instance)
+                $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "utilisateurBase.png", false); 
+                // Appel du script pour ajouter utilisateur dans bd
+                $manager->ajouterUtilisateur($nouvelUtilisateur);
+                $tableauErreurs[] = "Inscription réussie !";
+            } else {
+                // Si l'utilisateur existe deja
+                $tableauErreurs[] = "L'utilisateur existe déjà ! Connectez-vous !";
             }
-            // Affichage de la page avec les erreurs ou le message de succès
-            @$this->genererVue($_POST['email'], null, $tableauErreurs);
-        } else {
-            $this->genererVueVide('inscription');
         }
-        
+        // Affichage de la page avec les erreurs ou le message de succès
+        @$this->genererVue($_POST['email'], null, $tableauErreurs);
     }
 
     /**
@@ -136,7 +124,7 @@ class ControllerUtilisateur extends Controller
      *
      * @return void
      */
-    function deconnecter() {
+    public function deconnecter() {
         $this->getTwig()->addGlobal('utilisateurGlobal', null);
         unset($_SESSION['utilisateur']);
         $this->genererVueVide('menu');
