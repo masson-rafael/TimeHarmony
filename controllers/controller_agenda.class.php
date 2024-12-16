@@ -35,37 +35,26 @@ class ControllerAgenda extends Controller
     public function ajouterAgenda()
     {
         $pdo = $this->getPdo(); // Récupérer l'instance PDO
-    
+
+        $tableauErreurs = [];
+        $urlValide = utilitaire::validerURLAgenda($_POST['url'], $tableauErreurs);
+        $couleurValide = utilitaire::validerCouleur($_POST['couleur'], $tableauErreurs);
+        $nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
+
         // Vérifier si tous les champs du formulaire sont remplis
-        if (isset($_POST['url'], $_POST['couleur'], $_POST['nom'])) {           // @todo vérification des variables
-            // Initialise et valider les données
-            $url = filter_var($_POST['url'], FILTER_SANITIZE_URL); // Initialise l'URL
-    
-            // Validation de l'URL
-            if (!filter_var($url, FILTER_VALIDATE_URL)) {
-                $this->genererVueAgenda("L'URL fournie est invalide.");
-                return;
-            }
-    
+        if ($urlValide && $couleurValide && $nomValide) {
             // Créer une instance de AgendaDao pour interagir avec la base de données
             $manager = new AgendaDao($pdo);
-    
+
             // Vérifier si l'agenda existe déjà avec cette URL
-            $agendaExiste = $manager->findURL($url);
-    
+            $agendaExiste = $manager->findURL($_POST['url']);
+
             if (!$agendaExiste) {
                 // Créer une nouvelle instance d'Agenda avec les données du formulaire
-                $nouvelAgenda = new Agenda($_POST['url'], $_POST['couleur'], $_POST['nom'], null);          // @todo utilisation des vérifications 
-                // // Récupérer la couleur sélectionnée
-                // if (!empty($_POST['couleur_custom'])) {
-                //     $couleur = $_POST['couleur_custom'];
-                // } else {
-                //     $couleur = $_POST['couleur'];
-                // }
-    
+                $nouvelAgenda = new Agenda($_POST['url'], $_POST['couleur'], $_POST['nom'], null);
                 // Ajouter l'agenda dans la base de données
                 $manager->ajouterAgenda($nouvelAgenda);
-    
+
                 // Retourner un message de succès
                 $this->genererVueAgenda("Ajout réussi !");
             } else {

@@ -366,4 +366,75 @@ class utilitaire {
 
         return $valide;
     }
+
+    /**
+     * Fonction qui valide une date dans le formulaire de recherche
+     *
+     * @param string|null $date La date de début de la recherche
+     * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
+     * @return boolean Retourne vrai si la date est valide, faux sinon
+     */
+    public static function validerDate(?string $date, array &$messagesErreurs): bool {
+        $valide = true;
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        $valide = utilitaire::validerPresence($date, $messagesErreurs);
+
+        // 2. Type de données : vérifier que le champ est une chaine de caractères
+        $valide = utilitaire::validerType($date, $messagesErreurs);
+
+        // 3. Longueur de la chaine - non pertinent
+
+        // 4. Format des données : vérifier le format de la date
+        $valide = utilitaire::validerPreg($date, "/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/", $messagesErreurs);
+
+        return $valide;
+    }
+
+    /**
+     * Fonction qui valide une heure dans le formulaire de recherche
+     *
+     * @param string|null $heure L'heure de début de la recherche
+     * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
+     * @return boolean Retourne vrai si l'heure est valide, faux sinon
+     */
+    public static function validerDureeMinimale(?string $heure, array &$messagesErreurs): bool {
+        $valide = true;
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        $valide = utilitaire::validerPresence($heure, $messagesErreurs);
+
+        // 2. Type de données : vérifier que le champ est une chaine de caractères
+        $valide = utilitaire::validerType($heure, $messagesErreurs);
+
+        // 3. Longueur de la chaine - non pertinent
+
+        // 4. Format des données : vérifier le format de l'heure
+        $valide = utilitaire::validerPreg($heure, "/^(2[0-3]|[01]\d):[0-5]\d$/", $messagesErreurs);
+
+        return $valide;
+    }
+
+    /**
+     * Fonction qui valide la couleur d'un agenda lors de sa création
+     *
+     * @param string|null $couleur La couleur de l'agenda
+     * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
+     * @return boolean Retourne vrai si la couleur est valide, faux sinon
+     */
+    public static function validerCouleur(?string $couleur, array &$messagesErreurs): bool {
+        $valide = true;
+
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        $valide = utilitaire::validerPresence($couleur, $messagesErreurs);
+
+        // 2. Type de données : vérifier que le prenom est une chaine de caractères
+        $valide = utilitaire::validerType($couleur, $messagesErreurs);
+
+        // 3. Longueur de la chaine : vérifier que le prenom a exactement 7 caractères
+        $valide = utilitaire::validerTaille($couleur, 7, 7, $messagesErreurs);
+
+        // 4. Format des données : vérifier le format de la couleur
+        $valide = utilitaire::validerPreg($couleur, "/^#[a-fA-F0-9]{6}$/", $messagesErreurs);
+
+        return $valide;
+    }
 }
