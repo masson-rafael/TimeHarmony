@@ -29,7 +29,7 @@ class ControllerAssistant extends Controller
 
     public function genererVueRecherche(): void {
         $pdo = $this->getPdo();
-        
+        unset($_SESSION['nbUserSelectionné']);
         // Récupération des contacts
         $utilisateur = new Utilisateur(1);
 
@@ -47,116 +47,189 @@ class ControllerAssistant extends Controller
     }
 
     public function obtenir(): void {
+    $datesCommunes = [];
 
-        $datesCommunes = array();
+    $pdo = $this->getPdo();
 
-        $pdo = $this->getPdo();
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $managerCreneau = new CreneauLibreDao($pdo);
+        $managerCreneau->supprimerCreneauxLibres();
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            //Mettre dans agendaDAO ou la classe agenda
-            $managerCreneau = new CreneauLibreDao($pdo);
-            $managerCreneau->supprimerCreneauxLibres();
-
-            extract($_POST, EXTR_OVERWRITE);
-            $dateDebPeriode = new DateTime($_POST['debut']);
-            $dateFinPeriode = new DateTime($_POST['fin']);
-            $dureeMin = $_POST['dureeMin'];
-
-            $managerUtilisateur = new UtilisateurDAO($pdo);
-
-            foreach($_POST['contacts'] as $idUtilisateurCourant) {
-                
-                $tableauUtilisateur[] = $managerUtilisateur->find($idUtilisateurCourant);
-            }
-
-            $tailleTabUser = count($tableauUtilisateur);
-
-            // Lire le fichier JSON
-            $jsonFile = 'combinaisons.json'; // Chemin du fichier
-            $jsonContent = file_get_contents($jsonFile);
-
-            if ($jsonContent === false) {
-                die("Erreur lors de la lecture du fichier JSON");
-            }
-
-            // Décoder le JSON en tableau associatif
-            $data = json_decode($jsonContent, true); // true pour tableau associatif
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                die("Erreur de décodage JSON : " . json_last_error_msg());
-            }
-            
-            // Parcourir les combinaisons et afficher les valeurs pour la clé spécifique
-            foreach ($data['combinaisons'] as $combinaison) {
-                if (array_key_exists($tailleTabUser, $combinaison)) {
-                    // Trier les valeurs en ordre décroissant
-                    $valeurs = $combinaison[$tailleTabUser];
-                    rsort($valeurs);
-                    $codesBinaire = afficherValeursAvecTroisUn($valeurs,3,$tailleTabUser);
-                }
-            }
-
-            
-            foreach ($codesBinaire as $codeBinaire) {
-                $creneauxByUtilisateur = array();
-                // var_dump($codeBinaire);
-
-                // Appeler la fonction pour obtenir les utilisateurs sélectionnés
-                $utilisateursSelectionnes = selectionnerUtilisateurs($tableauUtilisateur, $codeBinaire);
-
-                // Afficher les utilisateurs sélectionnés
-                // foreach ($utilisateursSelectionnes as $utilisateur) {
-                //     echo "Utilisateur sélectionné : " . $utilisateur->getNom() . " " . $utilisateur->getPrenom() . "\n <br>";
-                // }
-                // echo "<br>";
-
-                // Pour chaque utilisateur, recherche des créneaux libres par agendas
-                $assistantRecherche = new Assistant($dateDebPeriode,$dateFinPeriode, $utilisateursSelectionnes);
-                foreach ($assistantRecherche->getUtilisateurs() as $utilisateurCourant) {
-                    
-                    // Voir avec le prof car la methode getAgendas est différentes des getters classiques
-                    $utilisateur = new Utilisateur($utilisateurCourant->getId());
-
-                    $agendas = $utilisateur->getAgendas();
-
-                    $allEvents = [];
-
-                    foreach ($agendas as $agenda) {  
-                        $urlIcs = $agenda->getUrl();
-                    
-                        $allEvents = $agenda->recuperationEvenementsAgenda($urlIcs,$debut,$fin,$allEvents);
-                    }
-                    
-                    $mergedEvents = $agenda->mergeAgendas($allEvents);
-                    
-                    $creneauxByUtilisateur[] = $agenda->rechercheCreneauxLibres($mergedEvents,$_POST['debut'],$_POST['fin'],$pdo);
-
-                }
-
-                // Appeler la fonction pour trouver les dates communes
-                $datesCommunes[] = $assistantRecherche->trouverDatesCommunes($creneauxByUtilisateur,$dureeMin);
-
-            }
-
-            // var_dump($datesCommunes);
-            // Générer vue
-            $this->genererVueCreneaux($datesCommunes);
+        extract($_POST, EXTR_OVERWRITE);
+        if (isset($_POST['debut']) && isset($_POST['fin']) && isset($_POST['dureeMin']) && isset($_POST['contacts'])){
+        $_SESSION['dateDebPeriode'] = new DateTime($_POST['debut']);
+        $_SESSION['dateFinPeriode'] = new DateTime($_POST['fin']);
+        $_SESSION['dureeMin'] = $_POST['dureeMin'];
+        $_SESSION['contacts'] = $_POST['contacts'];
+        
+        //A supprimer
+        $_SESSION['debut'] = $_POST['debut'];
+        $_SESSION['fin'] = $_POST['fin'];
         }
-        else {
-            $this->genererVue();
-        }     
-    }
 
-    public function genererVueCreneaux(?Array $creneaux): void {
+        $dateDebPeriode = $_SESSION['dateDebPeriode'];
+        $dateFinPeriode = $_SESSION['dateFinPeriode'];
+        $dureeMin = $_SESSION['dureeMin'];
+        $contacts = $_SESSION['contacts'];
+        
+        //A supprimer
+        $debut =  $_SESSION['debut'];
+        $fin = $_SESSION['fin'];
 
-        //Génération de la vue
-        $template = $this->getTwig()->load('resultat.html.twig');
-        // var_dump($creneaux);
-        echo $template->render(array(
-            'creneauxRDV' => $creneaux
-        ));
+        
+
+        // var_dump($dateDebPeriode);
+
+
+        $managerUtilisateur = new UtilisateurDAO($pdo);
+        $tableauUtilisateur = [];
+
+        foreach ($contacts as $idUtilisateurCourant) {
+            $tableauUtilisateur[] = $managerUtilisateur->find($idUtilisateurCourant);
+        }
+
+        // var_dump($tableauUtilisateur);
+
+        $tailleTabUser = count($tableauUtilisateur);
+
+        // Initialisez la session pour stocker la variable
+        // session_start();
+        if (!isset($_SESSION['nbUserSelectionné'])) {
+            $_SESSION['nbUserSelectionné'] = $tailleTabUser; // Valeur initiale
+        }
+
+        // Gérer les actions des boutons
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['increment'])) {
+                $_SESSION['nbUserSelectionné']++;
+            } elseif (isset($_POST['decrement'])) {
+                $_SESSION['nbUserSelectionné']--;
+            }
+        }
+
+        var_dump($_SESSION['nbUserSelectionné']);
+
+        // Lire et décoder le fichier JSON
+        $jsonFile = 'combinaisons.json';
+        $jsonContent = file_get_contents($jsonFile);
+        $data = json_decode($jsonContent, true);
+
+        // Récupérer les codes binaires associés aux valeurs du tableau de combinaison 
+        foreach ($data['combinaisons'] as $combinaison) {
+            if (array_key_exists($tailleTabUser, $combinaison)) {
+                $valeurs = $combinaison[$tailleTabUser];
+                rsort($valeurs);
+                $codesBinaire = recupererValeursDeCombinaison($valeurs, $_SESSION['nbUserSelectionné'], $tailleTabUser);
+            }
+        }
+
+        // $nbUtilisateursEnBinaire = str_repeat('1', $tailleTabUser);
+
+        // //Sélectionner les utilisateurs en fonction d'un code binaire (par exemple : 1101 -> utilisateur 1, 2 et 4 sélectionné)
+        // $utilisateursSelectionnes = selectionnerUtilisateurs($tableauUtilisateur, $nbUtilisateursEnBinaire);
+        // var_dump($utilisateursSelectionnes);
+
+        if (empty($creneauxByUtilisateur)) {
+            $assistantRecherche = new Assistant($dateDebPeriode, $dateFinPeriode, $tableauUtilisateur);
+            foreach ($assistantRecherche->getUtilisateurs() as $utilisateurCourant) {
+                $utilisateur = new Utilisateur($utilisateurCourant->getId());
+                $agendas = $utilisateur->getAgendas();
+                $allEvents = [];
+
+                foreach ($agendas as $agenda) {
+                    $urlIcs = $agenda->getUrl();
+                    $allEvents = $agenda->recuperationEvenementsAgenda($urlIcs, $debut, $fin, $allEvents);
+                }
+
+                $mergedEvents = $agenda->mergeAgendas($allEvents);
+                $creneauxByUtilisateur[] = $agenda->rechercheCreneauxLibres($mergedEvents, $debut, $fin, $pdo);
+            }
+        }
+        // $creneauxByUtilisateur = [];
+        // var_dump($creneauxByUtilisateur);
+
+        
+        
+        // var_dump($creneauxByUtilisateur);
+        // Recherche
+        foreach ($codesBinaire as $codeBinaire) {
+            
+            // Convertir le code binaire en tableau d'indices actifs
+            $activeKeys = [];
+            for ($i = 0; $i < strlen($codeBinaire); $i++) {
+                if ($codeBinaire[$i] === '1') {
+                    $activeKeys[] = $i;
+                }
+            }
+
+            // var_dump($activeKeys);
+
+            // Récupérer les données associées aux clés actives
+            $creneauxUtilisateurs = [];
+            foreach ($activeKeys as $key) {
+                // var_dump($key);
+                if (isset($creneauxByUtilisateur[$key])) {
+                    // var_dump($creneauxByUtilisateur[$key]);
+                    $associatedData[$key] = $creneauxByUtilisateur[$key];
+                }
+            }
+
+            // var_dump($associatedData);
+
+            //Sélectionner les utilisateurs en fonction d'un code binaire (par exemple : 1101 -> utilisateur 1, 2 et 4 sélectionné)
+            $utilisateursSelectionnes = selectionnerUtilisateurs($tableauUtilisateur, $codeBinaire);
+
+            // $assistantRecherche = new Assistant($dateDebPeriode, $dateFinPeriode, $utilisateursSelectionnes);
+            // foreach ($assistantRecherche->getUtilisateurs() as $utilisateurCourant) {
+            //     $utilisateur = new Utilisateur($utilisateurCourant->getId());
+            //     $agendas = $utilisateur->getAgendas();
+            //     $allEvents = [];
+
+            //     foreach ($agendas as $agenda) {
+            //         $urlIcs = $agenda->getUrl();
+            //         $allEvents = $agenda->recuperationEvenementsAgenda($urlIcs, $debut, $fin, $allEvents);
+            //     }
+
+            //     $mergedEvents = $agenda->mergeAgendas($allEvents);
+            //     $creneauxByUtilisateur[] = $agenda->rechercheCreneauxLibres($mergedEvents, $debut, $fin, $pdo);
+            //     // var_dump($creneauxByUtilisateur);
+            // }
+
+            $datesTrouvees = $assistantRecherche->trouverDatesCommunes($associatedData, $dureeMin);
+            
+            foreach ($datesTrouvees as $date) {
+                $nombreUtilisateursConcernes = count($utilisateursSelectionnes);
+                $pourcentageParticipation = ($nombreUtilisateursConcernes / $tailleTabUser) * 100;
+            
+                $datesCommunes[] = [
+                    'date' => $date, // Date commune
+                    'utilisateurs' => array_map(function ($utilisateur) {
+                        return [
+                            'id' => $utilisateur->getId(),
+                            'nom' => $utilisateur->getNom(),
+                            'prenom' => $utilisateur->getPrenom()
+                        ];
+                    }, $utilisateursSelectionnes), // Liste des utilisateurs concernés
+                    'pourcentage' => round($pourcentageParticipation, 2) // Arrondi à 2 décimales
+                ];
+            }
+        }
+        //  var_dump($datesCommunes);
+        // Générer la vue avec les données structurées
+        $this->genererVueCreneaux($datesCommunes);
+    } else {
+        $this->genererVue();
     }
+}
+
+public function genererVueCreneaux(?array $creneaux): void
+{
+    $template = $this->getTwig()->load('resultat.html.twig');
+    echo $template->render([
+        'creneauxRDV' => $creneaux
+    ]);
+}
+
 
     public function genererVue(): void {
 
@@ -167,7 +240,7 @@ class ControllerAssistant extends Controller
 }
 
 
-function afficherValeursAvecTroisUn($valeurs, $nbDe1, $nbUtilisateurs): array {
+function recupererValeursDeCombinaison($valeurs, $nbDe1, $nbUtilisateurs): array {
     $tabDeBinaire = array();
     foreach ($valeurs as $valeur) {
         // Convertir la valeur en binaire
@@ -186,7 +259,6 @@ function afficherValeursAvecTroisUn($valeurs, $nbDe1, $nbUtilisateurs): array {
     }
     return $tabDeBinaire;
 }
-
 
 
 // Fonction pour sélectionner les utilisateurs en fonction du code binaire

@@ -1,27 +1,45 @@
 {% extends 'base_template.html.twig' %}
 
-{% block title %}Resultat - {{ constant('WEBSITE_TITLE') }}{% endblock %}
+{% block title %}Résultat - {{ constant('WEBSITE_TITLE') }}{% endblock %}
 
 {% block content %}
-<main>
+<main class="container my-5">
+    <h2 class="text-center mb-5">Résultat de la recherche</h2>
+
+    <form method="post">
+        <button type="submit" name="increment">Chercher avec un utilisateur en plus</button>
+        <button type="submit" name="decrement">Chercher avec un utilisateur en moins</button>
+    </form>
+    
+    {# <button>Chercher un nouveau créneau</button> #}
+    
     {# Vérification de la présence de créneaux réservés #}
     {% if creneauxRDV is not empty %}
-        {# Boucle pour chaque utilisateur dans creneauxRDV #}
-        {% for userCreneaux in creneauxRDV %}
-            <h4>Utilisateur concerné {{ loop.index }}</h4> {# Affiche le numéro de l'utilisateur #}
-            
-            {# Boucle pour chaque créneau de l'utilisateur #}
-            {% for creneau in userCreneaux %}
-                {# Modification de la date (soustraction de 2 heures) #}
-                {% set dateDebut = creneau.debut|date_modify('-2 hours') %}
-                {% set dateFin = creneau.fin|date_modify('-2 hours') %}
-                
-                <p>Créneau libre de {{ dateDebut|date('Y-m-d H:i:s') }} à {{ dateFin|date('Y-m-d H:i:s') }} avec une durée de {{ creneau.duree }}</p>
+        <div class="row">
+            {# Boucle pour chaque créneau dans creneauxRDV #}
+            {% for creneau in creneauxRDV %}
+                <div class="col-md-6 mb-4">
+                    <div class="bg-light p-4 rounded shadow-sm" style="background-color: #fdf1b8;">
+                        <h5 class="text-center">{{ creneau.date.debut|date('d-m-Y H:i') }} -> {{ creneau.date.fin|date('d-m-Y H:i') }}</h5>
+                        
+                        <p class="text-center">Participation : <strong>{{ creneau.pourcentage }}</strong>%</p>
+                        
+                        <p class="mt-3"><strong>Utilisateurs concernés :</strong></p>
+                        <ul>
+                            {% for utilisateur in creneau.utilisateurs %}
+                                <li>{{ utilisateur.prenom }} {{ utilisateur.nom }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {# Ajouter une nouvelle ligne après chaque deuxième div #}
+                {# {% if loop.index is divisible by(2) and not loop.last %}
+                    </div><div class="row">
+                {% endif %} #}
             {% endfor %}
-        {% endfor %}
+        </div>
     {% else %}
-        <p>Pas de créneau réservé trouvé</p>
+        <p class="text-center text-muted">Aucun créneau commun trouvé.</p>
     {% endif %}
-    
 </main>
 {% endblock %}
