@@ -1,4 +1,0 @@
-TP sécurité :
-- Protection failles XSS ? Chercher un formulaire et injecter code js. Ex : <script>alert("Faille XSS présente");</script>
-
-- exploiter la faille : Si stockage d'alert en BD, tous les users auront l'alert quand rechargement page
