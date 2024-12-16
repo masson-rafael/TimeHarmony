@@ -7,45 +7,72 @@
 
 {% block content %}
 {# {{ dump(agendas) }} #}
-    <main>
-    <div class="container">
-            <div class="row justify-content-center">
-            {% if message %}
-                <div class="mt-5">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+<main>
+    <div class="container mt-5">
+        <!-- Affichage des messages -->
+        {% if message %}
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-                {% endif %}
-                
-                {% for agenda in agendas %}
-                    <p>url = {{agenda.url}}, nom = {{agenda.nom}} et couleur = {{agenda.couleur}}</p>
-                {% endfor %}
-
-                <div class="col-md-4 mt-5"> <!-- Ajout de la marge en haut -->
-                    <form action="index.php?controleur=agenda&methode=ajouterAgenda" method="post" required>
-                        <div class="mb-3">
-                            <label for="url" class="form-label">URL</label>
-                            <input type="text" name="url" class="form-control" id="url" required placeholder="Entrez une URL valide">
-                        </div>
-                        <div class="mb-3">
-                            <label for="couleur" class="form-label">Couleur</label>
-                            <input type="text" name="couleur" class="form-control" id="couleur" required placeholder="Entrez la couleur">
-                        </div>
-                        <div class="mb-3">
-                            <label for="nom" class="form-label">Nom</label>
-                            <input type="text" name="nom" class="form-control" id="nom" required placeholder="Entrez un nom">
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Ajouter</button>
-                    </form>
-                </div>
-                
             </div>
         </div>
-        {# <a href="index.php?controleur=utilisateur&methode=listerContacts"><p>ff</p></a> #}
-    </main>
+        {% endif %}
+
+        <!-- Liste des agendas -->
+        {% if agendas|length > 0 %}
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8">
+                <h4 class="text-center mb-4">Liste des agendas</h4>
+                <ul class="list-group">
+                    {% for agenda in agendas %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                            <strong>Nom :</strong> {{ agenda.nom }} <br>
+                            <strong>URL :</strong> {{ agenda.url }} <br>
+                            <strong>Couleur :</strong> <span style="color: {{ agenda.couleur }}">{{ agenda.couleur }}</span>
+                        </span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% else %}
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8">
+                <div class="alert alert-info text-center" role="alert">
+                    Aucun agenda trouvé. Ajoutez-en un ci-dessous.
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Formulaire d'ajout d'agenda -->
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6">
+                <h4 class="text-center mb-4">Ajouter un agenda</h4>
+                <form action="index.php?controleur=agenda&methode=ajouterAgenda" method="post">
+                    <div class="mb-3">
+                        <label for="url" class="form-label">URL</label>
+                        <input type="text" name="url" class="form-control" id="url" required placeholder="Entrez une URL valide">
+                    </div>
+                    <div class="mb-3">
+                        <label for="couleur" class="form-label">Couleur</label>
+                        <input type="text" name="couleur" class="form-control" id="couleur" required placeholder="Entrez la couleur (par ex. #FF5733)">
+                    </div>
+                    <div class="mb-3">
+                        <label for="nom" class="form-label">Nom</label>
+                        <input type="text" name="nom" class="form-control" id="nom" required placeholder="Entrez un nom">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
 {% endblock %}
 
 
