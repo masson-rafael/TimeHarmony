@@ -253,7 +253,8 @@ class utilitaire {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        $valide = utilitaire::validerPresence($role, $messagesErreurs);
+        // $valide = utilitaire::validerPresence($role, $messagesErreurs);
+        // Le champ n'est pas obligatoire
 
         // 2. Type de données : vérifier que le mot de passe est une chaine de caractères
         $valide = utilitaire::validerType($role, $messagesErreurs);
@@ -261,7 +262,7 @@ class utilitaire {
         // 3. Longueur de la chaine - non pertinent
 
         // 4. Format de données : vérifier si le role est utilisateur ou admin
-        if($role != "admin" || $role != "utilisateur"){
+        if(($role != '0' && $role != '1') && ($role != 'Admin' && $role != 'User')){
             $messagesErreurs[] = "Le role n'est pas valide";
             $valide = false;
         }

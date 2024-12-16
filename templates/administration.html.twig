@@ -55,7 +55,7 @@
                                             <h1 class="modal-title fs-5" id="exampleModalLabel"> Modification de l'utilisateur {{utilisateur.getEmail}}</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <form action="index.php?controleur=utilisateur&methode=modifier&id={{ utilisateur.getId }}&type='admin'" method="POST" enctype="multipart/form-data">
+                                        <form action="index.php?controleur=utilisateur&methode=modifierAdmin&id={{ utilisateur.getId }}&type='admin'" method="POST" enctype="multipart/form-data">
                                             <div class="modal-body">
                                                 <div class="container mt-2">
                                                     <div class="form-group">
@@ -74,8 +74,8 @@
                                                         </select>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="image">Image de profil</label>
-                                                        <input type="file" class="form-control-file" id="image" name="image" accept=".jpg, .png">
+                                                        <label for="photo">Image de profil</label>
+                                                        <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .png">
                                                     </div>
                                                 </div>
                                             </div>

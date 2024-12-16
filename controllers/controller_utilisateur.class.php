@@ -263,7 +263,7 @@ class ControllerUtilisateur extends Controller
      * Fonction appellee par le bouton de mise a jour d'un utilisateur (panel admin)
      *
      * @return void
-     * @todo Modifier utilisateur ne fonctionne plus. Why ?
+     * @todo Modifier utilisateur ne fonctionne plus. Why ? 
      */
     public function modifier()
     {
@@ -296,19 +296,82 @@ class ControllerUtilisateur extends Controller
 
             $role = $_POST['role'];
             // Mise à jour du profil utilisateur
-            if ($role == 'User') {
-                $role = false;
-            } else {
+            if ($role == '1' || $role == 'Admin') {
                 $role = true;
-            }
-
-            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $role);
-
-            if ($type == 'admin') {
-                $this->lister();
             } else {
-                $this->afficherProfil();
+                $role = false;
             }
+
+            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $role, $nomFichier);
+            $utilisateurTemporaire = $manager->find($id);
+            $_SESSION['utilisateur'] = $utilisateurTemporaire;
+            $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurTemporaire);
+
+            /**
+             * Pour les prochaines lignes, si la fonction modifiée est demandée et si la personne est admin on affiche la liste des users
+             * Problème : si on est admin mais qu'on modifie notre profil, on retombe sur la liste des users dans panel admin
+             * Donc on remet à user le role
+             * Bref ça marche pas
+             */ 
+            $this->afficherProfil($messageErreurs);
+        } else {
+            $this->afficherProfil($messageErreurs);
+        }
+    }
+
+    /**
+     * Fonction appellee par le bouton de mise a jour d'un utilisateur (panel admin)
+     *
+     * @return void
+     * @todo Modifier utilisateur ne fonctionne plus. Why ? 
+     */
+    public function modifierAdmin()
+    {
+        $id = $_GET['id'];              // Pas de vérification d'id car transmis par le lien d'accès à la page
+        $type = $_GET['type'];          // Pas de vérification du type car transmis par le lien d'accès à la page
+
+        $messageErreurs = [];
+        $nomValide = utilitaire::validerNom($_POST['nom'], $messageErreurs);
+        $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
+        $roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
+
+        if ($nomValide && $prenomValide && $roleValide) {
+            $pdo = $this->getPdo();
+            $manager = new UtilisateurDao($pdo);
+
+            // Gestion de l'upload de la photo de profil
+            $utilisateurConcerne = $manager->find($id);
+            $cheminPhoto = $utilisateurConcerne->getPhotoDeProfil(); // Récupérer l'ancien chemin
+            if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {        // @todo vérification fichier
+                $dossierDestination = 'image\\photo_user\\';
+                $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
+                $cheminPhoto = $dossierDestination . $nomFichier;
+
+                // Déplacer le fichier uploadé dans le répertoire cible
+                if (move_uploaded_file($_FILES['photo']['tmp_name'], $cheminPhoto)) {
+                    // Mettre à jour le chemin de la photo dans la base de données
+                    $manager->modifierPhotoProfil($id, $nomFichier);
+                    $utilisateurConcerne->setPhotoDeProfil($nomFichier);
+                }
+            }
+
+            $role = $_POST['role'];
+            // Mise à jour du profil utilisateur
+            if ($role == '1' || $role == 'Admin') {
+                $role = true;
+            } else {
+                $role = false;
+            }
+
+            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $role, $nomFichier);
+
+            /**
+             * Pour les prochaines lignes, si la fonction modifiée est demandée et si la personne est admin on affiche la liste des users
+             * Problème : si on est admin mais qu'on modifie notre profil, on retombe sur la liste des users dans panel admin
+             * Donc on remet à user le role
+             * Bref ça marche pas
+             */ 
+            $this->lister($messageErreurs);
         } else {
             $this->lister($messageErreurs);
         }
@@ -320,7 +383,7 @@ class ControllerUtilisateur extends Controller
      *
      * @return void
      */
-    public function afficherProfil(): void
+    public function afficherProfil(?array $messagesErreur = null): void
     {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
@@ -329,6 +392,7 @@ class ControllerUtilisateur extends Controller
         echo $template->render(
             array(
                 'utilisateur' => $utilisateur,
+                'message' => $messagesErreur,
             )
         );
     }

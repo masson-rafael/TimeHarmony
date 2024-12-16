@@ -190,35 +190,36 @@ class UtilisateurDao{
         }
         return $utilisateurs;
     }
-     /** Suppression de l'utilisateur dans la BD
+    /** Suppression de l'utilisateur dans la BD
      * 
      * @param integer|null $id de l'utilisateur
      * @return void
      */
-   public function supprimerUtilisateur(?int $id){
+    public function supprimerUtilisateur(?int $id){
         $sql = "DELETE FROM ".PREFIXE_TABLE."utilisateur WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
     }
 
-    public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?bool $estAdmin){
-        $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET nom = :nom, prenom = :prenom, estAdmin = :estAdmin WHERE id = :id";
+    public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?bool $estAdmin, ?string $photoDeProfil){
+        $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET nom = :nom, prenom = :prenom, estAdmin = :estAdmin, photoDeProfil = :pdp WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array(
             "nom" => $nom,
             "prenom" => $prenom,
             "estAdmin" => $estAdmin,
-            "id" => $id
+            "id" => $id,
+            "pdp" => $photoDeProfil
         ));
     }
 
-      /**
+    /**
    * Met à jour le chemin de la photo de profil de l'utilisateur dans la base de données.
    *
    * @param int $id L'identifiant de l'utilisateur.
    * @param string $cheminPhoto Le chemin de la nouvelle photo de profil.
    */
-  public function modifierPhotoProfil($id, $cheminPhoto) {
+    public function modifierPhotoProfil($id, $cheminPhoto) {
     $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET photoDeProfil = :photoDeProfil WHERE id = :id";
     $stmt = $this->pdo->prepare($sql);
     $stmt->execute(array('photoDeProfil' => $cheminPhoto, 'id' => $id));
