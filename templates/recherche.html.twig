@@ -10,57 +10,54 @@
         <div class="row text-center mt-3 mb-3">
             <h1>Recherche d'un créneau</h1>
         </div>
-        <form action="index.php?controleur=creneauRDV&methode=obtenir" method="post">
+        <form action="index.php?controleur=assistant&methode=obtenir" method="post">
             <div class="row">
                 <div class="col">
                     <div class="row text-center mt-6">
                         <h5>Choisir ses collaborateurs :</h5>
                     </div>
                     <div class="row">
+                        <!-- Colonne Contacts -->
                         <div class="col">
                             <table class="table w-auto">
                                 <thead>
                                     <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Prénom</th>
-                                    <th scope="col">Nom</th>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Prénom</th>
+                                        <th scope="col">Nom</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for contact in contacts %}  
-                                        <div class="form-check">
-                                        <tr>
-                                            <td>
-                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                            </td>
-                                                <label class="form-check-label" for="flexCheckDefault"> <td>{{ contact.getPrenom }}</td> <td>{{ contact.getNom }}</td> </label>
-                                            </td>
-                                        </tr>
-                                        </div>         
+                                    <tr>
+                                        <td>
+                                            <input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
+                                        </td>
+                                        <td>{{ contact.getPrenom }}</td>
+                                        <td>{{ contact.getNom }}</td>
+                                    </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
 
+                        <!-- Colonne Groupes -->
                         <div class="col">
                             <table class="table w-auto">
                                 <thead>
                                     <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Nom</th>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Nom</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for groupe in groupes %}
-                                        <div class="form-check">
-                                            <tr>
-                                                <td>
-                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                </td>
-                                                    <label class="form-check-label" for="flexCheckDefault"> <td>{{ groupe.getNom }}</td></label>
-                                                </td>
-                                            </tr>
-                                        </div> 
+                                    <tr>
+                                        <td>
+                                            <input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
+                                        </td>
+                                        <td>{{ groupe.getNom }}</td>
+                                    </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
@@ -71,25 +68,26 @@
                 <div class="col">
                     <h5 class="text-center">Période de recherche :</h5>
                         <div class="mb-3 mt-3 d-flex align-items-center">
-                            <h5><label for="formGroupExampleInput" class="form-label me-2">Début</label></h5>
-                            <input name="debut" type="text" class="form-control" id="formGroupExampleInput" placeholder="Ex : 2024-10-07 00:00:00">
+                            <h5><label for="Datedebut" class="form-label me-2">Début</label></h5>
+                            <input name="debut" type="text" class="form-control" id="Datedebut" placeholder="Ex : 2024-10-07 00:00:00" required>
                         </div>
 
                         <div class="mb-3 mb-5 d-flex align-items-center">
-                            <h5><label for="formGroupExampleInput" class="form-label me-2">Fin</label></h5>
-                            <input name="fin" type="text" class="form-control" id="formGroupExampleInput" placeholder="Ex : 2024-10-07 00:00:00">
+                            <h5><label for="Datefin" class="form-label me-2">Fin</label></h5>
+                            <input name="fin" type="text" class="form-control" id="Datefin" placeholder="Ex : 2024-10-07 00:00:00" required>
                         </div>
                     
-                    <h5 class="text-center">Durée minimal de rende-vous :</h5>
+                    <h5 class="text-center">Durée minimale de rendez-vous (00:00 pour ne pas restreindre) : </h5>
                     <div class="row mb-3 mt-3">
-                        <div class="col-md-6 d-flex align-items-center justify-content-end p-0">
-                            <input name="fin" type="text" class="form-control w-auto" id="formGroupExampleInput" placeholder="Ex : 1">
+                        <input name="dureeMin" type="time" class="form-control" value="10:05 AM" required/>
+                        {# <div class="col-md-6 d-flex align-items-center justify-content-end p-0">
+                            <input name="heure" type="text" class="form-control w-auto" id="formGroupExampleInput" placeholder="Ex : 1">
                             <h5><label for="formGroupExampleInput" class="form-label ms-2 me-2 mb-0">H</label></h5>
                         </div>
                         <div class="col-md-6 d-flex align-items-center justify-content-start p-0">
-                            <input name="fin" type="text" class="form-control w-auto" id="formGroupExampleInput2" placeholder="Ex : 30">
+                            <input name="minute" type="text" class="form-control w-auto" id="formGroupExampleInput2" placeholder="Ex : 30">
                             <h5><label for="formGroupExampleInput2" class="form-label ms-2 mb-0">Min</label></h5>
-                        </div>
+                        </div> #}
                     </div>
 
 
@@ -101,10 +99,10 @@
                     
             </div>
             <div class="row">
-                <div class="mb-3">
+                {# <div class="mb-3">
                     <label for="formGroupExampleInput" class="form-label">URL de l'agenda</label>
                     <input name="urlIcs" type="text" class="form-control" id="formGroupExampleInput" placeholder="Ex : https://calendar.google.com/calendar/ical/thibault.latxague%40gmail.com/public/basic.ics">
-                </div>
+                </div> #}
                 <button type="submit" class="btn btn-primary">Rechercher</button>
             </div>
             

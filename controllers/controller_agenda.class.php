@@ -1,7 +1,5 @@
 <?php
 
-use ICal\ICal;
-
 /**
  * @author Félix Autant
  * @describe Controller de la page de recherche de créneaux libres
@@ -68,7 +66,7 @@ class ControllerAgenda extends Controller
             }
         } else {
             // Si le formulaire n'est pas correctement rempli, afficher la vue générique
-            $this->genererVue();
+            $this->genererVue('agenda');
         }
     }
 
@@ -88,12 +86,28 @@ class ControllerAgenda extends Controller
         ));
     }
 
-    
+    /**
+     * generer la vue avec les resultats des creneaux
+     *
+     * @param CreneauLibreDao|null $managerCreneau lien avec le manager de creneaux
+     * @return void
+     */
+    public function genererVueCreneaux(?CreneauLibreDao $managerCreneau) {
+        // Récupérer les créneaux libres
+        $tableau = $managerCreneau->findAllAssoc();
+        // Création en objet des créneaux libres
+        $creneaux = $managerCreneau->hydrateAll($tableau);
 
-
-    function genererVue() {
         //Génération de la vue
-        $template = $this->getTwig()->load('agenda.html.twig');
+        $template = $this->getTwig()->load('resultat.html.twig');
+        echo $template->render(array(
+            'creneauxLibres' => $creneaux
+        ));
+    }
+
+    public function genererVue(string $page) {
+        //Génération de la vue
+        $template = $this->getTwig()->load($page.'.html.twig');
         echo $template->render(array());
     }
 
@@ -104,6 +118,6 @@ class ControllerAgenda extends Controller
             array(
                 'message' => $message
             )
-        );
+            );
     }
 }
