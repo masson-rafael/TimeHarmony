@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @todo vérifier "echo $template->render(array('etat' => 'connecte',));"
+ */
+
 require_once 'include.php';
 
 try  {

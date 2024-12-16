@@ -36,10 +36,10 @@
                         <a class="nav-link" {% if menu=='agenda' %} active {% endif %} aria-current="page" href="index.php?controleur=agenda&methode=lister">Agendas</a>
                     </li>
                     <li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
-                        <a class="nav-link" href="#">Groupes</a>
+                        <a class="nav-link" {% if menu=='groupes' %} active {% endif %} aria-current="page" href="index.php?controleur=groupes&methode=lister">Groupes</a>
                     </li>
                     <li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
-                        <a class="nav-link" href="#">Contacts</a>
+                        <a class="nav-link" {% if menu=='contacts' %} active {% endif %} aria-current="page" href="index.php?controleur=contacts&methode=lister">Contacts</a>
                     </li>
                 </ul>
             </div>
@@ -51,7 +51,7 @@
                             <img src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" 
                             alt="Photo de profil" 
                             class="rounded-circle" 
-                             style="width: 60px; height: 60px;">
+                            style="width: 60px; height: 60px;">
                         </a>
                         <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-start">
                             <li><a class="dropdown-item" href="index.php?controleur=utilisateur&methode=afficherProfil">Profil</a></li>
