@@ -11,61 +11,58 @@
 			<table id="myTable" class="table table-striped">
 				<thead>
 					<tr>
-						<th>ID</th>
-						<th>Email</th>
-						<th>Nom</th>
+                        <th>Image de profil</th>
 						<th>Prenom</th>
-						<th>Rôle</th>
-						<th>Photo de profil</th>
+						<th>Nom</th>
+						<th>Email</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody>
-					{% for utilisateur in listeUtilisateurs %}
+					{% for utilisateur in contacts %}
 						<tr>
-							{# Appel des méthodes de la classe utilisateur #}
-							<td>{{ utilisateur.getId }}</td>
-							<td>{{ utilisateur.getEmail }}</td>
-							<td>{{ utilisateur.getNom }}</td>
+							<td><img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="supprimer" style="width: 70px; height: 70px;"></td>
 							<td>{{ utilisateur.getPrenom }}</td>
-							<td>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</td>
-							<td>{{ utilisateur.getPhotoDeProfil }}</td>
+							<td>{{ utilisateur.getNom }}</td>
+							<td>{{ utilisateur.getEmail }}</td>
+							<td>
+								<a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModale{{utilisateur.getId}}" aria-expanded="false">
+                                    <img src="image/corbeille.png" alt="supprimer" style="width: 50px;">
+                                </a>
+							</td>
 						</tr>
 						<div class="modal fade" id="fenetreModale{{utilisateur.getId}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 							<div class="modal-dialog modal-lg">
 								<div class="modal-content">
 									<div class="modal-header">
 										<h1 class="modal-title fs-5" id="exampleModalLabel">
-											Modification de l'utilisateur
+											Suppression du contact
 											{{utilisateur.getEmail}}</h1>
 										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
-									<form action="index.php?controleur=utilisateur&methode=modifier&id={{ utilisateur.getId }}&type='admin'" method="POST" enctype="multipart/form-data">
+									<form action="index.php?controleur=contacts&methode=supprimerContact&id={{ utilisateur.getId }}" method="POST" enctype="multipart/form-data">
 										<div class="modal-body">
 											<div class="container mt-2">
+												<div class="form-group">
+													<label for="image">Image de profil</label>
+													<input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+												</div>
+                                                <div class="form-group">
+													<label for="prenom">Prenom</label>
+													<input type="text" class="form-control" id="prenom" name="prenom" value="{{utilisateur.getPrenom}}" required>
+												</div>
 												<div class="form-group">
 													<label for="nom">Nom</label>
 													<input type="text" class="form-control" id="nom" name="nom" value="{{utilisateur.getNom}}" required>
 												</div>
 												<div class="form-group">
-													<label for="prenom">Prenom</label>
-													<input type="text" class="form-control" id="prenom" name="prenom" value="{{utilisateur.getPrenom}}" required>
-												</div>
-												<div class="form-group">
-													<label for="role">Role</label>
-													<select class="form-control" id="role" name="role">
-														<option>User</option>
-														<option>Admin</option>
-													</select>
-												</div>
-												<div class="form-group">
-													<label for="image">Image de profil</label>
-													<input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+													<label for="role">Email</label>
+                                                    <input type="text" class="form-control" id="email" name="email" value="{{utilisateur.getEmail}}" required>
 												</div>
 											</div>
 										</div>
 										<div class="modal-footer">
-											<button type="submit" class="btn btn-primary" name="update_article">Mettre à jour</button>
+											<button type="submit" class="btn btn-primary" name="update_article">Supprimer</button>
 											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
 										</div>
 									</form>
