@@ -21,7 +21,7 @@
         <div class="row w-100 align-items-center">
             <!-- Logo -->
             <div class="col-auto">
-                <a class="navbar-brand" href="index.php">
+                <a class="navbar-brand" href="index.php?controleur=utilisateur&methode=menuConnecte"> 
                     <img src="image/logoNoir.png" alt="logo" style="width: 70px;">
                 </a>
             </div>
@@ -48,10 +48,10 @@
                 <ul class="navbar-nav ms-auto d-flex flex-row">
                     <li class="nav-item dropdown d-flex justify-content-center align-items-center">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" 
+                            <img src="{{ utilisateurGlobal.getPhotoDeProfil != 'utilisateurBase.png' ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}"
                             alt="Photo de profil" 
                             class="rounded-circle" 
-                             style="width: 60px; height: 60px;">
+                            style="width: 60px; height: 60px;">
                         </a>
                         <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-start">
                             <li><a class="dropdown-item" href="index.php?controleur=utilisateur&methode=afficherProfil">Profil</a></li>

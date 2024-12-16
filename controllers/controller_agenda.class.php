@@ -33,40 +33,37 @@ class ControllerAgenda extends Controller
     public function ajouterAgenda()
     {
         $pdo = $this->getPdo(); // Récupérer l'instance PDO
-    
+
+        $tableauErreurs = [];
+        $urlValide = utilitaire::validerURLAgenda($_POST['url'], $tableauErreurs);
+        $couleurValide = utilitaire::validerCouleur($_POST['couleur'], $tableauErreurs);
+        $nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
+
         // Vérifier si tous les champs du formulaire sont remplis
-        if (isset($_POST['url'], $_POST['couleur'], $_POST['nom'])) {
-            // Initialise et valider les données
-            $url = filter_var($_POST['url'], FILTER_SANITIZE_URL); // Initialise l'URL
-    
-            // Validation de l'URL
-            if (!filter_var($url, FILTER_VALIDATE_URL)) {
-                $this->genererVueAgenda("L'URL fournie est invalide.");
-                return;
-            }
-    
+        if ($urlValide && $couleurValide && $nomValide) {
             // Créer une instance de AgendaDao pour interagir avec la base de données
             $manager = new AgendaDao($pdo);
-    
+
             // Vérifier si l'agenda existe déjà avec cette URL
-            $agendaExiste = $manager->findURL($url);
-    
+            $agendaExiste = $manager->findURL($_POST['url']);
+
             if (!$agendaExiste) {
                 // Créer une nouvelle instance d'Agenda avec les données du formulaire
-                $nouvelAgenda = new Agenda(null, $_POST['url'], $_POST['couleur'], $_POST['nom']);
-    
+                $nouvelAgenda = new Agenda($_POST['url'], $_POST['couleur'], $_POST['nom'], null);
                 // Ajouter l'agenda dans la base de données
                 $manager->ajouterAgenda($nouvelAgenda);
-    
+
                 // Retourner un message de succès
-                $this->genererVueAgenda("Ajout réussi !");
+                $tableauErreurs[] = "Ajout réussi !";
+                $this->genererVueAgenda($tableauErreurs);
             } else {
                 // Si l'agenda existe déjà, afficher un message d'erreur
-                $this->genererVueAgenda("Agenda avec cette URL existe déjà !");
+                $tableauErreurs[] = "Agenda avec cette URL existe déjà !";
+                $this->genererVueAgenda($tableauErreurs);
             }
         } else {
             // Si le formulaire n'est pas correctement rempli, afficher la vue générique
-            $this->genererVue('agenda');
+            $this->genererVueAgenda($tableauErreurs);
         }
     }
 
@@ -111,12 +108,12 @@ class ControllerAgenda extends Controller
         echo $template->render(array());
     }
 
-    public function genererVueAgenda(?string $message) {
+    public function genererVueAgenda(?array $erreurs) {
         //Génération de la vue agenda
         $template = $this->getTwig()->load('agenda.html.twig');
         echo $template->render(
             array(
-                'message' => $message
+                'message' => $erreurs
             )
             );
     }

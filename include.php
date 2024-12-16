@@ -28,6 +28,7 @@ require_once 'modeles/creneauLibre.class.php';
 require_once 'modeles/creneauLibre.dao.php';
 require_once 'modeles/groupe.class.php';
 require_once 'modeles/groupe.dao.php';
+require_once 'modeles/utilitaire.class.php';
 require_once 'modeles/creneauRdv.class.php';
 require_once 'modeles/creneauRdv.dao.php';
 require_once 'modeles/assistantRecherche.class.php';

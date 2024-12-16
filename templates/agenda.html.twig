@@ -27,21 +27,42 @@
                     <form action="index.php?controleur=agenda&methode=ajouterAgenda" method="post" required>
                         <div class="mb-3">
                             <label for="url" class="form-label">URL</label>
-                            <input type="text" name="url" class="form-control" id="url" required placeholder="Entrez une URL valide">
+                            <input type="url" name="url" class="form-control" id="url" required placeholder="Entrez une URL valide" title="Entrez l'URL valide de votre agenda Google.">
                         </div>
                         <div class="mb-3">
+                        <div class="mb-3">
                             <label for="couleur" class="form-label">Couleur</label>
-                            <input type="text" name="couleur" class="form-control" id="couleur" required placeholder="Entrez la couleur">
+                            <select name="couleur" class="form-select" id="couleur" required>
+                                <option value="#e66465" style="background-color: #e66465; color: white;">#e66465</option>
+                                <option value="#4CAF50" style="background-color: #4CAF50; color: white;">#4CAF50</option>
+                                <option value="#2196F3" style="background-color: #2196F3; color: white;">#2196F3</option>
+                                <option value="#FF5722" style="background-color: #FF5722; color: white;">#FF5722</option>
+                                <option value="#9C27B0" style="background-color: #9C27B0; color: white;">#9C27B0</option>
+                                <option value="#FFC107" style="background-color: #FFC107; color: black;">#FFC107</option>
+                            </select>
+                            <small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
+                        </div>
+                        <div class="mb-3">
+                            <input type="color" name="couleur_custom" class="form-control" id="couleur_custom" title="Sélectionnez une couleur ou entrez un code hexadécimal personnalisé" minlength="7" maxlength="7">
+                        </div>
                         </div>
                         <div class="mb-3">
                             <label for="nom" class="form-label">Nom</label>
-                            <input type="text" name="nom" class="form-control" id="nom" required placeholder="Entrez un nom">
+                            <input type="text" name="nom" class="form-control" id="nom" required placeholder="Entrez un nom" maxlength="50" title="Entrez le nom de votre agenda pour pouvoir le différencier des autres">
                         </div>
-
                         <button type="submit" class="btn btn-primary">Ajouter</button>
                     </form>
                 </div>
-                
+                {% if message %}
+                <div class="mt-5">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {% for messages in message %}
+                        {{messages}} <br>
+                        {% endfor %}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
         {# <a href="index.php?controleur=utilisateur&methode=listerContacts"><p>ff</p></a> #}
