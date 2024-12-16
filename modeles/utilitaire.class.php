@@ -340,4 +340,30 @@ class utilitaire {
         }
         return $valide;
     }
+
+    /**
+     * Fonction qui valide une photo de profil dans un formulaire (modification utilisateur ou admin)
+     *
+     * @param array|null $photo La photo de profil de l'utilisateur
+     * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
+     * @return boolean Retourne vrai si la photo est valide, faux sinon
+     */
+    public static function validerPhoto(?array $photo, array &$messagesErreurs): bool {
+        $valide = true;
+        // 2. Type de données : vérifier que le nom est une chaine de caractères
+        if(!is_array($photo)){
+            $messagesErreurs[] = "Le champ doit être un fichier";
+            $valide = false;
+        }
+
+        // 3. Longueur de la chaine - non pertinent
+
+        // 4. Format des données : vérifier le format de la photo
+        if($photo['error'] != UPLOAD_ERR_OK) {
+            $valide = false;
+            $messagesErreurs[] = "Erreur lors de l'upload de la photo";
+        }
+
+        return $valide;
+    }
 }
