@@ -118,7 +118,7 @@ INSERT INTO `timeharmony_utilisateur` (`nom`, `prenom`, `email`, `motDePasse`, `
  ('masson', 'rafael', 'rmasson003@iutbayonne.univ-pau.fr', '$2y$10$xbOlwSyP7aYhW14EtImaUuOo4pBjJ2Z4RoQSTmlG9/Kt0JAvW./h.', 'raf.jpg', true),
  ('keita', 'mouhamadou', 'mkmouhamadou@iutbayonne.univ-pau.fr', '$2y$10$Ez.7guQv7jseSeGwzXBWJe3qTVig.U9NR2PvkdnZwUjuAG82RY.Ru', 'mkm.png', true),
  ('autant', 'félix', 'fautant@iutbayonne.univ-pau.fr', '$2y$10$.qzWFHVUE3cpUVy3TAs1yO/.QVNp.gjKqwoKSgV0kpnUvwTsSW1r2', 'felix.jpg', true),
- ('etcheverry', 'patrick', 'patrick.etcheverry@iutbayonne.univ-pau.fr', '$2y$10$mBTdsf6nYV6ZAYm7wuD4p.lyH1xlxHCBFZxFQrjp9MQTCWPmndupi', 'utilisateurBase.png', false),
+ ('etcheverry', 'patrick', 'patrick.etcheverry@iutbayonne.univ-pau.fr', '$2y$10$mBTdsf6nYV6ZAYm7wuD4p.lyH1xlxHCBFZxFQrjp9MQTCWPmndupi', 'petch.jpg', false),
  ('moulin', 'antoine', 'antoine.moulin@iutbayonne.univ-pau.fr', '$2y$10$zkyNPYF7XebIXxNH4QW6veoVeeGWUbWhRcVKRlQF0UG9cvbVp/Shu', 'utilisateurBase.png', false);
 
 --

@@ -40,18 +40,15 @@ class ControllerContacts extends Controller
      *
      * @return void
      */
-    public function supprimerContact() {
+    function supprimer() {
         // Récupération de l'id envoyé en parametre du lien
-        $id = $_GET['id'];
-        $type = $_GET['type'];
+        $id1 = $_SESSION['utilisateur']->getId();
+        $id2 = $_GET['id'];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
-        $manager->supprimerUtilisateur($id);
-        if($type == 'admin') {
-            $this->lister();
-        } else {
-            $this->deconnecter();
-        }
+        $manager->supprimerContact($id1,$id2);
+
+        $this->lister();
     }
 
     function lister() {

@@ -190,12 +190,26 @@ class UtilisateurDao{
         }
         return $utilisateurs;
     }
-     /** Suppression de l'utilisateur dans la BD
+
+    public function supprimerContact(?int $id1, ?int $id2){
+        $sql="DELETE FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur1= :id1 AND idUtilisateur2= :id2";
+        $pdoStatement = $this->pdo->prepare($sql);
+        // Ajout des parametres
+        $pdoStatement->execute(array("id1"=>$id1, "id2"=>$id2));
+        
+        $sql="DELETE FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur1= :id2 AND idUtilisateur2= :id1";
+        $pdoStatement = $this->pdo->prepare($sql);
+        // Ajout des parametres
+        $pdoStatement->execute(array("id1"=>$id1, "id2"=>$id2));
+    }
+
+
+    /** Suppression de l'utilisateur dans la BD
      * 
      * @param integer|null $id de l'utilisateur
      * @return void
      */
-   public function supprimerUtilisateur(?int $id){
+    public function supprimerUtilisateur(?int $id){
         $sql = "DELETE FROM ".PREFIXE_TABLE."utilisateur WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
