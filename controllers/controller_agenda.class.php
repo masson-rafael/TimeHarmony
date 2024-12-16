@@ -56,14 +56,16 @@ class ControllerAgenda extends Controller
                 $manager->ajouterAgenda($nouvelAgenda);
 
                 // Retourner un message de succès
-                $this->genererVueAgenda("Ajout réussi !");
+                $tableauErreurs[] = "Ajout réussi !";
+                $this->genererVueAgenda($tableauErreurs);
             } else {
                 // Si l'agenda existe déjà, afficher un message d'erreur
-                $this->genererVueAgenda("Agenda avec cette URL existe déjà !");
+                $tableauErreurs[] = "Agenda avec cette URL existe déjà !";
+                $this->genererVueAgenda($tableauErreurs);
             }
         } else {
             // Si le formulaire n'est pas correctement rempli, afficher la vue générique
-            $this->genererVue();
+            $this->genererVueAgenda($tableauErreurs);
         }
     }
 
@@ -92,12 +94,12 @@ class ControllerAgenda extends Controller
         echo $template->render(array());
     }
 
-    public function genererVueAgenda(?string $message) {
+    public function genererVueAgenda(?array $erreurs) {
         //Génération de la vue agenda
         $template = $this->getTwig()->load('agenda.html.twig');
         echo $template->render(
             array(
-                'message' => $message
+                'message' => $erreurs
             )
         );
     }
