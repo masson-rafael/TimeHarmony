@@ -7,46 +7,52 @@
 
 {% block content %}
 {# {{ dump(creneauxLibres) }} #}
-    <main class="min-vh-100">
+    <main class="">
     <div class="container mb-5 pb-4">
-            <div class="row justify-content-center">
-                <div class="col-md-4 mt-5"> <!-- Ajout de la marge en haut -->
-                    <form action="index.php?controleur=utilisateur&methode=inscription" method="post" required>
-                        <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Nom</label>
-                            <input type="text" name="nom" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Prenom</label>
-                            <input type="text" name="prenom" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">E-mail</label>
-                            <input type="text" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">Mot de passe</label>
-                            <input type="password" name="pwd" class="form-control" id="exampleInputPassword1" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">Confirmer mot de passe</label>
-                            <input type="password" name="pwdConfirme" class="form-control" id="exampleInputPassword1" required>
-                        </div>
-                        <a class="mb-3" href="index.php?controleur=utilisateur&methode=premiereConnexion">Deja un compte ? Se connecter</a>
-                        <button type="submit" class="btn btn-primary">S'inscrire</button>
-                    </form>
-                </div>
-                {% if message %}
-                <div class="mt-5">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="row justify-content-center" >
+            <div class="col-md-4 mt-5" style="width: 35vw;">
+                <div class="card_custom h-70vh shadow-lg" style="transform:translatey(6%);width: 35vw;">
+                    <div class="card_custom-body ">
+                        <h4 class="card_custom-title text-center mb-4">Inscription</h4>
+                        <form action="index.php?controleur=utilisateur&methode=inscription" method="post" required>
+                            <div class="mb-3">
+                                <label for="nom" class="form-label">Nom</label>
+                                <input type="text" name="nom" class="form-control" id="nom" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="prenom" class="form-label">Prénom</label>
+                                <input type="text" name="prenom" class="form-control" id="prenom" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">E-mail</label>
+                                <input type="email" name="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="pwd" class="form-label">Mot de passe</label>
+                                <input type="password" name="pwd" class="form-control" id="pwd" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="pwdConfirme" class="form-label">Confirmer le mot de passe</label>
+                                <input type="password" name="pwdConfirme" class="form-control" id="pwdConfirme" required>
+                            </div>
+                            <a class="mb-3 d-block text-center" href="index.php?controleur=utilisateur&methode=premiereConnexion">Déjà un compte ? Se connecter</a>
+                            <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
+                        </form>
                     </div>
                 </div>
-                {% endif %}
             </div>
+            {% if message %}
+            <div class="mt-5 text-center">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+            {% endif %}
         </div>
-    </main>
+    </div>
+</main>
+
 {% endblock %}
 
 
