@@ -1,6 +1,7 @@
 <?php
 
 use Twig\Profiler\Dumper\BaseDumper;
+
 require_once 'include.php';
 
 /**
@@ -18,7 +19,8 @@ class ControllerUtilisateur extends Controller
      * @param \Twig\Environment $twig Environnement twig
      * @param \Twig\Loader\FilesystemLoader $loader Loader de fichier
      */
-    public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader) {
+    public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
+    {
         parent::__construct($twig, $loader);
     }
 
@@ -28,7 +30,8 @@ class ControllerUtilisateur extends Controller
      * avant de procéder à l'inscription de l'utilisateur dans la BD
      * @return void
      */
-    public function inscription() {
+    public function inscription()
+    {
         $pdo = $this->getPdo();
         $tableauErreurs = [];
 
@@ -43,10 +46,10 @@ class ControllerUtilisateur extends Controller
              * Verifie que l'utilisateur n'existe pas.
              * On hash le mdp, on crée un nouvel utilisateur et on l'ajoute dans la bd
              */
-            $utilisateurExiste = $manager->findMail($_POST['email']); 
+            $utilisateurExiste = $manager->findMail($_POST['email']);
             if (!$utilisateurExiste) {
                 $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
-                $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "utilisateurBase.png", false); 
+                $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "utilisateurBase.png", false);
                 $manager->ajouterUtilisateur($nouvelUtilisateur);
                 $tableauErreurs[] = "Inscription réussie !";
             } else {
@@ -54,7 +57,7 @@ class ControllerUtilisateur extends Controller
                 $tableauErreurs[] = "L'utilisateur existe déjà ! Connectez-vous !";
             }
         }
-        // Affichage de la page avec les erreurs ou le message de succès
+        // Affichage de la page avec les erreurs ou le message de succès. Utilisation du @ car si l'utilisateur n'a pas renseigné de mail, cette action génère une erreur
         @$this->genererVue($_POST['email'], null, $tableauErreurs);
     }
 
@@ -65,7 +68,8 @@ class ControllerUtilisateur extends Controller
      *
      * @return void
      */
-    public function connexion() {
+    public function connexion()
+    {
         $pdo = $this->getPdo();
         $tableauErreurs = [];
 
@@ -74,14 +78,13 @@ class ControllerUtilisateur extends Controller
          * Verifie ensuite si l'email existe dans la bd
          * Verifie si le mdp clair correspond au hachage dans bd
          */
-        @$emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
-        @$passwdValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs);
+        $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
+        $passwdValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs);
 
-        if($emailValide && $passwdValide) {
+        if ($emailValide && $passwdValide) {
             $manager = new UtilisateurDao($pdo);
             // On recupere un tuple avec un booleen et le mdp hache
             $motDePasse = $manager->connexionReussie($_POST['email']);
-
             // Si les mdp sont les mêmes
             if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
                 // On recupere l'utilisateur
@@ -102,16 +105,18 @@ class ControllerUtilisateur extends Controller
      * Son but est de générer le page nommée inscription : celle ou l'utilisateur peut remplir le formulaire
      * @return void
      */
-    public function premiereInscription() {
+    public function premiereInscription()
+    {
         $this->genererVueVide('inscription');
     }
-    
+
     /**
      * Cette fonction est appelée lorsqu'on clique sur le bouton "Connexion" sur la navbar
      * Son but est de générer le page nommée connexion : celle ou l'utilisateur peut remplir le formulaire
      * @return void
      */
-    public function premiereConnexion() {
+    public function premiereConnexion()
+    {
         $this->genererVueVide('connexion');
     }
 
@@ -120,7 +125,8 @@ class ControllerUtilisateur extends Controller
      * Elle nous envoie donc à la page d'accueil où on peut sélectionner les menus
      * @return void
      */
-    public function menuConnecte() {
+    public function menuConnecte()
+    {
         $this->genererVueVide('menu');
     }
 
@@ -129,7 +135,8 @@ class ControllerUtilisateur extends Controller
      * L'utilisateur est ensuite redirigé vers la page d'accueil où figure une vidéo de présentation de l'application
      * @return void
      */
-    public function deconnecter() {
+    public function deconnecter()
+    {
         $this->getTwig()->addGlobal('utilisateurGlobal', null);
         unset($_SESSION['utilisateur']);
         $this->genererVueVide('index');
@@ -143,7 +150,8 @@ class ControllerUtilisateur extends Controller
      * @param string|null $message le message renvoyé par les fonctions (erreur détaillée ou reussite)
      * @return void
      */
-    public function genererVue(?string $mail, ?bool $existe, ?array $messages) {
+    public function genererVue(?string $mail, ?bool $existe, ?array $messages)
+    {
         //Génération de la vue
         $template = $this->getTwig()->load('inscription.html.twig');
         echo $template->render(
@@ -161,7 +169,8 @@ class ControllerUtilisateur extends Controller
      * @param string|null $page web dont on veut generer le twig
      * @return void
      */
-    public function genererVueVide(?string $page) {
+    public function genererVueVide(?string $page)
+    {
         //Génération de la vue
         $template = $this->getTwig()->load($page . '.html.twig');
         echo $template->render(
@@ -170,20 +179,21 @@ class ControllerUtilisateur extends Controller
     }
 
     /**
-     * Genere la vue de la connexion
+     * Genere la vue de la connexion et créé une session utilisateur globale
      *
      * @param Array|null $tableau de messages d'erreurs ou de reussite
      * @return void
      */
     // Dans votre contrôleur ou gestionnaire de connexion
-    public function genererVueConnexion(?array $message, ?Utilisateur $utilisateur): void {
+    public function genererVueConnexion(?array $message, ?Utilisateur $utilisateur): void
+    {
         if ($utilisateur !== null) {
             // Stockage en session et définition de la variable globale
             $utilisateur = Utilisateur::createWithCopy($utilisateur);
             $_SESSION['utilisateur'] = $utilisateur;
             $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
         }
-        
+
         $template = $this->getTwig()->load('connexion.html.twig');
         echo $template->render([
             'message' => $message
@@ -195,7 +205,8 @@ class ControllerUtilisateur extends Controller
      * @todo après merge : vérifier si utilisée sinon supprimer
      * @return void
      */
-    public function listerContacts() {
+    public function listerContacts()
+    {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $utilisateurs = $manager->find(2);
@@ -212,7 +223,8 @@ class ControllerUtilisateur extends Controller
      * Redirection vers la page d'administration
      * @return void
      */
-    public function lister() {
+    public function lister(?array $tableauDErreurs = null)
+    {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $utilisateurs = $manager->findAll();
@@ -220,6 +232,7 @@ class ControllerUtilisateur extends Controller
         echo $template->render(
             array(
                 'listeUtilisateurs' => $utilisateurs,
+                'message' => $tableauDErreurs,
             )
         );
     }
@@ -230,93 +243,85 @@ class ControllerUtilisateur extends Controller
      * @todo vérifier la ligne else {$this->deconnecter();}. Suspecte car si la personne n'est pas admin on se déconnecte
      * @return void
      */
-    public function supprimer() {
+    public function supprimer()
+    {
         $id = $_GET['id'];
         $type = $_GET['type'];
 
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $manager->supprimerUtilisateur($id);
-        if($type == 'admin') {
+        var_dump($type);
+        if ($type == 'admin') {
             $this->lister();
         } else {
             $this->deconnecter();
         }
     }
 
-    //     /**
-    //  * Fonction appellee par le bouton de mise a jour d'un utilisateur (panel admin)
-    //  * Ici, on vérifie l'intégralité de certains paramètres SAUF l'id et le type qui sont envoyés par lien
-    //  * @todo modifier formulaire pour minlength etc. CTRL C + CTRL V du formulaire inscription
-    //  * @return void
-    //  */
-    // public function modifier() {
-    //     $id = $_GET['id'];
-    //     $type = $_GET['type'];
-    //     $messageErreurs = [];
-
-    //     $nomValide = utilitaire::validerNom($_POST['nom'], $messageErreurs);
-    //     $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
-    //     $roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
-
-    //     if($nomValide && $prenomValide && $roleValide) {
-    //         $pdo = $this->getPdo();
-    //         $manager = new UtilisateurDao($pdo);
-
-
     /**
      * Fonction appellee par le bouton de mise a jour d'un utilisateur (panel admin)
      *
      * @return void
+     * @todo Modifier utilisateur ne fonctionne plus. Why ?
      */
-    public function modifier() {
-        $id = $_GET['id'];              // @todo vérification id
-        $type = $_GET['type'];          // @todo vérification type
-        $nom = $_POST['nom'];           // @todo vérification nom
-        $prenom = $_POST['prenom'];     // @todo vérification prenom
-        $role = $_POST['role'];         // @todo vérification role
-    
-        $pdo = $this->getPdo();
-        $manager = new UtilisateurDao($pdo);
-    
-        // Gestion de l'upload de la photo de profil
-        $cheminPhoto = $_SESSION['utilisateur']->getPhotoDeProfil(); // Récupérer l'ancien chemin
-        if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {        // @todo vérification fichier
-            $dossierDestination = 'image\\photo_user\\';
-            $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
-            $cheminPhoto = $dossierDestination . $nomFichier;
-    
-            // Déplacer le fichier uploadé dans le répertoire cible
-            if (move_uploaded_file($_FILES['photo']['tmp_name'], $cheminPhoto)) {
-                // Mettre à jour le chemin de la photo dans la base de données
-                $manager->modifierPhotoProfil($id, $nomFichier);
-                $_SESSION['utilisateur']->setPhotoDeProfil($nomFichier);
+    public function modifier()
+    {
+        $id = $_GET['id'];              // Pas de vérification d'id car transmis par le lien d'accès à la page
+        $type = $_GET['type'];          // Pas de vérification du type car transmis par le lien d'accès à la page
+
+        $messageErreurs = [];
+        $nomValide = utilitaire::validerNom($_POST['nom'], $messageErreurs);
+        $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
+        $roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
+
+        if ($nomValide && $prenomValide && $roleValide) {
+            $pdo = $this->getPdo();
+            $manager = new UtilisateurDao($pdo);
+
+            // Gestion de l'upload de la photo de profil
+            $cheminPhoto = $_SESSION['utilisateur']->getPhotoDeProfil(); // Récupérer l'ancien chemin
+            if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {        // @todo vérification fichier
+                $dossierDestination = 'image\\photo_user\\';
+                $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
+                $cheminPhoto = $dossierDestination . $nomFichier;
+
+                // Déplacer le fichier uploadé dans le répertoire cible
+                if (move_uploaded_file($_FILES['photo']['tmp_name'], $cheminPhoto)) {
+                    // Mettre à jour le chemin de la photo dans la base de données
+                    $manager->modifierPhotoProfil($id, $nomFichier);
+                    $_SESSION['utilisateur']->setPhotoDeProfil($nomFichier);
+                }
             }
-        }
-    
-        // Mise à jour du profil utilisateur
-        if ($role == 'User') {
-            $role = false;
+
+            $role = $_POST['role'];
+            // Mise à jour du profil utilisateur
+            if ($role == 'User') {
+                $role = false;
+            } else {
+                $role = true;
+            }
+
+            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $role);
+
+            if ($type == 'admin') {
+                $this->lister();
+            } else {
+                $this->afficherProfil();
+            }
         } else {
-            $role = true;
-        }
-    
-        $manager->modifierUtilisateur($id, $nom, $prenom, $role);
-    
-        if ($type == 'admin') {
-            $this->lister();
-        } else {
-            $this->afficherProfil();
+            $this->lister($messageErreurs);
         }
     }
-    
+
 
     /**
      * Affiche le profil de l'utilisateur connecté (page profil)
      *
      * @return void
      */
-    public function afficherProfil():void {
+    public function afficherProfil(): void
+    {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $utilisateur = $manager->getUserMail($_SESSION['utilisateur']->getEmail());
@@ -333,7 +338,8 @@ class ControllerUtilisateur extends Controller
      *
      * @return void
      */
-    public function modifierProfil() {
+    public function modifierProfil()
+    {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $utilisateur = $manager->getUserMail($_SESSION['utilisateur']->getEmail());
