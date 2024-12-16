@@ -251,12 +251,12 @@ class ControllerUtilisateur extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $manager->supprimerUtilisateur($id);
-        var_dump($type);
-        if ($type == 'admin') {
-            $this->lister();
-        } else {
-            $this->deconnecter();
-        }
+        $this->lister();
+        // if ($type == 'admin') {
+        //     $this->lister();
+        // } else {
+        //     $this->deconnecter();
+        // }
     }
 
     /**
