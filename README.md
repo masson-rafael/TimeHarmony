@@ -20,6 +20,6 @@ On retrouve également 8 dossiers :
   
 ## 💻 Technologies
 
-[![My Skills](https://skillicons.dev/icons?i=js,html,css,bootstrap,git,mysql,php)](https://skillicons.dev)
+[![My Skills](https://skillicons.dev/icons?i=php,html,css,js,bootstrap,git,mysql)](https://skillicons.dev)
 
-JavaScript / HTML / CSS / Bootstrap / Git / MySQL / PHP / Twig
+PHP / HTML / CSS / JavaScript / Bootstrap / Git / MySQL / Twig

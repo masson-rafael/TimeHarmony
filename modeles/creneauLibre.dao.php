@@ -59,15 +59,18 @@ class CreneauLibreDao{
      */
     public function ajouterCreneauLibre(CreneauLibre $creneauLibre): void{
         // Préparation de la requête SQL
+        // var_dump($creneauLibre);
         $sql = "INSERT INTO ".PREFIXE_TABLE."creneaulibre (dateDebut, dateFin, idAgenda) VALUES (:dateDebut, :dateFin, :idAgenda)";
         $pdoStatement = $this->pdo->prepare($sql);
 
         // Exécution de la requête avec les valeurs formatées
         $pdoStatement->execute(array(
+            // "id" => $creneauLibre->getId(),
             "dateDebut" => $creneauLibre->getDateDebut()->format('Y-m-d H:i:s'),
             "dateFin" => $creneauLibre->getDateFin()->format('Y-m-d H:i:s'),
-            "idAgenda" => $creneauLibre->getIdAgenda()  // Si nécessaire
+            "idAgenda" => $creneauLibre->getIdAgenda() // Si nécessaire
         ));
+        // echo "azeoaze";
     }
 
     /**
@@ -75,10 +78,12 @@ class CreneauLibreDao{
      *
      * @return array|null tableau des créneaux libres
      */
-    public function findAllAssoc(): ?array {
-        $sql="SELECT * FROM ".PREFIXE_TABLE."creneaulibre";
+    public function findAllByIdUtilisateur(int $idUtilisateur): ?array {
+        $sql="SELECT * FROM ".PREFIXE_TABLE."creneaulibre c JOIN ".PREFIXE_TABLE."agenda a ON c.idAgenda = a.id WHERE a.idUtilisateur = :idUtilisateur" ;
+//         SELECT * FROM `timeharmony_creneaulibre` c JOIN timeharmony_agenda a ON c.idAgenda = a.id
+// WHERE a.idUtilisateur = 5;
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute();
+        $pdoStatement->execute(array("idUtilisateur" => $idUtilisateur));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $creneauxLibres = $pdoStatement->fetchAll();
 

@@ -57,6 +57,14 @@ class AgendaDao{
         return $agendaExiste;
     }
 
+    public function findAllByIdUtilisateur(int $idUtilisateur, $pdo): array {
+        $sql="SELECT * FROM ".PREFIXE_TABLE."agenda WHERE idUtilisateur= :id";
+        $pdoStatement = $pdo->prepare($sql);
+        $pdoStatement->execute(array("id"=>$idUtilisateur));
+        $agendas = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+        return $agendas;
+    }
+
     public function findAll() : ?array{
         $sql="SELECT * FROM ".PREFIXE_TABLE."agenda";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -92,7 +100,7 @@ class AgendaDao{
 
     public function hydrate($tableauAssoc): ?Agenda
     {
-        $agenda = new Agenda($tableauAssoc['id'],$tableauAssoc['url'],$tableauAssoc['couleur'],$tableauAssoc['nom'],$tableauAssoc['idUtilisateur']);
+        $agenda = new Agenda($tableauAssoc['url'],$tableauAssoc['couleur'],$tableauAssoc['nom'],$tableauAssoc['idUtilisateur'],$tableauAssoc['id']);
         return $agenda;
     }
 

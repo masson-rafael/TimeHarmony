@@ -41,13 +41,14 @@ class GroupeDao {
     }
 
     public function findAll(?int $id): array {
-        $sql="SELECT idGroupe FROM ".PREFIXE_TABLE."composer WHERE idUtilisateur= :id";
+        $sql="SELECT * FROM ".PREFIXE_TABLE."groupe g INNER JOIN ".PREFIXE_TABLE."composer c ON c.idGroupe = g.id  WHERE c.idUtilisateur = :id";
         $pdoStatement = $this->pdo->prepare($sql);
+
         // Ajout des parametres
         $pdoStatement->execute(array("id"=>$id));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $pdoStatement->fetchAll();
-
+        
         return $result;
     }
 
@@ -76,5 +77,14 @@ class GroupeDao {
         $groupe->setDescription($tableau['description']);
         
         return $groupe;
+    }
+
+    public function hydrateAll(?array $tableau): ?array{
+        $groupes = [];
+        foreach($tableau as $tableauAssoc){
+            $groupe = $this->hydrate($tableauAssoc);
+            $groupes[] = $groupe;
+        }
+        return $groupes;
     }
 }

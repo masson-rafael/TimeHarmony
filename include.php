@@ -17,7 +17,7 @@ require_once 'controllers/controller_factory.class.php';
 require_once 'controllers/controller.class.php';
 require_once 'controllers/controller_utilisateur.class.php';
 require_once 'controllers/controller_agenda.class.php';
-require_once 'controllers/controller_creneauRdv.class.php';
+require_once 'controllers/controller_assistant.class.php';
 
 //Ajout des modèles
 require_once 'modeles/utilisateur.class.php';
@@ -29,4 +29,7 @@ require_once 'modeles/creneauLibre.dao.php';
 require_once 'modeles/groupe.class.php';
 require_once 'modeles/groupe.dao.php';
 require_once 'modeles/utilitaire.class.php';
+require_once 'modeles/creneauRdv.class.php';
+require_once 'modeles/creneauRdv.dao.php';
+require_once 'modeles/assistantRecherche.class.php';
 

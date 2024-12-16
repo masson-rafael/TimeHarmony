@@ -29,7 +29,8 @@
             <div class="col">
                 <ul class="navbar-nav row w-100 justify-content-center text-center">
                     <li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
-                        <a class="nav-link" {% if menu=='recherche' %} active {% endif %} aria-current="page" href="index.php?controleur=creneauRDV&methode=genererVueRecherche">Rechercher un créneau</a>
+                        <a class="nav-link" {% if menu=='recherche' %} active {% endif %} aria-current="page" href="index.php?controleur=assistant&methode=genererVueRecherche">Rechercher un créneau</a>
+
                     </li>
                     <li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
                         <a class="nav-link" {% if menu=='agenda' %} active {% endif %} aria-current="page" href="index.php?controleur=agenda&methode=lister">Agendas</a>
@@ -109,7 +110,7 @@
 		{% block content %}{% endblock %}
         {# </main> #}
 
-		<footer class="text-muted py-3 bg-primary mt-5 fixed-bottom small-footer" style="box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);">
+		<footer class="text-muted py-3 bg-primary mt-5 small-footer" style="box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);">
     <div class="container">
         <div class="row">
             <div class="col d-flex align-items-center justify-content-center">
