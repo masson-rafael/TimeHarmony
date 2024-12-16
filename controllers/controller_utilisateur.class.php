@@ -252,7 +252,7 @@ class ControllerUtilisateur extends Controller
         // Gestion de l'upload de la photo de profil
         $cheminPhoto = $_SESSION['utilisateur']->getPhotoDeProfil(); // Récupérer l'ancien chemin
         if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {
-            $dossierDestination = 'C:\wamp64\\www\TimeHarmony\\TimeHarmony\\image\\photo_user\\';
+            $dossierDestination = 'C:\wamp64\\www\TimeHarmony\\image\\photo_user\\';
             $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
             $cheminPhoto = $dossierDestination . $nomFichier;
     
