@@ -268,10 +268,13 @@ class ControllerUtilisateur extends Controller
         $messageErreurs = [];
         $nomValide = utilitaire::validerNom($_POST['nom'], $messageErreurs);
         $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
-        $roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
+        //$roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
         @$photoValide = utilitaire::validerPhoto($_FILES['photo'], $messageErreurs);
 
-        if ($nomValide && $prenomValide && $roleValide) {
+        // var_dump($nomValide);
+        // var_dump($prenomValide);
+
+        if ($nomValide && $prenomValide) {//} && $roleValide) {
             $pdo = $this->getPdo();
             $manager = new UtilisateurDao($pdo);
 
@@ -346,6 +349,7 @@ class ControllerUtilisateur extends Controller
 
             $role = $_POST['role'] == 'Admin' ? 1 : 0;
             var_dump($role); // Vérification de la valeur numérique
+            var_dump($_SESSION['utilisateur']);
             
             // Mise à jour du chemin de l'image
             $nomFichier = empty($nomFichier) ? $utilisateurConcerne->getPhotoDeProfil() : $nomFichier;
@@ -359,7 +363,7 @@ class ControllerUtilisateur extends Controller
                 $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurTemporaire);
             }
         }
-        $this->lister($messageErreurs);
+        $_SESSION['utilisateur']->getEstAdmin() == false ? $this->afficherProfil($messageErreurs) : $this->lister($messageErreurs);
     }
 
 
