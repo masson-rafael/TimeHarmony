@@ -89,18 +89,18 @@ class ControllerAgenda extends Controller
      * @param CreneauLibreDao|null $managerCreneau lien avec le manager de creneaux
      * @return void
      */
-    public function genererVueCreneaux(?CreneauLibreDao $managerCreneau) {
-        // Récupérer les créneaux libres
-        $tableau = $managerCreneau->findAllAssoc();
-        // Création en objet des créneaux libres
-        $creneaux = $managerCreneau->hydrateAll($tableau);
+    // public function genererVueCreneaux(?CreneauLibreDao $managerCreneau) {
+    //     // Récupérer les créneaux libres
+    //     $tableau = $managerCreneau->findAllAssoc();
+    //     // Création en objet des créneaux libres
+    //     $creneaux = $managerCreneau->hydrateAll($tableau);
 
-        //Génération de la vue
-        $template = $this->getTwig()->load('resultat.html.twig');
-        echo $template->render(array(
-            'creneauxLibres' => $creneaux
-        ));
-    }
+    //     //Génération de la vue
+    //     $template = $this->getTwig()->load('resultat.html.twig');
+    //     echo $template->render(array(
+    //         'creneauxLibres' => $creneaux
+    //     ));
+    // }
 
     public function genererVue(string $page) {
         //Génération de la vue
