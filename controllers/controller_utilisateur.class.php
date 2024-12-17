@@ -281,6 +281,8 @@ class ControllerUtilisateur extends Controller
                 $dossierDestination = 'image\\photo_user\\';
                 $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
                 $cheminPhoto = $dossierDestination . $nomFichier;
+                var_dump($cheminPhoto);
+                var_dump($_FILES['photo']['tmp_name']);
 
                 // Déplacer le fichier uploadé dans le répertoire cible
                 if (move_uploaded_file($_FILES['photo']['tmp_name'], $cheminPhoto)) {
@@ -303,7 +305,7 @@ class ControllerUtilisateur extends Controller
             $_SESSION['utilisateur'] = $utilisateurTemporaire;
             $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurTemporaire);
         }
-        $this->lister($messageErreurs);
+        $this->afficherProfil($messageErreurs);
     }
 
     /**
