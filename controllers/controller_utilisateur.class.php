@@ -452,7 +452,7 @@ class ControllerUtilisateur extends Controller
 
     /**
      * Fonction appelée lorsqu'on clique sur le lien du mail de réinitialisation
-     * On y récupère l'id de l'utilisateur qui a cliqué sur le lien
+     * On y récupère l'id de l'utilisateur qui a cliqué sur le lien et on affiche le twig du profil avec un booléen qui indique que l'utilisateur réinitialise son mdp
      * @return void
      */
     public function mailRecu() {
@@ -464,6 +464,11 @@ class ControllerUtilisateur extends Controller
         );
     }
 
+    /**
+     * Fonction qui vérifie l'input des 2 mots de passes et change le mot de passe de l'utilisateur dans la BD
+     * Quand réinitialisation mdp, deconnexion puis redirection vers page connexion pour se reconnecter
+     * @return void
+     */
     public function reinitialiserMotDePasse() {
         $idUtilisateur = $_GET['id'];
         $tableauErreurs = [];
