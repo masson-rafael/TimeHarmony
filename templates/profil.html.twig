@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container mt-5 mb-5 pb-4">
-    {% if reinialise != true %}
+    {% if reinitialise != true %}
         <div class="row justify-content-center">
         <div class="col-md-8">
             <h3 class="text-center mb-4">Profil</h3>
@@ -78,7 +78,7 @@
                             <label for="prenom" class="form-label">Confirmer le nouveau mot de passe</label>
                             <input 
                                 type="password" 
-                                name="pwd" 
+                                name="pwdConfirme" 
                                 class="form-control" 
                                 id="exampleInputPassword1" 
                                 required 
@@ -92,12 +92,22 @@
                             <button type="submit" class="btn btn-primary">Réinitialiser le mot de passe</button>
                         </div>
                     </form>
+                    {% if message %}
+                        <div class="mt-5">
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {% for messages in message %}
+                                {{messages}} <br>
+                                {% endfor %}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
-
+    </div>
+{% endif %}
 </div>
-
 <div class="modal fade" id="fenetreModale" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

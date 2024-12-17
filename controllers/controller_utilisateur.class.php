@@ -456,7 +456,6 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
     public function mailRecu() {
-        echo "Mail reçu";
         $template = $this->getTwig()->load('profil.html.twig');
         echo $template->render(
             array(
@@ -467,6 +466,7 @@ class ControllerUtilisateur extends Controller
 
     public function reinitialiserMotDePasse() {
         $idUtilisateur = $_GET['id'];
+        $tableauErreurs = [];
 
         // Cette methode verifie la valeur des champs et si les mdp sont les memes 
         $mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs, $_POST['pwdConfirme']);
@@ -476,10 +476,19 @@ class ControllerUtilisateur extends Controller
             $manager = new UtilisateurDao($pdo);
             $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
             $manager->reinitialiserMotDePasse($idUtilisateur, $mdpHache);
+            /**
+             * On pourrait utiliser la fonction de déconnexion mais bordel car renvoie sur l'index et pas page de connexion 
+             * @todo refaire fonction deconnexion pour qu'elle renvoie sur la page de connexion
+             */
+            $this->getTwig()->addGlobal('utilisateurGlobal', null);
+            unset($_SESSION['utilisateur']);
+            $this->genererVueConnexion($tableauErreurs, null);
+        } else {
+            $template = $this->getTwig()->load('profil.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
+            /**
+             * @todo demander si double twig ou osef?
+             */
+            echo $template->render(array('message' => $tableauErreurs, 'reinitialise' => true));
         }
-
-        echo "Réinitialisation du mot de passe pour l'utilisateur $idUtilisateur";
-        $template = $this->getTwig()->load('profil.html.twig');
-        echo $template->render();
     }
 }
