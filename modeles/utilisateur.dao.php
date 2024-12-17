@@ -103,9 +103,11 @@ class UtilisateurDao
     }
 
     public function recupererIdsUtilisateursPasContacts(?int $id): array {
-        $sql="SELECT * FROM ".PREFIXE_TABLE."utilisateur u WHERE u.id != :id
-        AND u.id NOT IN ( SELECT idUtilisateur2 FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur1 = :id
-        UNION SELECT idUtilisateur1 FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur2 = :id)";
+        $sql="SELECT * FROM ".PREFIXE_TABLE."utilisateur u WHERE u.id != :id AND u.id NOT IN ( 
+        SELECT idUtilisateur2 FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur1 = :id UNION
+        SELECT idUtilisateur1 FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur2 = :id UNION
+        SELECT idUtilisateur2 FROM ".PREFIXE_TABLE."demander WHERE idUtilisateur1 = :id UNION
+        SELECT idUtilisateur1 FROM ".PREFIXE_TABLE."demander WHERE idUtilisateur2 = :id)";
         $pdoStatement = $this->pdo->prepare($sql);
         // Ajout des parametres
         $pdoStatement->execute(array("id"=>$id));
