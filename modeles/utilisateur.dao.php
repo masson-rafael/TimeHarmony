@@ -258,4 +258,11 @@ class UtilisateurDao{
         $stmt->execute(array('mdp' => $mdp, 'id' => $id));
     }
 
+    public function getIdFromMail(?string $mail) : ?int {
+        $sql = "SELECT id FROM ".PREFIXE_TABLE."utilisateur WHERE email = :email";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('email' => $mail));
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['id'];
+    }
 }

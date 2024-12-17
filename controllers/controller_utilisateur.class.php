@@ -441,13 +441,13 @@ class ControllerUtilisateur extends Controller
             </html>";
 
             if (mail($destinataire, $sujet, $message, $headers)) {
-                echo "L'e-mail a été envoyé avec succès à $destinataire.";
+                $messageErreur[] = "L'e-mail a été envoyé avec succès à $destinataire.";
             } else {
-                echo "Erreur : L'e-mail n'a pas pu être envoyé.";
+                $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé.";
             }
 
-            // $template = $this->getTwig()->load('profil.html.twig');
-            // echo $template->render();
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render(array('message' => $messageErreur));
         }
     }
 
@@ -480,15 +480,16 @@ class ControllerUtilisateur extends Controller
      * Quand réinitialisation mdp, deconnexion puis redirection vers page connexion pour se reconnecter
      * @return void
      */
-    public function reinitialiserMotDePasse(?int $idUtilisateur) {
+    public function reinitialiserMotDePasse() {
         $tableauErreurs = [];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $idUtilisateur = $manager->getIdFromMail($_GET['email']);
 
         // Cette methode verifie la valeur des champs et si les mdp sont les memes 
         $mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs, $_POST['pwdConfirme']);
 
         if ($mdpValide) {
-            $pdo = $this->getPdo();
-            $manager = new UtilisateurDao($pdo);
             $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
             $manager->reinitialiserMotDePasse($idUtilisateur, $mdpHache);
             /**
