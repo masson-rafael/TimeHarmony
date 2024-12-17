@@ -60,4 +60,17 @@ class ControllerContacts extends Controller
             'contacts' => $contacts
         ));
     }
+
+    function afficherUtilisateurs(){
+        $pdo = $this->getPdo();
+        $managerUtilisateur = new UtilisateurDao($pdo);
+        $utilisateursPasContacts = $managerUtilisateur->recupererIdsUtilisateursPasContacts($_SESSION['utilisateur']->getId());
+        $utilisateurs = $managerUtilisateur->hydrateAll($utilisateursPasContacts);
+        //Génération de la vue
+        $template = $this->getTwig()->load('contacts.html.twig');
+        echo $template->render(array(
+            'menu' => 'contacts',
+            'utilisateurs' => $utilisateurs
+        ));
+    }
 }
