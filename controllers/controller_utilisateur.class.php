@@ -465,7 +465,6 @@ class ControllerUtilisateur extends Controller
 
     public function mailRecu() {
         $dest = $_GET['email'];
-        var_dump($dest);
         $template = $this->getTwig()->load('reinitialisationMdp.html.twig');
         echo $template->render(
             array(
