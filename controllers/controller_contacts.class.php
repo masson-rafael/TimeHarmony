@@ -40,6 +40,21 @@ class ControllerContacts extends Controller
     }
 
     /**
+     * Fonction appellee a l'affichage de la page qui affiche tout les contacts de l'utilisateur
+     *
+     * @return void
+     */
+    function lister() {
+        $contacts = $this->recupererContacts($_SESSION['utilisateur']->getId());
+        //Génération de la vue
+        $template = $this->getTwig()->load('contacts.html.twig');
+        echo $template->render(array(
+            'menu' => 'contacts',
+            'contacts' => $contacts
+        ));
+    }
+
+    /**
      * Fonction appellee par la corbeille pour supprimer un contact
      *
      * @return void
@@ -53,21 +68,6 @@ class ControllerContacts extends Controller
         $manager->supprimerContact($id1,$id2);
 
         $this->lister();
-    }
-
-    /**
-     * Fonction appellee a l'affichage de la page qui affiche tout les contacts de l'utilisateur
-     *
-     * @return void
-     */
-    function lister() {
-        $contacts = $this->recupererContacts($_SESSION['utilisateur']->getId());
-        //Génération de la vue
-        $template = $this->getTwig()->load('contacts.html.twig');
-        echo $template->render(array(
-            'menu' => 'contacts',
-            'contacts' => $contacts
-        ));
     }
 
     /**
@@ -86,5 +86,21 @@ class ControllerContacts extends Controller
             'menu' => 'contacts',
             'utilisateurs' => $utilisateurs
         ));
+    }
+
+    /**
+     * Fonction appellee par l'appui de "ajouter" dans la fenetre modale d'ajout un utilisateur en contact
+     *
+     * @return void
+     */
+    function ajouter() {
+        // Récupération de l'id envoyé en parametre du lien
+        $id1 = $_SESSION['utilisateur']->getId();
+        $id2 = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $manager->ajouterContact($id1,$id2);
+
+        $this->lister();
     }
 }

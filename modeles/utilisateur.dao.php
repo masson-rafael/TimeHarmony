@@ -221,6 +221,15 @@ class UtilisateurDao
         return $utilisateurs;
     }
 
+    public function ajouterContact(?int $id1, ?int $id2)
+    {
+        $sql = "INSERT INTO ". PREFIXE_TABLE ."demander (idUtilisateur1, idUtilisateur2) VALUES (:id1, :id2)";
+        $pdoStatement = $this->pdo->prepare($sql);
+        // Ajout des parametres
+        $pdoStatement->execute(array("id1" => $id1, "id2" => $id2));
+    }
+
+
     public function supprimerContact(?int $id1, ?int $id2)
     {
         $sql = "DELETE FROM " . PREFIXE_TABLE . "contacter WHERE idUtilisateur1= :id1 AND idUtilisateur2= :id2";
