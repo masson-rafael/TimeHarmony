@@ -403,4 +403,61 @@ class ControllerUtilisateur extends Controller
             )
         );
     }
+
+    /**
+     * Fonction de réinitialisation du mot de passe
+     * Envoie du mail de réinitialisation à l'utilisateur
+     * @return void
+     */
+    public function reinitialiserMotDePasse() {
+        $idUtilisateur = $_GET['id'];
+        var_dump($idUtilisateur);
+
+        // En-têtes du mail
+        $headers = "From: no-reply@timeharmony.com\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+        $sujet = "Reinitialisation de votre mot de passe";
+        $nomUtilisateur = $_SESSION['utilisateur']->getPrenom();
+        $destinataire = $_SESSION['utilisateur']->getEmail();
+        $lien = "http://lakartxela.iutbayonne.univ-pau.fr/~tlatxague/TimeHarmony/index.php?controleur=utilisateur&methode=mailRecu&id=$idUtilisateur";
+
+        // Corps du message (format HTML)
+        $message = "
+        <html>
+            <head>
+                <title>$sujet</title>
+            </head>
+            <body>
+                <h3>Bonjour $nomUtilisateur,</h3>
+                <p>Vous avez fait une demandé de réinitialisation de votre mot de passe</p> <br>
+                <p>Pour cela, cliquez sur le lien ci-dessous et suivez les instructions :</p>
+                <p>
+                    <a href='$lien' style='color: #1a0dab; font-size: 16px; text-decoration: none;'>Accéder au site</a>
+                </p>
+                <p>Merci et à bientôt !</p>
+            </body>
+        </html>";
+
+        if (mail($destinataire, $sujet, $message, $headers)) {
+            echo "L'e-mail a été envoyé avec succès à $nomUtilisateur.";
+        } else {
+            echo "Erreur : L'e-mail n'a pas pu être envoyé.";
+        }
+
+        $template = $this->getTwig()->load('profil.html.twig');
+        echo $template->render();
+    }
+
+    /**
+     * Fonction appelée lorsqu'on clique sur le lien du mail de réinitialisation
+     * On y récupère l'id de l'utilisateur qui a cliqué sur le lien
+     * @return void
+     */
+    public function mailRecu() {
+        echo "Mail reçu";
+        $template = $this->getTwig()->load('profil.html.twig');
+        echo $template->render();
+    }
 }
