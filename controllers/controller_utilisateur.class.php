@@ -452,7 +452,9 @@ class ControllerUtilisateur extends Controller
     }
 
     /**
-     * 
+     * Fonction qui génère la page de réinitialisation du mot de passe
+     * On y passe un booléen qui, à false, affichera l'input du mail relié au compte qui demande la réinitialisation
+     * @return void
      */
     public function demanderReinitialisationMail(){
         $template = $this->getTwig()->load('reinitialisationMdp.html.twig');
@@ -463,6 +465,13 @@ class ControllerUtilisateur extends Controller
         );
     }
 
+    /**
+     * Fonction qui génère la page de réinitialisation du mot de passe
+     * On y passe un booléen qui, à true, affichera l'input des 2 mots de passe pour la réinitialisation
+     * On envoie également l'email du destinataire pour lequel on réinitialise le mot de passe
+     * On récupère le mail passé dans le lien d'accès
+     * @return void
+     */
     public function mailRecu() {
         $dest = $_GET['email'];
         $template = $this->getTwig()->load('reinitialisationMdp.html.twig');
@@ -477,6 +486,7 @@ class ControllerUtilisateur extends Controller
     /**
      * Fonction qui vérifie l'input des 2 mots de passes et change le mot de passe de l'utilisateur dans la BD
      * Quand réinitialisation mdp, deconnexion puis redirection vers page connexion pour se reconnecter
+     * @todo refaire fonction deconnexion pour qu'elle renvoie sur la page de connexion
      * @return void
      */
     public function reinitialiserMotDePasse() {
@@ -491,18 +501,11 @@ class ControllerUtilisateur extends Controller
         if ($mdpValide) {
             $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
             $manager->reinitialiserMotDePasse($idUtilisateur, $mdpHache);
-            /**
-             * On pourrait utiliser la fonction de déconnexion mais bordel car renvoie sur l'index et pas page de connexion 
-             * @todo refaire fonction deconnexion pour qu'elle renvoie sur la page de connexion
-             */
             $this->getTwig()->addGlobal('utilisateurGlobal', null);
             unset($_SESSION['utilisateur']);
             $this->genererVueConnexion($tableauErreurs, null);
         } else {
             $template = $this->getTwig()->load('profil.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
-            /**
-             * @todo demander si double twig ou osef?
-             */
             echo $template->render(array('message' => $tableauErreurs, 'reinitialise' => true));
         }
     }
