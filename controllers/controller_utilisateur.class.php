@@ -278,11 +278,9 @@ class ControllerUtilisateur extends Controller
             // Gestion de l'upload de la photo de profil
             $cheminPhoto = $_SESSION['utilisateur']->getPhotoDeProfil(); // Récupérer l'ancien chemin
             if ($photoValide) {
-                $dossierDestination = 'image\\photo_user\\';
+                $dossierDestination = 'image/photo_user/';
                 $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
                 $cheminPhoto = $dossierDestination . $nomFichier;
-                var_dump($cheminPhoto);
-                var_dump($_FILES['photo']['tmp_name']);
 
                 // Déplacer le fichier uploadé dans le répertoire cible
                 if (move_uploaded_file($_FILES['photo']['tmp_name'], $cheminPhoto)) {
@@ -300,6 +298,7 @@ class ControllerUtilisateur extends Controller
                 $role = false;
             }
 
+            @$nomFichier == null ? $nomFichier = $_SESSION['utilisateur']->getPhotoDeProfil() : $nomFichier;
             $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $role, $nomFichier);
             $utilisateurTemporaire = $manager->find($id);
             $_SESSION['utilisateur'] = $utilisateurTemporaire;
@@ -333,7 +332,7 @@ class ControllerUtilisateur extends Controller
             $utilisateurConcerne = $manager->find($id);
             $cheminPhoto = $utilisateurConcerne->getPhotoDeProfil(); // Récupérer l'ancien chemin
             if ($photoValide) {
-                $dossierDestination = 'image\\photo_user\\';
+                $dossierDestination = 'image/photo_user/';
                 $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
                 $cheminPhoto = $dossierDestination . $nomFichier;
 
