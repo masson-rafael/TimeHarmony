@@ -40,7 +40,7 @@ class ControllerContacts extends Controller
     }
 
     /**
-     * Fonction appellee a l'affichage de la page qui affiche tout les contacts de l'utilisateur
+     * Procedure appellee a l'affichage de la page qui affiche tout les contacts de l'utilisateur
      *
      * @return void
      */
@@ -55,7 +55,7 @@ class ControllerContacts extends Controller
     }
 
     /**
-     * Fonction appellee par la corbeille pour supprimer un contact
+     * Procedure appellee par la corbeille pour supprimer un contact
      *
      * @return void
      */
@@ -71,7 +71,7 @@ class ControllerContacts extends Controller
     }
 
     /**
-     * Fonction appellee par le bouton ajouter un contact sur la page des contacts
+     * Procedure appellee par le bouton ajouter un contact sur la page des contacts
      * 
      * @return void
      */
@@ -89,7 +89,7 @@ class ControllerContacts extends Controller
     }
 
     /**
-     * Fonction appellee par l'appui de "ajouter" dans la fenetre modale d'ajout un utilisateur en contact
+     * Procedure appellee par l'appui de "ajouter" dans la fenetre modale d'ajout un utilisateur en (demande de) contact
      *
      * @return void
      */
@@ -99,7 +99,7 @@ class ControllerContacts extends Controller
         $id2 = $_GET['id'];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
-        $manager->ajouterContact($id1,$id2);
+        $manager->ajouterDemandeContact($id1,$id2);
 
         $this->lister();
     }

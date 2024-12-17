@@ -3,7 +3,7 @@
 /**
  * @author Thibault Latxague et Rafael Masson
  * @describe Classe des utilisateurs (DAO)
- * @version 0.1
+ * @version 0.2
  */
 
 class UtilisateurDao
@@ -98,10 +98,16 @@ class UtilisateurDao
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $pdoStatement->fetchAll();
 
-
         return $result;
     }
 
+    /**
+     * Fonction qui recupere les ids de tout les utilisateurs qui ne sont pas en contact avec l'utilisateur $id
+     * (et qui n'ont pas de demande de contact avec lui en cours)
+     * 
+     * @param int $id utilisateur dont on cherche toutes les personnes potentiellement contactables
+     * @return array tableau d'identifiants utilisateurs
+     */
     public function recupererIdsUtilisateursPasContacts(?int $id): array {
         $sql="SELECT * FROM ".PREFIXE_TABLE."utilisateur u WHERE u.id != :id AND u.id NOT IN ( 
         SELECT idUtilisateur2 FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur1 = :id UNION
@@ -221,7 +227,14 @@ class UtilisateurDao
         return $utilisateurs;
     }
 
-    public function ajouterContact(?int $id1, ?int $id2)
+    /**
+     * Procedure qui ajoute une demande de contact en base de donnees
+     * 
+     * @param int $id1 identifiant de l'utilisateur qui fait la demande
+     * @param int $id2 identifiant de l'utilisateur qui recoit la demande
+     * @return void
+     */
+    public function ajouterDemandeContact(?int $id1, ?int $id2)
     {
         $sql = "INSERT INTO ". PREFIXE_TABLE ."demander (idUtilisateur1, idUtilisateur2) VALUES (:id1, :id2)";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -229,15 +242,21 @@ class UtilisateurDao
         $pdoStatement->execute(array("id1" => $id1, "id2" => $id2));
     }
 
-
+    /**
+     * Procedure qui supprime un contact entre 2 utilisateurs en base de donnees
+     * 
+     * @param int $id1 identifiant de l'utilisateur 1
+     * @param int $id2 identifiant de l'utilisateur 2
+     * @return void
+     */
     public function supprimerContact(?int $id1, ?int $id2)
     {
-        $sql = "DELETE FROM " . PREFIXE_TABLE . "contacter WHERE idUtilisateur1= :id1 AND idUtilisateur2= :id2";
+        $sql = "DELETE FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur1= :id1 AND idUtilisateur2= :id2";
         $pdoStatement = $this->pdo->prepare($sql);
         // Ajout des parametres
         $pdoStatement->execute(array("id1" => $id1, "id2" => $id2));
 
-        $sql = "DELETE FROM " . PREFIXE_TABLE . "contacter WHERE idUtilisateur1= :id2 AND idUtilisateur2= :id1";
+        $sql = "DELETE FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur1= :id2 AND idUtilisateur2= :id1";
         $pdoStatement = $this->pdo->prepare($sql);
         // Ajout des parametres
         $pdoStatement->execute(array("id1" => $id1, "id2" => $id2));
