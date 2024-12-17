@@ -212,6 +212,15 @@ class UtilisateurDao{
         $pdoStatement->execute(array("id" => $id));
     }
 
+    /**
+     * Modifie un utilisateur dans la BD
+     * 
+     * @param integer|null $id de l'utilisateur 
+     * @param string|null $nom de l'utilisateur 
+     * @param string|null $prenom de l'utilisateur
+     * @param boolean|null $estAdmin de l'utilisateur
+     * @param string|null $photoDeProfil de l'utilisateur
+     */
     public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?bool $estAdmin, ?string $photoDeProfil){
         $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET nom = :nom, prenom = :prenom, estAdmin = :estAdmin, photoDeProfil = :pdp WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -231,10 +240,22 @@ class UtilisateurDao{
    * @param int $id L'identifiant de l'utilisateur.
    * @param string $cheminPhoto Le chemin de la nouvelle photo de profil.
    */
-    public function modifierPhotoProfil($id, $cheminPhoto) {
-    $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET photoDeProfil = :photoDeProfil WHERE id = :id";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute(array('photoDeProfil' => $cheminPhoto, 'id' => $id));
-}
+    public function modifierPhotoProfil(?int $id, ?string $cheminPhoto) {
+        $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET photoDeProfil = :photoDeProfil WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('photoDeProfil' => $cheminPhoto, 'id' => $id));
+    }
+
+    /**
+     * Reinitialise le mot de passe de l'utilisateur
+     * 
+     * @param integer|null $id de l'utilisateur
+     * @param string|null $mdp de l'utilisateur
+     */
+    public function reinitialiserMotDePasse(?int $id, ?string $mdp) {
+        $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET motDePasse = :mdp WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('mdp' => $mdp, 'id' => $id));
+    }
 
 }

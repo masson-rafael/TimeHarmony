@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_creneauRdv` (
 
 INSERT INTO `timeharmony_creneauRdv` (`dateDebut`, `dateFin`, `pourcentageCoincidence`) VALUES
  ('2024-10-07 00:00:00','2024-10-07 08:15:00', 100),
- ('22024-10-07 14:30:00','2024-10-07 16:30:00', 92),
+ ('2024-10-07 14:30:00','2024-10-07 16:30:00', 92),
  ('2024-10-08 08:00:00','2024-10-09 10:45:00', 78),
  ('2024-10-09 15:00:00','2024-10-10 15:30:00', 60),
  ('2024-10-10 19:00:00','2024-10-12 00:00:00', 51);
@@ -366,7 +366,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_trouver` (
 --
 
 INSERT INTO `timeharmony_trouver` (`idCreneauRdv`, `idUtilisateur`, `idDisponibilite`) VALUES
- (1, 1, 1), (1, 2, 1), (1, 3, 1), (1, 4, 1), (1, 5, 1);
+(1, 1, 1), (1, 2, 1), (1, 3, 1), (1, 4, 1), (1, 5, 1);
 
 --
 -- Déchargement des données de la table 'trouver'

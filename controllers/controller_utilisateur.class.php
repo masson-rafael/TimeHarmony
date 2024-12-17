@@ -409,7 +409,7 @@ class ControllerUtilisateur extends Controller
      * Envoie du mail de réinitialisation à l'utilisateur
      * @return void
      */
-    public function reinitialiserMotDePasse() {
+    public function demandeReinitialisation() {
         $idUtilisateur = $_GET['id'];
         var_dump($idUtilisateur);
 
@@ -457,6 +457,28 @@ class ControllerUtilisateur extends Controller
      */
     public function mailRecu() {
         echo "Mail reçu";
+        $template = $this->getTwig()->load('profil.html.twig');
+        echo $template->render(
+            array(
+                'reinitialise' => true,
+            )
+        );
+    }
+
+    public function reinitialiserMotDePasse() {
+        $idUtilisateur = $_GET['id'];
+
+        // Cette methode verifie la valeur des champs et si les mdp sont les memes 
+        $mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs, $_POST['pwdConfirme']);
+
+        if ($mdpValide) {
+            $pdo = $this->getPdo();
+            $manager = new UtilisateurDao($pdo);
+            $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
+            $manager->reinitialiserMotDePasse($idUtilisateur, $mdpHache);
+        }
+
+        echo "Réinitialisation du mot de passe pour l'utilisateur $idUtilisateur";
         $template = $this->getTwig()->load('profil.html.twig');
         echo $template->render();
     }
