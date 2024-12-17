@@ -344,15 +344,13 @@ class ControllerUtilisateur extends Controller
                 }
             }
 
-            $role = $_POST['role'];
+            $role = $_POST['role'] == 'Admin' ? 1 : 0;
+            var_dump($role); // Vérification de la valeur numérique
+            
+            // Mise à jour du chemin de l'image
+            $nomFichier = empty($nomFichier) ? $utilisateurConcerne->getPhotoDeProfil() : $nomFichier;
+            
             // Mise à jour du profil utilisateur
-            if ($role == '1' || $role == 'Admin') {
-                $role = true;
-            } else {
-                $role = false;
-            }
-
-            @$nomFichier == null ? $nomFichier = $utilisateurConcerne->getPhotoDeProfil() : $nomFichier;
             $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $role, $nomFichier);
             $utilisateurTemporaire = $manager->find($id);
             
