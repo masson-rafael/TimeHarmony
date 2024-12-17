@@ -103,7 +103,7 @@
 										</div>
 										<form action="index.php?controleur=contacts&methode=ajouter&id={{ utilisateur.getId }}" method="POST" enctype="multipart/form-data">
 											<div class="modal-body">
-												<label>Êtes-vous sûr de vouloir envoyer une demande de contact à 
+												<label>Êtes-vous sûr de vouloir envoyer une demande de contact à
 													{{utilisateur.getPrenom}}
 													{{utilisateur.getNom}}
 													?</label>
@@ -119,6 +119,9 @@
 						{% endfor %}
 					</tbody>
 				</table>
+				<div class="text-center">
+					<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=lister" role="button">Revenir à vos Contacts</a>
+				</div>
 			{% endif %}
 		</div>
 	</main>
