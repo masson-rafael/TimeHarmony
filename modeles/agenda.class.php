@@ -192,10 +192,10 @@ class Agenda {
             // Charger les événements du calendrier à partir de l'URL
             $calendrier = new ICal($urlIcs);
             $evenements = $calendrier->eventsFromRange($debut, $fin);
-            
             // Ajouter les événements à un tableau global
             $allEvents = array_merge($allEvents, $evenements);
 
+        
         return $allEvents;
     }
 
