@@ -69,27 +69,27 @@ class ControllerCreneauRdv extends Controller
      *
      * @return void
      */
-    function obtenir() {
-        $pdo = $this->getPdo();
-        $managerCreneau = new CreneauLibreDao($pdo);
-        // Vider la table pour éviter les récurrences
-        $managerCreneau->supprimerCreneauxLibres();
+    // function obtenir() {
+    //     $pdo = $this->getPdo();
+    //     $managerCreneau = new CreneauLibreDao($pdo);
+    //     // Vider la table pour éviter les récurrences
+    //     $managerCreneau->supprimerCreneauxLibres();
 
-        if (isset($_POST['urlIcs']) && !empty($_POST['urlIcs'])) {
-            // Récupérer les données du formulaire
-            extract($_POST, EXTR_OVERWRITE);
-            // Récupérer les événements de l'agenda
-            $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
-            // Trier les événements par date de début
-            $evenements = $this->triEvenementsOrdreArrivee($evenements);
-            // Recherche des créneaux libres
-            $this->recherche($managerCreneau, 'Europe/Paris', $debut, $fin, $evenements);
+    //     if (isset($_POST['urlIcs']) && !empty($_POST['urlIcs'])) {
+    //         // Récupérer les données du formulaire
+    //         extract($_POST, EXTR_OVERWRITE);
+    //         // Récupérer les événements de l'agenda
+    //         $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
+    //         // Trier les événements par date de début
+    //         $evenements = $this->triEvenementsOrdreArrivee($evenements);
+    //         // Recherche des créneaux libres
+    //         $this->recherche($managerCreneau, 'Europe/Paris', $debut, $fin, $evenements);
 
-            $this->genererVueCreneaux($managerCreneau);
-        } else {
-            $this->genererVue();
-        }
-    }
+    //         $this->genererVueCreneaux($managerCreneau);
+    //     } else {
+    //         $this->genererVue();
+    //     }
+    // }
 
     /**
      * Recupere les eveneùent des agendas
@@ -192,18 +192,18 @@ class ControllerCreneauRdv extends Controller
      * @param CreneauLibreDao|null $managerCreneau lien avec le manager de creneaux
      * @return void
      */
-    function genererVueCreneaux(?CreneauLibreDao $managerCreneau) {
-        // Récupérer les créneaux libres
-        $tableau = $managerCreneau->findAllAssoc();
-        // Création en objet des créneaux libres
-        $creneaux = $managerCreneau->hydrateAll($tableau);
+    // function genererVueCreneaux(?CreneauLibreDao $managerCreneau) {
+    //     // Récupérer les créneaux libres
+    //     $tableau = $managerCreneau->findAllAssoc();
+    //     // Création en objet des créneaux libres
+    //     $creneaux = $managerCreneau->hydrateAll($tableau);
 
-        //Génération de la vue
-        $template = $this->getTwig()->load('resultat.html.twig');
-        echo $template->render(array(
-            'creneauxLibres' => $creneaux
-        ));
-    }
+    //     //Génération de la vue
+    //     $template = $this->getTwig()->load('resultat.html.twig');
+    //     echo $template->render(array(
+    //         'creneauxLibres' => $creneaux
+    //     ));
+    // }
 
     function genererVue() {
         //Génération de la vue

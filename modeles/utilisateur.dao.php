@@ -51,10 +51,12 @@ class UtilisateurDao
      * @param integer|null $id de l'ustilisateur
      * @return Utilisateur|null objet utiisateur
      */
-    public function find(?int $id): ?Utilisateur
-    {
-        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE id = :id";
-        $pdoStatement = $this->pdo->prepare($sql);
+    public function find(?int $id): ?Utilisateur {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."utilisateur WHERE id = :id";
+        if ($this->getPdo() === null) {
+            throw new Exception('Connexion PDO non initialisée.');
+        }        
+        $pdoStatement = $this->getPdo()->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
 
         $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Utilisateur');
@@ -89,9 +91,11 @@ class UtilisateurDao
         return $utilisateurExiste;
     }
 
+
     public function findAllContact(?int $id): array
     {
-        $sql = "SELECT idUtilisateur2 FROM " . PREFIXE_TABLE . "contacter WHERE idUtilisateur1= :id";
+        //$sql = "SELECT idUtilisateur2 FROM " . PREFIXE_TABLE . "contacter WHERE idUtilisateur1= :id";
+        $sql="SELECT * FROM timeharmony_utilisateur INNER JOIN timeharmony_contacter ON id = idUtilisateur2 WHERE idUtilisateur1 = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         // Ajout des parametres
         $pdoStatement->execute(array("id" => $id));
@@ -262,7 +266,6 @@ class UtilisateurDao
         $pdoStatement->execute(array("id1" => $id1, "id2" => $id2));
     }
 
-
     /** Suppression de l'utilisateur dans la BD
      * 
      * @param integer|null $id de l'utilisateur
@@ -275,15 +278,16 @@ class UtilisateurDao
         $pdoStatement->execute(array("id" => $id));
     }
 
-    public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?bool $estAdmin)
-    {
-        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur SET nom = :nom, prenom = :prenom, estAdmin = :estAdmin WHERE id = :id";
+
+    public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?bool $estAdmin, ?string $photoDeProfil){
+        $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET nom = :nom, prenom = :prenom, estAdmin = :estAdmin, photoDeProfil = :pdp WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array(
             "nom" => $nom,
             "prenom" => $prenom,
             "estAdmin" => $estAdmin,
-            "id" => $id
+            "id" => $id,
+            "pdp" => $photoDeProfil
         ));
     }
 

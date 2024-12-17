@@ -8,6 +8,16 @@
 {% block content %}
     <main>
         <div class="container py-5">
+            {% if message %}
+                <div class="mt-5">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {% for messages in message %}
+                        {{messages}} <br>
+                        {% endfor %}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endif %}
             <table id="myTable" class="table table-striped">
                 <thead>
                     <tr>
@@ -34,7 +44,7 @@
                                 <a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModale{{utilisateur.getId}}" aria-expanded="false">
                                     <img src="image/modification.png" alt="modifier" style="width: 50px;">
                                 </a>
-                                <a class="" role="button" href="index.php?controleur=utilisateur&methode=supprimer&id={{utilisateur.getId}}&type='admin'" aria-expanded="false">
+                                <a class="" role="button" href="index.php?controleur=utilisateur&methode=supprimer&id={{utilisateur.getId}}&type=admin" aria-expanded="false">
                                     <img src="image/corbeille.png" alt="supprimer" style="width: 50px;">
                                 </a>                        
                             </tr>
@@ -45,7 +55,7 @@
                                             <h1 class="modal-title fs-5" id="exampleModalLabel"> Modification de l'utilisateur {{utilisateur.getEmail}}</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <form action="index.php?controleur=utilisateur&methode=modifier&id={{ utilisateur.getId }}&type='admin'" method="POST" enctype="multipart/form-data">
+                                        <form action="index.php?controleur=utilisateur&methode=modifierAdmin&id={{ utilisateur.getId }}&type='admin'" method="POST" enctype="multipart/form-data">
                                             <div class="modal-body">
                                                 <div class="container mt-2">
                                                     <div class="form-group">
@@ -64,8 +74,8 @@
                                                         </select>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="image">Image de profil</label>
-                                                        <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+                                                        <label for="photo">Image de profil</label>
+                                                        <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .png">
                                                     </div>
                                                 </div>
                                             </div>

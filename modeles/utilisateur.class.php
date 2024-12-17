@@ -45,14 +45,14 @@ class Utilisateur {
     /**
      * Constructeur par défaut
      */
-    public function __construct() {
-        $this->id = null;
-        $this->nom = null;
-        $this->prenom = null;
-        $this->email = null;
-        $this->motDePasse = null;
-        $this->photoDeProfil = null;
-        $this->estAdmin = false;
+    public function __construct(int $id = null, string $nom = null, string $prenom = null, string $email = null, string $motDePasse = null, string $photoDeProfil = null, bool $estAdmin = false) {
+        $this->id = $id;
+        $this->nom = $nom;
+        $this->prenom = $prenom;
+        $this->email = $email;
+        $this->motDePasse = $motDePasse;
+        $this->photoDeProfil = $photoDeProfil;
+        $this->estAdmin = $estAdmin;
     }
 
     /**
@@ -76,6 +76,24 @@ class Utilisateur {
         $instance->motDePasse = $motDePasse;
         $instance->photoDeProfil = $photoDeProfil;
         $instance->estAdmin = $estAdmin;
+        return $instance;
+    }
+
+    /**
+     * Création d'un utilisateur à partir d'un autre utilisateur
+     *
+     * @param Utilisateur $utilisateur à copier
+     * @return self instance de la classe
+     */
+    public static function createWithCopy(Utilisateur $utilisateur): self {
+        $instance = new self();
+        $instance->id = $utilisateur->id;
+        $instance->nom = $utilisateur->nom;
+        $instance->prenom = $utilisateur->prenom;
+        $instance->email = $utilisateur->email;
+        $instance->motDePasse = $utilisateur->motDePasse;
+        $instance->photoDeProfil = $utilisateur->photoDeProfil;
+        $instance->estAdmin = $utilisateur->estAdmin;
         return $instance;
     }
 
@@ -217,5 +235,32 @@ class Utilisateur {
      */
     public function toString(): string {
         return "Utilisateur : " . $this->id . " " . $this->nom . " " . $this->prenom . " " . $this->email . " " . $this->motDePasse . " " . $this->photoDeProfil . " " . $this->estAdmin;
+    }
+
+    public function getContact($pdo, $idUtilisateur): array|null {
+    $managerUtilisateur = new UtilisateurDao($pdo);
+    $tableau = $managerUtilisateur->findAllContact($idUtilisateur);  
+    $contacts = $managerUtilisateur->hydrateAll($tableau);
+    return $contacts;
+    }
+
+    public function getGroupe($pdo,$idUtilisateur): array|null {
+        // Récupération des groupes
+        $managerGroupe = new GroupeDao($pdo);
+
+        $tableau = $managerGroupe->findAll($idUtilisateur);
+        $groupes = $managerGroupe->hydrateAll($tableau);
+
+        return $groupes;
+    }
+
+    public function getAgendas(): array|null {
+        $db = Bd::getInstance();
+        $pdo = $db->getConnexion();
+
+        $managerAgenda = new AgendaDao();
+        $tableau = $managerAgenda->findAllByIdUtilisateur($this->getId(),$pdo);
+        $agendas = $managerAgenda->hydrateAll($tableau);
+        return $agendas;
     }
 }

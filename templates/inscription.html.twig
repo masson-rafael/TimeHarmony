@@ -4,7 +4,6 @@
 	{{ constant('WEBSITE_TITLE')}}
 {% endblock %}
 
-
 {% block content %}
 {# {{ dump(creneauxLibres) }} #}
     <main class="min-vh-100">
@@ -14,23 +13,33 @@
                     <form action="index.php?controleur=utilisateur&methode=inscription" method="post" required>
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Nom</label>
-                            <input type="text" name="nom" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                            <input type="text" name="nom" class="form-control" aria-describedby="emailHelp" required maxlength="50" minlength="2" title="Entrez votre vrai nom pour votre compte">
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Prenom</label>
-                            <input type="text" name="prenom" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                            <input type="text" name="prenom" class="form-control" aria-describedby="emailHelp" required maxlength="50" minlength="2" title="Entrez votre vrai prénom pour votre compte">
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">E-mail</label>
-                            <input type="text" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                            <input type="email" name="email" class="form-control" aria-describedby="emailHelp" required maxlength="255" minlength="5" title="Entrez l'adresse email qui sera liée au compte">
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Mot de passe</label>
-                            <input type="password" name="pwd" class="form-control" id="exampleInputPassword1" required>
+                            <input 
+                                type="password" 
+                                name="pwd" 
+                                class="form-control" 
+                                id="exampleInputPassword1" 
+                                required 
+                                minlength="8" 
+                                maxlength="25" 
+                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$" 
+                                title="Le mot de passe doit contenir au moins : une lettre minuscule, une majuscule, un chiffre et un caractère spécial, et être compris entre 8 et 25 caractères."
+                            >
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Confirmer mot de passe</label>
-                            <input type="password" name="pwdConfirme" class="form-control" id="exampleInputPassword1" required>
+                            <input type="password" name="pwdConfirme" class="form-control" id="exampleInputPassword1" required minlength="8" maxlength="25" title="Entrez une nouvelle fois le même mot de passe" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$" >
                         </div>
                         <a class="mb-3" href="index.php?controleur=utilisateur&methode=premiereConnexion">Deja un compte ? Se connecter</a>
                         <button type="submit" class="btn btn-primary">S'inscrire</button>
@@ -39,7 +48,9 @@
                 {% if message %}
                 <div class="mt-5">
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ message }}
+                        {% for messages in message %}
+                        {{messages}} <br>
+                        {% endfor %}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </div>
