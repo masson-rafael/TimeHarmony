@@ -173,8 +173,12 @@ CREATE TABLE IF NOT EXISTS `timeharmony_agenda` (
 --
 
 INSERT INTO `timeharmony_agenda` (`url`, `couleur`, `nom`, `idUtilisateur`) VALUES
- ('https://calendar.google.com/calendar/ical/thibault.latxague%40gmail.com/public/basic.ics', '#FF0000', 'Agenda de Thibault', 1);
-
+ ('https://calendar.google.com/calendar/ical/thibault.latxague%40gmail.com/public/basic.ics', '#FF0000', 'Agenda de Thibault', 1),
+ ('https://calendar.google.com/calendar/ical/9884fe2e75951b72d761f87bd8b1f538a099a360dfdd51d0cdabbc8088a50a7d%40group.calendar.google.com/public/basic.ics', '#FF0000', 'Agenda de Raf', 2),
+ ('https://calendar.google.com/calendar/ical/4dc9995f18e32a42b475e7a7655aacdc710248f4bcb9e8a6e83c573db2a8a1e8%40group.calendar.google.com/public/basic.ics', '#FF0000', 'Agenda de MkM', 3),
+ ('https://calendar.google.com/calendar/ical/264e2999f1c412d5d445ce92839e8ff4c81240c026fb09911c4edca30f1e8428%40group.calendar.google.com/public/basic.ics', '#FF0000', 'Agenda de Felix 1', 4),
+ ('https://calendar.google.com/calendar/ical/e54ad5a5c1241175cd1176610d85e883b555e908a33d0248c39b6c838a717bdd%40group.calendar.google.com/public/basic.ics', '#FF0000', 'Agenda de Felix 2', 4),
+ ('https://calendar.google.com/calendar/ical/e1d431d5f75fa832d6002910ee5cf8c910b63453e4633d090fc90b077a0770ce%40group.calendar.google.com/public/basic.ics', '#FF0000', 'Agenda de Pat-Man', 5);
 --
 -- Déchargement des données de la table 'agenda'
 --

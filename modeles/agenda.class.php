@@ -178,21 +178,20 @@ class Agenda
     //         $this->recherche('Europe/Paris', $debut, $fin, $evenements,$idAgenda,$pdo);
     // }
 
-    // public function rechercheCreneauxLibres($evenementsByUtilisateur, $debut, $fin, $pdo): array
-    // {
-    //     // $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
-    //     // Trier les événements par date de début
-    //     // $evenements = $this->triEvenementsOrdreArrivee($evenementsByUtilisateur);
+    public function rechercheCreneauxLibres($evenementsByUtilisateur, $debut, $fin, $pdo): array
+    {
+        // $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
+        // Trier les événements par date de début
+        // $evenements = $this->triEvenementsOrdreArrivee($evenementsByUtilisateur);
 
-    //     // var_dump($evenements);
-    //     // Recherche des créneaux libres
-    //     $evenements = [];
-    //     $evenements = $this->recherche('Europe/Paris', $debut, $fin, $evenementsByUtilisateur, $pdo);
-    //     return $evenements;
-    // }
+        // var_dump($evenements);
+        // Recherche des créneaux libres
+        $evenements = $this->recherche('Europe/Paris', $debut, $fin, $evenementsByUtilisateur, $pdo);
+        return $evenements;
+    }
 
     /**
-     * Recupere les eveneùent des agendas
+     * Recupere les evenements des agendas
      *
      * @param string|null $url de l'agenda
      * @param string|null $debut date de debut de la recherche
