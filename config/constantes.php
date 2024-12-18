@@ -6,6 +6,12 @@ define('DB_NAME', 'timeharmony');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 
+// Connexion à la base de données (logins wamp)
+// define('DB_HOST', 'lakartxela.iutbayonne.univ-pau.fr');
+// define('DB_NAME', 'tlatxague_pro');
+// define('DB_USER', 'tlatxague_pro');
+// define('DB_PASS', 'tlatxague_pro');
+
 // Spécifique aux bases de donnees sur lakartxela
 define('PREFIXE_TABLE', 'timeharmony_');
 

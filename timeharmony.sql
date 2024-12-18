@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_creneauRdv` (
 
 INSERT INTO `timeharmony_creneauRdv` (`dateDebut`, `dateFin`, `pourcentageCoincidence`) VALUES
  ('2024-10-07 00:00:00','2024-10-07 08:15:00', 100),
- ('22024-10-07 14:30:00','2024-10-07 16:30:00', 92),
+ ('2024-10-07 14:30:00','2024-10-07 16:30:00', 92),
  ('2024-10-08 08:00:00','2024-10-09 10:45:00', 78),
  ('2024-10-09 15:00:00','2024-10-10 15:30:00', 60),
  ('2024-10-10 19:00:00','2024-10-12 00:00:00', 51);
@@ -114,12 +114,12 @@ CREATE TABLE IF NOT EXISTS `timeharmony_utilisateur` (
 --
 
 INSERT INTO `timeharmony_utilisateur` (`nom`, `prenom`, `email`, `motDePasse`, `photoDeProfil`, `estAdmin`) VALUES
- ('latxague', 'thibault', 'tlaxtague@iutbayonne.univ-pau.fr', '$2y$10$qvncYojGHH/dKVUuOn.rH.v5CgT4pjjAPWzN/Pa467mUelIxAPs5i', 'photoProfil.jpg', true),
- ('masson', 'rafael', 'rmasson003@iutbayonne.univ-pau.fr', '$2y$10$xbOlwSyP7aYhW14EtImaUuOo4pBjJ2Z4RoQSTmlG9/Kt0JAvW./h.', 'photoProfil.jpg', true),
- ('keita', 'mouhamadou', 'mkmouhamadou@iutbayonne.univ-pau.fr', '$2y$10$Ez.7guQv7jseSeGwzXBWJe3qTVig.U9NR2PvkdnZwUjuAG82RY.Ru', 'photoProfil.jpg', true),
- ('autant', 'félix', 'fautant@iutbayonne.univ-pau.fr', '$2y$10$.qzWFHVUE3cpUVy3TAs1yO/.QVNp.gjKqwoKSgV0kpnUvwTsSW1r2', 'photoProfil.jpg', true),
- ('etcheverry', 'patrick', 'patrick.etcheverry@iutbayonne.univ-pau.fr', '$2y$10$mBTdsf6nYV6ZAYm7wuD4p.lyH1xlxHCBFZxFQrjp9MQTCWPmndupi', 'photoProfil.jpg', false),
- ('moulin', 'antoine', 'antoine.moulin@iutbayonne.univ-pau.fr', '$2y$10$zkyNPYF7XebIXxNH4QW6veoVeeGWUbWhRcVKRlQF0UG9cvbVp/Shu', 'photoProfil.jpg', false);
+ ('latxague', 'thibault', 'tlaxtague@iutbayonne.univ-pau.fr', '$2y$10$qvncYojGHH/dKVUuOn.rH.v5CgT4pjjAPWzN/Pa467mUelIxAPs5i', 'thibault.jpg', true),
+ ('masson', 'rafael', 'rmasson003@iutbayonne.univ-pau.fr', '$2y$10$xbOlwSyP7aYhW14EtImaUuOo4pBjJ2Z4RoQSTmlG9/Kt0JAvW./h.', 'raf.jpg', true),
+ ('keita', 'mouhamadou', 'mkmouhamadou@iutbayonne.univ-pau.fr', '$2y$10$Ez.7guQv7jseSeGwzXBWJe3qTVig.U9NR2PvkdnZwUjuAG82RY.Ru', 'mkm.png', true),
+ ('autant', 'félix', 'fautant@iutbayonne.univ-pau.fr', '$2y$10$.qzWFHVUE3cpUVy3TAs1yO/.QVNp.gjKqwoKSgV0kpnUvwTsSW1r2', 'felix.jpg', true),
+ ('etcheverry', 'patrick', 'patrick.etcheverry@iutbayonne.univ-pau.fr', '$2y$10$mBTdsf6nYV6ZAYm7wuD4p.lyH1xlxHCBFZxFQrjp9MQTCWPmndupi', 'petch.jpg', false),
+ ('moulin', 'antoine', 'antoine.moulin@iutbayonne.univ-pau.fr', '$2y$10$zkyNPYF7XebIXxNH4QW6veoVeeGWUbWhRcVKRlQF0UG9cvbVp/Shu', 'utilisateurBase.png', false);
 
 --
 -- Déchargement des données de la table 'utilisateur'
@@ -366,7 +366,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_trouver` (
 --
 
 INSERT INTO `timeharmony_trouver` (`idCreneauRdv`, `idUtilisateur`, `idDisponibilite`) VALUES
- (1, 1, 1), (1, 2, 1), (1, 3, 1), (1, 4, 1), (1, 5, 1);
+(1, 1, 1), (1, 2, 1), (1, 3, 1), (1, 4, 1), (1, 5, 1);
 
 --
 -- Déchargement des données de la table 'trouver'

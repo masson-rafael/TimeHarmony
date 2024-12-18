@@ -1,8 +1,9 @@
 <?php
 /**
- * @author Thibault Latxague
+ * @author Félix AUTANT
  * @describe Classe des agendas
  * @version 0.1
+ * @todo FAIS TA DOC FELIX
  */
 
 class Assistant

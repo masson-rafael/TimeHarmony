@@ -59,7 +59,6 @@ class CreneauLibreDao{
      */
     public function ajouterCreneauLibre(CreneauLibre $creneauLibre): void{
         // Préparation de la requête SQL
-        // var_dump($creneauLibre);
         $sql = "INSERT INTO ".PREFIXE_TABLE."creneaulibre (dateDebut, dateFin, idAgenda) VALUES (:dateDebut, :dateFin, :idAgenda)";
         $pdoStatement = $this->pdo->prepare($sql);
 
@@ -70,7 +69,6 @@ class CreneauLibreDao{
             "dateFin" => $creneauLibre->getDateFin()->format('Y-m-d H:i:s'),
             "idAgenda" => $creneauLibre->getIdAgenda() // Si nécessaire
         ));
-        // echo "azeoaze";
     }
 
     /**
@@ -80,14 +78,11 @@ class CreneauLibreDao{
      */
     public function findAllByIdUtilisateur(int $idUtilisateur): ?array {
         $sql="SELECT * FROM ".PREFIXE_TABLE."creneaulibre c JOIN ".PREFIXE_TABLE."agenda a ON c.idAgenda = a.id WHERE a.idUtilisateur = :idUtilisateur" ;
-//         SELECT * FROM `timeharmony_creneaulibre` c JOIN timeharmony_agenda a ON c.idAgenda = a.id
-// WHERE a.idUtilisateur = 5;
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("idUtilisateur" => $idUtilisateur));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $creneauxLibres = $pdoStatement->fetchAll();
 
-        //var_dump( $creneauxLibres);
         return $creneauxLibres;
     }
 
