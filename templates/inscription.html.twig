@@ -1,74 +1,59 @@
 {% extends 'base_template.html.twig' %}
 
 {% block title %}Inscription -
-	{{ constant('WEBSITE_TITLE')}}
+	{{ constant('WEBSITE_TITLE') }}
 {% endblock %}
 
 {% block content %}
-{# {{ dump(creneauxLibres) }} #}
-    <main class="min-vh-100">
-    <div class="container mb-5 pb-4">
-            <div class="row justify-content-center">
-                <div class="col-md-4 mt-5"> <!-- Ajout de la marge en haut -->
-                    <form action="index.php?controleur=utilisateur&methode=inscription" method="post" required>
-                        <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Nom</label>
-                            <input type="text" name="nom" class="form-control" aria-describedby="emailHelp" required maxlength="50" minlength="2" title="Entrez votre vrai nom pour votre compte">
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Prenom</label>
-                            <input type="text" name="prenom" class="form-control" aria-describedby="emailHelp" required maxlength="50" minlength="2" title="Entrez votre vrai prénom pour votre compte">
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">E-mail</label>
-                            <input type="email" name="email" class="form-control" aria-describedby="emailHelp" required maxlength="255" minlength="5" title="Entrez l'adresse email qui sera liée au compte">
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">Mot de passe</label>
-                            <input 
-                                type="password" 
-                                name="pwd" 
-                                class="form-control" 
-                                id="exampleInputPassword1" 
-                                required 
-                                minlength="8" 
-                                maxlength="25" 
-                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$" 
-                                title="Le mot de passe doit contenir au moins : une lettre minuscule, une majuscule, un chiffre et un caractère spécial, et être compris entre 8 et 25 caractères."
-                            >
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">Confirmer mot de passe</label>
-                            <input 
-                                type="password" 
-                                name="pwd" 
-                                class="form-control" 
-                                id="exampleInputPassword1" 
-                                required 
-                                minlength="8" 
-                                maxlength="25" 
-                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$" 
-                                title="Le mot de passe doit contenir au moins : une lettre minuscule, une majuscule, un chiffre et un caractère spécial, et être compris entre 8 et 25 caractères."
-                            >
-                        </div>
-                        <a class="mb-3" href="index.php?controleur=utilisateur&methode=premiereConnexion">Deja un compte ? Se connecter</a>
-                        <button type="submit" class="btn btn-primary">S'inscrire</button>
-                    </form>
-                </div>
-                {% if message %}
-                <div class="mt-5">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {% for messages in message %}
-                        {{messages}} <br>
-                        {% endfor %}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </main>
+	<main class="h-100 w-100">
+		{% if message %}
+			<div class="row justify-content-center position-absolute top-0">
+				<div class="alert alert-success alert-dismissible fade show mt-4 col-10 col-md-6" role="alert" style="font-size: 1rem;">
+					{% for messages in message %}
+						{{messages}}
+						<br>
+					{% endfor %}
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+			</div>
+		{% endif %}
+		<div class="container-fluid h-100">
+			<div class="row justify-content-center align-items-center h-100" style="padding: 0;">
+				<div
+					class="col-12 col-md-6 col-lg-4 d-flex align-items-center" style="width: 100%; max-width: 700px;">
+					<!-- Card for the form -->
+					<div class="card card_custom shadow-lg w-100" style="height: auto; padding: 1rem;">
+
+						<div class="card-body ">
+							<h4 class="card-title text-center mb-4" style="font-size: 1.5rem;">Inscription</h4>
+							<form action="index.php?controleur=utilisateur&methode=inscription" method="post" required>
+								<div class="mb-3">
+									<label for="nom" class="form-label" style="font-size: 1rem;">Nom</label>
+									<input type="text" name="nom" class="form-control form-control-lg" id="nom" placeholder="Entrez votre nom" required maxlength="50" minlength="2" title="Entrez votre vrai nom pour votre compte">
+								</div>
+								<div class="mb-3">
+									<label for="prenom" class="form-label" style="font-size: 1rem;">Prénom</label>
+									<input type="text" name="prenom" class="form-control form-control-lg" id="prenom" placeholder="Entrez votre prénom" required maxlength="50" minlength="2" title="Entrez votre vrai prénom pour votre compte">
+								</div>
+								<div class="mb-3">
+									<label for="email" class="form-label" style="font-size: 1rem;">E-mail</label>
+									<input type="email" name="email" class="form-control form-control-lg" id="email" placeholder="Entrez votre e-mail" required maxlength="255" minlength="5" title="Entrez l'adresse email qui sera liée au compte">
+								</div>
+								<div class="mb-3">
+									<label for="pwd" class="form-label" style="font-size: 1rem;">Mot de passe</label>
+									<input type="password" name="pwd" class="form-control form-control-lg" id="pwd" placeholder="Entrez un mot de passe" required minlength="8" maxlength="25" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$" title="Le mot de passe doit contenir au moins : une lettre minuscule, une majuscule, un chiffre et un caractère spécial, et être compris entre 8 et 25 caractères.">
+								</div>
+								<div class="mb-3">
+									<label for="pwdConfirme" class="form-label" style="font-size: 1rem;">Confirmer le mot de passe</label>
+									<input type="password" name="pwdConfirme" class="form-control form-control-lg" id="pwdConfirme" placeholder="Confirmez le mot de passe" required minlength="8" maxlength="25" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$" title="Le mot de passe doit contenir au moins : une lettre minuscule, une majuscule, un chiffre et un caractère spécial, et être compris entre 8 et 25 caractères.">
+								</div>
+								<a class="d-block mb-3 text-center" href="index.php?controleur=utilisateur&methode=premiereConnexion" style="font-size: 1rem;">Déjà un compte ? Se connecter</a>
+								<button type="submit" class="btn btn-primary w-75 py-2" style="font-size: 1rem; transform: translatex(15%) ">S'inscrire</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
 {% endblock %}
-
-
-

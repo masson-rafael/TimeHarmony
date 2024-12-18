@@ -6,68 +6,93 @@
 
 
 {% block content %}
-{# {{ dump(agendas) }} #}
-    <main>
-    <div class="container">
-            <div class="row justify-content-center">
-            {% if message %}
-                <div class="mt-5">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-                {% endif %}
-                
-                {% for agenda in agendas %}
-                    <p>url = {{agenda.url}}, nom = {{agenda.nom}} et couleur = {{agenda.couleur}}</p>
-                {% endfor %}
+	<main>
+		<div class="container  h-100">
+			<!-- Liste des agendas -->
+			{% if agendas|length > 0 %}
+				<div class="row justify-content-center mt-4 h-25">
+					<div class="col-md-8">
+						<h4 class="text-center mb-4">Liste des agendas</h4>
+						<ul class="list-group">
+							{% for agenda in agendas %}
+								<li class="list-group-item d-flex justify-content-between align-items-center">
+									<span>
+										<strong>Nom :</strong>
+										{{ agenda.nom }}
+										<br>
+										<strong>URL :</strong>
+										{{ agenda.url }}
+										<br>
+										<strong>Couleur :</strong>
+										<span style="color: {{ agenda.couleur }}">{{ agenda.couleur }}</span>
+									</span>
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+			{% else %}
+				<div class="row justify-content-center mt-4 h-25">
+					<div class="col-md-8">
+						<div class="alert alert-info text-center" role="alert">
+							Aucun agenda trouvé. Ajoutez-en un ci-dessous.
+						</div>
+					</div>
+				</div>
+			{% endif %}
 
-                <div class="col-md-4 mt-5"> <!-- Ajout de la marge en haut -->
-                    <form action="index.php?controleur=agenda&methode=ajouterAgenda" method="post" required>
-                        <div class="mb-3">
-                            <label for="url" class="form-label">URL</label>
-                            <input type="url" name="url" class="form-control" id="url" required placeholder="Entrez une URL valide" title="Entrez l'URL valide de votre agenda Google.">
-                        </div>
-                        <div class="mb-3">
-                        <div class="mb-3">
-                            <label for="couleur" class="form-label">Couleur</label>
-                            <select name="couleur" class="form-select" id="couleur" required>
-                                <option value="#e66465" style="background-color: #e66465; color: white;">#e66465</option>
-                                <option value="#4CAF50" style="background-color: #4CAF50; color: white;">#4CAF50</option>
-                                <option value="#2196F3" style="background-color: #2196F3; color: white;">#2196F3</option>
-                                <option value="#FF5722" style="background-color: #FF5722; color: white;">#FF5722</option>
-                                <option value="#9C27B0" style="background-color: #9C27B0; color: white;">#9C27B0</option>
-                                <option value="#FFC107" style="background-color: #FFC107; color: black;">#FFC107</option>
-                            </select>
-                            <small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
-                        </div>
-                        <div class="mb-3">
-                            <input type="color" name="couleur_custom" class="form-control" id="couleur_custom" title="Sélectionnez une couleur ou entrez un code hexadécimal personnalisé" minlength="7" maxlength="7">
-                        </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="nom" class="form-label">Nom</label>
-                            <input type="text" name="nom" class="form-control" id="nom" required placeholder="Entrez un nom" maxlength="50" title="Entrez le nom de votre agenda pour pouvoir le différencier des autres">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Ajouter</button>
-                    </form>
-                </div>
-                {% if message %}
-                <div class="mt-5">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {% for messages in message %}
-                        {{messages}} <br>
-                        {% endfor %}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-        {# <a href="index.php?controleur=utilisateur&methode=listerContacts"><p>ff</p></a> #}
-    </main>
+			<!-- Formulaire d'ajout d'agenda -->
+			<div class="row justify-content-center mt-5 h-75">
+				<div class="col-md-6">
+					<h4 class="text-center mb-4">Ajouter un agenda</h4>
+					<form action="index.php?controleur=agenda&methode=ajouterAgenda" method="post" required>
+						<div class="mb-3">
+							<label for="url" class="form-label">URL</label>
+							<input type="url" name="url" class="form-control" id="url" required placeholder="Entrez une URL valide" title="Entrez l'URL valide de votre agenda Google.">
+						</div>
+						<div class="mb-3">
+							<div class="mb-3">
+								<label for="couleur" class="form-label">Couleur</label>
+								<select name="couleur" class="form-select" id="couleur" required>
+									<option value="#e66465" style="background-color: #e66465; color: white;">#e66465</option>
+									<option value="#4CAF50" style="background-color: #4CAF50; color: white;">#4CAF50</option>
+									<option value="#2196F3" style="background-color: #2196F3; color: white;">#2196F3</option>
+									<option value="#FF5722" style="background-color: #FF5722; color: white;">#FF5722</option>
+									<option value="#9C27B0" style="background-color: #9C27B0; color: white;">#9C27B0</option>
+									<option value="#FFC107" style="background-color: #FFC107; color: black;">#FFC107</option>
+								</select>
+								<small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
+							</div>
+							<div class="mb-3">
+								<input type="color" name="couleur_custom" class="form-control" id="couleur_custom" title="Sélectionnez une couleur ou entrez un code hexadécimal personnalisé" minlength="7" maxlength="7">
+							</div>
+						</div>
+						<div class="mb-3">
+							<label for="nom" class="form-label">Nom</label>
+							<input type="text" name="nom" class="form-control" id="nom" required placeholder="Entrez un nom" maxlength="50" title="Entrez le nom de votre agenda pour pouvoir le différencier des autres">
+						</div>
+						<button type="submit" class="btn btn-primary">Ajouter</button>
+					</form>
+				</div>
+			</div>
+
+
+			<!-- Affichage des messages -->
+			{% if message %}
+				<div class="row justify-content-center h-100">
+					<div class="col-md-8 h-100">
+						<div class="alert alert-success alert-dismissible fade show h-100" role="alert">
+							{% for messages in message %}
+								{{messages}}
+								<br>
+							{% endfor %}
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+
+		</div>
+	</main>
+
 {% endblock %}
-
-
-

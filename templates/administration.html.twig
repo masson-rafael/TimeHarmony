@@ -1,14 +1,11 @@
 {% extends 'base_template.html.twig' %}
 
-{% block title %}Administration -
-	{{ constant('WEBSITE_TITLE')}}
-{% endblock %}
-
+{% block title %}Administration - {{ constant('WEBSITE_TITLE') }}{% endblock %}
 
 {% block content %}
-    <main>
-        <div class="container py-5">
-            {% if message %}
+<main class="container py-5">
+    <div class="table-responsive">
+        {% if message %}
                 <div class="mt-5">
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {% for messages in message %}
@@ -18,82 +15,83 @@
                     </div>
                 </div>
             {% endif %}
-            <table id="myTable" class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Email</th>
-                        <th>Nom</th>
-                        <th>Prenom</th>
-                        <th>Rôle</th>
-                        <th>Photo de profil</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for utilisateur in listeUtilisateurs %}
-                        <tr>
-                            {# Appel des méthodes de la classe utilisateur #}
-                            <td>{{ utilisateur.getId }}</td>
-                            <td>{{ utilisateur.getEmail }}</td>
-                            <td>{{ utilisateur.getNom }}</td>
-                            <td>{{ utilisateur.getPrenom }}</td>
-                            <td>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</td>
-                            <td>{{ utilisateur.getPhotoDeProfil }}</td>
-                            <td>
-                                <a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModale{{utilisateur.getId}}" aria-expanded="false">
-                                    <img src="image/modification.png" alt="modifier" style="width: 50px;">
-                                </a>
-                                <a class="" role="button" href="index.php?controleur=utilisateur&methode=supprimer&id={{utilisateur.getId}}&type=admin" aria-expanded="false">
-                                    <img src="image/corbeille.png" alt="supprimer" style="width: 50px;">
-                                </a>                        
-                            </tr>
-                            <div class="modal fade" id="fenetreModale{{utilisateur.getId}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="exampleModalLabel"> Modification de l'utilisateur {{utilisateur.getEmail}}</h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <table id="myTable" class="table table-striped table-bordered" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Nom</th>
+                    <th>Prenom</th>
+                    <th>Rôle</th>
+                    <th>Photo de profil</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for utilisateur in listeUtilisateurs %}
+                <tr>
+                    <td>{{ utilisateur.getId }}</td>
+                    <td>{{ utilisateur.getEmail }}</td>
+                    <td>{{ utilisateur.getNom }}</td>
+                    <td>{{ utilisateur.getPrenom }}</td>
+                    <td>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</td>
+                    <td>
+                        <img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photo de profil" class="img-fluid" style="width: 50px; height: 50px;">
+                    </td>
+                    <td>
+                        <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ utilisateur.getId }}">
+                            <img src="image/modification.png" alt="modifier" style="width: 50px;">
+                        </a>
+                        <a role="button" href="index.php?controleur=utilisateur&methode=supprimer&id={{ utilisateur.getId }}&type='admin'">
+                            <img src="image/corbeille.png" alt="supprimer" style="width: 50px;">
+                        </a>
+                    </td>
+                </tr>
+                <div class="modal fade" id="fenetreModale{{ utilisateur.getId }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Modification de l'utilisateur {{ utilisateur.getEmail }}</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="index.php?controleur=utilisateur&methode=modifierAdmin&id={{ utilisateur.getId }}&type='admin'" method="POST" enctype="multipart/form-data">
+                                <div class="modal-body">
+                                    <div class="container mt-2">
+                                        <div class="form-group">
+                                            <label for="nom">Nom</label>
+                                            <input type="text" class="form-control" id="nom" name="nom" value="{{ utilisateur.getNom }}" required>
                                         </div>
-                                        <form action="index.php?controleur=utilisateur&methode=modifierAdmin&id={{ utilisateur.getId }}&type='admin'" method="POST" enctype="multipart/form-data">
-                                            <div class="modal-body">
-                                                <div class="container mt-2">
-                                                    <div class="form-group">
-                                                        <label for="nom">Nom</label>
-                                                        <input type="text" class="form-control" id="nom" name="nom" value="{{utilisateur.getNom}}" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="prenom">Prenom</label>
-                                                        <input type="text" class="form-control" id="prenom" name="prenom" value="{{utilisateur.getPrenom}}" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="role">Role</label>
-                                                        <select class="form-control" id="role" name="role">
-                                                            <option>User</option>
-                                                            <option>Admin</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="photo">Image de profil</label>
-                                                        <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .png">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="submit" class="btn btn-primary" name="update_article">Mettre à jour</button>
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                            </div>
-                                        </form>
+                                        <div class="form-group">
+                                            <label for="prenom">Prenom</label>
+                                            <input type="text" class="form-control" id="prenom" name="prenom" value="{{ utilisateur.getPrenom }}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="role">Role</label>
+                                            <select class="form-control" id="role" name="role">
+                                                <option>User</option>
+                                                <option>Admin</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="photo">Image de profil</label>
+                                            <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .png">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </main>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" name="update_article">Mettre à jour</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
 {% endblock %}
-
 
 {% block javascripts %}
     {{ parent() }}

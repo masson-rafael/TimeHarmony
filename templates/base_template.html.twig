@@ -7,49 +7,49 @@
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"/>
 		<link rel="stylesheet" type="text/css" href="CSS/styles.css">
-		<meta name="description" content="{%if description is defined %} {{description}} {% else %} {{constant('WEBSITE_DESCRIPTION')}} {% endif %}"> {% block css %}{% endblock %}
+		<meta name="description" content="{% if description is defined %} {{ description }} {% else %} {{ constant('WEBSITE_DESCRIPTION') }} {% endif %}"> {% block css %}{% endblock %}
 		<title>
 			{% block title %}
-				{{constant('WEBSITE_TITLE')}}
+				{{ constant('WEBSITE_TITLE') }}
 			{% endblock %}
 		</title>
 	</head>
-	<body>
+	<body></body>
+	<body class="d-flex flex-column min-vh-100">
 		{% if utilisateurGlobal is not null %}
-			<nav class="navbar navbar-expand-lg bg-primary py-2" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+			<nav class="navbar navbar-expand-lg bg-primary py-1" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
 				<div class="container-fluid">
 					<div
 						class="row w-100 align-items-center">
 						<!-- Logo -->
 						<div class="col-auto">
 							<a class="navbar-brand" href="index.php?controleur=utilisateur&methode=menuConnecte">
-								<img src="image/logoNoir.png" alt="logo" style="width: 70px;">
+								<img src="image/logoNoir.png" alt="logo" style="width: 60px;">
 							</a>
 						</div>
 						<!-- Menu principal avec espace entre les éléments -->
 						<div class="col">
-							<ul class="navbar-nav row w-100 justify-content-center text-center">
-								<li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
-									<a class="nav-link" {% if menu=='recherche' %} active {% endif %} aria-current="page" href="index.php?controleur=assistant&methode=genererVueRecherche">Rechercher un créneau</a>
-
+							<ul class="navbar-nav d-flex justify-content-center w-100">
+								<li class="nav-item me-3">
+									<a class="nav-link fs-5 {% if menu == 'recherche' %} active {% endif %}" href="index.php?controleur=assistant&methode=genererVueRecherche">Rechercher un créneau</a>
 								</li>
-								<li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
-									<a class="nav-link" {% if menu=='agenda' %} active {% endif %} aria-current="page" href="index.php?controleur=agenda&methode=lister">Agendas</a>
+								<li class="nav-item me-3">
+									<a class="nav-link fs-5 {% if menu == 'agenda' %} active {% endif %}" href="index.php?controleur=agenda&methode=lister">Agendas</a>
 								</li>
-								<li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
-									<a class="nav-link" {% if menu=='groupes' %} active {% endif %} aria-current="page" href="index.php?controleur=groupes&methode=lister">Groupes</a>
+								<li class="nav-item me-3">
+									<a class="nav-link fs-5 {% if menu == 'groupes' %} active {% endif %}" href="index.php?controleur=groupes&methode=lister">Groupes</a>
 								</li>
-								<li class="col-md-auto nav-item d-flex justify-content-center align-items-center fs-4 me-3">
-									<a class="nav-link" {% if menu=='contacts' %} active {% endif %} aria-current="page" href="index.php?controleur=contacts&methode=lister">Contacts</a>
+								<li class="nav-item me-3">
+									<a class="nav-link fs-5 {% if menu == 'contacts' %} active {% endif %}" href="index.php?controleur=contacts&methode=lister">Contacts</a>
 								</li>
 							</ul>
 						</div>
 						<!-- Menu aligné à droite -->
-						<div class="col-auto me-3">
-							<ul class="navbar-nav ms-auto d-flex flex-row">
-								<li class="nav-item dropdown d-flex justify-content-center align-items-center">
-									<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-										<img src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" alt="Photo de profil" class="rounded-circle" style="width: 60px; height: 60px;">
+						<div class="col-auto ms-3">
+							<ul class="navbar-nav d-flex flex-row">
+								<li class="nav-item dropdown d-flex align-items-center">
+									<a class="nav-link" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+										<img src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" alt="Photo de profil" class="rounded-circle" style="width: 50px; height: 50px;">
 									</a>
 									<ul class="dropdown-menu dropdown-menu-custom dropdown-menu-start">
 										<li>
@@ -58,7 +58,7 @@
 										<li>
 											<a class="dropdown-item" href="#">Préférences du profil</a>
 										</li>
-										{% if utilisateurGlobal.getEstAdmin%}
+										{% if utilisateurGlobal.getEstAdmin %}
 											<li>
 												<a class="dropdown-item" href="index.php?controleur=utilisateur&methode=lister">Administration</a>
 											</li>
@@ -68,10 +68,8 @@
 										</li>
 									</ul>
 								</li>
-								<li class="nav-item d-flex justify-content-center align-items-center">
-									<div style="position: relative; left: 15px;">
-										<a class="nav-link" href="#"><img src="image/notificationFalse.png" style="width: 35px;" alt="notification"></a>
-									</div>
+								<li class="nav-item d-flex align-items-center">
+									<a class="nav-link" href="#"><img src="image/notificationFalse.png" style="width: 35px;" alt="notification"></a>
 								</li>
 							</ul>
 						</div>
@@ -81,27 +79,27 @@
 
 		{% else %}
 
-			<nav class="navbar navbar-expand-lg bg-primary py-2" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+			<nav class="h-3em bg-primary " style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
 				<div class="container-fluid">
 					<div
-						class="row w-100 align-items-center">
+						class="row  d-flex justify-content-center align-items-center">
 						<!-- Logo -->
-						<div class="col-auto me-5">
+						<div class="col-1">
 							<a class="navbar-brand" href="index.php?controleur=utilisateur&methode=deconnecter">
-								<img src="image/logoNoir.png" alt="logo" style="width: 70px;">
+								<img src="image/logoNoir.png" alt="logo" style="width: 50px;">
 							</a>
 						</div>
 						<!-- Image de la marque centrée -->
-						<div class="col text-center ms-5">
-							<img src="image/marque.png" alt="logo" style="width: 300px;">
+						<div class="col-9 d-flex justify-content-center">
+							<img src="image/marque.png" alt="logo" style="width: 300px; transform: translateX(15%);">
 						</div>
 						<!-- Liens de connexion et d'inscription alignés à droite -->
-						<div class="col-auto ms-auto">
-							<ul class="navbar-nav d-flex flex-row">
-								<li class="nav-item d-flex justify-content-center align-items-center fs-4 me-3">
-									<a class="nav-link" href="index.php?controleur=utilisateur&methode=premiereConnexion">Se connecter</a>
+						<div class="col-2 d-flex justify-content-end">
+							<ul class="navbar-nav d-flex flex-row align-items-center">
+								<li class="nav-item d-flex justify-content-center align-items-center fs-5 me-3">
+									<a class="nav-link mt-0" href="index.php?controleur=utilisateur&methode=premiereConnexion">Se connecter</a>
 								</li>
-								<li class="nav-item d-flex justify-content-center align-items-center fs-4">
+								<li class="nav-item d-flex justify-content-center align-items-center fs-5">
 									<a class="nav-link" href="index.php?controleur=utilisateur&methode=premiereInscription">S'inscrire</a>
 								</li>
 							</ul>
@@ -111,36 +109,35 @@
 			</nav>
 
 		{% endif %}
-		{# <main class="min-vh-75"> #}
-		{% block content %}{% endblock %}
-		{# </main> #}
+		<div class="flex-grow-1"> {% block content %}{% endblock %}
+			</div>
 
-		<footer class="text-muted py-3 bg-primary mt-5 fixed-bottom small-footer" style="box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);">
-			<div class="container">
-				<div class="row">
-					<div class="col d-flex align-items-center justify-content-center">
-						<p class="mb-1">&copy; 2024 - TimeHarmony</p>
-					</div>
-					<div class="col d-flex align-items-center justify-content-center">
-						<p class="mb-1">A Propos</p>
-					</div>
-					<div class="col d-flex align-items-center justify-content-center">
-						<p class="mb-1">Conditions générales d'utilisation</p>
-					</div>
-					<div class="col d-flex align-items-center justify-content-center">
-						<p class="mb-1">Nous contacter</p>
+			<footer class="text-muted py-3 bg-primary mt-5 small-footer position-relative bottom-0 vw-100" style="box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);">
+				<div class="container">
+					<div class="row">
+						<div class="col d-flex align-items-center justify-content-center">
+							<p class="mb-1">&copy; 2024 - TimeHarmony</p>
+						</div>
+						<div class="col d-flex align-items-center justify-content-center">
+							<p class="mb-1">A Propos</p>
+						</div>
+						<div class="col d-flex align-items-center justify-content-center">
+							<p class="mb-1">Conditions générales d'utilisation</p>
+						</div>
+						<div class="col d-flex align-items-center justify-content-center">
+							<p class="mb-1">Nous contacter</p>
+						</div>
 					</div>
 				</div>
-			</div>
-		</footer>
+			</footer>
 
-		{% block javascripts %}
-		</body>
-		<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-		<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-		<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-		{# <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> #}
-		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.2/js/bootstrap.min.js"></script>
-	{% endblock %}
-</html>
+			{% block javascripts %}
+			</body>
+			<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+			<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+			<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+			{# <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> #}
+			<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+			<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.2/js/bootstrap.min.js"></script>
+		{% endblock %}
+	</html>
