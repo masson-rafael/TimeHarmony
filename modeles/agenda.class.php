@@ -207,7 +207,7 @@ class Agenda
 
         // Ajouter les événements à un tableau global
         $allEvents = array_merge($allEvents, $evenements);
-
+        
         return $allEvents;
     }
 
