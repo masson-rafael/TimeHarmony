@@ -7,15 +7,15 @@
 
 {% block content %}
 {# {{ dump(creneauxLibres) }} #}
-<main class="">
-    <div class="container-fluid">
-        <div class="row justify-content-center align-item-center"  style="transform:translatey(9%);">
-            <div class="col-md-4 mt-5">
+<main class="h-100 w-100">
+   <div class="container-fluid h-100">
+        <div class="row justify-content-center align-items-center h-100" style="padding: 0;">
+            <div class="col-12 col-md-6 col-lg-4 d-flex align-items-center" style="width: 100%; max-width: 700px;">
                 <!-- Card for the form -->
-                <div class="card_custom shadow-lg">
-                    <div class="card_custom-body ">
-                        <h4 class="card_custom-title text-center mb-4">Se connecter</h4>
-                        <form action="index.php?controleur=utilisateur&methode=connexion" method="post">
+                <div class="card card_custom shadow-lg w-100" style="height: auto; padding: 1rem;">
+                    <div class="card-body ">
+                        <h4 class="card-title text-center mb-4" style="font-size: 1.5rem;">Connexion</h4>
+                        <form action="index.php?controleur=utilisateur&methode=connexion" method="post" >
                             <div class="mb-3">
                                 <label for="exampleInputEmail1" class="form-label">E-mail</label>
                                 <input type="text" name="email" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Entrez votre e-mail" required>
@@ -47,6 +47,3 @@
         <br>
     {% endfor %}
 {% endblock %}
-
-
-
