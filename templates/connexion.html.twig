@@ -6,44 +6,46 @@
 
 
 {% block content %}
-{# {{ dump(creneauxLibres) }} #}
-<main class="h-100 w-100">
-   <div class="container-fluid h-100">
-        <div class="row justify-content-center align-items-center h-100" style="padding: 0;">
-            <div class="col-12 col-md-6 col-lg-4 d-flex align-items-center" style="width: 100%; max-width: 700px;">
-                <!-- Card for the form -->
-                <div class="card card_custom shadow-lg w-100" style="height: auto; padding: 1rem;">
-                    <div class="card-body ">
-                        <h4 class="card-title text-center mb-4" style="font-size: 1.5rem;">Connexion</h4>
-                        <form action="index.php?controleur=utilisateur&methode=connexion" method="post" >
-                            <div class="mb-3">
-                                <label for="exampleInputEmail1" class="form-label">E-mail</label>
-                                <input type="text" name="email" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Entrez votre e-mail" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="exampleInputPassword1" class="form-label">Mot de passe</label>
-                                <input type="password" name="pwd" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Entrez votre mot de passe" required>
-                            </div>
-                            <a class="d-block mb-3 text-center" href="index.php?controleur=utilisateur&methode=premiereInscription">Pas encore de compte ? S'inscrire</a>
-                            <button type="submit" class="btn btn-primary w-100 py-2">Se connecter</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+	{# {{ dump(creneauxLibres) }} #}
+	<main class="h-100 w-100">
+		<div class="container-fluid h-100">
+			<div class="row justify-content-center align-items-center h-100" style="padding: 0;">
+				<div
+					class="col-12 col-md-6 col-lg-4 d-flex align-items-center" style="width: 100%; max-width: 700px;">
+					<!-- Card for the form -->
+					<div class="card card_custom shadow-lg w-100" style="height: auto; padding: 1rem;">
+						<div class="card-body ">
+							<h4 class="card-title text-center mb-4" style="font-size: 1.5rem;">Connexion</h4>
+							<form action="index.php?controleur=utilisateur&methode=connexion" method="post">
+								<div class="mb-3">
+									<label for="exampleInputEmail1" class="form-label">E-mail</label>
+									<input type="email" name="email" id="exampleInputEmail1" class="form-control form-control-lg" required maxlength="255" minlength="5" title="Entrez l'adresse email du compte que vous souhaitez utiliser" placeholder="Entrez votre e-mail">
 
-            {% if message %}
-            <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-</main>
+								</div>
+								<div class="mb-3">
+									<label for="exampleInputPassword1" class="form-label">Mot de passe</label>
+									<input type="password" name="pwd" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Entrez votre mot de passe" required maxlength="25" minlength="8" title="Le mot de passe doit contenir au moins : une lettre minuscule, une majuscule, un chiffre et un caractère spécial, et être compris entre 8 et 25 caractères." pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$">
 
-    {% for r in users %}           
-        {# Afficher les créneaux libres #}
-        {{dump(r)}}
-        <br>
-    {% endfor %}
+								</div>
+								<a class="d-block mb-3 text-center" href="index.php?controleur=utilisateur&methode=premiereInscription">Pas encore de compte ? S'inscrire</a>
+								<a class="d-block mb-3 text-center" href="index.php?controleur=utilisateur&methode=demanderReinitialisationMail">Mot de passe oublié ? Le réinitialiser</a>
+								<button type="submit" class="btn btn-primary w-100 py-2">Se connecter</button>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				{% if message %}
+					<div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
+						{% for messages in message %}
+							{{messages}}
+							<br>
+						{% endfor %}
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+				{% endif %}
+			</div>
+		</div>
+	</main>
+    
 {% endblock %}

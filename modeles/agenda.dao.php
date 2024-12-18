@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @todo FAIS TA DOC FELIX
+ */
+
 class AgendaDao{
     private ?PDO $pdo;
 
@@ -100,7 +104,7 @@ class AgendaDao{
 
     public function hydrate($tableauAssoc): ?Agenda
     {
-        $agenda = new Agenda($tableauAssoc['id'],$tableauAssoc['url'],$tableauAssoc['couleur'],$tableauAssoc['nom'],$tableauAssoc['idUtilisateur']);
+        $agenda = new Agenda($tableauAssoc['url'],$tableauAssoc['couleur'],$tableauAssoc['nom'],$tableauAssoc['idUtilisateur'],$tableauAssoc['id']);
         return $agenda;
     }
 
