@@ -39,7 +39,17 @@
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Confirmer mot de passe</label>
-                            <input type="password" name="pwdConfirme" class="form-control" id="exampleInputPassword1" required minlength="8" maxlength="25" title="Entrez une nouvelle fois le même mot de passe" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$" >
+                            <input 
+                                type="password" 
+                                name="pwd" 
+                                class="form-control" 
+                                id="exampleInputPassword1" 
+                                required 
+                                minlength="8" 
+                                maxlength="25" 
+                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$" 
+                                title="Le mot de passe doit contenir au moins : une lettre minuscule, une majuscule, un chiffre et un caractère spécial, et être compris entre 8 et 25 caractères."
+                            >
                         </div>
                         <a class="mb-3" href="index.php?controleur=utilisateur&methode=premiereConnexion">Deja un compte ? Se connecter</a>
                         <button type="submit" class="btn btn-primary">S'inscrire</button>

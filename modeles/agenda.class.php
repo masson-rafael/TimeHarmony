@@ -295,6 +295,9 @@ class Agenda
         }
     }
 
+    /**
+     * @todo FELIX FAIS TA DOC
+     */
     function mergeAgendas($events)
     {
         // Convertir les plages horaires en DateTime et organiser les événements par ordre croissant

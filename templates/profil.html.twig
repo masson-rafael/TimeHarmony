@@ -18,7 +18,6 @@
                             style="width: 100px; height: 100px;">
                     </a>
                 </div>
-
                 <!-- Formulaire -->
                 <div class="flex-grow-1">
                     <form method="POST" action="index.php?controleur=utilisateur&methode=modifier&id={{ utilisateurGlobal.getId }}&type='util'" enctype="multipart/form-data">
@@ -41,12 +40,11 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <button type="submit" class="btn btn-primary">Modifier mon profil</button>
-                            <button type="button" class="btn btn-secondary">Modifier mon mot de passe</button>
+                            <a class="btn btn-secondary" href="index.php?controleur=utilisateur&methode=demanderReinitialisationMail" role="button">Réinitialiser mon mot de passe</a>
                         </div>
                     </form>
                 </div>
             </div>
-
             <!-- Bouton supprimer -->
             <div class="text-center mt-4">
                 <button type="button" data-bs-toggle="modal" data-bs-target="#fenetreModale" class="btn btn-danger">Supprimer mon compte</button>
@@ -54,7 +52,6 @@
         </div>
     </div>
 </div>
-
 <div class="modal fade" id="fenetreModale" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

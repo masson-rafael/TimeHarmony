@@ -82,16 +82,18 @@ class UtilisateurDao
         // Ajout des parametres
         $pdoStatement->execute(array("email" => $mail));
         $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
-
         $utilisateurExiste = false;
         if ($result) {
             $utilisateurExiste = true;
         }
-
         return $utilisateurExiste;
     }
 
-
+    /**
+     * Récupère une liste d'utilisateurs qui sont des contacts de l'utilisateur dont l'id est passé en param
+     * @param int|null $id L'identifiant de l'utilisateur.
+     * @return array|null Un tableau d'utilisateurs.
+     */
     public function findAllContact(?int $id): array
     {
         //$sql = "SELECT idUtilisateur2 FROM " . PREFIXE_TABLE . "contacter WHERE idUtilisateur1= :id";
@@ -127,9 +129,12 @@ class UtilisateurDao
         return $result;
     }
 
-
-    public function getUserMail(?string $mail): ?Utilisateur
-    {
+    /**
+     * Recupere un objet utilisateur à partir de son mail
+     * @param string|null $mail de l'utilisateur
+     * @return Utilisateur|null utilisateur
+     */
+    public function getUserMail(?string $mail): ?Utilisateur {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE email= :email";
         $pdoStatement = $this->pdo->prepare($sql);
         // Ajout des parametres
@@ -278,10 +283,19 @@ class UtilisateurDao
         $pdoStatement->execute(array("id" => $id));
     }
 
-
+    /**
+     * Modifie un utilisateur dans la BD
+     * 
+     * @param integer|null $id de l'utilisateur 
+     * @param string|null $nom de l'utilisateur 
+     * @param string|null $prenom de l'utilisateur
+     * @param boolean|null $estAdmin de l'utilisateur
+     * @param string|null $photoDeProfil de l'utilisateur
+     */
     public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?bool $estAdmin, ?string $photoDeProfil){
         $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET nom = :nom, prenom = :prenom, estAdmin = :estAdmin, photoDeProfil = :pdp WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
+        $estAdmin == false ? $estAdmin = 0 : $estAdmin = 1;
         $pdoStatement->execute(array(
             "nom" => $nom,
             "prenom" => $prenom,
@@ -297,10 +311,36 @@ class UtilisateurDao
      * @param int $id L'identifiant de l'utilisateur.
      * @param string $cheminPhoto Le chemin de la nouvelle photo de profil.
      */
-    public function modifierPhotoProfil($id, $cheminPhoto)
-    {
-        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur SET photoDeProfil = :photoDeProfil WHERE id = :id";
+    public function modifierPhotoProfil(?int $id, ?string $cheminPhoto) {
+        $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET photoDeProfil = :photoDeProfil WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('photoDeProfil' => $cheminPhoto, 'id' => $id));
     }
+
+    /**
+     * Reinitialise le mot de passe de l'utilisateur
+     * 
+     * @param integer|null $id de l'utilisateur
+     * @param string|null $mdp de l'utilisateur
+     */
+    public function reinitialiserMotDePasse(?int $id, ?string $mdp) {
+        $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET motDePasse = :mdp WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('mdp' => $mdp, 'id' => $id));
+    }
+
+    /**
+     * Recupere l'id de l'utilisateur à partir de son mail
+     * @param string|null $mail de l'utilisateur
+     * @return integer|null id de l'utilisateur
+     */
+    public function getIdFromMail(?string $mail) : ?int {
+        $sql = "SELECT id FROM ".PREFIXE_TABLE."utilisateur WHERE email = :email";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('email' => $mail));
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['id'];
+    }
 }
+
+

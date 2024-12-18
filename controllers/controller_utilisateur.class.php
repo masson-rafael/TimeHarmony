@@ -268,17 +268,20 @@ class ControllerUtilisateur extends Controller
         $messageErreurs = [];
         $nomValide = utilitaire::validerNom($_POST['nom'], $messageErreurs);
         $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
-        $roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
+        //$roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
         @$photoValide = utilitaire::validerPhoto($_FILES['photo'], $messageErreurs);
 
-        if ($nomValide && $prenomValide && $roleValide) {
+        // var_dump($nomValide);
+        // var_dump($prenomValide);
+
+        if ($nomValide && $prenomValide) {//} && $roleValide) {
             $pdo = $this->getPdo();
             $manager = new UtilisateurDao($pdo);
 
             // Gestion de l'upload de la photo de profil
             $cheminPhoto = $_SESSION['utilisateur']->getPhotoDeProfil(); // Récupérer l'ancien chemin
             if ($photoValide) {
-                $dossierDestination = 'image\\photo_user\\';
+                $dossierDestination = 'image/photo_user/';
                 $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
                 $cheminPhoto = $dossierDestination . $nomFichier;
 
@@ -298,12 +301,13 @@ class ControllerUtilisateur extends Controller
                 $role = false;
             }
 
+            @$nomFichier == null ? $nomFichier = $_SESSION['utilisateur']->getPhotoDeProfil() : $nomFichier;
             $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $role, $nomFichier);
             $utilisateurTemporaire = $manager->find($id);
             $_SESSION['utilisateur'] = $utilisateurTemporaire;
             $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurTemporaire);
         }
-        $this->lister($messageErreurs);
+        $this->afficherProfil($messageErreurs);
     }
 
     /**
@@ -331,7 +335,7 @@ class ControllerUtilisateur extends Controller
             $utilisateurConcerne = $manager->find($id);
             $cheminPhoto = $utilisateurConcerne->getPhotoDeProfil(); // Récupérer l'ancien chemin
             if ($photoValide) {
-                $dossierDestination = 'image\\photo_user\\';
+                $dossierDestination = 'image/photo_user/';
                 $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
                 $cheminPhoto = $dossierDestination . $nomFichier;
 
@@ -343,18 +347,23 @@ class ControllerUtilisateur extends Controller
                 }
             }
 
-            $role = $_POST['role'];
+            $role = $_POST['role'] == 'Admin' ? 1 : 0;
+            var_dump($role); // Vérification de la valeur numérique
+            var_dump($_SESSION['utilisateur']);
+            
+            // Mise à jour du chemin de l'image
+            $nomFichier = empty($nomFichier) ? $utilisateurConcerne->getPhotoDeProfil() : $nomFichier;
+            
             // Mise à jour du profil utilisateur
-            if ($role == '1' || $role == 'Admin') {
-                $role = true;
-            } else {
-                $role = false;
-            }
-
-            @$nomFichier == null ? $nomFichier = $utilisateurConcerne->getPhotoDeProfil() : $nomFichier;
             $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $role, $nomFichier);
+            $utilisateurTemporaire = $manager->find($id);
+            
+            if ($utilisateurTemporaire->getId() == $_SESSION['utilisateur']->getId()) {
+                $_SESSION['utilisateur'] = $utilisateurTemporaire;
+                $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurTemporaire);
+            }
         }
-        $this->lister($messageErreurs);
+        $_SESSION['utilisateur']->getEstAdmin() == false ? $this->afficherProfil($messageErreurs) : $this->lister($messageErreurs);
     }
 
 
@@ -393,5 +402,111 @@ class ControllerUtilisateur extends Controller
                 'utilisateur' => $utilisateur,
             )
         );
+    }
+
+    /**
+     * Fonction de réinitialisation du mot de passe
+     * Envoie du mail de réinitialisation à l'utilisateur
+     * @return void
+     */
+    public function demandeReinitialisation() {
+        $tableauErreurs = [];
+        $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
+
+        if ($emailValide) {
+            // En-têtes du mail
+            $headers = "From: no-reply@timeharmony.com\r\n";
+            $headers .= "MIME-Version: 1.0\r\n";
+            $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+            $sujet = "Reinitialisation de votre mot de passe";
+            $destinataire = $_POST['email'];
+            $lien = "http://lakartxela.iutbayonne.univ-pau.fr/~tlatxague/TimeHarmony/index.php?controleur=utilisateur&methode=mailRecu&email=$destinataire";
+
+            // Corps du message (format HTML)
+            $message = "
+            <html>
+                <head>
+                    <title>$sujet</title>
+                </head>
+                <body>
+                    <h3>Bonjour $destinataire,</h3>
+                    <p>Vous avez fait une demandé de réinitialisation de votre mot de passe</p> <br>
+                    <p>Pour cela, cliquez sur le lien ci-dessous et suivez les instructions :</p>
+                    <p>
+                        <a href='$lien' style='color: #1a0dab; font-size: 16px; text-decoration: none;'>Accéder au site</a>
+                    </p>
+                    <p>Merci et à bientôt !</p>
+                </body>
+            </html>";
+
+            if (mail($destinataire, $sujet, $message, $headers)) {
+                $messageErreur[] = "L'e-mail a été envoyé avec succès à $destinataire.";
+            } else {
+                $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé.";
+            }
+
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render(array('message' => $messageErreur));
+        }
+    }
+
+    /**
+     * Fonction qui génère la page de réinitialisation du mot de passe
+     * On y passe un booléen qui, à false, affichera l'input du mail relié au compte qui demande la réinitialisation
+     * @return void
+     */
+    public function demanderReinitialisationMail(){
+        $template = $this->getTwig()->load('reinitialisationMdp.html.twig');
+        echo $template->render(
+            array(
+                'reinitialise' => true,
+            )
+        );
+    }
+
+    /**
+     * Fonction qui génère la page de réinitialisation du mot de passe
+     * On y passe un booléen qui, à true, affichera l'input des 2 mots de passe pour la réinitialisation
+     * On envoie également l'email du destinataire pour lequel on réinitialise le mot de passe
+     * On récupère le mail passé dans le lien d'accès
+     * @return void
+     */
+    public function mailRecu() {
+        $dest = $_GET['email'];
+        $template = $this->getTwig()->load('reinitialisationMdp.html.twig');
+        echo $template->render(
+            array(
+                'reinitialise' => false,
+                'email' => $dest,
+            )
+        );
+    }
+
+    /**
+     * Fonction qui vérifie l'input des 2 mots de passes et change le mot de passe de l'utilisateur dans la BD
+     * Quand réinitialisation mdp, deconnexion puis redirection vers page connexion pour se reconnecter
+     * @todo refaire fonction deconnexion pour qu'elle renvoie sur la page de connexion
+     * @return void
+     */
+    public function reinitialiserMotDePasse() {
+        $tableauErreurs = [];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $idUtilisateur = $manager->getIdFromMail($_GET['email']);
+
+        // Cette methode verifie la valeur des champs et si les mdp sont les memes 
+        $mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs, $_POST['pwdConfirme']);
+
+        if ($mdpValide) {
+            $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
+            $manager->reinitialiserMotDePasse($idUtilisateur, $mdpHache);
+            $this->getTwig()->addGlobal('utilisateurGlobal', null);
+            unset($_SESSION['utilisateur']);
+            $this->genererVueConnexion($tableauErreurs, null);
+        } else {
+            $template = $this->getTwig()->load('profil.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
+            echo $template->render(array('message' => $tableauErreurs, 'reinitialise' => true));
+        }
     }
 }
