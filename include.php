@@ -17,7 +17,6 @@ require_once 'controllers/controller_factory.class.php';
 require_once 'controllers/controller.class.php';
 require_once 'controllers/controller_utilisateur.class.php';
 require_once 'controllers/controller_agenda.class.php';
-require_once 'controllers/controller_creneauRdv.class.php';
 require_once 'controllers/controller_contacts.class.php';
 require_once 'controllers/controller_assistant.class.php';
 
