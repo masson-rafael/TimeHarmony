@@ -36,8 +36,9 @@ class ControllerInformations extends Controller {
      */
     public function affichageTwig(string $section) {
         $validSections = ['CGDU', 'contact', 'aPropos'];
+        $tableauExceptions = [];
+
         if (!in_array($section, $validSections)) {
-            $tableauExceptions = [];
             $tableauExceptions = 'Erreur : cette page n\'existe pas';
         }
 
