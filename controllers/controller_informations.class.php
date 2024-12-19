@@ -10,11 +10,43 @@
  * Undocumented class
  */
 class ControllerInformations extends Controller {
-    
     /**
-     * Fonction qui affiche les conditions générales d'utilisation
+     * Affiche les conditions générales d'utilisation
      */
     public function afficherCGDU() {
+        $this->affichageTwig('CGDU');
+    }
 
+    /**
+     * Affiche un formulaire de contact
+     */
+    public function afficherContact() {
+        $this->affichageTwig('contact');
+    }
+
+    /**
+     * Affiche les informations "À propos"
+     */
+    public function afficherAPropos() {
+        $this->affichageTwig('aPropos');
+    }
+
+    /**
+     * Méthode de rendu Twig pour une section donnée
+     */
+    public function affichageTwig(string $section) {
+        $validSections = ['CGDU', 'contact', 'aPropos'];
+        if (!in_array($section, $validSections)) {
+            throw new InvalidArgumentException("Section invalide : $section");
+        }
+
+        $template = $this->getTwig()->load('informations.html.twig');
+        echo $template->render(
+            array(
+                'CGDU' => $section === 'CGDU',
+                'contact' => $section === 'contact',
+                'aPropos' => $section === 'aPropos',
+            )
+        );
     }
 }
