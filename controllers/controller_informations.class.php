@@ -37,7 +37,8 @@ class ControllerInformations extends Controller {
     public function affichageTwig(string $section) {
         $validSections = ['CGDU', 'contact', 'aPropos'];
         if (!in_array($section, $validSections)) {
-            throw new InvalidArgumentException("Section invalide : $section");
+            $tableauExceptions = [];
+            $tableauExceptions = 'Erreur : cette page n\'existe pas';
         }
 
         $template = $this->getTwig()->load('informations.html.twig');
@@ -46,6 +47,7 @@ class ControllerInformations extends Controller {
                 'CGDU' => $section === 'CGDU',
                 'contact' => $section === 'contact',
                 'aPropos' => $section === 'aPropos',
+                'message' => $tableauExceptions,
             )
         );
     }

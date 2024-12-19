@@ -11,6 +11,13 @@
 		<div class="container-fluid h-100">
 			<div class="row justify-content-center align-items-center h-100" style="padding: 0;">
 				<div class="col-12 col-md-6 col-lg-4 d-flex align-items-center" style="width: 100%; max-width: 700px;">
+                    {% if CGDU %}
+                    <p>CDGU</p>
+                    {% else if contact %}
+                    <p>Contact</p>
+                    {% else if aPropos %}
+                    <p>A propos</p>
+                    {% endif %}
 				</div>
 				{% if message %}
 					<div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
