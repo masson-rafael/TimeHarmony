@@ -3,7 +3,7 @@
 /**
  * @author Rafael Masson
  * @describe Controller de la page des contacts
- * @version 0.1
+ * @version 0.2
  */
 
 /**
@@ -17,12 +17,16 @@ class ControllerContacts extends Controller
      * @param \Twig\Environment $twig Environnement twig
      * @param \Twig\Loader\FilesystemLoader $loader Loader de fichier
      */
-
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
     {
         parent::__construct($twig, $loader);
     }
 
+    /**
+     * Fonction appellee par lister() pour recuperer les contacts de l'utilisateur
+     * 
+     * @return array tableau des contacts
+     */
     function recupererContacts($idUtilisateur): array {
         $pdo = $this->getPdo();
 
@@ -51,6 +55,11 @@ class ControllerContacts extends Controller
         $this->lister();
     }
 
+    /**
+     * Fonction appellee a l'affichage de la page qui affiche tout les contacts de l'utilisateur
+     *
+     * @return void
+     */
     function lister() {
         $contacts = $this->recupererContacts($_SESSION['utilisateur']->getId());
         //Génération de la vue
@@ -61,6 +70,11 @@ class ControllerContacts extends Controller
         ));
     }
 
+    /**
+     * Fonction appellee par le bouton ajouter un contact sur la page des contacts
+     * 
+     * @return void
+     */
     function afficherUtilisateurs(){
         $pdo = $this->getPdo();
         $managerUtilisateur = new UtilisateurDao($pdo);
