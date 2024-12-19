@@ -341,6 +341,14 @@ class UtilisateurDao
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['id'];
     }
+
+    public function getAdministrateurs(): array {
+        $sql = "SELECT email FROM ".PREFIXE_TABLE."utilisateur WHERE estAdmin = 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
 }
 
 

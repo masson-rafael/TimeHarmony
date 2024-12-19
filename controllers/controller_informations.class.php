@@ -73,6 +73,24 @@ class ControllerInformations extends Controller {
      * @return void
      */
     public function envoyer() {
+        $tableauErreurs = [];
+        $valideMail = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
+        $valideDescription = utilitaire::validerDescription($_POST['description'], $tableauErreurs);
+        $valideSujet = utilitaire::validerSujet($_POST['motif'], $tableauErreurs);
 
+        if ($valideMail && $valideDescription && $valideSujet) {
+            $mail = $_POST['email'];
+            $description = $_POST['description'];
+            $sujet = $_POST['motif'];
+
+            $pdo = $this->getPdo();
+            $manager = new UtilisateurDao($pdo);
+            $mails = $manager->getAdministrateurs();
+            $mails = array_column($mails, 'email');
+
+            foreach ($mails as $email) {
+                mail($email, $sujet, $description, 'From: ' . $mail);
+            }
+        }
     }
 }
