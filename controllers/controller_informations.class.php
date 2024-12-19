@@ -31,11 +31,15 @@ class ControllerInformations extends Controller {
         $this->affichageTwig('aPropos');
     }
 
+    public function afficherPDC() {
+        $this->affichageTwig('PDC');
+    }
+
     /**
      * Méthode de rendu Twig pour une section donnée
      */
     public function affichageTwig(string $section) {
-        $validSections = ['CGDU', 'contact', 'aPropos'];
+        $validSections = ['CGDU', 'contact', 'aPropos', 'PDC'];
         $tableauExceptions = [];
 
         if (!in_array($section, $validSections)) {
@@ -48,6 +52,7 @@ class ControllerInformations extends Controller {
                 'CGDU' => $section === 'CGDU',
                 'contact' => $section === 'contact',
                 'aPropos' => $section === 'aPropos',
+                'PDC' => $section === 'PDC',
                 'message' => $tableauExceptions,
             )
         );

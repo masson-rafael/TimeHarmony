@@ -7,30 +7,235 @@
 
 {% block content %}
 	{# {{ dump(creneauxLibres) }} #}
-	<main class="h-100 w-100">
-		<div class="container-fluid h-100">
-			<div class="row justify-content-center align-items-center h-100" style="padding: 0;">
-			{# mt-5 = spacing bootstrap = margin top #}
-				<div class="col-12 col-md-6 col-lg-4 d-flex align-items-center mt-5" style="width: 100%; max-width: 80%;">
-                    {% if CGDU %}
-                    <p>CDGU</p>
-                    {% elseif contact %}
-                    <p>Contact</p>
-                    {% elseif aPropos %}
-                    <p>A propos</p>
-                    {% endif %}
+	<main class="container-fluid h-100">
+    <div class="row justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-10 col-lg-8 mt-5">
+            {% if CGDU %}
+                <header class="text-center mb-4">
+                    <h1>Conditions Générales d'Utilisation (CGU)</h1>
+                    <p><strong>Dernière mise à jour :</strong> 19/12/2024</p>
+                </header>
+
+                    <div class="col-12">
+                        <section>
+                            <h2>1. Objet</h2>
+                            <p>Les présentes Conditions Générales d'Utilisation (ci-après "CGU") régissent l'accès et l'utilisation de <strong>TimeHarmony</strong>, édité par <strong>le groupe projet n°4</strong>, dont le siège social est situé à <strong>3 allée parc Montaury, 64600 Anglet</strong>.</p>
+                            <p>En accédant ou en utilisant <strong>TimeHarmony</strong>, l'utilisateur accepte sans réserve les présentes CGU.</p>
+                        </section>
+
+                        <section>
+                            <h2>2. Définitions</h2>
+                            <ul>
+                                <li><strong>Service :</strong> désigne le site web TimeHarmony.</li>
+                                <li><strong>Utilisateur :</strong> toute personne accédant au Service, inscrite ou non.</li>
+                                <li><strong>Contenu :</strong> désigne tout texte, image, vidéo ou autre élément publié via le Service.</li>
+                            </ul>
+                        </section>
+
+                        <section>
+                            <h2>3. Accès au Service</h2>
+                            <p>Le Service est accessible via <strong>TimeHarmony.com</strong>, sous réserve des restrictions prévues par les présentes CGU.</p>
+                            <p>L'accès au Service peut être temporairement suspendu pour <strong>cause de maintenances ou mises à jour</strong>.</p>
+                        </section>
+
+                    <div class="col-12">
+                        <section>
+                            <h2>4. Inscription et Compte Utilisateur</h2>
+                            <p>Pour utiliser certaines fonctionnalités, l'Utilisateur devra créer un compte en fournissant :</p>
+                            <ul>
+								<li>Un nom.</li>
+								<li>Un prénom.</li>
+                                <li>Une adresse e-mail valide.</li>
+                                <li>Un mot de passe sécurisé.</li>
+                            </ul>
+                            <p>L'Utilisateur s'engage à fournir des informations exactes et à jour. <strong>TimeHarmony</strong> se réserve le droit de suspendre ou de supprimer tout compte en cas de non-respect des présentes CGU.</p>
+                        </section>
+
+                        <section>
+                            <h2>5. Utilisation du Service</h2>
+                            <p>L'Utilisateur s'engage à :</p>
+                            <ul>
+                                <li>Utiliser le Service conformément à la loi et aux présentes CGU.</li>
+                                <li>Ne pas publier ou transmettre de contenu illégal, offensant ou portant atteinte aux droits d'autrui.</li>
+                            </ul>
+                            <p>Toute utilisation abusive pourra entraîner la suspension ou la résiliation de l'accès au Service.</p>
+                        </section>
+                    </div>
+                </div>
+
+                    <div class="col-12">
+                        <section>
+                            <h2>6. Propriété Intellectuelle</h2>
+                            <p>Tous les contenus et éléments disponibles sur le Service, y compris <strong>le logo, les interfaces utilisateur, les textes ou les fonctionnalités (liste non exhaustive)</strong>, sont protégés par les lois sur la propriété intellectuelle.</p>
+                            <p>Toute reproduction ou utilisation non autorisée est strictement interdite.</p>
+                        </section>
+
+                        <section>
+                            <h2>7. Responsabilité</h2>
+                            <p><strong>TimeHarmony</strong> ne saurait être tenu responsable en cas de :</p>
+                            <ul>
+                                <li>Problèmes techniques affectant l'accès au Service.</li>
+                                <li>Perte ou divulgation des informations personnelles causées par une négligence de l'Utilisateur.</li>
+                            </ul>
+                        </section>
+
+                    <div class="col-12">
+                        <section>
+                            <h2>8. Données Personnelles</h2>
+                            <p><strong>TimeHarmony</strong> collecte et traite les données personnelles conformément à sa <a href="index.php?controleur=informations&methode=afficherPDC">politique de confidentialité</a>.</p>
+                            <p>L'Utilisateur dispose d'un droit d'accès, de rectification et de suppression de ses données, à exercer en remplissant notre <a href="index.php?controleur=informations&methode=afficherContact">formulaire de contact</a>.</p>
+
+                            <h3>Cookies</h3>
+                            <p>Nous utilisons des cookies pour améliorer l'expérience utilisateur. Ces cookies permettent de stocker :</p>
+                            <ul>
+                                <li>Les informations de connexion pour faciliter l'accès au compte.</li>
+								<li>A COMPLETER.</li>
+                            </ul>
+                            {# <p>Les cookies sont supprimés automatiquement après [durée à compléter] ou peuvent être effacés manuellement via les paramètres du navigateur.</p> #}
+
+                            <h3>Suppression des données</h3>
+                            <p>Lorsqu'un Utilisateur supprime son compte, les données suivantes sont supprimées :</p>
+                            <ul>
+                                <li>Les informations de profil (nom, prenom, email, mot de passe).</li>
+                                <li>Les contenus utilisés par le Service pour son bon fonctionnement (agendas, contacts, groupes).</li>
+                            </ul>
+                            <p>Pour récupérer une copie de vos données personnelles avant suppression, veuillez remplir notre <a href="index.php?controleur=informations&methode=afficherContact">formulaire de contact</a>.</p>
+                        </section>
+                    </div>
+                </div>
+
+                    <div class="col-12">
+                        <section>
+                            <h2>9. Modifications des CGU</h2>
+                            <p><strong>TimeHarmony</strong> se réserve le droit de modifier les présentes CGU à tout moment.</p>
+                            <p>Les modifications seront communiquées via <strong>e-mail, si vous êtes abonnés à notre newsletter</strong>.</p>
+                        </section>
+
+                        <section>
+                            <h2>10. Loi Applicable et Juridiction</h2>
+                            <p>Les présentes CGU sont régies par la loi <strong>française</strong>.</p>
+                            <p>En cas de litige, les parties acceptent de se soumettre à la compétence exclusive des tribunaux de <strong>Bayonne</strong>.</p>
+                        </section>
+
+                        <section>
+                            <h2>11. Contact</h2>
+                            <p>Pour toute question concernant ces CGU, vous pouvez contacter <strong>TimeHarmony</strong> via notre <a href="index.php?controleur=informations&methode=afficherContact">formulaire de contact</a>.</p>
+                        </section>
+                    </div>
+            {% elseif contact %}
+                <p>Contact</p>
+            {% elseif aPropos %}
+                <p>A propos</p>
+			{% elseif PDC %}
+				<div class="col-12">
+					<header class="text-center mb-4">
+						<h1>Politique de Confidentialité</h1>
+						<p><strong>Dernière mise à jour :</strong> 19/12/2024</p>
+					</header>
 				</div>
-				{% if message %}
-					<div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
-						{% for messages in message %}
-							{{messages}}
-							<br>
-						{% endfor %}
-						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-					</div>
-				{% endif %}
-			</div>
-		</div>
-	</main>
+				<div class="col-12">
+					<section>
+						<h2>1. Introduction</h2>
+						<p>Cette politique de confidentialité explique comment <strong>TimeHarmony</strong> collecte, utilise et protège vos données personnelles lorsque vous utilisez <strong>TimeHarmony</strong>.</p>
+					</section>
+				</div>
+				<div class="col-12">
+					<section>
+						<h2>2. Données Collectées</h2>
+						<p>Nous collectons les types de données suivants :</p>
+						<ul>
+							<li><strong>Informations fournies par l'utilisateur :</strong> Nom, adresse e-mail, numéro de téléphone, etc.</li>
+							<li><strong>Données techniques :</strong> Adresse IP, type de navigateur, système d'exploitation, etc.</li>
+							<li><strong>Données d'utilisation :</strong> Pages visitées, interactions avec le service, etc.</li>
+						</ul>
+					</section>
+				</div>
+				<div class="col-12">
+					<section>
+						<h2>3. Utilisation des Données</h2>
+						<p>Les données collectées sont utilisées pour :</p>
+						<ul>
+							<li>Fournir et améliorer nos services.</li>
+							<li>Personnaliser l'expérience utilisateur.</li>
+							<li>Communiquer des informations importantes (mises à jour, notifications, etc.).</li>
+							<li>Garantir la sécurité et prévenir les fraudes.</li>
+						</ul>
+					</section>
+				</div>
+				<div class="col-12">
+					<section>
+						<h2>4. Partage des Données</h2>
+						<p>Vos données personnelles ne seront partagées qu'avec :</p>
+						<ul>
+							<li>Nos partenaires de confiance nécessaires à la prestation de nos services.</li>
+							<li>Les autorités, si la loi l'exige.</li>
+						</ul>
+					</section>
+				</div>
+				<div class="col-12">
+					<section>
+						<h2>5. Protection des Données</h2>
+						<p>Nous mettons en place des mesures de sécurité techniques et organisationnelles pour protéger vos données contre tout accès non autorisé, perte ou divulgation.</p>
+					</section>
+				</div>
+				<div class="col-12">
+					<section>
+						<h2>6. Cookies</h2>
+						<p>Nous utilisons des cookies pour :</p>
+						<ul>
+							<li>Améliorer l'expérience utilisateur.</li>
+							<li>Analyser le trafic et les performances du site.</li>
+						</ul>
+						<p>Vous pouvez gérer vos préférences en matière de cookies via les paramètres de votre navigateur.</p>
+					</section>
+				</div>
+				<div class="col-12">
+					<section>
+						<h2>7. Suppression des Données</h2>
+						<p>Lorsque vous supprimez votre compte, nous supprimons :</p>
+						<ul>
+							<li>Vos informations personnelles (nom, e-mail, etc.).</li>
+							<li>Les données associées à votre utilisation du service.</li>
+						</ul>
+						<p>Pour récupérer vos données avant suppression, veuillez utiliser notre <a href="[lien vers un formulaire de contact]">formulaire de contact</a>.</p>
+					</section>
+				</div>
+				<div class="col-12">
+					<section>
+						<h2>8. Vos Droits</h2>
+						<p>Conformément à la réglementation applicable, vous disposez des droits suivants :</p>
+						<ul>
+							<li>Accéder à vos données personnelles.</li>
+							<li>Corriger ou mettre à jour vos informations.</li>
+							<li>Demander la suppression de vos données.</li>
+							<li>Retirer votre consentement pour le traitement des données.</li>
+						</ul>
+						<p>Pour exercer vos droits, contactez-nous en utilisant notre <a href="[lien vers un formulaire de contact]">formulaire de contact</a>.</p>
+					</section>
+				</div>
+				<div class="col-12">
+					<section>
+						<h2>9. Modifications de la Politique</h2>
+						<p>Cette politique de confidentialité peut être mise à jour. Toute modification sera communiquée via <strong>notre newsletter</strong>.</p>
+					</section>
+				</div>
+				<div class="col-12">
+					<section>
+						<h2>10. Contact</h2>
+						<p>Pour toute question relative à cette politique de confidentialité, contactez-nous via notre <a href="[lien vers un formulaire de contact]">formulaire de contact</a>.</p>
+					</section>
+				</div>
+            {% endif %}
+            {% if message %}
+                <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
+                    {% for messages in message %}
+                        {{ messages }}<br>
+                    {% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</main>
     
 {% endblock %}
