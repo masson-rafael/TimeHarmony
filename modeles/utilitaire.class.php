@@ -381,7 +381,11 @@ class utilitaire {
             $valide = false;
         }
 
-        // 3. Longueur de la chaine - non pertinent
+        // 3. Longueur de la chaine (cf. taille) 2 Mo maximum
+        if(sizeof($photo) > 2000000) {
+            $valide = false;
+            $messagesErreurs[] = "La taille de la photo est trop grande (2Mo maximum)";
+        }
 
         // 4. Format des données : vérifier le format de la photo
         if($photo['error'] != UPLOAD_ERR_OK) {
