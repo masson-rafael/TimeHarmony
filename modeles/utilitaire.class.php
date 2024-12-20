@@ -468,7 +468,7 @@ class utilitaire {
         // 4. Format des données - non pertinent
 
         // 5. Plage des valeurs
-        $valeursPossibles = ['informations', 'questionCGDU', 'questionPDC', 'retours', 'consultation', 'rectification', 'suppression', 'autre']; // + autres valeurs possibles
+        $valeursPossibles = ['Demande generale d\'information', 'Question conditions generales d\'utilisation', 'Question politique de confidentialite', 'Commentaires ou Suggestions', 'Consulter ses donnees', 'Rectifier ses donnees', 'Supprimer ses donnees', 'Autre']; // + autres valeurs possibles
         if($sujet != null && !in_array($sujet, $valeursPossibles)){
             $messagesErreurs[] = "Le sujet n'est pas valide";
             $valide = false;

@@ -138,14 +138,14 @@
 									<label for="contactReason" class="form-label">Motif de contact</label>
 									<select name="motif" id="contactReason" class="form-select form-select-lg" required>
 										<option value="" disabled selected>Choisissez un motif...</option>
-										<option value="informations">Demande d'informations</option>
-										<option value="questionCGDU">Question conditions générales d'utilisation</option>
-										<option value="questionPDC">Question politique de confidentialité</option>
-										<option value="retours">Commentaires ou Suggestions</option>
-										<option value="consultation">Consulter ses données</option>
-										<option value="rectification">Rectifier ses données</option>
-										<option value="suppression">Supprimer ses données</option>
-										<option value="autre">Autre</option>
+										<option value="Demande generale d'information">Demande d'informations</option>
+										<option value="Question conditions generales d'utilisation">Question conditions générales d'utilisation</option>
+										<option value="Question politique de confidentialite">Question politique de confidentialité</option>
+										<option value="Commentaires ou Suggestions">Commentaires ou Suggestions</option>
+										<option value="Consulter ses donnees">Consulter ses données</option>
+										<option value="Rectifier ses donnees">Rectifier ses données</option>
+										<option value="Supprimer ses donnees">Supprimer ses données</option>
+										<option value="Autre">Autre</option>
 									</select>
 								</div>
 
@@ -162,7 +162,40 @@
 					</div>
 
             {% elseif aPropos %}
-                <p>A propos</p>
+				<header class="text-center mb-4">
+					<h1>A propos</h1>
+					<p><strong>Dernière mise à jour :</strong> 20/12/2024</p>
+				</header>
+
+				<div class="col-12">
+					<section>
+						<p><strong>TimeHarmony</strong> est une plateforme innovante conçue pour trouver des créneaux libres dans le but de prendre des rendez-vous.
+						Notre mission est de fournir une alternative à la perte de temps des emplois du temps classiques.</p>
+					</section>
+
+					<h5 class="mb-3">Nos Valeurs</h5>
+					<ul>
+						<li><strong>Innovation :</strong> Nous mettons un point d'honneur à innover pour répondre aux besoins changeants de nos utilisateurs.</li>
+						<li><strong>Fiabilité :</strong> Votre confiance est notre priorité, c'est pourquoi nous garantissons des services de qualité.</li>
+						<li><strong>Accessibilité :</strong> Nous croyons que la technologie doit être à la portée de tous.</li>
+					</ul>
+
+					<h5 class="mt-4 mb-3">Notre Histoire</h5>
+					<p class="mb-4 text-justify">
+						Fondée en 2024, <strong>TimeHarmony</strong> a été créée pour répondre à une demande SAE. Depuis, nous avons évolué pour offrir une SAE au semestre 3 (J'espère que personne ne lit ça).
+					</p>
+
+					<h5 class="mb-3">Rencontrez l'Équipe</h5>
+					<p class="mb-4 text-justify">
+						Notre équipe est composée de passionnés dans les domaines de l'informatique et de l'algorithimque mais pas du front-end. Ensemble, nous travaillons pour faire de <strong>TimeHarmony</strong> une expérience unique et enrichissante.
+					</p>
+
+					<h5 class="mb-3">Contactez-nous</h5>
+					<p>
+						Si vous avez des questions ou souhaitez en savoir plus, n'hésitez pas à nous contacter via notre <a href="index.php?controleur=informations&methode=afficherContact">formulaire de contact</a>.
+					</p>
+				</div>
+
 			{% elseif PDC %}
 				<div class="col-12">
 					<header class="text-center mb-4">

@@ -68,29 +68,48 @@ class ControllerInformations extends Controller {
     }
 
     /**
-     * Fonction qui envoie un mail à tous les administrateurs du site
-     * Le mail contiendra le sujet de la demande ainsi qu'une description remplie par le demandeur
+     * Fonction qui envoie un mail à tous les administrateurs du site.
+     * Le mail contiendra le sujet de la demande ainsi qu'une description remplie par le demandeur.
      * @return void
      */
     public function envoyer() {
         $tableauErreurs = [];
+
+        // Validation des champs envoyés par le formulaire
         $valideMail = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
         $valideDescription = utilitaire::validerDescription($_POST['description'], $tableauErreurs);
         $valideSujet = utilitaire::validerSujet($_POST['motif'], $tableauErreurs);
 
         if ($valideMail && $valideDescription && $valideSujet) {
-            $mail = $_POST['email'];
+            $mailExpediteur = $_POST['email'];
             $description = $_POST['description'];
             $sujet = $_POST['motif'];
 
+            // Adresse principale à no-reply
+            $emailPrincipal = 'no-reply@timeharmony.com';
+
+            // Récupérer les emails des administrateurs
             $pdo = $this->getPdo();
             $manager = new UtilisateurDao($pdo);
             $mails = $manager->getAdministrateurs();
-            $mails = array_column($mails, 'email');
 
-            foreach ($mails as $email) {
-                mail($email, $sujet, $description, 'From: ' . $mail);
+            // Extraire les emails des administrateurs
+            $emailsAdmin = array_column($mails, 'email');
+
+            // Construire les en-têtes
+            $headers = 'From: ' . $mailExpediteur . "\r\n";
+            $headers .= 'Reply-To: ' . $mailExpediteur . "\r\n";
+            $headers .= 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
+            $headers .= 'Cc: ' . implode(",", $emailsAdmin) . "\r\n";
+
+            // Envoyer l'email
+            if (mail($emailPrincipal, $sujet, $description, $headers)) {
+                echo "Email envoyé avec succès à no-reply@timeharmony.com avec les administrateurs en copie.";
+            } else {
+                echo "Échec de l'envoi de l'email.";
             }
+        } else {
+            echo "Formulaire invalide : " . implode(", ", $tableauErreurs);
         }
     }
 }
