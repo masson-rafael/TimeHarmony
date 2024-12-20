@@ -72,8 +72,8 @@
                                         <div class="form-group">
                                             <label for="role">Role</label>
                                             <select class="form-control" id="role" name="role">
-                                                <option>User</option>
-                                                <option>Admin</option>
+                                                <option selected>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</option>
+                                                <option>{{ utilisateur.getEstAdmin ? 'User' : 'Admin' }}</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
