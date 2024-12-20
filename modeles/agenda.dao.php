@@ -128,5 +128,14 @@ class AgendaDao{
         $pdoStatement->execute(array("url" => $URL, "nom" => $nom, "couleur" => $couleur, "id" => $id));
     }
 
-
+    /**
+     * Fonction permettant de supprimer un agenda dans la bd
+     * @param int|null $id id de l'agenda à supprimer
+     * @return void
+     */
+    public function supprimerAgenda(?int $id): void {
+        $sql = "DELETE FROM ".PREFIXE_TABLE."agenda WHERE id = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("id" => $id));
+    }
 }

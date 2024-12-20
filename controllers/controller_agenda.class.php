@@ -49,17 +49,17 @@ class ControllerAgenda extends Controller
 
             if (!$agendaExiste) {
                 // Créer une nouvelle instance d'Agenda avec les données du formulaire
-                $nouvelAgenda = new Agenda($_POST['url'], $_POST['couleur'], $_POST['nom'], null);
+                $nouvelAgenda = new Agenda($_POST['url'], $_POST['couleur'], $_POST['nom'], $_SESSION['utilisateur']->getId());
                 // Ajouter l'agenda dans la base de données
                 $manager->ajouterAgenda($nouvelAgenda);
 
                 // Retourner un message de succès
                 $tableauErreurs[] = "Ajout réussi !";
-                $this->genererVueAgenda($tableauErreurs);
+                $this->lister($tableauErreurs);
             } else {
                 // Si l'agenda existe déjà, afficher un message d'erreur
                 $tableauErreurs[] = "Agenda avec cette URL existe déjà !";
-                $this->genererVueAgenda($tableauErreurs);
+                $this->lister($tableauErreurs);
             }
         } else {
             // Si le formulaire n'est pas correctement rempli, afficher la vue générique
@@ -164,6 +164,7 @@ class ControllerAgenda extends Controller
         $id = $_GET['id'];
         $manager = new AgendaDao($this->getPdo());
         $manager->supprimerAgenda($id);
-        $this->lister();
+        $messages[] = "Suppression réussie !";
+        $this->lister($messages);
     }
 }
