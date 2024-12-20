@@ -437,4 +437,43 @@ class utilitaire {
 
         return $valide;
     }
+
+    public static function validerDescription(?string $description, array &$messagesErreurs): bool {
+        $valide = true;
+
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        $valide = utilitaire::validerPresence($description, $messagesErreurs);
+
+        // 2. Type de données : vérifier que le prenom est une chaine de caractères
+        $valide = utilitaire::validerType($description, $messagesErreurs);
+
+        // 3. Longueur de la chaine - non pertinent
+
+        // 4. Format des données - non pertinent
+
+        return $valide;
+    }
+
+    public static function validerSujet(?string $sujet, array &$messagesErreurs): bool {
+        $valide = true;
+
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        $valide = utilitaire::validerPresence($sujet, $messagesErreurs);
+
+        // 2. Type de données : vérifier que le prenom est une chaine de caractères
+        $valide = utilitaire::validerType($sujet, $messagesErreurs);
+
+        // 3. Longueur de la chaine - non pertinent
+
+        // 4. Format des données - non pertinent
+
+        // 5. Plage des valeurs
+        $valeursPossibles = ['Demande generale d\'information', 'Question conditions generales d\'utilisation', 'Question politique de confidentialite', 'Commentaires ou Suggestions', 'Consulter ses donnees', 'Rectifier ses donnees', 'Supprimer ses donnees', 'Autre']; // + autres valeurs possibles
+        if($sujet != null && !in_array($sujet, $valeursPossibles)){
+            $messagesErreurs[] = "Le sujet n'est pas valide";
+            $valide = false;
+        }
+
+        return $valide;
+    }
 }

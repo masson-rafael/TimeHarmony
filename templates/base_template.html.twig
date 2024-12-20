@@ -1,6 +1,52 @@
 <!DOCTYPE html>
 <html lang="{{ constant('WEBSITE_LANGUAGE')}}">
 	<head>
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-J00NZ3CQ6M"></script>
+		<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-J00NZ3CQ6M');
+		</script>
+		<script src="tarteaucitron/tarteaucitron.js"></script>
+
+        <script type="text/javascript">
+        tarteaucitron.init({
+			"privacyUrl": "", /* Privacy policy url */
+			"bodyPosition": "bottom", /* or top to bring it as first element for accessibility */
+			"hashtag": "#tarteaucitron", /* Open the panel with this hashtag */
+			"cookieName": "tarteaucitron", /* Cookie name */
+			"orientation": "middle", /* Banner position (top - bottom) */
+			"groupServices": false, /* Group services by category */
+			"showDetailsOnClick": true, /* Click to expand the description */
+			"serviceDefaultState": "wait", /* Default state (true - wait - false) */
+			"showAlertSmall": false, /* Show the small banner on bottom right */
+			"cookieslist": false, /* Show the cookie list */
+			"closePopup": false, /* Show a close X on the banner */
+			"showIcon": true, /* Show cookie icon to manage cookies */
+			//"iconSrc": "", /* Optionnal: URL or base64 encoded image */
+			"iconPosition": "BottomRight", /* BottomRight, BottomLeft, TopRight and TopLeft */
+			"adblocker": false, /* Show a Warning if an adblocker is detected */
+			"DenyAllCta" : true, /* Show the deny all button */
+			"AcceptAllCta" : true, /* Show the accept all button when highPrivacy on */
+			"highPrivacy": true, /* HIGHLY RECOMMANDED Disable auto consent */
+			"alwaysNeedConsent": false, /* Ask the consent for "Privacy by design" services */
+			"handleBrowserDNTRequest": false, /* If Do Not Track == 1, disallow all */
+			"removeCredit": false, /* Remove credit link */
+			"moreInfoLink": true, /* Show more info link */
+			"useExternalCss": false, /* If false, the tarteaucitron.css file will be loaded */
+			"useExternalJs": false, /* If false, the tarteaucitron.js file will be loaded */
+			//"cookieDomain": ".my-multisite-domaine.fr", /* Shared cookie for multisite */
+			"readmoreLink": "", /* Change the default readmore link */
+			"mandatory": true, /* Show a message about mandatory cookies */
+			"mandatoryCta": true, /* Show the disabled accept button when mandatory on */
+			//"customCloserId": "", /* Optional a11y: Custom element ID used to open the panel */
+			"googleConsentMode": true, /* Enable Google Consent Mode v2 for Google ads and GA4 */
+			"partnersList": false /* Show the number of partners on the popup/middle banner */
+        });
+        </script>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
@@ -109,8 +155,11 @@
 			</nav>
 
 		{% endif %}
-		<div class="flex-grow-1"> {% block content %}{% endblock %}
-			</div>
+		<div class="flex-grow-1"> 
+		{% block content %}
+		{% endblock %}
+		</div>
+		<div class="addthis_inline_share_toolbox"></div>
 
 			<footer class="text-muted py-3 bg-primary mt-5 small-footer position-relative bottom-0 vw-100" style="box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);">
 				<div class="container">
@@ -119,18 +168,31 @@
 							<p class="mb-1">&copy; 2024 - TimeHarmony</p>
 						</div>
 						<div class="col d-flex align-items-center justify-content-center">
-							<p class="mb-1">A Propos</p>
+							<a class="nav-link" href="index.php?controleur=informations&methode=afficherAPropos"><p class="mb-1">A Propos</p></a>
 						</div>
 						<div class="col d-flex align-items-center justify-content-center">
-							<p class="mb-1">Conditions générales d'utilisation</p>
+							<a class="nav-link" href="index.php?controleur=informations&methode=afficherCGDU"><p class="mb-1">Conditions générales d'utilisation</p></a>
 						</div>
 						<div class="col d-flex align-items-center justify-content-center">
-							<p class="mb-1">Nous contacter</p>
+							<a class="nav-link" href="index.php?controleur=informations&methode=afficherPDC"><p class="mb-1">Politique de confidentialité</p></a>
+						</div>
+						<div class="col d-flex align-items-center justify-content-center">
+							<a class="nav-link" href="index.php?controleur=informations&methode=afficherContact"><p class="mb-1">Nous contacter</p></a>
 						</div>
 					</div>
 				</div>
 			</footer>
 
+		<script type="text/javascript">
+        tarteaucitron.user.addthisPubId = 'YOUR-PUB-ID';
+        (tarteaucitron.job = tarteaucitron.job || []).push('addthis');
+        </script>
+		<script type="text/javascript">
+        tarteaucitron.user.gtagUa = 'G-XXXXXXXXX';
+        // tarteaucitron.user.gtagCrossdomain = ['example.com', 'example2.com'];
+        tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */ };
+        (tarteaucitron.job = tarteaucitron.job || []).push('gtag');
+        </script>
 		</body>
 
 		{% block javascripts %}

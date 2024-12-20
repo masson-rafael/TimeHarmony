@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_utilisateur` (
 --
 
 INSERT INTO `timeharmony_utilisateur` (`nom`, `prenom`, `email`, `motDePasse`, `photoDeProfil`, `estAdmin`) VALUES
- ('latxague', 'thibault', 'tlaxtague@iutbayonne.univ-pau.fr', '$2y$10$qvncYojGHH/dKVUuOn.rH.v5CgT4pjjAPWzN/Pa467mUelIxAPs5i', 'thibault.jpg', true),
+ ('latxague', 'thibault', 'tlatxague@iutbayonne.univ-pau.fr', '$2y$10$qvncYojGHH/dKVUuOn.rH.v5CgT4pjjAPWzN/Pa467mUelIxAPs5i', 'thibault.jpg', true),
  ('masson', 'rafael', 'rmasson003@iutbayonne.univ-pau.fr', '$2y$10$xbOlwSyP7aYhW14EtImaUuOo4pBjJ2Z4RoQSTmlG9/Kt0JAvW./h.', 'raf.jpg', true),
  ('keita', 'mouhamadou', 'mkmouhamadou@iutbayonne.univ-pau.fr', '$2y$10$Ez.7guQv7jseSeGwzXBWJe3qTVig.U9NR2PvkdnZwUjuAG82RY.Ru', 'mkm.png', true),
  ('autant', 'félix', 'fautant@iutbayonne.univ-pau.fr', '$2y$10$.qzWFHVUE3cpUVy3TAs1yO/.QVNp.gjKqwoKSgV0kpnUvwTsSW1r2', 'felix.jpg', true),
