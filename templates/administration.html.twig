@@ -40,11 +40,9 @@
                     </td>
                     <td>
                         <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ utilisateur.getId }}">
-                            <img src="image/modification.png" alt="modifier" style="width: 50px;">
-                        </a>
+                        <i class="fa-solid fa-pencil"></i></a>
                         <a role="button" href="index.php?controleur=utilisateur&methode=supprimer&id={{ utilisateur.getId }}&type='admin'">
-                            <img src="image/corbeille.png" alt="supprimer" style="width: 50px;">
-                        </a>
+                        <i class="fa-solid fa-trash"></i></a>
                     </td>
                 </tr>
                 <div class="modal fade" id="fenetreModale{{ utilisateur.getId }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
