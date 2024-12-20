@@ -340,6 +340,7 @@ class ControllerUtilisateur extends Controller
         $nomValide = utilitaire::validerNom($_POST['nom'], $messageErreurs);
         $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
         $roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
+        $emailValide = utilitaire::validerEmail($_POST['email'], $messageErreurs);
         @$photoValide = utilitaire::validerPhoto($_FILES['photo'], $messageErreurs);
 
         if ($nomValide && $prenomValide && $roleValide) {
@@ -363,14 +364,12 @@ class ControllerUtilisateur extends Controller
             }
 
             $role = $_POST['role'] == 'Admin' ? 1 : 0;
-            var_dump($role); // Vérification de la valeur numérique
-            var_dump($_SESSION['utilisateur']);
             
             // Mise à jour du chemin de l'image
             $nomFichier = empty($nomFichier) ? $utilisateurConcerne->getPhotoDeProfil() : $nomFichier;
             
             // Mise à jour du profil utilisateur
-            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $role, $nomFichier);
+            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $_POST['email'], $role, $nomFichier);
             $utilisateurTemporaire = $manager->find($id);
             
             if ($utilisateurTemporaire->getId() == $_SESSION['utilisateur']->getId()) {
