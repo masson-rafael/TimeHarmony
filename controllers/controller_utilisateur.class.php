@@ -90,9 +90,9 @@ class ControllerUtilisateur extends Controller
                 // On recupere l'utilisateur
                 $utilisateur = $manager->getUserMail($_POST['email']);
                 $tableauErreurs[] = "Connexion réussie !";
-                $this->genererVueConnexion($tableauErreurs, $utilisateur);
+                $this->genererVueConnecte($utilisateur, $tableauErreurs);
             } else {
-                $tableauErreurs[] = "Mauvaise adresse mail ou mot de passe"; // Mauvais MDP
+                $tableauErreurs[] = "Mot de passe incorrect. Réinitialisez votre mot de passe"; // Mauvais MDP
                 $this->genererVueConnexion($tableauErreurs, null);
             }
         } else {
@@ -176,6 +176,21 @@ class ControllerUtilisateur extends Controller
         echo $template->render(
             array()
         );
+    }
+
+    public function genererVueConnecte(?Utilisateur $utilisateur, ?array $messages)
+    {
+        if ($utilisateur !== null) {
+            // Stockage en session et définition de la variable globale
+            $utilisateur = Utilisateur::createWithCopy($utilisateur);
+            $_SESSION['utilisateur'] = $utilisateur;
+            $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+        }
+
+        $template = $this->getTwig()->load('menu.html.twig');
+        echo $template->render([
+            'message' => $messages
+        ]);
     }
 
     /**
