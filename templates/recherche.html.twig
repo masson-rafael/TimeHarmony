@@ -64,23 +64,23 @@
                 <h5 class="fw-bold text-center mb-3">Période de recherche :</h5>
                 <div class="mb-3">
                     <label for="Datedebut" class="form-label">Début</label>
-                    <input name="debut" type="date" class="form-control" id="Datedebut" placeholder="Ex : 2024-10-07 00:00:00" required title="Entrez la date de début de votre recherche">
+                    <input name="debut" type="date" class="form-control" id="Datedebut" required title="Entrez la date de début de votre recherche">
                 </div>
 
                 <div class="mb-3">
                     <label for="Datefin" class="form-label">Fin</label>
-                    <input name="fin" type="date" class="form-control" id="Datefin" placeholder="Ex : 2024-10-07 00:00:00" required title="Entrez la date de fin de votre recherche">
+                    <input name="fin" type="date" class="form-control" id="Datefin" required title="Entrez la date de fin de votre recherche">
                 </div>
 
                 <div class="mb-3">
-                    <label for="dureeMin" class="form-label">Durée minimale de rendez-vous (00:00 pour ne pas restreindre) :</label>
-                    <input name="dureeMin" type="time" class="form-control" value="00:00" required placeholder="Ex : 1:12" title="Entrez la durée minimale du créneau à rechercher">
+                    <label for="dureeMin" class="form-label">Durée exacte du rendez-vous :</label>
+                    <input name="dureeMin" type="time" class="form-control" value="00:00" required title="Entrez la durée minimale du créneau à rechercher">
                 </div>
             </div>
 
             <!-- Section Bouton -->
             <div class="text-center mb-4">
-                <button type="submit" class="btn btn-primary shadow-lg hover-shadow w-50">Rechercher</button>
+                <button type="submit" class="btn btn-primary shadow-lg hover-shadow">Rechercher des créneaux de rendez-vous</button>
             </div>
         </form>
     </div>
