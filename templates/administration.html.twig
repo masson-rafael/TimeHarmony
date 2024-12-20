@@ -3,7 +3,7 @@
 {% block title %}Administration - {{ constant('WEBSITE_TITLE') }}{% endblock %}
 
 {% block content %}
-<main class="container py-5">
+<main class="container-fluid py-5">
     <div class="table-responsive">
         {% if message %}
                 <div class="mt-5">
@@ -103,9 +103,10 @@
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
                 },
-                "pageLength": 10,
-                "ordering": true,
-                "responsive": true
+                responsive: true, // Important pour les petits écrans
+                autoWidth: false, // Évite les problèmes de calcul automatique de largeur
+                pageLength: 10,
+                ordering: true
             });
         });
     </script>

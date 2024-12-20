@@ -7,10 +7,11 @@
 
 {% block content %}
 	<main>
-		<div class="container h-100 mt-5">
+		<div class="container mt-5">
+        <div class="row justify-content-center">
 			<!-- Liste des agendas -->
 			{% if agendas|length > 0 %}
-			<table id="myTable" class="table table-striped table-bordered" style="width: 100%;">
+			<table id="myTable" class="table table-striped table-bordered w-100">
             <thead>
                 <tr>
                     <th>Nom</th>
@@ -28,7 +29,7 @@
 					<td>
                         <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ agenda.getId }}">
                         <i class="fa-solid fa-pencil"></i></a>
-                        <a role="button" href="index.php?controleur=utilisateur&methode=supprimer&id={{ agenda.getId }}&type='admin'">
+                        <a role="button" href="index.php?controleur=agenda&methode=ff&id={{ agenda.getId }}">
                         <i class="fa-solid fa-trash"></i></a>
                     </td>
                 </tr>
@@ -39,7 +40,7 @@
                                 <h1 class="modal-title fs-5" id="exampleModalLabel">Modification de l'agenda {{ agenda.getNom }}</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form action="index.php?controleur=utilisateur&methode=modifierAdmin&id={{ utilisateur.getId }}&type='admin'" method="POST" enctype="multipart/form-data">
+                            <form action="index.php?controleur=agenda&methode=ff&id={{ agenda.getId }}" method="POST" enctype="multipart/form-data">
                                 <div class="modal-body">
                                     <div class="container mt-2">
                                         <div class="form-group">
@@ -67,6 +68,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        </div>
 			{% else %}
 				<div class="row justify-content-center mt-4 h-25">
 					<div class="col-md-8">

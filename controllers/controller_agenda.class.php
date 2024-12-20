@@ -30,7 +30,7 @@ class ControllerAgenda extends Controller
      * @return void
      */
 
-    public function ajouterAgenda()
+    public function ajouterAgenda(): void
     {
         $pdo = $this->getPdo(); // Récupérer l'instance PDO
 
@@ -67,7 +67,11 @@ class ControllerAgenda extends Controller
         }
     }
 
-    public function lister() {
+    /**
+     * Fonction permettant de lister les agendas
+     * @return void
+     */
+    public function lister(): void {
         //recupération des catégories
         $manager = new AgendaDao($this->getPdo());
         $tableau = $manager->findAllAssoc();
@@ -83,6 +87,33 @@ class ControllerAgenda extends Controller
         ));
     }
 
+    /**
+     * Fonction permmettant de générer la vue d'une page spécifiée en param
+     * @param string $page Nom de la page à générer
+     * @return void
+     */
+    public function genererVue(string $page): void {
+        //Génération de la vue
+        $template = $this->getTwig()->load($page.'.html.twig');
+        echo $template->render(array());
+    }
+
+    /**
+     * Fonction permettant de générer la vue des agendas
+     * @param array|null $erreurs Tableau des erreurs
+     * @return void
+     */
+    public function genererVueAgenda(?array $erreurs): void {
+        //Génération de la vue agenda
+        $template = $this->getTwig()->load('agenda.html.twig');
+        echo $template->render(
+            array(
+                'message' => $erreurs
+            )
+            );
+    }
+
+    
     /**
      * generer la vue avec les resultats des creneaux
      *
@@ -101,20 +132,4 @@ class ControllerAgenda extends Controller
     //         'creneauxLibres' => $creneaux
     //     ));
     // }
-
-    public function genererVue(string $page) {
-        //Génération de la vue
-        $template = $this->getTwig()->load($page.'.html.twig');
-        echo $template->render(array());
-    }
-
-    public function genererVueAgenda(?array $erreurs) {
-        //Génération de la vue agenda
-        $template = $this->getTwig()->load('agenda.html.twig');
-        echo $template->render(
-            array(
-                'message' => $erreurs
-            )
-            );
-    }
 }
