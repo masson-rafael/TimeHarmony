@@ -83,7 +83,8 @@ class ControllerAgenda extends Controller
 
         //Affichage de la page
         echo $template->render(array(
-            'agendas' => $agendas
+            'agendas' => $agendas,
+            'ajout' => false,
         ));
     }
 
@@ -108,28 +109,19 @@ class ControllerAgenda extends Controller
         $template = $this->getTwig()->load('agenda.html.twig');
         echo $template->render(
             array(
-                'message' => $erreurs
+                'message' => $erreurs,
+                'ajout' => false,
             )
             );
     }
 
-    
-    /**
-     * generer la vue avec les resultats des creneaux
-     *
-     * @param CreneauLibreDao|null $managerCreneau lien avec le manager de creneaux
-     * @return void
-     */
-    // public function genererVueCreneaux(?CreneauLibreDao $managerCreneau) {
-    //     // Récupérer les créneaux libres
-    //     $tableau = $managerCreneau->findAllAssoc();
-    //     // Création en objet des créneaux libres
-    //     $creneaux = $managerCreneau->hydrateAll($tableau);
-
-    //     //Génération de la vue
-    //     $template = $this->getTwig()->load('resultat.html.twig');
-    //     echo $template->render(array(
-    //         'creneauxLibres' => $creneaux
-    //     ));
-    // }
+    public function genererVueAjoutAgenda(): void {
+        //Génération de la vue agenda
+        $template = $this->getTwig()->load('agenda.html.twig');
+        echo $template->render(
+            array(
+                'ajout' => true,
+            )
+            );
+    }
 }
