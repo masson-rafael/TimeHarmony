@@ -117,5 +117,16 @@ class AgendaDao{
         return $agendas;
     }
 
+    /**
+     * Fonction permettant de mofiier un agenda dans la bd
+     * @param int|null $id id de l'agenda à modifier
+     * @return void
+     */
+    public function modifierAgenda(?int $id, ?string $URL, ?string $couleur, ?string $nom): void {
+        $sql = "UPDATE ".PREFIXE_TABLE."agenda SET url = :url, nom = :nom, couleur = :couleur WHERE id = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("url" => $URL, "nom" => $nom, "couleur" => $couleur, "id" => $id));
+    }
+
 
 }

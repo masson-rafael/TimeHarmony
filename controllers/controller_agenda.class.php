@@ -71,7 +71,7 @@ class ControllerAgenda extends Controller
      * Fonction permettant de lister les agendas
      * @return void
      */
-    public function lister(): void {
+    public function lister(?array $tabMessages = null): void {
         //recupération des catégories
         $manager = new AgendaDao($this->getPdo());
         $tableau = $manager->findAllAssoc();
@@ -85,6 +85,7 @@ class ControllerAgenda extends Controller
         echo $template->render(array(
             'agendas' => $agendas,
             'ajout' => false,
+            'message' => $tabMessages,
         ));
     }
 
@@ -115,6 +116,10 @@ class ControllerAgenda extends Controller
             );
     }
 
+    /**
+     * Fonction permettant de générer la vue d'ajout d'un agenda
+     * @return void
+     */
     public function genererVueAjoutAgenda(): void {
         //Génération de la vue agenda
         $template = $this->getTwig()->load('agenda.html.twig');
@@ -123,5 +128,42 @@ class ControllerAgenda extends Controller
                 'ajout' => true,
             )
             );
+    }
+
+    /**
+     * Fonction permettant de modifier un agenda
+     * @return void
+     */
+    public function modifierAgenda(): void {
+        $id = $_GET['id'];
+
+        $pdo = $this->getPdo(); // Récupérer l'instance PDO
+
+        $tableauErreurs = [];
+        $urlValide = utilitaire::validerURLAgenda($_POST['url'], $tableauErreurs);
+        $couleurValide = utilitaire::validerCouleur($_POST['couleur'], $tableauErreurs);
+        $nomValide = utilitaire::validerNomAgenda($_POST['nom'], $tableauErreurs);
+
+        // Vérifier si tous les champs du formulaire sont remplis
+        if ($urlValide && $couleurValide && $nomValide) {
+            // Créer une instance de AgendaDao pour interagir avec la base de données
+            $manager = new AgendaDao($pdo);
+            // Ajouter l'agenda dans la base de données
+            $manager->modifierAgenda($id, $_POST['url'], $_POST['couleur'], $_POST['nom']);
+
+            // Retourner un message de succès
+            $tableauErreurs[] = "Modification réussie !";
+            $this->lister($tableauErreurs);
+        } else {
+            // Si le formulaire n'est pas correctement rempli, afficher la vue générique
+            $this->genererVueAgenda($tableauErreurs);
+        }
+    }
+
+    public function supprimerAgenda(): void {
+        $id = $_GET['id'];
+        $manager = new AgendaDao($this->getPdo());
+        $manager->supprimerAgenda($id);
+        $this->lister();
     }
 }
