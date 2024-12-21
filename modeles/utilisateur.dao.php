@@ -388,8 +388,46 @@ class UtilisateurDao
         $stmt->execute(['idDemandeur' => $id]);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        var_dump($result);
+
         return $result ?: null;
     }
+
+    /**
+     * Supprime une demande envoyée par un utilisateur à un autre utilisateur.
+     *
+     * @param int|null $idEnvoyeur ID de l'utilisateur ayant envoyé la demande.
+     * @param int|null $idReceveur ID de l'utilisateur ayant reçu la demande.
+     * @return void
+     */
+    public function supprimerDemandeEnvoyee(?int $idEnvoyeur, ?int $idReceveur): void {
+        $sql = "DELETE FROM ".PREFIXE_TABLE."demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2= :id2";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('id1' => $idEnvoyeur, 'id2' => $idReceveur));
+    }
+
+    /**
+     * Refuse une demande reçue par un utilisateur.
+     *
+     * @param int|null $idReceveur ID de l'utilisateur ayant reçu la demande.
+     * @param int|null $idDemandeur ID de l'utilisateur ayant envoyé la demande.
+     * @return void
+     */
+    public function refuserDemande(?int $idReceveur, ?int $idDemandeur): void {	
+
+    }
+
+    /**
+     * Accepte une demande reçue par un utilisateur.
+     *
+     * @param int|null $idReceveur ID de l'utilisateur ayant reçu la demande.
+     * @param int|null $idDemandeur ID de l'utilisateur ayant envoyé la demande.
+     * @return void
+     */
+    public function accepterDemande(?int $idReceveur, ?int $idDemandeur): void {	
+
+    }
+
 }
 
 

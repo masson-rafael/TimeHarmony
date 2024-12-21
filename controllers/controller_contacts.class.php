@@ -149,4 +149,40 @@ class ControllerContacts extends Controller
         //Faux car création lors du DAO
         return $tabDemandesPourMoi;
     }
+
+    /**
+     * Fonction qui supprime la demande de contact dans la BD
+     * @return void
+     */
+    public function supprimerDemandeEmise(): void {
+        $idReceveur = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->supprimerDemandeEnvoyee($_SESSION['utilisateur']->getId(), $idReceveur);
+        $this->afficherPageNotifications();
+    }
+
+    /**
+     * Fonction qui refuse la demande de contact dans la BD
+     * @return void
+     */
+    public function refuserDemandeRecue(): void {
+        $idReceveur = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->refuserDemande($_SESSION['utilisateur']->getId(), $idReceveur);
+        $this->afficherPageNotifications();
+    }
+
+    /**
+     * Fonction qui accepte la demande de contact dans la BD
+     * @return void
+     */
+    public function accepterDemandeRecue(): void {
+        $idReceveur = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->accepterDemande($_SESSION['utilisateur']->getId(), $idReceveur);
+        $this->afficherPageNotifications();
+    }
 }

@@ -37,12 +37,12 @@
 								<div class="modal-dialog modal-lg">
 									<div class="modal-content">
 										<div class="modal-header">
-											<h1 class="modal-title fs-5" id="exampleModalLabel">Suppression du contact
+											<h1 class="modal-title fs-5" id="exampleModalLabel">Suppression de la demande de contact de
 												{{demande.prenom}}
 												{{demande.nom}}</h1>
 											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 										</div>
-										<form action="index.php?controleur=contacts&methode=supprimer&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
+										<form action="index.php?controleur=contacts&methode=supprimerDemandeEmise&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
 											<div class="modal-body">
 												<label>Êtes-vous sûr de vouloir supprimer la demande concernant le contact
 													{{demande.prenom}}
@@ -93,20 +93,20 @@
 								<div class="modal-dialog modal-lg">
 									<div class="modal-content">
 										<div class="modal-header">
-											<h1 class="modal-title fs-5" id="exampleModalLabel">Suppression du contact
+											<h1 class="modal-title fs-5" id="exampleModalLabel">Accepter la demande de 
 												{{demande.prenom}}
 												{{demande.nom}}</h1>
 											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 										</div>
-										<form action="index.php?controleur=contacts&methode=supprimer&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
+										<form action="index.php?controleur=contacts&methode=accepterDemandeRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
 											<div class="modal-body">
-												<label>Êtes-vous sûr de vouloir supprimer le contact
+												<label>Êtes-vous sûr de vouloir accepter la demande de contact de 
 													{{demande.prenom}}
 													{{demande.nom}}
 													?</label>
 											</div>
 											<div class="modal-footer">
-												<button type="submit" class="btn btn-primary" name="update_article">Supprimer</button>
+												<button type="submit" class="btn btn-primary" name="update_article">Accepter</button>
 												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
 											</div>
 										</form>
@@ -117,20 +117,20 @@
 								<div class="modal-dialog modal-lg">
 									<div class="modal-content">
 										<div class="modal-header">
-											<h1 class="modal-title fs-5" id="exampleModalLabel">Suppression du contact
+											<h1 class="modal-title fs-5" id="exampleModalLabel">Refuser la demande de 
 												{{demande.prenom}}
 												{{demande.nom}}</h1>
 											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 										</div>
-										<form action="index.php?controleur=contacts&methode=supprimer&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
+										<form action="index.php?controleur=contacts&methode=refuserDemandeRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
 											<div class="modal-body">
-												<label>Êtes-vous sûr de vouloir supprimer le contact
+												<label>Êtes-vous sûr de vouloir refuser la demande de contact de 
 													{{demande.prenom}}
 													{{demande.nom}}
 													?</label>
 											</div>
 											<div class="modal-footer">
-												<button type="submit" class="btn btn-primary" name="update_article">Supprimer</button>
+												<button type="submit" class="btn btn-primary" name="update_article">Refuser</button>
 												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
 											</div>
 										</form>
