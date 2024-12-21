@@ -109,7 +109,40 @@ class ControllerContacts extends Controller
      * @return void
      */
     public function afficherPageNotifications(): void {
+        /**
+         * Step 1 : Appel de la fonction qui trouve ET RENVOIE les contacts que j'ai envoyé
+         * Step 2 : Appel de la fonction qui trouve ET RENVOIE les demandes de contact d'autres utilisateurs
+         * Step 3 : Affichage du twig AVEC les 2 renvois
+         */
+        $mesDemandes = $this->getMesDemandesEnvoyees();
+        $demandesRecues = $this->getMesDemandesRecues();
+
         $template = $this->getTwig()->load('notifications.html.twig');
-        echo $template->render(array());
+        echo $template->render(array(
+            'demandesEnvoyees' => $mesDemandes,
+            'demandesRecues' => $demandesRecues
+        ));
+    }
+
+    /**
+     * Fonction dont le but est de renvoyer le tableau contenant la liste de mes demandes de contact
+     * @return array|null $tabDemandes tableau des utilisateurs à qui j'ai envoyé une demande
+     */
+    public function getMesDemandesEnvoyees(): ?array {
+        $tabDemandes = [];
+
+        //Faux car création lors du DAO
+        return $tabDemandes;
+    }
+
+    /**
+     * Fonction dont le but est de renvoyer le tableau contenant la liste des utilisateurs qu'on m'ont demandé en contact
+     * @return array|null $tabDemandesPourMoi tableau des utilisateurs qui m'ont demandés en contact
+     */
+    public function getMesDemandesRecues(): ?array {
+        $tabDemandesPourMoi = [];
+
+        //Faux car création lors du DAO
+        return $tabDemandesPourMoi;
     }
 }
