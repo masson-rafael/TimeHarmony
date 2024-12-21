@@ -74,7 +74,9 @@ class ControllerAgenda extends Controller
     public function lister(?array $tabMessages = null): void {
         //recupération des catégories
         $manager = new AgendaDao($this->getPdo());
-        $tableau = $manager->findAllAssoc();
+
+        $id = $_SESSION['utilisateur']->getId();
+        $tableau = $manager->getAgendasUtilisateur($id);
         $agendas = $manager->hydrateAll($tableau);
 
         //Choix du template

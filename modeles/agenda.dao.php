@@ -138,4 +138,18 @@ class AgendaDao{
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
     }
+
+    /**
+     * Fonction qui retourne les agendas d'un utilisateur dont l'id est passé en parametre
+     * @param int|null $id id de l'utilisateur dont on veut les agendas
+     * @return array le tableau des agendas renvoyés
+     */
+    public function getAgendasUtilisateur(?int $id): ?array {
+        $sql="SELECT * FROM ".PREFIXE_TABLE."agenda WHERE idUtilisateur = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("id" => $id));
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $agenda = $pdoStatement->fetchAll();
+        return $agenda;
+    }
 }
