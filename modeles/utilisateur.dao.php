@@ -379,8 +379,16 @@ class UtilisateurDao
      * @param int|null $id id de l'utilisateur dont on veut les demandes recues
      */
     public function getDemandesRecues(?int $id): ?array {
-        $array = array();
-        return $array;
+        $sql = "SELECT U.*
+        FROM " . PREFIXE_TABLE . "utilisateur U
+        JOIN " . PREFIXE_TABLE . "demander D ON D.idUtilisateur2 = U.id
+        WHERE D.idUtilisateur2 = :idDemandeur";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['idDemandeur' => $id]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ?: null;
     }
 }
 

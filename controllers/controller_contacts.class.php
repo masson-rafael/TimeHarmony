@@ -117,9 +117,6 @@ class ControllerContacts extends Controller
         $mesDemandes = $this->getMesDemandesEnvoyees();
         $demandesRecues = $this->getMesDemandesRecues();
 
-        var_dump($mesDemandes);
-        var_dump($demandesRecues);
-
         $template = $this->getTwig()->load('notifications.html.twig');
         echo $template->render(array(
             'demandesEnvoyees' => $mesDemandes,
