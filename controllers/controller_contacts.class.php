@@ -117,6 +117,9 @@ class ControllerContacts extends Controller
         $mesDemandes = $this->getMesDemandesEnvoyees();
         $demandesRecues = $this->getMesDemandesRecues();
 
+        var_dump($mesDemandes);
+        var_dump($demandesRecues);
+
         $template = $this->getTwig()->load('notifications.html.twig');
         echo $template->render(array(
             'demandesEnvoyees' => $mesDemandes,
@@ -129,7 +132,9 @@ class ControllerContacts extends Controller
      * @return array|null $tabDemandes tableau des utilisateurs à qui j'ai envoyé une demande
      */
     public function getMesDemandesEnvoyees(): ?array {
-        $tabDemandes = [];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandes = $manager->getDemandesEnvoyees($_SESSION['utilisateur']->getId());
 
         //Faux car création lors du DAO
         return $tabDemandes;
@@ -140,7 +145,9 @@ class ControllerContacts extends Controller
      * @return array|null $tabDemandesPourMoi tableau des utilisateurs qui m'ont demandés en contact
      */
     public function getMesDemandesRecues(): ?array {
-        $tabDemandesPourMoi = [];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->getDemandesRecues($_SESSION['utilisateur']->getId());
 
         //Faux car création lors du DAO
         return $tabDemandesPourMoi;

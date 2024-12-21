@@ -344,12 +344,43 @@ class UtilisateurDao
         return $result['id'];
     }
 
+    /**
+     * Fonction qui renvoie un tableau d'utilisateur qui sont des admins
+     * @return array|null liste des admins
+     */
     public function getAdministrateurs(): array {
         $sql = "SELECT email FROM ".PREFIXE_TABLE."utilisateur WHERE estAdmin = 1";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
+    }
+
+    /**
+     * Fonction permettant de renvoyer les demandes envoyées par l'utilisateur dont l'id est donné en paramètre
+     * @param int|null $id id de l'utilisateur dont on veut les demandes envoyées
+     * @return array|null Liste des demandes ou null si aucune demande n'existe
+     */
+    public function getDemandesEnvoyees(?int $id): ?array {
+        $sql = "SELECT U.*
+                FROM " . PREFIXE_TABLE . "utilisateur U
+                JOIN " . PREFIXE_TABLE . "demander D ON D.idUtilisateur2 = U.id
+                WHERE D.idUtilisateur1 = :idDemandeur";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['idDemandeur' => $id]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $result ?: null;
+    }
+
+    /**
+     * Fonction permettant de renvoyer les demandes recues par l'utilisateur dont l'id est donné en parametre
+     * @param int|null $id id de l'utilisateur dont on veut les demandes recues
+     */
+    public function getDemandesRecues(?int $id): ?array {
+        $array = array();
+        return $array;
     }
 }
 

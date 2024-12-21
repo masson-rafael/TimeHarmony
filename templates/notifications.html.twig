@@ -12,43 +12,41 @@
             <div class="row text-center mt-5 mb-3 pt-5">
 					<h3>Vos demandes envoyées</h3>
 				</div>
-				<table id="myTable" class="table text-center table-striped w-75"> <!-- w-75 fonctionne mais pas mw-75 SUS -->
+				<table id="myTable1" class="table text-center table-striped mw-75"> <!-- w-75 fonctionne mais pas mw-75 SUS -->
 					<thead>
 						<tr>
 							<th>Image de profil</th>
 							<th>Prenom</th>
 							<th>Nom</th>
-							<th>Email</th>
-							<th>Supprimer</th>
+							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
-						{# {% for utilisateur in contacts %}
+						{% for demande in demandesEnvoyees %}
 							<tr>
-								<td><img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil"  class="rounded-circle" style="width: 50px; height: 50px;"></td>
-								<td>{{ utilisateur.getPrenom }}</td>
-								<td>{{ utilisateur.getNom }}</td>
-								<td>{{ utilisateur.getEmail }}</td>
+								<td><img src="image/photo_user/{{ demande.photoDeProfil }}" alt="photoDeProfil"  class="rounded-circle" style="width: 50px; height: 50px;"></td>
+								<td>{{ demande.prenom }}</td>
+								<td>{{ demande.nom }}</td>
 								<td>
-									<a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModale{{utilisateur.getId}}" aria-expanded="false">
+									<a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModaleDemandeAnnulation{{demande.id}}" aria-expanded="false">
 										<i class="fa-solid fa-trash"></i>
 									</a>
 								</td>
 							</tr>
-							<div class="modal fade" id="fenetreModale{{utilisateur.getId}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal fade" id="fenetreModaleDemandeAnnulation{{demande.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 								<div class="modal-dialog modal-lg">
 									<div class="modal-content">
 										<div class="modal-header">
 											<h1 class="modal-title fs-5" id="exampleModalLabel">Suppression du contact
-												{{utilisateur.getPrenom}}
-												{{utilisateur.getNom}}</h1>
+												{{demande.prenom}}
+												{{demande.nom}}</h1>
 											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 										</div>
-										<form action="index.php?controleur=contacts&methode=supprimer&id={{ utilisateur.getId }}" method="POST" enctype="multipart/form-data">
+										<form action="index.php?controleur=contacts&methode=supprimer&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
 											<div class="modal-body">
-												<label>Êtes-vous sûr de vouloir supprimer le contact
-													{{utilisateur.getPrenom}}
-													{{utilisateur.getNom}}
+												<label>Êtes-vous sûr de vouloir supprimer la demande concernant le contact
+													{{demande.prenom}}
+													{{demande.nom}}
 													?</label>
 											</div>
 											<div class="modal-footer">
@@ -59,7 +57,7 @@
 									</div>
 								</div>
 							</div>
-						{% endfor %} #}
+						{% endfor %}
 					</tbody>
 				</table>
 
@@ -67,43 +65,44 @@
                 <div class="row text-center mb-3 pt-5 mt-5">
 					<h3>Vos demandes reçues</h3>
 				</div>
-				<table id="myTable" class="table table-striped mw-75">
+				<table id="myTable2" class="table table-striped mw-75">
 					<thead>
 						<tr>
 							<th>Image de profil</th>
 							<th>Prenom</th>
 							<th>Nom</th>
-							<th>Email</th>
-							<th>Supprimer</th>
+							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
-						{# {% for utilisateur in contacts %}
+						{% for demande in demandesRecues %}
 							<tr>
-								<td><img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil"  class="rounded-circle" style="width: 50px; height: 50px;"></td>
-								<td>{{ utilisateur.getPrenom }}</td>
-								<td>{{ utilisateur.getNom }}</td>
-								<td>{{ utilisateur.getEmail }}</td>
+								<td><img src="image/photo_user/{{ demande.getPhotoDeProfil }}" alt="photoDeProfil"  class="rounded-circle" style="width: 50px; height: 50px;"></td>
+								<td>{{ demande.getPrenom }}</td>
+								<td>{{ demande.getNom }}</td>
 								<td>
-									<a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModale{{utilisateur.getId}}" aria-expanded="false">
+                                    <a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModaleRecueAccepte{{demande.getId}}" aria-expanded="false">
+										<i class="fa-solid fa-trash"></i>
+									</a>
+									<a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModaleRecueRefuse{{demande.getId}}" aria-expanded="false">
 										<i class="fa-solid fa-trash"></i>
 									</a>
 								</td>
 							</tr>
-							<div class="modal fade" id="fenetreModale{{utilisateur.getId}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal fade" id="fenetreModaleRecueAccepte{{demande.getId}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 								<div class="modal-dialog modal-lg">
 									<div class="modal-content">
 										<div class="modal-header">
 											<h1 class="modal-title fs-5" id="exampleModalLabel">Suppression du contact
-												{{utilisateur.getPrenom}}
-												{{utilisateur.getNom}}</h1>
+												{{demande.getPrenom}}
+												{{demande.getNom}}</h1>
 											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 										</div>
-										<form action="index.php?controleur=contacts&methode=supprimer&id={{ utilisateur.getId }}" method="POST" enctype="multipart/form-data">
+										<form action="index.php?controleur=contacts&methode=supprimer&id={{ demande.getId }}" method="POST" enctype="multipart/form-data">
 											<div class="modal-body">
 												<label>Êtes-vous sûr de vouloir supprimer le contact
-													{{utilisateur.getPrenom}}
-													{{utilisateur.getNom}}
+													{{demande.getPrenom}}
+													{{demande.getNom}}
 													?</label>
 											</div>
 											<div class="modal-footer">
@@ -114,16 +113,68 @@
 									</div>
 								</div>
 							</div>
-						{% endfor %} #}
+                            <div class="modal fade" id="fenetreModaleRecueRefuse{{demande.getId}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog modal-lg">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h1 class="modal-title fs-5" id="exampleModalLabel">Suppression du contact
+												{{demande.getPrenom}}
+												{{demande.getNom}}</h1>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										</div>
+										<form action="index.php?controleur=contacts&methode=supprimer&id={{ demande.getId }}" method="POST" enctype="multipart/form-data">
+											<div class="modal-body">
+												<label>Êtes-vous sûr de vouloir supprimer le contact
+													{{demande.getPrenom}}
+													{{demande.getNom}}
+													?</label>
+											</div>
+											<div class="modal-footer">
+												<button type="submit" class="btn btn-primary" name="update_article">Supprimer</button>
+												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
 					</tbody>
 				</table>
                 <div class="text-center pt-5">
-                    <a class="px-5 btn btn-secondary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Afficher mes contacts</a>
+                    <a class="px-5 btn btn-secondary" href="index.php?controleur=contacts&methode=afficherdemandes" role="button">Afficher mes contacts</a>
 				</div>
 				<div class="text-center pt-3">
-					<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
+					<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherdemandes" role="button">Ajouter un contact</a>
 				</div>
         </div>
     </div>
 </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            $('#myTable1').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
+                },
+                responsive: true, // Important pour les petits écrans
+                autoWidth: false, // Évite les problèmes de calcul automatique de largeur
+                pageLength: 10,
+                ordering: true
+            });
+        });
+        $(document).ready(function() {
+            $('#myTable2').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
+                },
+                responsive: true, // Important pour les petits écrans
+                autoWidth: false, // Évite les problèmes de calcul automatique de largeur
+                pageLength: 10,
+                ordering: true
+            });
+        });
+    </script>
 {% endblock %}
