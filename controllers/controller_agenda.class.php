@@ -30,7 +30,7 @@ class ControllerAgenda extends Controller
      * @return void
      */
 
-    public function ajouterAgenda()
+    public function ajouterAgenda(): void
     {
         $pdo = $this->getPdo(); // Récupérer l'instance PDO
 
@@ -49,17 +49,17 @@ class ControllerAgenda extends Controller
 
             if (!$agendaExiste) {
                 // Créer une nouvelle instance d'Agenda avec les données du formulaire
-                $nouvelAgenda = new Agenda($_POST['url'], $_POST['couleur'], $_POST['nom'], null);
+                $nouvelAgenda = new Agenda($_POST['url'], $_POST['couleur'], $_POST['nom'], $_SESSION['utilisateur']->getId());
                 // Ajouter l'agenda dans la base de données
                 $manager->ajouterAgenda($nouvelAgenda);
 
                 // Retourner un message de succès
                 $tableauErreurs[] = "Ajout réussi !";
-                $this->genererVueAgenda($tableauErreurs);
+                $this->lister($tableauErreurs);
             } else {
                 // Si l'agenda existe déjà, afficher un message d'erreur
                 $tableauErreurs[] = "Agenda avec cette URL existe déjà !";
-                $this->genererVueAgenda($tableauErreurs);
+                $this->lister($tableauErreurs);
             }
         } else {
             // Si le formulaire n'est pas correctement rempli, afficher la vue générique
@@ -67,10 +67,16 @@ class ControllerAgenda extends Controller
         }
     }
 
-    public function lister() {
+    /**
+     * Fonction permettant de lister les agendas
+     * @return void
+     */
+    public function lister(?array $tabMessages = null): void {
         //recupération des catégories
         $manager = new AgendaDao($this->getPdo());
-        $tableau = $manager->findAllAssoc();
+
+        $id = $_SESSION['utilisateur']->getId();
+        $tableau = $manager->getAgendasUtilisateur($id);
         $agendas = $manager->hydrateAll($tableau);
 
         //Choix du template
@@ -79,42 +85,88 @@ class ControllerAgenda extends Controller
 
         //Affichage de la page
         echo $template->render(array(
-            'agendas' => $agendas
+            'agendas' => $agendas,
+            'ajout' => false,
+            'message' => $tabMessages,
         ));
     }
 
     /**
-     * generer la vue avec les resultats des creneaux
-     *
-     * @param CreneauLibreDao|null $managerCreneau lien avec le manager de creneaux
+     * Fonction permmettant de générer la vue d'une page spécifiée en param
+     * @param string $page Nom de la page à générer
      * @return void
      */
-    // public function genererVueCreneaux(?CreneauLibreDao $managerCreneau) {
-    //     // Récupérer les créneaux libres
-    //     $tableau = $managerCreneau->findAllAssoc();
-    //     // Création en objet des créneaux libres
-    //     $creneaux = $managerCreneau->hydrateAll($tableau);
-
-    //     //Génération de la vue
-    //     $template = $this->getTwig()->load('resultat.html.twig');
-    //     echo $template->render(array(
-    //         'creneauxLibres' => $creneaux
-    //     ));
-    // }
-
-    public function genererVue(string $page) {
+    public function genererVue(string $page): void {
         //Génération de la vue
         $template = $this->getTwig()->load($page.'.html.twig');
         echo $template->render(array());
     }
 
-    public function genererVueAgenda(?array $erreurs) {
+    /**
+     * Fonction permettant de générer la vue des agendas
+     * @param array|null $erreurs Tableau des erreurs
+     * @return void
+     */
+    public function genererVueAgenda(?array $erreurs): void {
         //Génération de la vue agenda
         $template = $this->getTwig()->load('agenda.html.twig');
         echo $template->render(
             array(
-                'message' => $erreurs
+                'message' => $erreurs,
+                'ajout' => false,
             )
             );
+    }
+
+    /**
+     * Fonction permettant de générer la vue d'ajout d'un agenda
+     * @return void
+     */
+    public function genererVueAjoutAgenda(): void {
+        //Génération de la vue agenda
+        $template = $this->getTwig()->load('agenda.html.twig');
+        echo $template->render(
+            array(
+                'ajout' => true,
+            )
+            );
+    }
+
+    /**
+     * Fonction permettant de modifier un agenda
+     * @return void
+     */
+    public function modifierAgenda(): void {
+        $id = $_GET['id'];
+
+        $pdo = $this->getPdo(); // Récupérer l'instance PDO
+
+        $tableauErreurs = [];
+        $urlValide = utilitaire::validerURLAgenda($_POST['url'], $tableauErreurs);
+        $couleurValide = utilitaire::validerCouleur($_POST['couleur'], $tableauErreurs);
+        $nomValide = utilitaire::validerNomAgenda($_POST['nom'], $tableauErreurs);
+
+        // Vérifier si tous les champs du formulaire sont remplis
+        if ($urlValide && $couleurValide && $nomValide) {
+            // Créer une instance de AgendaDao pour interagir avec la base de données
+            $manager = new AgendaDao($pdo);
+            // Ajouter l'agenda dans la base de données
+            $manager->modifierAgenda($id, $_POST['url'], $_POST['couleur'], $_POST['nom']);
+
+            // Retourner un message de succès
+            $tableauErreurs[] = "Modification réussie !";
+            $this->lister($tableauErreurs);
+        } else {
+            // Si le formulaire n'est pas correctement rempli, afficher la vue générique
+            $this->genererVueAgenda($tableauErreurs);
+        }
+    }
+
+    public function supprimerAgenda(): void {
+        $id = $_GET['id'];
+        $manager = new AgendaDao($this->getPdo());
+        $manager->supprimerAgenda($id);
+        $messages[] = "Suppression réussie !";
+        $this->lister($messages);
     }
 }

@@ -97,6 +97,31 @@ class utilitaire {
     }
 
     /**
+     * Valide le nom d'un agenda s'il est valide, après série de vérifications
+     *
+     * @param string $nom Le nom de l'utilisateur
+     * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
+     * @return boolean Retourne vrai si le nom est valide, faux sinon
+     */
+    public static function validerNomAgenda(?string $nom, array &$messagesErreurs): bool
+    {
+        $valide = true;
+
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        $valide = utilitaire::validerPresence($nom, $messagesErreurs);
+
+        // 2. Type de données : vérifier que le nom est une chaine de caractères
+        $valide = utilitaire::validerType($nom, $messagesErreurs);
+
+        // 3. Longueur de la chaine : vérifier que le nom est compris entre 2 et 50 caractères
+        $valide = utilitaire::validerTaille($nom, 2, 50, $messagesErreurs);
+
+        // 4. Format des données : - non pertinent
+
+        return $valide;
+    }
+
+    /**
      * Valide l'email s'il est valide, après série de vérifications
      *
      * @param string $email L'email de l'utilisateur
@@ -356,7 +381,11 @@ class utilitaire {
             $valide = false;
         }
 
-        // 3. Longueur de la chaine - non pertinent
+        // 3. Longueur de la chaine (cf. taille) 2 Mo maximum
+        if(sizeof($photo) > 2000000) {
+            $valide = false;
+            $messagesErreurs[] = "La taille de la photo est trop grande (2Mo maximum)";
+        }
 
         // 4. Format des données : vérifier le format de la photo
         if($photo['error'] != UPLOAD_ERR_OK) {

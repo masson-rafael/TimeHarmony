@@ -7,30 +7,74 @@
 
 {% block content %}
 	<main>
-		<div class="container  h-100">
+		<div class="container mt-5">
+        {% if ajout == false %}
+        <div class="row justify-content-center">
 			<!-- Liste des agendas -->
 			{% if agendas|length > 0 %}
-				<div class="row justify-content-center mt-4 h-25">
-					<div class="col-md-8">
-						<h4 class="text-center mb-4">Liste des agendas</h4>
-						<ul class="list-group">
-							{% for agenda in agendas %}
-								<li class="list-group-item d-flex justify-content-between align-items-center">
-									<span>
-										<strong>Nom :</strong>
-										{{ agenda.nom }}
-										<br>
-										<strong>URL :</strong>
-										{{ agenda.url }}
-										<br>
-										<strong>Couleur :</strong>
-										<span style="color: {{ agenda.couleur }}">{{ agenda.couleur }}</span>
-									</span>
-								</li>
-							{% endfor %}
-						</ul>
-					</div>
-				</div>
+			<table id="myTable" class="table table-striped table-bordered w-100">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>URL</th>
+                    <th>Couleur</th>
+					<th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for agenda in agendas %}
+                <tr>
+                    <td>{{ agenda.getNom }}</td>
+                    <td><a href="{{ agenda.getUrl }}">{{ agenda.getUrl }}</a></td>
+                    <td>
+                        <div class="d-flex">
+                            <span class="rounded-circle me-2" style="width: 20px; height: 20px; background-color: {{ agenda.getCouleur }};"></span>
+                            <span>{{ agenda.getCouleur }}</span>
+                        </div>
+                    </td>
+					<td>
+                        <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ agenda.getId }}">
+                        <i class="fa-solid fa-pencil"></i></a>
+                        <a role="button" href="index.php?controleur=agenda&methode=supprimerAgenda&id={{ agenda.getId }}">
+                        <i class="fa-solid fa-trash"></i></a>
+                    </td>
+                </tr>
+                <div class="modal fade" id="fenetreModale{{ agenda.getId }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Modification de l'agenda {{ agenda.getNom }}</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="index.php?controleur=agenda&methode=modifierAgenda&id={{ agenda.getId }}" method="POST" enctype="multipart/form-data">
+                                <div class="modal-body">
+                                    <div class="container mt-2">
+                                        <div class="form-group">
+                                            <label for="nom">Nom</label>
+                                            <input type="text" class="form-control" id="nom" name="nom" value="{{ agenda.getNom }}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="url">URL</label>
+                                            <input type="text" class="form-control" id="url" name="url" value="{{ agenda.getUrl }}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="couleur">Couleur</label>
+                                            <input type="text" class="form-control" id="couleur" name="couleur" value="{{ agenda.getCouleur }}" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" name="update_article">Mettre à jour</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
 			{% else %}
 				<div class="row justify-content-center mt-4 h-25">
 					<div class="col-md-8">
@@ -41,18 +85,29 @@
 				</div>
 			{% endif %}
 
+        </div>
+        <div class="text-center mb-4 mt-5">
+            <a class="btn btn-primary shadow-lg hover-shadow" href="index.php?controleur=agenda&methode=genererVueAjoutAgenda">Ajouter un agenda</a>
+        </div>
+        {% endif %}
+
+        {% if ajout %}
 			<!-- Formulaire d'ajout d'agenda -->
 			<div class="row justify-content-center mt-5 h-75">
 				<div class="col-md-6">
 					<h4 class="text-center mb-4">Ajouter un agenda</h4>
 					<form action="index.php?controleur=agenda&methode=ajouterAgenda" method="post" required>
 						<div class="mb-3">
-							<label for="url" class="form-label">URL</label>
+							<label for="nom" class="form-label">Nom *</label>
+							<input type="text" name="nom" class="form-control" id="nom" required placeholder="Entrez le nom de votre agenda" maxlength="50" title="Entrez le nom de votre agenda pour pouvoir le différencier des autres">
+						</div>
+						<div class="mb-3">
+							<label for="url" class="form-label">URL *</label>
 							<input type="url" name="url" class="form-control" id="url" required placeholder="Entrez une URL valide" title="Entrez l'URL valide de votre agenda Google.">
 						</div>
 						<div class="mb-3">
 							<div class="mb-3">
-								<label for="couleur" class="form-label">Couleur</label>
+								<label for="couleur" class="form-label">Couleur *</label>
 								<select name="couleur" class="form-select" id="couleur" required>
 									<option value="#e66465" style="background-color: #e66465; color: white;">#e66465</option>
 									<option value="#4CAF50" style="background-color: #4CAF50; color: white;">#4CAF50</option>
@@ -67,14 +122,13 @@
 								<input type="color" name="couleur_custom" class="form-control" id="couleur_custom" title="Sélectionnez une couleur ou entrez un code hexadécimal personnalisé" minlength="7" maxlength="7">
 							</div>
 						</div>
-						<div class="mb-3">
-							<label for="nom" class="form-label">Nom</label>
-							<input type="text" name="nom" class="form-control" id="nom" required placeholder="Entrez un nom" maxlength="50" title="Entrez le nom de votre agenda pour pouvoir le différencier des autres">
-						</div>
-						<button type="submit" class="btn btn-primary">Ajouter</button>
+                        <div class="mb-3 text-center mt-5">
+                            <button type="submit" class="btn btn-primary ">Ajouter un agenda</button>
+                        </div>
 					</form>
 				</div>
 			</div>
+            {% endif %}
 
 
 			<!-- Affichage des messages -->
@@ -95,4 +149,19 @@
 		</div>
 	</main>
 
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            $('#myTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
+                },
+                "pageLength": 10,
+                "ordering": true,
+                "responsive": true
+            });
+        });
+    </script>
 {% endblock %}

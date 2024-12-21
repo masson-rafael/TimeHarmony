@@ -3,7 +3,7 @@
 {% block title %}Administration - {{ constant('WEBSITE_TITLE') }}{% endblock %}
 
 {% block content %}
-<main class="container py-5">
+<main class="container-fluid py-5">
     <div class="table-responsive">
         {% if message %}
                 <div class="mt-5">
@@ -36,15 +36,13 @@
                     <td>{{ utilisateur.getPrenom }}</td>
                     <td>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</td>
                     <td>
-                        <img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photo de profil" class="img-fluid" style="width: 50px; height: 50px;">
+                        <img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photo de profil" class="rounded-circle" style="width: 50px; height: 50px;">
                     </td>
                     <td>
                         <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ utilisateur.getId }}">
-                            <img src="image/modification.png" alt="modifier" style="width: 50px;">
-                        </a>
+                        <i class="fa-solid fa-pencil"></i></a>
                         <a role="button" href="index.php?controleur=utilisateur&methode=supprimer&id={{ utilisateur.getId }}&type='admin'">
-                            <img src="image/corbeille.png" alt="supprimer" style="width: 50px;">
-                        </a>
+                        <i class="fa-solid fa-trash"></i></a>
                     </td>
                 </tr>
                 <div class="modal fade" id="fenetreModale{{ utilisateur.getId }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -58,18 +56,22 @@
                                 <div class="modal-body">
                                     <div class="container mt-2">
                                         <div class="form-group">
-                                            <label for="nom">Nom</label>
+                                            <label for="nom">Nom *</label>
                                             <input type="text" class="form-control" id="nom" name="nom" value="{{ utilisateur.getNom }}" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="prenom">Prenom</label>
+                                            <label for="prenom">Prenom *</label>
                                             <input type="text" class="form-control" id="prenom" name="prenom" value="{{ utilisateur.getPrenom }}" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="role">Role</label>
+                                            <label for="email">Adresse mail *</label>
+                                            <input type="text" class="form-control" id="email" name="email" value="{{ utilisateur.getEmail }}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="role">Role *</label>
                                             <select class="form-control" id="role" name="role">
-                                                <option>User</option>
-                                                <option>Admin</option>
+                                                <option selected>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</option>
+                                                <option>{{ utilisateur.getEstAdmin ? 'User' : 'Admin' }}</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
@@ -101,9 +103,10 @@
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
                 },
-                "pageLength": 10,
-                "ordering": true,
-                "responsive": true
+                responsive: true, // Important pour les petits écrans
+                autoWidth: false, // Évite les problèmes de calcul automatique de largeur
+                pageLength: 10,
+                ordering: true
             });
         });
     </script>

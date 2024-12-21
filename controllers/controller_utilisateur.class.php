@@ -90,9 +90,9 @@ class ControllerUtilisateur extends Controller
                 // On recupere l'utilisateur
                 $utilisateur = $manager->getUserMail($_POST['email']);
                 $tableauErreurs[] = "Connexion réussie !";
-                $this->genererVueConnexion($tableauErreurs, $utilisateur);
+                $this->genererVueConnecte($utilisateur, $tableauErreurs);
             } else {
-                $tableauErreurs[] = "Mauvaise adresse mail ou mot de passe"; // Mauvais MDP
+                $tableauErreurs[] = "Mot de passe incorrect. Réinitialisez votre mot de passe"; // Mauvais MDP
                 $this->genererVueConnexion($tableauErreurs, null);
             }
         } else {
@@ -176,6 +176,21 @@ class ControllerUtilisateur extends Controller
         echo $template->render(
             array()
         );
+    }
+
+    public function genererVueConnecte(?Utilisateur $utilisateur, ?array $messages)
+    {
+        if ($utilisateur !== null) {
+            // Stockage en session et définition de la variable globale
+            $utilisateur = Utilisateur::createWithCopy($utilisateur);
+            $_SESSION['utilisateur'] = $utilisateur;
+            $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+        }
+
+        $template = $this->getTwig()->load('menu.html.twig');
+        echo $template->render([
+            'message' => $messages
+        ]);
     }
 
     /**
@@ -302,7 +317,8 @@ class ControllerUtilisateur extends Controller
             }
 
             @$nomFichier == null ? $nomFichier = $_SESSION['utilisateur']->getPhotoDeProfil() : $nomFichier;
-            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $role, $nomFichier);
+            $email = $_SESSION['utilisateur']->getEmail();
+            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $email, $role, $nomFichier);
             $utilisateurTemporaire = $manager->find($id);
             $_SESSION['utilisateur'] = $utilisateurTemporaire;
             $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurTemporaire);
@@ -325,6 +341,7 @@ class ControllerUtilisateur extends Controller
         $nomValide = utilitaire::validerNom($_POST['nom'], $messageErreurs);
         $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
         $roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
+        $emailValide = utilitaire::validerEmail($_POST['email'], $messageErreurs);
         @$photoValide = utilitaire::validerPhoto($_FILES['photo'], $messageErreurs);
 
         if ($nomValide && $prenomValide && $roleValide) {
@@ -348,14 +365,12 @@ class ControllerUtilisateur extends Controller
             }
 
             $role = $_POST['role'] == 'Admin' ? 1 : 0;
-            var_dump($role); // Vérification de la valeur numérique
-            var_dump($_SESSION['utilisateur']);
             
             // Mise à jour du chemin de l'image
             $nomFichier = empty($nomFichier) ? $utilisateurConcerne->getPhotoDeProfil() : $nomFichier;
             
             // Mise à jour du profil utilisateur
-            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $role, $nomFichier);
+            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $_POST['email'], $role, $nomFichier);
             $utilisateurTemporaire = $manager->find($id);
             
             if ($utilisateurTemporaire->getId() == $_SESSION['utilisateur']->getId()) {

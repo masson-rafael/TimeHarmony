@@ -289,16 +289,18 @@ class UtilisateurDao
      * @param integer|null $id de l'utilisateur 
      * @param string|null $nom de l'utilisateur 
      * @param string|null $prenom de l'utilisateur
+     * @param string|null $email de l'utilisateur
      * @param boolean|null $estAdmin de l'utilisateur
      * @param string|null $photoDeProfil de l'utilisateur
      */
-    public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?bool $estAdmin, ?string $photoDeProfil){
-        $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET nom = :nom, prenom = :prenom, estAdmin = :estAdmin, photoDeProfil = :pdp WHERE id = :id";
+    public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?string $email, ?bool $estAdmin, ?string $photoDeProfil){
+        $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET nom = :nom, prenom = :prenom, email = :email, estAdmin = :estAdmin, photoDeProfil = :pdp WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $estAdmin == false ? $estAdmin = 0 : $estAdmin = 1;
         $pdoStatement->execute(array(
             "nom" => $nom,
             "prenom" => $prenom,
+            "email" => $email,
             "estAdmin" => $estAdmin,
             "id" => $id,
             "pdp" => $photoDeProfil
