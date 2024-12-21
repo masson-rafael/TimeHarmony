@@ -7,7 +7,8 @@
 
 {% block content %}
 	{# {{ dump(creneauxLibres) }} #}
-	<main class="container-fluid h-100">
+	<main>
+	<div class="container-fluid h-100">
     <div class="row justify-content-center align-items-center h-100">
         <div class="col-12 col-md-10 col-lg-8 mt-5">
             {% if CGDU %}
@@ -306,6 +307,7 @@
             {% endif %}
         </div>
     </div>
+	</div>
 </main>
     
 {% endblock %}

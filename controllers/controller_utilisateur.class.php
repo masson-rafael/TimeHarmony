@@ -317,7 +317,8 @@ class ControllerUtilisateur extends Controller
             }
 
             @$nomFichier == null ? $nomFichier = $_SESSION['utilisateur']->getPhotoDeProfil() : $nomFichier;
-            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $role, $nomFichier);
+            $email = $_SESSION['utilisateur']->getEmail();
+            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $email, $role, $nomFichier);
             $utilisateurTemporaire = $manager->find($id);
             $_SESSION['utilisateur'] = $utilisateurTemporaire;
             $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurTemporaire);
