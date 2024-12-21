@@ -23,11 +23,11 @@ class ControllerContacts extends Controller
     }
 
     /**
-     * Fonction appellee par lister() pour recuperer les contacts de l'utilisateur
-     * 
+     * Fonction appellee par lister() pour recuperer les contacts de l'utilisateur dont on donne l'id en parametre
+     * @param int|null $idUtilisateur id de l'utilisateur dont on cherche les contacts
      * @return array tableau des contacts
      */
-    function recupererContacts($idUtilisateur): array {
+    function recupererContacts(?int $idUtilisateur): array {
         $pdo = $this->getPdo();
 
         $managerUtilisateur = new UtilisateurDao($pdo);
@@ -44,7 +44,7 @@ class ControllerContacts extends Controller
      *
      * @return void
      */
-    function lister() {
+    function lister(): void {
         $contacts = $this->recupererContacts($_SESSION['utilisateur']->getId());
         //Génération de la vue
         $template = $this->getTwig()->load('contacts.html.twig');
@@ -59,7 +59,7 @@ class ControllerContacts extends Controller
      *
      * @return void
      */
-    function supprimer() {
+    function supprimer(): void {
         // Récupération de l'id envoyé en parametre du lien
         $id1 = $_SESSION['utilisateur']->getId();
         $id2 = $_GET['id'];
@@ -75,7 +75,7 @@ class ControllerContacts extends Controller
      * 
      * @return void
      */
-    function afficherUtilisateurs(){
+    function afficherUtilisateurs(): void {
         $pdo = $this->getPdo();
         $managerUtilisateur = new UtilisateurDao($pdo);
         $utilisateursPasContacts = $managerUtilisateur->recupererIdsUtilisateursPasContacts($_SESSION['utilisateur']->getId());
@@ -93,7 +93,7 @@ class ControllerContacts extends Controller
      *
      * @return void
      */
-    function ajouter() {
+    function ajouter(): void {
         // Récupération de l'id envoyé en parametre du lien
         $id1 = $_SESSION['utilisateur']->getId();
         $id2 = $_GET['id'];
@@ -102,5 +102,14 @@ class ControllerContacts extends Controller
         $manager->ajouterDemandeContact($id1,$id2);
 
         $this->lister();
+    }
+
+    /**
+     * Fonction permettant d'afficher le twig correspondant à la page des notifications
+     * @return void
+     */
+    public function afficherPageNotifications(): void {
+        $template = $this->getTwig()->load('notifications.html.twig');
+        echo $template->render(array());
     }
 }

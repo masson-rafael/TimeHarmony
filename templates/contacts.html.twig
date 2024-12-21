@@ -25,13 +25,13 @@
 					<tbody>
 						{% for utilisateur in contacts %}
 							<tr>
-								<td><img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil"  class="rounded-circle" style="width: 100px; height: 100px;"></td>
+								<td><img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil"  class="rounded-circle" style="width: 50px; height: 50px;"></td>
 								<td>{{ utilisateur.getPrenom }}</td>
 								<td>{{ utilisateur.getNom }}</td>
 								<td>{{ utilisateur.getEmail }}</td>
 								<td>
 									<a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModale{{utilisateur.getId}}" aria-expanded="false">
-										<img src="image/corbeille.png" alt="supprimer" style="width: 50px;">
+										<i class="fa-solid fa-trash"></i>
 									</a>
 								</td>
 							</tr>
@@ -88,7 +88,7 @@
 								<td>{{ utilisateur.getEmail }}</td>
 								<td>
 									<a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModale{{utilisateur.getId}}" aria-expanded="false">
-										<img src="image/ajouter.png" alt="ajouter" style="width: 50px;">
+										<i class="fa-solid fa-plus"></i>
 									</a>
 								</td>
 							</tr>
