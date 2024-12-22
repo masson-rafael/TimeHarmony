@@ -123,8 +123,8 @@ INSERT INTO `timeharmony_utilisateur` (`nom`, `prenom`, `email`, `motDePasse`, `
  ('pantxika', 'dagorret', 'pantxika.dagorret@iutbayonne.univ-pau.fr', '$2y$10$F8u3lSyuhU4mugsBJVIgmeccowZupq5dgQl5SaPhjJ60a/l8VtmGq', 'pantxika.jpg', false),
  ('sophie', 'voisin', 'sophie.voisin@iutbayonne.univ-pau.fr', '$2y$10$EbNnJgh848jUnqrqeVHKx.vchALW7ZHdUPFIgiRLwsg45AfOA.50O', 'sophie.jpg', false),
  ('christophe', 'marquesuzaa', 'christophe.marquesuzaa@iutbayonne.univ-pau.fr', '$2y$10$DqHEdsa3Y1cJ4KC2IccV3eImTTx8k622vnI1KnYPkVg3UndA2YgZm', 'christophe.png', false),
- ('olivier', 'dezeque', 'olivier.dezeque@iutbayonne.univ-pau.fr', '$2y$10$Wx.XZ34n6xF93ToBnzfdiOb8rXxIPgVUcq5n4fxpP2jA3zF/I/8Ma', 'olivier.png', false),
- ('chiara', 'rustici', 'chiara.rustici@iutbayonne.univ-pau.fr', '$2y$10$INfusoSi/dQSmXxy5RtQhuPN.UyKuESik1QO.i8gOZpg8MGtO3bS2', 'chiara.png', false);
+ ('olivier', 'dezeque', 'olivier.dezeque@iutbayonne.univ-pau.fr', '$2y$10$Wx.XZ34n6xF93ToBnzfdiOb8rXxIPgVUcq5n4fxpP2jA3zF/I/8Ma', 'olivier.jpg', false),
+ ('chiara', 'rustici', 'chiara.rustici@iutbayonne.univ-pau.fr', '$2y$10$INfusoSi/dQSmXxy5RtQhuPN.UyKuESik1QO.i8gOZpg8MGtO3bS2', 'chiara.jpg', false);
 
 
 --
