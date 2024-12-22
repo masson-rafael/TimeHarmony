@@ -412,7 +412,9 @@ class UtilisateurDao
      * @return void
      */
     public function refuserDemande(?int $idReceveur, ?int $idDemandeur): void {	
-
+        $sql = "DELETE FROM ".PREFIXE_TABLE."demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2= :id2";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('id1' => $idDemandeur, 'id2' => $idReceveur));
     }
 
     /**
@@ -423,7 +425,7 @@ class UtilisateurDao
      * @return void
      */
     public function accepterDemande(?int $idReceveur, ?int $idDemandeur): void {	
-
+        
     }
 
 }
