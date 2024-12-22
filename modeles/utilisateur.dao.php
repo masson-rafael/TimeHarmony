@@ -344,12 +344,103 @@ class UtilisateurDao
         return $result['id'];
     }
 
+    /**
+     * Fonction qui renvoie un tableau d'utilisateur qui sont des admins
+     * @return array|null liste des admins
+     */
     public function getAdministrateurs(): array {
         $sql = "SELECT email FROM ".PREFIXE_TABLE."utilisateur WHERE estAdmin = 1";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
+    }
+
+    /**
+     * Fonction permettant de renvoyer les demandes envoyées par l'utilisateur dont l'id est donné en paramètre
+     * @param int|null $id id de l'utilisateur dont on veut les demandes envoyées
+     * @return array|null Liste des demandes ou null si aucune demande n'existe
+     */
+    public function getDemandesEnvoyees(?int $id): ?array {
+        $sql = "SELECT U.*
+                FROM " . PREFIXE_TABLE . "utilisateur U
+                JOIN " . PREFIXE_TABLE . "demander D ON D.idUtilisateur2 = U.id
+                WHERE D.idUtilisateur1 = :idDemandeur";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['idDemandeur' => $id]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $result ?: null;
+    }
+
+    /**
+     * Fonction permettant de renvoyer les demandes recues par l'utilisateur dont l'id est donné en parametre
+     * @param int|null $id id de l'utilisateur dont on veut les demandes recues
+     */
+    public function getDemandesRecues(?int $id): ?array {
+        $sql = "SELECT U.*
+        FROM " . PREFIXE_TABLE . "utilisateur U
+        JOIN " . PREFIXE_TABLE . "demander D ON D.idUtilisateur1 = U.id
+        WHERE D.idUtilisateur2 = :idDemandeur";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['idDemandeur' => $id]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ?: null;
+    }
+
+    /**
+     * Supprime une demande envoyée par un utilisateur à un autre utilisateur.
+     *
+     * @param int|null $idEnvoyeur ID de l'utilisateur ayant envoyé la demande.
+     * @param int|null $idReceveur ID de l'utilisateur ayant reçu la demande.
+     * @return void
+     */
+    public function supprimerDemandeEnvoyee(?int $idEnvoyeur, ?int $idReceveur): void {
+        $sql = "DELETE FROM ".PREFIXE_TABLE."demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2= :id2";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('id1' => $idEnvoyeur, 'id2' => $idReceveur));
+    }
+
+    /**
+     * Refuse une demande reçue par un utilisateur.
+     *
+     * @param int|null $idReceveur ID de l'utilisateur ayant reçu la demande.
+     * @param int|null $idDemandeur ID de l'utilisateur ayant envoyé la demande.
+     * @return void
+     */
+    public function refuserDemande(?int $idReceveur, ?int $idDemandeur): void {	
+        $sql = "DELETE FROM ".PREFIXE_TABLE."demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2= :id2";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('id1' => $idDemandeur, 'id2' => $idReceveur));
+    }
+
+    /**
+     * Accepte une demande reçue par un utilisateur.
+     *
+     * @param int|null $idReceveur ID de l'utilisateur ayant reçu la demande.
+     * @param int|null $idDemandeur ID de l'utilisateur ayant envoyé la demande.
+     * @return void
+     */
+    public function accepterDemande(?int $idReceveur, ?int $idDemandeur): void {	
+        /**
+         * Etape 1 : Ajout dans la table contacter la relation ($idReceveur, $idDemandeur)
+         * Etape 2 : Ajout dans la table contacter la relation ($idDemandeur, $idReceveur)
+         * Etape 3 : Supprimer dans la table demander la relation ($idDemandeur, $idReceveur)
+         */
+        $sql = "INSERT INTO ".PREFIXE_TABLE."contacter (idUtilisateur1, idUtilisateur2) VALUES (:id1, :id2)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('id1' => $idReceveur, 'id2' => $idDemandeur));
+
+        $sql = "INSERT INTO ".PREFIXE_TABLE."contacter (idUtilisateur1, idUtilisateur2) VALUES (:id1, :id2)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('id1' => $idDemandeur, 'id2' => $idReceveur));
+
+        $sql = "DELETE FROM ".PREFIXE_TABLE."demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2= :id2";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('id1' => $idDemandeur, 'id2' => $idReceveur));
     }
 }
 

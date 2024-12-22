@@ -23,11 +23,11 @@ class ControllerContacts extends Controller
     }
 
     /**
-     * Fonction appellee par lister() pour recuperer les contacts de l'utilisateur
-     * 
+     * Fonction appellee par lister() pour recuperer les contacts de l'utilisateur dont on donne l'id en parametre
+     * @param int|null $idUtilisateur id de l'utilisateur dont on cherche les contacts
      * @return array tableau des contacts
      */
-    function recupererContacts($idUtilisateur): array {
+    function recupererContacts(?int $idUtilisateur): array {
         $pdo = $this->getPdo();
 
         $managerUtilisateur = new UtilisateurDao($pdo);
@@ -44,7 +44,7 @@ class ControllerContacts extends Controller
      *
      * @return void
      */
-    function lister() {
+    function lister(): void {
         $contacts = $this->recupererContacts($_SESSION['utilisateur']->getId());
         //Génération de la vue
         $template = $this->getTwig()->load('contacts.html.twig');
@@ -59,7 +59,7 @@ class ControllerContacts extends Controller
      *
      * @return void
      */
-    function supprimer() {
+    function supprimer(): void {
         // Récupération de l'id envoyé en parametre du lien
         $id1 = $_SESSION['utilisateur']->getId();
         $id2 = $_GET['id'];
@@ -75,7 +75,7 @@ class ControllerContacts extends Controller
      * 
      * @return void
      */
-    function afficherUtilisateurs(){
+    function afficherUtilisateurs(): void {
         $pdo = $this->getPdo();
         $managerUtilisateur = new UtilisateurDao($pdo);
         $utilisateursPasContacts = $managerUtilisateur->recupererIdsUtilisateursPasContacts($_SESSION['utilisateur']->getId());
@@ -93,7 +93,7 @@ class ControllerContacts extends Controller
      *
      * @return void
      */
-    function ajouter() {
+    function ajouter(): void {
         // Récupération de l'id envoyé en parametre du lien
         $id1 = $_SESSION['utilisateur']->getId();
         $id2 = $_GET['id'];
@@ -102,5 +102,87 @@ class ControllerContacts extends Controller
         $manager->ajouterDemandeContact($id1,$id2);
 
         $this->lister();
+    }
+
+    /**
+     * Fonction permettant d'afficher le twig correspondant à la page des notifications
+     * @return void
+     */
+    public function afficherPageNotifications(): void {
+        /**
+         * Step 1 : Appel de la fonction qui trouve ET RENVOIE les contacts que j'ai envoyé
+         * Step 2 : Appel de la fonction qui trouve ET RENVOIE les demandes de contact d'autres utilisateurs
+         * Step 3 : Affichage du twig AVEC les 2 renvois
+         */
+        $mesDemandes = $this->getMesDemandesEnvoyees();
+        $demandesRecues = $this->getMesDemandesRecues();
+
+        $template = $this->getTwig()->load('notifications.html.twig');
+        echo $template->render(array(
+            'demandesEnvoyees' => $mesDemandes,
+            'demandesRecues' => $demandesRecues
+        ));
+    }
+
+    /**
+     * Fonction dont le but est de renvoyer le tableau contenant la liste de mes demandes de contact
+     * @return array|null $tabDemandes tableau des utilisateurs à qui j'ai envoyé une demande
+     */
+    public function getMesDemandesEnvoyees(): ?array {
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandes = $manager->getDemandesEnvoyees($_SESSION['utilisateur']->getId());
+
+        //Faux car création lors du DAO
+        return $tabDemandes;
+    }
+
+    /**
+     * Fonction dont le but est de renvoyer le tableau contenant la liste des utilisateurs qu'on m'ont demandé en contact
+     * @return array|null $tabDemandesPourMoi tableau des utilisateurs qui m'ont demandés en contact
+     */
+    public function getMesDemandesRecues(): ?array {
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->getDemandesRecues($_SESSION['utilisateur']->getId());
+
+        //Faux car création lors du DAO
+        return $tabDemandesPourMoi;
+    }
+
+    /**
+     * Fonction qui supprime la demande de contact dans la BD
+     * @return void
+     */
+    public function supprimerDemandeEmise(): void {
+        $idReceveur = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->supprimerDemandeEnvoyee($_SESSION['utilisateur']->getId(), $idReceveur);
+        $this->afficherPageNotifications();
+    }
+
+    /**
+     * Fonction qui refuse la demande de contact dans la BD
+     * @return void
+     */
+    public function refuserDemandeRecue(): void {
+        $idReceveur = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->refuserDemande($_SESSION['utilisateur']->getId(), $idReceveur);
+        $this->afficherPageNotifications();
+    }
+
+    /**
+     * Fonction qui accepte la demande de contact dans la BD
+     * @return void
+     */
+    public function accepterDemandeRecue(): void {
+        $idReceveur = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->accepterDemande($_SESSION['utilisateur']->getId(), $idReceveur);
+        $this->afficherPageNotifications();
     }
 }
