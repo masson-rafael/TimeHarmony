@@ -56,4 +56,32 @@ class ControllerGroupes extends Controller
         $tableauGroupes = $manager->supprimerGroupe($id);
         $this->lister();
     }
+
+    /**
+     * Fonction dont le but est d'afficher la page de modification lorsque le bouton modifier d'un groupe est cliqué
+     * @return void 
+     */
+    public function afficherPageModification(): void {
+        $id = $_GET['id'];
+        $manager = new GroupeDao($this->getPdo());
+        $groupeCourant = $manager->find($id);
+        $contacts = $this->getListeContacts();
+        $template = $this->getTwig()->load('groupes.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
+        echo $template->render(array('modification' => true, 'groupeCourant' => $groupeCourant, 'contacts' => $contacts));
+    }
+
+    /**
+     * Fonction donc le but est de renvoyer la liste des contacts de l'utilisateur qui créé le groupe
+     * @return array|null tableau des contacts
+     */
+    public function getListeContacts(): ?array {
+        $pdo = $this->getPdo();
+        $managerUtilisateur = new UtilisateurDao($pdo);
+        $contactsId = $managerUtilisateur->findAllContact($_SESSION['utilisateur']->getId());  
+        $contacts=array();     
+        foreach ($contactsId as $contact) {
+            $contacts[] = $managerUtilisateur->find($contact['idUtilisateur2']);
+        }
+        return $contacts;
+    }
 }
