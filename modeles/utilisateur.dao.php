@@ -425,9 +425,23 @@ class UtilisateurDao
      * @return void
      */
     public function accepterDemande(?int $idReceveur, ?int $idDemandeur): void {	
-        
-    }
+        /**
+         * Etape 1 : Ajout dans la table contacter la relation ($idReceveur, $idDemandeur)
+         * Etape 2 : Ajout dans la table contacter la relation ($idDemandeur, $idReceveur)
+         * Etape 3 : Supprimer dans la table demander la relation ($idDemandeur, $idReceveur)
+         */
+        $sql = "INSERT INTO ".PREFIXE_TABLE."contacter (idUtilisateur1, idUtilisateur2) VALUES (:id1, :id2)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('id1' => $idReceveur, 'id2' => $idDemandeur));
 
+        $sql = "INSERT INTO ".PREFIXE_TABLE."contacter (idUtilisateur1, idUtilisateur2) VALUES (:id1, :id2)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('id1' => $idDemandeur, 'id2' => $idReceveur));
+
+        $sql = "DELETE FROM ".PREFIXE_TABLE."demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2= :id2";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('id1' => $idDemandeur, 'id2' => $idReceveur));
+    }
 }
 
 
