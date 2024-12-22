@@ -67,7 +67,6 @@ class GroupeDao {
         }
         
         return $groupe;
-        
     }
 
     public function hydrate(array $tableau): Groupe{
@@ -86,5 +85,20 @@ class GroupeDao {
             $groupes[] = $groupe;
         }
         return $groupes;
+    }
+
+    public function getGroupeFromUserId(?int $id): ?array {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."groupe WHERE idChef = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("id" => $id));
+        
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $tableau = $pdoStatement->fetchAll();
+        
+        if (!$tableau) {
+            return null;
+        }
+        
+        return $tableau;
     }
 }

@@ -21,4 +21,19 @@ class ControllerGroupes extends Controller
     {
         parent::__construct($twig, $loader);
     }
+
+    public function lister(): void {
+        $tableauGroupes = $this->listerGroupesUtilisateur();
+        //$nombrePersonnes = $this->getNombrePersonnes($tableauGroupes);
+
+        $template = $this->getTwig()->load('groupes.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
+        echo $template->render(array('groupes' => $tableauGroupes));
+    }
+
+    public function listerGroupesUtilisateur(): ?array {
+        $pdo = $this->getPdo();
+        $manager = new GroupeDao($pdo);
+        $tableauGroupes = $manager->getGroupeFromUserId($_SESSION['utilisateur']->getId());
+        return $tableauGroupes;
+    }
 }
