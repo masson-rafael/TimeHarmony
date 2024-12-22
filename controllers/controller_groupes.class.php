@@ -22,6 +22,10 @@ class ControllerGroupes extends Controller
         parent::__construct($twig, $loader);
     }
 
+    /**
+     * Fonction qui permet de lister les groupes dont l'utilisateur connecté est le chef
+     * @return void
+     */
     public function lister(): void {
         $tableauGroupes = $this->listerGroupesUtilisateur();
         //$nombrePersonnes = $this->getNombrePersonnes($tableauGroupes);
@@ -30,10 +34,26 @@ class ControllerGroupes extends Controller
         echo $template->render(array('groupes' => $tableauGroupes));
     }
 
+    /**
+     * Fonction qui renvoie la liste des groupes de l'utilisateur connecté (no object)
+     * @return array|null tableau des groupes
+     */
     public function listerGroupesUtilisateur(): ?array {
         $pdo = $this->getPdo();
         $manager = new GroupeDao($pdo);
         $tableauGroupes = $manager->getGroupeFromUserId($_SESSION['utilisateur']->getId());
         return $tableauGroupes;
+    }
+
+    /**
+     * Fonction permettant de supprimer le groupe dont on récupère l'id du lien
+     * @return void
+     */
+    public function supprimer(): void {
+        $id = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new GroupeDao($pdo);
+        $tableauGroupes = $manager->supprimerGroupe($id);
+        $this->lister();
     }
 }

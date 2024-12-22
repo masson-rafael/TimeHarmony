@@ -152,7 +152,11 @@ CREATE TABLE IF NOT EXISTS `timeharmony_groupe` (
 
 INSERT INTO `timeharmony_groupe` (`nom`, `description`, `idChef`) VALUES
  ('Réunion avec Monsieur Etcheverry', 'Groupe de l\'équipe TimeHarmony avec notre tuteur, Monsieur Etcheverry', 1),
- ('Equipe TimeHarmony', 'Groupe de l\'équipe TimeHarmony', 2);
+ ('Equipe TimeHarmony', 'Groupe de l\'équipe TimeHarmony', 2),
+ ('Groupe Test 1', 'Groupe de l\'équipe TimeHarmony test 1', 1),
+ ('Groupe Test 2', 'Groupe de l\'équipe TimeHarmony test 2', 1),
+ ('Groupe Test 3', 'Groupe de l\'équipe TimeHarmony test 3', 1),
+ ('Groupe Test 4', 'Groupe de l\'équipe TimeHarmony test 4', 1);
 
 --
 -- Déchargement des données de la table 'groupe'

@@ -87,6 +87,11 @@ class GroupeDao {
         return $groupes;
     }
 
+    /**
+     * Fonction qui retourne un tableau de groupes dont l'id du chef est passé en parametre
+     * @param int|null $id id du chef de groupe
+     * @return array|null tableau des groupes
+     */
     public function getGroupeFromUserId(?int $id): ?array {
         $sql = "SELECT * FROM ".PREFIXE_TABLE."groupe WHERE idChef = :id";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -100,5 +105,16 @@ class GroupeDao {
         }
         
         return $tableau;
+    }
+
+    /**
+     * Fonction permettant de supprimer un groupe
+     * @param int|null $id id du groupe
+     * @return void
+     */
+    public function supprimerGroupe(?int $id): void {
+        $sql = "DELETE FROM ".PREFIXE_TABLE."groupe WHERE id = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("id" => $id));
     }
 }
