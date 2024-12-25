@@ -91,7 +91,7 @@ class utilitaire {
         $valide = utilitaire::validerTaille($nom, 2, 50, $messagesErreurs);
 
         // 4. Format des données : vérifier le format du nom
-        $valide = utilitaire::validerPreg($nom, "/^[a-zA-ZÀ-ÿ-]+$/", $messagesErreurs);
+        $valide = utilitaire::validerPreg($nom, "/^[a-zA-ZÀ-ÿ0-9-]+$/", $messagesErreurs);
 
         return $valide;
     }
