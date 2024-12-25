@@ -84,4 +84,47 @@ class ControllerGroupes extends Controller
         }
         return $contacts;
     }
+
+    public function ajouter(): void {
+        $contacts = $this->getListeContacts();
+        $template = $this->getTwig()->load('groupes.html.twig');
+        echo $template->render(array('creation' => true, 'contacts' => $contacts));
+    }
+
+    public function creer(): void {
+        $tableauErreurs = [];
+        $tableauContacts = $_POST['contacts']; //2, 3, 4, 5 -> id des utilisateurs + verif classe
+        $nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
+        $descriptionValide = utilitaire::validerDescription($_POST['description'], $tableauErreurs);
+
+        var_dump($nomValide);
+        var_dump($descriptionValide);
+
+        if($nomValide && $descriptionValide) {
+            // Etape 1 : créer groupe
+            $manager = new GroupeDao($this->getPdo());
+            $manager->creerGroupe($_SESSION['utilisateur']->getId(), $_POST['nom'], $_POST['description']);
+            echo "creation groupe finie";
+            $manager = new GroupeDao($this->getPdo());
+            $idGroupe = $manager->getIdGroupe($_SESSION['utilisateur']->getId(), $_POST['nom'], $_POST['description']);
+            echo "getidgroupe fini";
+
+            // Etape 2 : ajouter membres
+            $this->ajouterMembres($idGroupe['id'], $_POST['contacts']);
+            echo "ajoutermembres fini";
+
+            $this->lister();
+        }
+    }
+
+    public function ajouterMembres(?int $idGroupe, ?array $contacts): void {
+        $manager = new GroupeDao($this->getPdo());
+        $manager->ajouterMembreGroupe($idGroupe, $_SESSION['utilisateur']->getId());
+
+        if($contacts) {   // Condition si estvide
+            foreach ($contacts as $contact) {
+                $manager->ajouterMembreGroupe($idGroupe, $contact);
+            }
+        }
+    }
 }

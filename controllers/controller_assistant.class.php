@@ -32,7 +32,7 @@ class ControllerAssistant extends Controller
         $pdo = $this->getPdo();
         unset($_SESSION['nbUserSelectionné']);
         // Récupération des contacts
-        $utilisateur = new Utilisateur(1);
+        $utilisateur = $_SESSION['utilisateur'];
 
         $contacts = $utilisateur->getContact($pdo, $utilisateur->getId());
 
