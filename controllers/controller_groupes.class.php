@@ -85,12 +85,20 @@ class ControllerGroupes extends Controller
         return $contacts;
     }
 
+    /**
+     * Fonction appellee lors du clic sur le bouton creer un groupe. Appel du twig de création
+     * @return void
+     */
     public function ajouter(): void {
         $contacts = $this->getListeContacts();
         $template = $this->getTwig()->load('groupes.html.twig');
         echo $template->render(array('creation' => true, 'contacts' => $contacts));
     }
 
+    /**
+     * Fonction qui s'occupe de la création d'un groupe. Verif des champs du formulaire
+     * @return void
+     */
     public function creer(): void {
         $tableauErreurs = [];
         $tableauContacts = $_POST['contacts']; //2, 3, 4, 5 -> id des utilisateurs + verif classe
@@ -117,6 +125,12 @@ class ControllerGroupes extends Controller
         }
     }
 
+    /**
+     * Fonction qui permet d'ajouter des utilisateurs à un groupe
+     * @param int|null $idGroupe id du groupe dont on veut ajouter l'utilisateur
+     * @param array|null $contacts tableau d'utilisateurs que l'on veut ajouter
+     * @return void
+     */
     public function ajouterMembres(?int $idGroupe, ?array $contacts): void {
         $manager = new GroupeDao($this->getPdo());
         $manager->ajouterMembreGroupe($idGroupe, $_SESSION['utilisateur']->getId());

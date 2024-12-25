@@ -118,6 +118,13 @@ class GroupeDao {
         $pdoStatement->execute(array("id" => $id));
     }
 
+    /**
+     * Fonction permettant de créer un groupe
+     * @param int|null $idLeader id de l'utilisateur qui cree le groupe
+     * @param string|null $nom nom du groupe
+     * @param string|null $description description du groupe
+     * @return void
+     */
     public function creerGroupe(?int $idLeader, ?string $nom, ?string $description): void {
         $sql = "INSERT INTO ".PREFIXE_TABLE."groupe (nom, description, idChef) VALUES (:nom, :description, :idChef)";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -128,6 +135,13 @@ class GroupeDao {
         ));
     }
 
+    /**
+     * Fonction permettant de renvoyer l'id du groupe correspondant aux champs donnés en parametre
+     * @param int|null $idLeader id de l'utilisateur qui a cree le groupe
+     * @param string|null $nom nom du groupe
+     * @param string|null $description description du groupe
+     * @return array|null $tableau le tableau de réponses. Généralement l'id du groupe correspondant
+     */
     public function getIdGroupe(?int $idLeader, ?string $nom, ?string $description): ?array {
         $sql = "SELECT id FROM ".PREFIXE_TABLE."groupe WHERE nom = :nom AND description = :description AND idChef = :idChef";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -142,7 +156,12 @@ class GroupeDao {
         return $tableau;
     }
 
-
+    /**
+     * Fonction permettant d'ajouter des utilisateurs à un groupe donné
+     * @param int|null $id id du groupe
+     * @param int|null $idContact id de la personne que l'on ajoute au groupe
+     * @return void
+     */
     public function ajouterMembreGroupe(?int $id, ?int $idContact): void {
         $sql = "INSERT INTO ".PREFIXE_TABLE."composer (idGroupe, idUtilisateur) VALUES (:idGroupe, :idUtilisateur)";
         $pdoStatement = $this->pdo->prepare($sql);
