@@ -283,10 +283,10 @@ class Utilisateur {
     /**
      * Set la date du dernier échec de connexion
      *
-     * @param date $dateDernierEchecConnexion de l'utilisateur
+     * @param date|null $dateDernierEchecConnexion de l'utilisateur
      * @return void
      */
-    public function setDateDernierEchecConnexion(date $dateDernierEchecConnexion): void {
+    public function setDateDernierEchecConnexion(?date $dateDernierEchecConnexion): void {
         $this->dateDernierEchecConnexion = $dateDernierEchecConnexion;
     }
 
@@ -334,5 +334,58 @@ class Utilisateur {
         $tableau = $managerAgenda->findAllByIdUtilisateur($this->getId(),$pdo);
         $agendas = $managerAgenda->hydrateAll($tableau);
         return $agendas;
+    }
+
+    /**
+     * Fonction qui augmente le nombre de tentatives échouées de connexion
+     * Si le nombre de tentatives échouées est supérieur à MAX_CONNEXION_ECHOUEES, le statut du compte est bloqué
+     * @return void
+     */
+    public function gererEchecConnexion(): void {
+        $this->setTentativesEchouees($this->getTentativesEchouees() + 1);
+
+        if($this->getTentativesEchouees() > MAX_CONNEXION_ECHOUEES) {
+            $this->setStatutCompte("bloque");
+        }
+    }
+
+    /**
+     * Fonction qui réactive le compte si le délai d'attente est écoulé
+     * @return void
+     */
+    public function reactiverCompte(): void {
+        if($this->delaiAttenteEstEcoulé()) {
+            $this->setStatutCompte("actif");
+        }
+    }
+
+    /**
+     * Fonction qui réiniialise le nombre de tentatives échouées de connexion
+     * @return void
+     */
+    public function reinitialiserTentativesConnexion(): void {
+        $this->setTentativesEchouees(0);
+    }
+
+    /**
+     * Fonction qui retourne vrai si le délai d'attente est écoulé, faux sinon
+     * @return bool|null vrai si le délai d'attente est écoulé, faux sinon
+     */
+    public function delaiAttenteEstEcoulé(): ?bool {
+        $delaisEcoule = false;
+
+        if($this->tempsRestantAvantReactivationCompte() > DELAI_REACTIVATION_COMPTE) {
+            $delaisEcoule = true;
+        }
+
+        return $delaisEcoule;
+    }
+
+    /**
+     * Fonction qui retourne le temps restant avant la réactivation du compte
+     * @return date temps restant avant réactivation du compte
+     */
+    public function tempsRestantAvantReactivationCompte(): date {
+        return new date() - $this->getDateDernierEchecConnexion();
     }
 }

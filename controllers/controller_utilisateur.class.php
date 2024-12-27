@@ -83,19 +83,27 @@ class ControllerUtilisateur extends Controller
 
         if ($emailValide && $passwdValide) {
             $manager = new UtilisateurDao($pdo);
+            $compteUtilisateurCorrespondant = $manager->getObjetUtilisateur($_POST['email']);
+            var_dump($compteUtilisateurCorrespondant);
+
             // On recupere un tuple avec un booleen et le mdp hache
             $motDePasse = $manager->connexionReussie($_POST['email']);
+
             // Si les mdp sont les mêmes
             if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
                 // On recupere l'utilisateur
                 $utilisateur = $manager->getUserMail($_POST['email']);
                 $tableauErreurs[] = "Connexion réussie !";
                 $this->genererVueConnecte($utilisateur, $tableauErreurs);
-            } else {
+            } 
+
+            else {
                 $tableauErreurs[] = "Mot de passe incorrect. Réinitialisez votre mot de passe"; // Mauvais MDP
                 $this->genererVueConnexion($tableauErreurs, null);
             }
-        } else {
+        } 
+
+        else {
             $this->genererVueConnexion($tableauErreurs, null);
         }
     }

@@ -203,7 +203,7 @@ class UtilisateurDao
      * set a hydrater le tableau associatif
      *
      * @param array|null $tableauAssoc tableau associatif
-     * @return CreneauLibre|null créneau libre
+     * @return Utilisateur|null $utilisateur objet utilisateur
      */
     public function hydrate(?array $tableauAssoc): ?Utilisateur {
         $utilisateur = new Utilisateur();
@@ -214,6 +214,9 @@ class UtilisateurDao
         $utilisateur->setMotDePasse($tableauAssoc['motDePasse']);
         $utilisateur->setPhotoDeProfil($tableauAssoc['photoDeProfil']);
         $utilisateur->setEstAdmin($tableauAssoc['estAdmin']);
+        $utilisateur->setTentativesEchouees($tableauAssoc['tentativesEchouees']);
+        $utilisateur->setDateDernierEchecConnexion($tableauAssoc['dateDernierEchecConnexion']);
+        $utilisateur->setStatutCompte($tableauAssoc['statutCompte']);
         return $utilisateur;
     }
 
@@ -437,6 +440,15 @@ class UtilisateurDao
         $sql = "DELETE FROM ".PREFIXE_TABLE."demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2= :id2";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id1' => $idDemandeur, 'id2' => $idReceveur));
+    }
+
+    public function getObjetUtilisateur(?string $email): Utilisateur {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE email = :email";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("email" => $email));
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        $utilisateur = $this->hydrate($result);
+        return $utilisateur;
     }
 }
 
