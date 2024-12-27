@@ -52,6 +52,7 @@ class UtilisateurDao
      * @return Utilisateur|null objet utiisateur
      */
     public function find(?int $id): ?Utilisateur {
+        $resultat = null;
         $sql = "SELECT * FROM ".PREFIXE_TABLE."utilisateur WHERE id = :id";
         if ($this->getPdo() === null) {
             throw new Exception('Connexion PDO non initialisée.');
@@ -62,11 +63,11 @@ class UtilisateurDao
         $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Utilisateur');
         $utilisateur = $pdoStatement->fetch();
 
-        if (!$utilisateur) {
-            return null;
+        if ($utilisateur) {
+            $resultat = $utilisateur;
         }
 
-        return $utilisateur;
+        return $resultat;
     }
 
     /**
@@ -75,17 +76,18 @@ class UtilisateurDao
      * @param string|null $mail de l'utilisateur
      * @return boolean|null si l'utilisateur existe
      */
-    public function findMail(?string $mail): ?bool
-    {
+    public function findMail(?string $mail): ?bool {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE email= :email";
         $pdoStatement = $this->pdo->prepare($sql);
         // Ajout des parametres
         $pdoStatement->execute(array("email" => $mail));
         $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
         $utilisateurExiste = false;
+
         if ($result) {
             $utilisateurExiste = true;
         }
+
         return $utilisateurExiste;
     }
 
@@ -94,8 +96,7 @@ class UtilisateurDao
      * @param int|null $id L'identifiant de l'utilisateur.
      * @return array|null Un tableau d'utilisateurs.
      */
-    public function findAllContact(?int $id): array
-    {
+    public function findAllContact(?int $id): array {
         //$sql = "SELECT idUtilisateur2 FROM " . PREFIXE_TABLE . "contacter WHERE idUtilisateur1= :id";
         $sql="SELECT * FROM timeharmony_utilisateur INNER JOIN timeharmony_contacter ON id = idUtilisateur2 WHERE idUtilisateur1 = :id";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -149,8 +150,7 @@ class UtilisateurDao
      *
      * @return array|null tableau d'utilisateurs
      */
-    public function findAll(): ?array
-    {
+    public function findAll(): ?array {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
@@ -165,8 +165,7 @@ class UtilisateurDao
      * @param Utilisateur $utilisateur que l'on veut ajouter
      * @return void
      */
-    public function ajouterUtilisateur(Utilisateur $utilisateur)
-    {
+    public function ajouterUtilisateur(Utilisateur $utilisateur): void {
         //Insertion d'un utilisateur classique
         $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur (nom, prenom, email, motDePasse, photoDeProfil, estAdmin) VALUES (:nom, :prenom, :email, :motDePasse, :photoDeProfil, :estAdmin)";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -187,18 +186,17 @@ class UtilisateurDao
      * @param string|null $mail de l'utilisateur
      * @return array|null tableau contenant un booleen et soit null soit le mot de passe crypté
      */
-    public function connexionReussie(?string $mail): ?array
-    {
+    public function connexionReussie(?string $mail): ?array {
+        $resultat = [false, null];
         $sql = "SELECT motDePasse FROM " . PREFIXE_TABLE . "utilisateur WHERE email = :email";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("email" => $mail));
 
-        if ($pdoStatement->rowCount() == 0) {
-            return [false, null];
+        if ($pdoStatement->rowCount() != 0) {
+            $resultat = [true, $pdoStatement->fetch()[0]];
         }
 
-        $motDePasse = $pdoStatement->fetch();
-        return [true, $motDePasse[0]];
+        return $resultat;
     }
 
     /**
@@ -207,8 +205,7 @@ class UtilisateurDao
      * @param array|null $tableauAssoc tableau associatif
      * @return CreneauLibre|null créneau libre
      */
-    public function hydrate(?array $tableauAssoc): ?Utilisateur
-    {
+    public function hydrate(?array $tableauAssoc): ?Utilisateur {
         $utilisateur = new Utilisateur();
         $utilisateur->setId($tableauAssoc['id']);
         $utilisateur->setNom($tableauAssoc['nom']);
@@ -226,8 +223,7 @@ class UtilisateurDao
      * @param array|null $tableau tableau associatif
      * @return array|null tableau des créneaux libres
      */
-    public function hydrateAll(?array $tableau): ?array
-    {
+    public function hydrateAll(?array $tableau): ?array {
         $utilisateurs = [];
         foreach ($tableau as $tableauAssoc) {
             $utilisateur = $this->hydrate($tableauAssoc);
@@ -243,8 +239,7 @@ class UtilisateurDao
      * @param int $id2 identifiant de l'utilisateur qui recoit la demande
      * @return void
      */
-    public function ajouterDemandeContact(?int $id1, ?int $id2)
-    {
+    public function ajouterDemandeContact(?int $id1, ?int $id2): void {
         $sql = "INSERT INTO ". PREFIXE_TABLE ."demander (idUtilisateur1, idUtilisateur2) VALUES (:id1, :id2)";
         $pdoStatement = $this->pdo->prepare($sql);
         // Ajout des parametres
@@ -258,8 +253,7 @@ class UtilisateurDao
      * @param int $id2 identifiant de l'utilisateur 2
      * @return void
      */
-    public function supprimerContact(?int $id1, ?int $id2)
-    {
+    public function supprimerContact(?int $id1, ?int $id2): void {
         $sql = "DELETE FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur1= :id1 AND idUtilisateur2= :id2";
         $pdoStatement = $this->pdo->prepare($sql);
         // Ajout des parametres
@@ -276,8 +270,7 @@ class UtilisateurDao
      * @param integer|null $id de l'utilisateur
      * @return void
      */
-    public function supprimerUtilisateur(?int $id)
-    {
+    public function supprimerUtilisateur(?int $id): void {
         $sql = "DELETE FROM " . PREFIXE_TABLE . "utilisateur WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
@@ -292,8 +285,9 @@ class UtilisateurDao
      * @param string|null $email de l'utilisateur
      * @param boolean|null $estAdmin de l'utilisateur
      * @param string|null $photoDeProfil de l'utilisateur
+     * @return void
      */
-    public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?string $email, ?bool $estAdmin, ?string $photoDeProfil){
+    public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?string $email, ?bool $estAdmin, ?string $photoDeProfil): void {
         $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET nom = :nom, prenom = :prenom, email = :email, estAdmin = :estAdmin, photoDeProfil = :pdp WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $estAdmin == false ? $estAdmin = 0 : $estAdmin = 1;
@@ -312,8 +306,9 @@ class UtilisateurDao
      *
      * @param int $id L'identifiant de l'utilisateur.
      * @param string $cheminPhoto Le chemin de la nouvelle photo de profil.
+     * @return void
      */
-    public function modifierPhotoProfil(?int $id, ?string $cheminPhoto) {
+    public function modifierPhotoProfil(?int $id, ?string $cheminPhoto): void {
         $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET photoDeProfil = :photoDeProfil WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('photoDeProfil' => $cheminPhoto, 'id' => $id));
@@ -324,8 +319,9 @@ class UtilisateurDao
      * 
      * @param integer|null $id de l'utilisateur
      * @param string|null $mdp de l'utilisateur
+     * @return void
      */
-    public function reinitialiserMotDePasse(?int $id, ?string $mdp) {
+    public function reinitialiserMotDePasse(?int $id, ?string $mdp): void {
         $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET motDePasse = :mdp WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('mdp' => $mdp, 'id' => $id));

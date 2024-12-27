@@ -53,6 +53,7 @@ class GroupeDao {
     }
 
     public function find(?int $id): ?Groupe {
+        $resultat = null;
         $sql = "SELECT * FROM ".PREFIXE_TABLE."groupe WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
@@ -62,11 +63,11 @@ class GroupeDao {
         $groupe = $this->hydrate($tableau);
     
         
-        if (!$groupe) {
-            return null;
+        if ($groupe) {
+            $resultat = $groupe;
         }
         
-        return $groupe;
+        return $resultat;
     }
 
     public function hydrate(array $tableau): Groupe{
@@ -93,6 +94,7 @@ class GroupeDao {
      * @return array|null tableau des groupes
      */
     public function getGroupeFromUserId(?int $id): ?array {
+        $resultat = null;
         $sql = "SELECT * FROM ".PREFIXE_TABLE."groupe WHERE idChef = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
@@ -100,11 +102,11 @@ class GroupeDao {
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $tableau = $pdoStatement->fetchAll();
         
-        if (!$tableau) {
-            return null;
+        if ($tableau) {
+            $resultat = $tableau;
         }
         
-        return $tableau;
+        return $resultat;
     }
 
     /**
@@ -171,6 +173,12 @@ class GroupeDao {
         ));
     }
 
+    /**
+     * Fonction permettant de verifier si un groupe existe déjà en BD
+     * @param string|null $nom nom du groupe
+     * @param string|null $description description du groupe
+     * @return bool true si le groupe existe, false sinon
+     */
     public function groupeExiste(?string $nom, ?string $description): bool {
         $resultat = false;
         $sql = "SELECT * FROM ".PREFIXE_TABLE."groupe WHERE nom = :nom AND description = :description";

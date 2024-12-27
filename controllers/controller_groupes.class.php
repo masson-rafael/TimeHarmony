@@ -32,8 +32,10 @@ class ControllerGroupes extends Controller
         //$nombrePersonnes = $this->getNombrePersonnes($tableauGroupes);
 
         $template = $this->getTwig()->load('groupes.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
-        echo $template->render(array('groupes' => $tableauGroupes,
-                                    'message' => $erreurs));
+        echo $template->render(array(
+            'groupes' => $tableauGroupes,
+            'message' => $erreurs)
+        );
     }
 
     /**

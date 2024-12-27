@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @todo FAIS TA DOC FELIX
+ * @todo FAIS TA DOC FELIX (Faite par le magnifique Thibault)
  */
 
 class AgendaDao{
@@ -22,9 +22,13 @@ class AgendaDao{
         $this->pdo = $pdo;
     }
 
-
-    public function find(?int $id): ?Agenda
-    {
+    /**
+     * Fonction permettant de retourner un objet Agenda à partir de son id
+     * @param int|null $id id de l'agenda
+     * @return Agenda|null l'objet Agenda
+     */
+    public function find(?int $id): ?Agenda {
+        $resultat = null;
         $sql = "SELECT * FROM ".PREFIXE_TABLE."agenda WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
@@ -32,22 +36,26 @@ class AgendaDao{
         // On récupère sous forme de tableau associatif
         $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
         
-        if (!$result) {
-            return null;
+        if ($result) {
+            // On crée un nouvel objet Agenda avec les données
+            $agenda = new Agenda();
+            $agenda->setId($result['id']);
+            $agenda->setUrl($result['url']);
+            $agenda->setCouleur($result['couleur']);
+            $agenda->setNom($result['nom']);
+            $agenda->setIdUtilisateur($result['IdUtilisateur']); 
+            $resultat = $agenda;
         }
-        
-        // On crée un nouvel objet Agenda avec les données
-        $agenda = new Agenda();
-        $agenda->setId($result['id']);
-        $agenda->setUrl($result['url']);
-        $agenda->setCouleur($result['couleur']);
-        $agenda->setNom($result['nom']);
-        $agenda->setIdUtilisateur($result['IdUtilisateur']);  
-        return $agenda;
+
+        return $resultat;
     }
 
-    public function findURL(?string $url) : ?bool
-    {
+    /**
+     * Fonction permettant de retourner un booléen si l'url d'un agenda existe en bd
+     * @param string|null $url url de l'agenda
+     * @return bool|null true si l'agenda existe, false sinon
+     */
+    public function findURL(?string $url) : ?bool {
         $sql="SELECT * FROM ".PREFIXE_TABLE."agenda WHERE url= :url";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("url"=>$url));
@@ -61,7 +69,12 @@ class AgendaDao{
         return $agendaExiste;
     }
 
-    public function findAllByIdUtilisateur(int $idUtilisateur, $pdo): array {
+    /**
+     * Fonction permettant de retourner tous les agendas d'un utilisateur en particulierde la base de données
+     * @param int|null $idUtilisateur l'id de l'utilisateur
+     * @return array|null le tableau des agendas
+     */
+    public function findAllByIdUtilisateur(?int $idUtilisateur): array {
         $sql="SELECT * FROM ".PREFIXE_TABLE."agenda WHERE idUtilisateur= :id";
         $pdoStatement = $pdo->prepare($sql);
         $pdoStatement->execute(array("id"=>$idUtilisateur));
@@ -69,17 +82,25 @@ class AgendaDao{
         return $agendas;
     }
 
+    /**
+     * Fonction permettant de retourner tous les agendas de la base de données
+     * @return array|null le tableau des agendas
+     */
     public function findAll() : ?array{
         $sql="SELECT * FROM ".PREFIXE_TABLE."agenda";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $agenda = $pdoStatement->fetchAll();
-        // var_dump($agenda);
         return $agenda;
     }
-    public function ajouterAgenda(Agenda $agenda)
-    {
+
+    /**
+     * Fonction permettant d'ajouter un agenda dans la base de données
+     * @param Agenda $agenda l'agenda à ajouter
+     * @return void
+     */
+    public function ajouterAgenda(Agenda $agenda): void {
         // Insertion de l'agenda dans la base de données
         $sql = "INSERT INTO " . PREFIXE_TABLE . "agenda (url, couleur, nom, idUtilisateur) VALUES (:url, :couleur, :nom, :idUtilisateur)";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -93,7 +114,11 @@ class AgendaDao{
         ]);
     }
     
-    public function findAllAssoc(){
+    /**
+     * Fonction permettant de retourner tous les agendas de la base de données
+     * @return array|null le tableau des agendas
+     */
+    public function findAllAssoc(): ?array {
         $sql="SELECT * FROM ".PREFIXE_TABLE."agenda";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
@@ -102,13 +127,22 @@ class AgendaDao{
         return $agenda;
     }
 
-    public function hydrate($tableauAssoc): ?Agenda
-    {
+    /**
+     * Fonction permettant de retourner un objet Agenda à partir d'un tableau associatif
+     * @param array|null $tableauAssoc tableau associatif
+     * @return Agenda|null l'objet Agenda
+     */
+    public function hydrate(?array $tableauAssoc): ?Agenda {
         $agenda = new Agenda($tableauAssoc['url'],$tableauAssoc['couleur'],$tableauAssoc['nom'],$tableauAssoc['idUtilisateur'],$tableauAssoc['id']);
         return $agenda;
     }
 
-    public function hydrateAll($tableau): ?array{
+    /**
+     * Fonction permettant de retourner un tableau d'objets Agenda à partir d'un tableau associatif
+     * @param array|null $tableau tableau associatif
+     * @return array|null le tableau d'objets Agenda
+     */
+    public function hydrateAll(?array $tableau): ?array {
         $agendas = [];
         foreach($tableau as $tableauAssoc){
             $agenda = $this->hydrate($tableauAssoc);
