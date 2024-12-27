@@ -24,14 +24,16 @@ class ControllerGroupes extends Controller
 
     /**
      * Fonction qui permet de lister les groupes dont l'utilisateur connecté est le chef
+     * @param array|null $erreurs tableau des erreurs éventuelles
      * @return void
      */
-    public function lister(): void {
+    public function lister(?array $erreurs): void {
         $tableauGroupes = $this->listerGroupesUtilisateur();
         //$nombrePersonnes = $this->getNombrePersonnes($tableauGroupes);
 
         $template = $this->getTwig()->load('groupes.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
-        echo $template->render(array('groupes' => $tableauGroupes));
+        echo $template->render(array('groupes' => $tableauGroupes,
+                                    'message' => $erreurs));
     }
 
     /**
@@ -54,7 +56,8 @@ class ControllerGroupes extends Controller
         $pdo = $this->getPdo();
         $manager = new GroupeDao($pdo);
         $tableauGroupes = $manager->supprimerGroupe($id);
-        $this->lister();
+        $tableauMessages[] = "Le groupe a bien été supprimé";
+        $this->lister($tableauMessages);
     }
 
     /**
@@ -78,7 +81,7 @@ class ControllerGroupes extends Controller
         $pdo = $this->getPdo();
         $managerUtilisateur = new UtilisateurDao($pdo);
         $contactsId = $managerUtilisateur->findAllContact($_SESSION['utilisateur']->getId());  
-        $contacts=array();     
+        $contacts = array();     
         foreach ($contactsId as $contact) {
             $contacts[] = $managerUtilisateur->find($contact['idUtilisateur2']);
         }
@@ -105,23 +108,24 @@ class ControllerGroupes extends Controller
         $nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
         $descriptionValide = utilitaire::validerDescription($_POST['description'], $tableauErreurs);
 
-        var_dump($nomValide);
-        var_dump($descriptionValide);
+        $manager = new GroupeDao($this->getPdo());
+        $groupeExiste = $manager->groupeExiste($_POST['nom'], $_POST['description']);
 
-        if($nomValide && $descriptionValide) {
+        if($nomValide && $descriptionValide && !$groupeExiste) {
             // Etape 1 : créer groupe
             $manager = new GroupeDao($this->getPdo());
             $manager->creerGroupe($_SESSION['utilisateur']->getId(), $_POST['nom'], $_POST['description']);
-            echo "creation groupe finie";
             $manager = new GroupeDao($this->getPdo());
             $idGroupe = $manager->getIdGroupe($_SESSION['utilisateur']->getId(), $_POST['nom'], $_POST['description']);
-            echo "getidgroupe fini";
 
             // Etape 2 : ajouter membres
             $this->ajouterMembres($idGroupe['id'], $_POST['contacts']);
-            echo "ajoutermembres fini";
 
-            $this->lister();
+            $tableauErreurs[] = "Le groupe a bien été créé";
+            $this->lister($tableauErreurs);
+        } else {
+            $tableauErreurs[] = "Le groupe existe déjà";
+            $this->lister($tableauErreurs);
         }
     }
 

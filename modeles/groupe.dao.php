@@ -170,4 +170,22 @@ class GroupeDao {
             ":idUtilisateur" => $idContact,
         ));
     }
+
+    public function groupeExiste(?string $nom, ?string $description): bool {
+        $resultat = false;
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."groupe WHERE nom = :nom AND description = :description";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array(
+            ":nom" => $nom,
+            ":description" => $description,
+        ));
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $tableau = $pdoStatement->fetch();
+        
+        if ($tableau) {
+            $resultat = true;
+        }
+        
+        return $resultat;
+    }
 }
