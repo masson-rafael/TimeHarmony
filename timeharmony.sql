@@ -152,7 +152,11 @@ CREATE TABLE IF NOT EXISTS `timeharmony_groupe` (
 
 INSERT INTO `timeharmony_groupe` (`nom`, `description`, `idChef`) VALUES
  ('Réunion avec Monsieur Etcheverry', 'Groupe de l\'équipe TimeHarmony avec notre tuteur, Monsieur Etcheverry', 1),
- ('Equipe TimeHarmony', 'Groupe de l\'équipe TimeHarmony', 2);
+ ('Equipe TimeHarmony', 'Groupe de l\'équipe TimeHarmony', 2),
+ ('Groupe Test 1', 'Groupe de l\'équipe TimeHarmony test 1', 1),
+ ('Groupe Test 2', 'Groupe de l\'équipe TimeHarmony test 2', 1),
+ ('Groupe Test 3', 'Groupe de l\'équipe TimeHarmony test 3', 1),
+ ('Groupe Test 4', 'Groupe de l\'équipe TimeHarmony test 4', 1);
 
 --
 -- Déchargement des données de la table 'groupe'
@@ -324,7 +328,10 @@ CREATE TABLE IF NOT EXISTS `timeharmony_composer` (
 --
 
 INSERT INTO `timeharmony_composer` (`idGroupe`, `idUtilisateur`) VALUES
- (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (2, 1), (2, 2), (2, 3), (2, 4);
+ (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (2, 1), (2, 2), (2, 3), (2, 4),
+ (4,1), (4,2), (4,3), (4,4), (4,5),
+ (5,1), (5,2), (5,3), (5,4), (5,5),
+ (6,1), (6,2), (6,3), (6,4), (6,5);
 
 --
 -- Déchargement des données de la table 'composer'
