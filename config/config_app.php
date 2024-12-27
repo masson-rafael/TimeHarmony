@@ -20,3 +20,7 @@ define('WEBSITE_TITLE', 'TimeHarmony');
 define('WEBSITE_VERSION', '0.2');
 define('WEBSITE_DESCRIPTION', 'Une application web qui permet de trouver des créneaux de rendez-vous facilement');
 define('WEBSITE_LANGUAGE', 'fr');
+
+//Constantes connexion
+define('MAX_CONNEXION_ECHOUEES', 3);
+define('DELAI_ATTENTE_CONNEXION', 10*60); // 10 minutes
