@@ -215,7 +215,7 @@ class UtilisateurDao
         $utilisateur->setPhotoDeProfil($tableauAssoc['photoDeProfil']);
         $utilisateur->setEstAdmin($tableauAssoc['estAdmin']);
         $utilisateur->setTentativesEchouees($tableauAssoc['tentativesEchouees']);
-        $utilisateur->setDateDernierEchecConnexion($tableauAssoc['dateDernierEchecConnexion']);
+        $utilisateur->setDateDernierEchecConnexion(new DateTime($tableauAssoc['dateDernierEchecConnexion']));
         $utilisateur->setStatutCompte($tableauAssoc['statutCompte']);
         return $utilisateur;
     }
@@ -442,6 +442,11 @@ class UtilisateurDao
         $stmt->execute(array('id1' => $idDemandeur, 'id2' => $idReceveur));
     }
 
+    /**
+     * Fonction permettant de récupérer un objet utilisateur dont l'email correspond à celui passé en paramètre
+     * @param string|null $email email de l'utilisateur
+     * @return Utilisateur objet utilisateur
+     */
     public function getObjetUtilisateur(?string $email): Utilisateur {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE email = :email";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -449,6 +454,44 @@ class UtilisateurDao
         $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
         $utilisateur = $this->hydrate($result);
         return $utilisateur;
+    }
+
+    /**
+     * Fonction permettant de mettre à jour tous les champs d'un utilisateur
+     * @param Utilisateur|null $utilisateur utilisateur à mettre à jour
+     * @return void
+     */
+    public function miseAJourUtilisateur(?Utilisateur $utilisateur): void {
+        $date = null;
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur SET 
+            nom = :nom,
+            prenom = :prenom,
+            email = :email,
+            motDePasse = :motDePasse,
+            photoDeProfil = :photoDeProfil,
+            estAdmin = :estAdmin,
+            tentativesEchouees = :tentativesEchouees,
+            dateDernierEchecConnexion = :dateDernierEchecConnexion,
+            statutCompte = :statutCompte
+            WHERE id = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+
+        if(!is_null($utilisateur->getDateDernierEchecConnexion())) {
+            $date = $utilisateur->getDateDernierEchecConnexion()->format('Y-m-d H:i:s');
+        }
+
+        $pdoStatement->execute(array(
+            "nom" => $utilisateur->getNom(),
+            "prenom" => $utilisateur->getPrenom(),
+            "email" => $utilisateur->getEmail(),
+            "motDePasse" => $utilisateur->getMotDePasse(),
+            "photoDeProfil" => $utilisateur->getPhotoDeProfil(),
+            "estAdmin" => $utilisateur->getEstAdmin(),
+            "tentativesEchouees" => $utilisateur->getTentativesEchouees(),
+            "dateDernierEchecConnexion" => $date,
+            "statutCompte" => $utilisateur->getStatutCompte(),
+            "id" => $utilisateur->getId()
+        ));
     }
 }
 

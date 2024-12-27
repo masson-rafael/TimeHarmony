@@ -48,9 +48,9 @@ class Utilisateur {
     private int|null $tentativesEchouees;
     /**
      * 
-     * @var date|null date du dernier échec de connexion
+     * @var DateTime|null date du dernier échec de connexion
      */
-    private date|null $dateDernierEchecConnexion;
+    private DateTime|null $dateDernierEchecConnexion;
     /**
      * 
      * @var string|null statut du compte de l'utilisateur
@@ -187,9 +187,9 @@ class Utilisateur {
     /**
      * Get la date du dernier échec de connexion
      *
-     * @return date|null date du dernier échec de connexion
+     * @return DateTime|null date du dernier échec de connexion
      */
-    public function getDateDernierEchecConnexion(): ?date {
+    public function getDateDernierEchecConnexion(): ?DateTime {
         return $this->dateDernierEchecConnexion;
     }
 
@@ -283,10 +283,10 @@ class Utilisateur {
     /**
      * Set la date du dernier échec de connexion
      *
-     * @param date|null $dateDernierEchecConnexion de l'utilisateur
+     * @param DateTime|null $dateDernierEchecConnexion de l'utilisateur
      * @return void
      */
-    public function setDateDernierEchecConnexion(?date $dateDernierEchecConnexion): void {
+    public function setDateDernierEchecConnexion(?DateTime $dateDernierEchecConnexion): void {
         $this->dateDernierEchecConnexion = $dateDernierEchecConnexion;
     }
 
@@ -345,6 +345,7 @@ class Utilisateur {
         $this->setTentativesEchouees($this->getTentativesEchouees() + 1);
 
         if($this->getTentativesEchouees() > MAX_CONNEXION_ECHOUEES) {
+            $this->setDateDernierEchecConnexion(new DateTime());
             $this->setStatutCompte("bloque");
         }
     }
@@ -374,8 +375,10 @@ class Utilisateur {
     public function delaiAttenteEstEcoulé(): ?bool {
         $delaisEcoule = false;
 
-        if($this->tempsRestantAvantReactivationCompte() > DELAI_REACTIVATION_COMPTE) {
+        if($this->tempsRestantAvantReactivationCompte() < 0) {
             $delaisEcoule = true;
+            $this->setDateDernierEchecConnexion(null);
+            $this->reinitialiserTentativesConnexion();
         }
 
         return $delaisEcoule;
@@ -383,9 +386,11 @@ class Utilisateur {
 
     /**
      * Fonction qui retourne le temps restant avant la réactivation du compte
-     * @return date temps restant avant réactivation du compte
+     * @return DateTime temps restant avant réactivation du compte
      */
-    public function tempsRestantAvantReactivationCompte(): date {
-        return new date() - $this->getDateDernierEchecConnexion();
+    public function tempsRestantAvantReactivationCompte(): int {
+        $dateActuelle = new DateTime();
+        var_dump(DELAI_ATTENTE_CONNEXION - ($dateActuelle->getTimestamp() - $this->getDateDernierEchecConnexion()->getTimestamp()));
+        return DELAI_ATTENTE_CONNEXION - ($dateActuelle->getTimestamp() - $this->getDateDernierEchecConnexion()->getTimestamp());
     }
 }
