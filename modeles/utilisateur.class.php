@@ -41,6 +41,21 @@ class Utilisateur {
      * @var boolean|null est admin de l'utilisateur
      */
     private bool|null $estAdmin;
+    /**
+     * 
+     * @var integer|null nombre de tentatives échouées de connexion
+     */
+    private int|null $tentativesEchouees;
+    /**
+     * 
+     * @var date|null date du dernier échec de connexion
+     */
+    private date|null $dateDernierEchecConnexion;
+    /**
+     * 
+     * @var string|null statut du compte de l'utilisateur
+     */
+    private string|null $statutCompte;
 
     /**
      * Constructeur par défaut
@@ -161,6 +176,33 @@ class Utilisateur {
     }
 
     /**
+     * Get le nombre de tentatives échouées de connexion
+     *
+     * @return integer|null nombre de tentatives échouées de connexion
+     */
+    public function getTentativesEchouees(): ?int {
+        return $this->tentativesEchouees;
+    }
+
+    /**
+     * Get la date du dernier échec de connexion
+     *
+     * @return date|null date du dernier échec de connexion
+     */
+    public function getDateDernierEchecConnexion(): ?date {
+        return $this->dateDernierEchecConnexion;
+    }
+
+    /**
+     * Get le statut du compte de l'utilisateur
+     *
+     * @return string|null statut du compte de l'utilisateur
+     */
+    public function getStatutCompte(): ?string {
+        return $this->statutCompte;
+    }
+
+    /**
      * Set l'id de l'utilisateur
      *
      * @param integer $id de l'utilisateur
@@ -215,7 +257,7 @@ class Utilisateur {
    *
    * @param string $photoDeProfil Le chemin de la photo de profil.
    */
-  public function setPhotoDeProfil($photoDeProfil) {
+    public function setPhotoDeProfil(string $photoDeProfil) {
     $this->photoDeProfil = $photoDeProfil;
 }
     /**
@@ -229,6 +271,36 @@ class Utilisateur {
     }
 
     /**
+     * Set le nombre de tentatives échouées de connexion
+     *
+     * @param integer $tentativesEchouees de l'utilisateur
+     * @return void
+     */
+    public function setTentativesEchouees(int $tentativesEchouees): void {
+        $this->tentativesEchouees = $tentativesEchouees;
+    }
+
+    /**
+     * Set la date du dernier échec de connexion
+     *
+     * @param date $dateDernierEchecConnexion de l'utilisateur
+     * @return void
+     */
+    public function setDateDernierEchecConnexion(date $dateDernierEchecConnexion): void {
+        $this->dateDernierEchecConnexion = $dateDernierEchecConnexion;
+    }
+
+    /**
+     * Set le statut du compte de l'utilisateur
+     *
+     * @param string $statutCompte de l'utilisateur
+     * @return void
+     */
+    public function setStatutCompte(string $statutCompte): void {
+        $this->statutCompte = $statutCompte;
+    }
+
+    /**
      * ToString permettant d'afficher les paramtres de l'utilisateur
      *
      * @return string chaine de caractères a afficher
@@ -237,14 +309,14 @@ class Utilisateur {
         return "Utilisateur : " . $this->id . " " . $this->nom . " " . $this->prenom . " " . $this->email . " " . $this->motDePasse . " " . $this->photoDeProfil . " " . $this->estAdmin;
     }
 
-    public function getContact($pdo, $idUtilisateur): array|null {
-    $managerUtilisateur = new UtilisateurDao($pdo);
-    $tableau = $managerUtilisateur->findAllContact($idUtilisateur);  
-    $contacts = $managerUtilisateur->hydrateAll($tableau);
-    return $contacts;
+    public function getContact(?PDO $pdo, ?int $idUtilisateur): ?array {
+        $managerUtilisateur = new UtilisateurDao($pdo);
+        $tableau = $managerUtilisateur->findAllContact($idUtilisateur);  
+        $contacts = $managerUtilisateur->hydrateAll($tableau);
+        return $contacts;
     }
 
-    public function getGroupe($pdo,$idUtilisateur): array|null {
+    public function getGroupe(?PDO $pdo, ?int $idUtilisateur): ?array {
         // Récupération des groupes
         $managerGroupe = new GroupeDao($pdo);
 
@@ -254,7 +326,7 @@ class Utilisateur {
         return $groupes;
     }
 
-    public function getAgendas(): array|null {
+    public function getAgendas(): ?array {
         $db = Bd::getInstance();
         $pdo = $db->getConnexion();
 
