@@ -27,7 +27,7 @@ class ControllerGroupes extends Controller
      * @param array|null $erreurs tableau des erreurs éventuelles
      * @return void
      */
-    public function lister(?array $erreurs): void {
+    public function lister(?array $erreurs = []): void {
         $tableauGroupes = $this->listerGroupesUtilisateur();
         //$nombrePersonnes = $this->getNombrePersonnes($tableauGroupes);
 
