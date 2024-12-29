@@ -216,6 +216,8 @@ class UtilisateurDao
         $utilisateur->setEstAdmin($tableauAssoc['estAdmin']);
         $utilisateur->setTentativesEchouees($tableauAssoc['tentativesEchouees']);
         $tableauAssoc['dateDernierEchecConnexion'] == null ? $utilisateur->setDateDernierEchecConnexion(null) : $utilisateur->setDateDernierEchecConnexion(new DateTime($tableauAssoc['dateDernierEchecConnexion']));
+        $utilisateur->setTokenReinitialisation($tableauAssoc['token']);
+        $tableauAssoc['dateExpirationToken'] == null ? $utilisateur->setDateExpirationToken(null) : $utilisateur->setDateExpirationToken(new DateTime($tableauAssoc['dateExpirationToken']));
         $utilisateur->setStatutCompte($tableauAssoc['statutCompte']);
         return $utilisateur;
     }

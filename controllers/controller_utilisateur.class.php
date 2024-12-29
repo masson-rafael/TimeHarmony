@@ -538,14 +538,21 @@ class ControllerUtilisateur extends Controller
         $tableauErreurs = [];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
-        $idUtilisateur = $manager->getIdFromMail($_GET['email']);
+        $utilisateur = $manager->getObjetUtilisateur($_GET['email']);
 
         // Cette methode verifie la valeur des champs et si les mdp sont les memes 
         $mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs, $_POST['pwdConfirme']);
 
         if ($mdpValide) {
+            /**
+             * @todo mauvais pressentiment. Verifier le fonctionnement
+             */
+            $utilisateur->setTokenReinitialisation(null);
+            $utilisateur->setDateExpirationToken(null);
+            $manager->miseAJourUtilisateur($utilisateur);
+
             $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
-            $manager->reinitialiserMotDePasse($idUtilisateur, $mdpHache);
+            $manager->reinitialiserMotDePasse($utilisateur->getId(), $mdpHache);
             $this->getTwig()->addGlobal('utilisateurGlobal', null);
             unset($_SESSION['utilisateur']);
             $this->genererVueConnexion($tableauErreurs, null);
