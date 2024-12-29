@@ -300,11 +300,7 @@ class ControllerUtilisateur extends Controller
         $messageErreurs = [];
         $nomValide = utilitaire::validerNom($_POST['nom'], $messageErreurs);
         $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
-        //$roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
         @$photoValide = utilitaire::validerPhoto($_FILES['photo'], $messageErreurs);
-
-        // var_dump($nomValide);
-        // var_dump($prenomValide);
 
         if ($nomValide && $prenomValide) {//} && $roleValide) {
             $pdo = $this->getPdo();
@@ -449,43 +445,39 @@ class ControllerUtilisateur extends Controller
             $manager = new UtilisateurDAO($this->getPdo());
             $utilisateur = $manager->getObjetUtilisateur($_POST['email']);
             $token = $utilisateur->genererTokenReinitialisation();
-            var_dump($token);
             $manager->miseAJourUtilisateur($utilisateur);
-            var_dump($utilisateur);
-
-            $messageErreur[] = "Demande envoyee par mail";
 
             // En-têtes du mail
-            // $headers = "From: no-reply@timeharmony.com\r\n";
-            // $headers .= "MIME-Version: 1.0\r\n";
-            // $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+            $headers = "From: no-reply@timeharmony.com\r\n";
+            $headers .= "MIME-Version: 1.0\r\n";
+            $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
 
-            // $sujet = "Reinitialisation de votre mot de passe";
-            // $destinataire = $_POST['email'];
-            // $lien = "http://lakartxela.iutbayonne.univ-pau.fr/~tlatxague/TimeHarmony/index.php?controleur=utilisateur&methode=mailRecu&email=$destinataire";
+            $sujet = "Reinitialisation de votre mot de passe";
+            $destinataire = $_POST['email'];
+            $lien = "http://lakartxela.iutbayonne.univ-pau.fr/~tlatxague/TimeHarmony/index.php?controleur=utilisateur&methode=mailRecu&token=$token&email=$destinataire";
 
-            // // Corps du message (format HTML)
-            // $message = "
-            // <html>
-            //     <head>
-            //         <title>$sujet</title>
-            //     </head>
-            //     <body>
-            //         <h3>Bonjour $destinataire,</h3>
-            //         <p>Vous avez fait une demandé de réinitialisation de votre mot de passe</p> <br>
-            //         <p>Pour cela, cliquez sur le lien ci-dessous et suivez les instructions :</p>
-            //         <p>
-            //             <a href='$lien' style='color: #1a0dab; font-size: 16px; text-decoration: none;'>Accéder au site</a>
-            //         </p>
-            //         <p>Merci et à bientôt !</p>
-            //     </body>
-            // </html>";
+            // Corps du message (format HTML)
+            $message = "
+            <html>
+                <head>
+                    <title>$sujet</title>
+                </head>
+                <body>
+                    <h3>Bonjour $destinataire,</h3>
+                    <p>Vous avez fait une demandé de réinitialisation de votre mot de passe</p> <br>
+                    <p>Pour cela, cliquez sur le lien ci-dessous et suivez les instructions :</p>
+                    <p>
+                        <a href='$lien' style='color: #1a0dab; font-size: 16px; text-decoration: none;'>Accéder au site</a>
+                    </p>
+                    <p>Merci et à bientôt !</p>
+                </body>
+            </html>";
 
-            // if (mail($destinataire, $sujet, $message, $headers)) {
-            //     $messageErreur[] = "L'e-mail a été envoyé avec succès à $destinataire.";
-            // } else {
-            //     $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé.";
-            // }
+            if (mail($destinataire, $sujet, $message, $headers)) {
+                $messageErreur[] = "L'e-mail a été envoyé avec succès à $destinataire.";
+            } else {
+                $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé.";
+            }
 
             $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(array('message' => $messageErreur));
@@ -514,14 +506,26 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
     public function mailRecu() {
-        $dest = $_GET['email'];
-        $template = $this->getTwig()->load('reinitialisationMdp.html.twig');
-        echo $template->render(
-            array(
-                'reinitialise' => false,
-                'email' => $dest,
-            )
-        );
+        $token = $_GET['token'];
+        $email = $_GET['email'];
+        $manager = new UtilisateurDAO($this->getPdo());
+        $tokenUtilisateur = $manager->getObjetUtilisateur($email);
+
+        if($tokenUtilisateur == $token) {
+            $template = $this->getTwig()->load('reinitialisationMdp.html.twig');
+            echo $template->render(
+                array(
+                    'reinitialise' => false,
+                    'email' => $email,
+                )
+            );
+        } else {
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render(
+                array(
+                )
+            );
+        }
     }
 
     /**
