@@ -475,12 +475,18 @@ class UtilisateurDao
             estAdmin = :estAdmin,
             tentativesEchouees = :tentativesEchouees,
             dateDernierEchecConnexion = :dateDernierEchecConnexion,
-            statutCompte = :statutCompte
+            statutCompte = :statutCompte,
+            token = :token,
+            dateExpirationToken = :dateExpiraiton
             WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
 
         if(!is_null($utilisateur->getDateDernierEchecConnexion())) {
             $date = $utilisateur->getDateDernierEchecConnexion()->format('Y-m-d H:i:s');
+        }
+
+        if(!is_null($utilisateur->getDateExpirationToken())) {
+            $dateToken = $utilisateur->getDateExpirationToken()->format('Y-m-d H:i:s');
         }
 
         $pdoStatement->execute(array(
@@ -493,6 +499,8 @@ class UtilisateurDao
             "tentativesEchouees" => $utilisateur->getTentativesEchouees(),
             "dateDernierEchecConnexion" => $date,
             "statutCompte" => $utilisateur->getStatutCompte(),
+            "token" => $utilisateur->getTokenReinitialisation(),
+            "dateExpiraiton" => $dateToken,
             "id" => $utilisateur->getId()
         ));
     }

@@ -56,6 +56,16 @@ class Utilisateur {
      * @var string|null statut du compte de l'utilisateur
      */
     private string|null $statutCompte;
+    /**
+     * 
+     * @var string|null le token de réinitialisation
+     */
+    private string|null $tokenReinitialisation;
+    /**
+     * 
+     * @var DateTime|null la date d'expiration du token genere
+     */
+    private DateTime|null $dateExpirationToken;
 
     /**
      * Constructeur par défaut
@@ -203,6 +213,24 @@ class Utilisateur {
     }
 
     /**
+     * Get le token de réinitialisation
+     * 
+     * @return string|null le token de réinitialisation
+     */
+    public function getTokenReinitialisation(): ?string {
+        return $this->tokenReinitialisation;
+    }
+
+    /**
+     * Get la date de réinitialisation du token
+     * 
+     * @return DateTime|null date de réinitialisation du token
+     */
+    public function getDateExpirationToken(): ?DateTime {
+        return $this->dateExpirationToken;
+    }
+
+    /**
      * Set l'id de l'utilisateur
      *
      * @param integer $id de l'utilisateur
@@ -298,6 +326,27 @@ class Utilisateur {
      */
     public function setStatutCompte(string $statutCompte): void {
         $this->statutCompte = $statutCompte;
+    }
+
+    /**
+     * Set le token de reinitialisation
+     * 
+     * @param string $token le token de reinit
+     * @return void
+     */
+    public function setTokenReinitialisation(?string $token): void {
+        $this->tokenReinitialisation = $token;
+    }
+    
+
+    /**
+     * Set la date d'expiration du token
+     * 
+     * @param DateTime|null $date la date d'expritation du token
+     * @return void
+     */
+    public function setDateExpirationToken(?DateTime $date): void {
+        $this->dateExpirationToken = $date;
     }
 
     /**
@@ -399,5 +448,27 @@ class Utilisateur {
             $this->setDateDernierEchecConnexion(new DateTime());
         }
         return DELAI_ATTENTE_CONNEXION - ($dateActuelle->getTimestamp() - $this->getDateDernierEchecConnexion()->getTimestamp());
+    }
+
+    /**
+     * Fonction qui génère et retourne le token créé + son temps d'expiration
+     * 
+     * @return string|null le token généré
+     */
+    public function genererTokenReinitialisation(): ?string {
+        $this->setTokenReinitialisation(bin2hex(random_bytes(32)));
+        $this->setDateExpirationToken(new DateTime(date('Y-m-d H:i:s', strtotime('+1 hour'))));
+        return $this->getTokenReinitialisation();
+    }
+    
+    /**
+     * Fonction qui verifie que le token est bien valide
+     * 
+     * @param string|null $token le token de l'utilisateur
+     * @return bool si le token est valide ou non
+     */
+    public function estTokenValide(?string $token): bool {
+        return $this->getTokenReinitialisation() === $token 
+            && strtotime($this->getDateExpirationToken()) > time();
     }
 }

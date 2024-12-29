@@ -446,37 +446,46 @@ class ControllerUtilisateur extends Controller
         $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
 
         if ($emailValide) {
+            $manager = new UtilisateurDAO($this->getPdo());
+            $utilisateur = $manager->getObjetUtilisateur($_POST['email']);
+            $token = $utilisateur->genererTokenReinitialisation();
+            var_dump($token);
+            $manager->miseAJourUtilisateur($utilisateur);
+            var_dump($utilisateur);
+
+            $messageErreur[] = "Demande envoyee par mail";
+
             // En-têtes du mail
-            $headers = "From: no-reply@timeharmony.com\r\n";
-            $headers .= "MIME-Version: 1.0\r\n";
-            $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+            // $headers = "From: no-reply@timeharmony.com\r\n";
+            // $headers .= "MIME-Version: 1.0\r\n";
+            // $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
 
-            $sujet = "Reinitialisation de votre mot de passe";
-            $destinataire = $_POST['email'];
-            $lien = "http://lakartxela.iutbayonne.univ-pau.fr/~tlatxague/TimeHarmony/index.php?controleur=utilisateur&methode=mailRecu&email=$destinataire";
+            // $sujet = "Reinitialisation de votre mot de passe";
+            // $destinataire = $_POST['email'];
+            // $lien = "http://lakartxela.iutbayonne.univ-pau.fr/~tlatxague/TimeHarmony/index.php?controleur=utilisateur&methode=mailRecu&email=$destinataire";
 
-            // Corps du message (format HTML)
-            $message = "
-            <html>
-                <head>
-                    <title>$sujet</title>
-                </head>
-                <body>
-                    <h3>Bonjour $destinataire,</h3>
-                    <p>Vous avez fait une demandé de réinitialisation de votre mot de passe</p> <br>
-                    <p>Pour cela, cliquez sur le lien ci-dessous et suivez les instructions :</p>
-                    <p>
-                        <a href='$lien' style='color: #1a0dab; font-size: 16px; text-decoration: none;'>Accéder au site</a>
-                    </p>
-                    <p>Merci et à bientôt !</p>
-                </body>
-            </html>";
+            // // Corps du message (format HTML)
+            // $message = "
+            // <html>
+            //     <head>
+            //         <title>$sujet</title>
+            //     </head>
+            //     <body>
+            //         <h3>Bonjour $destinataire,</h3>
+            //         <p>Vous avez fait une demandé de réinitialisation de votre mot de passe</p> <br>
+            //         <p>Pour cela, cliquez sur le lien ci-dessous et suivez les instructions :</p>
+            //         <p>
+            //             <a href='$lien' style='color: #1a0dab; font-size: 16px; text-decoration: none;'>Accéder au site</a>
+            //         </p>
+            //         <p>Merci et à bientôt !</p>
+            //     </body>
+            // </html>";
 
-            if (mail($destinataire, $sujet, $message, $headers)) {
-                $messageErreur[] = "L'e-mail a été envoyé avec succès à $destinataire.";
-            } else {
-                $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé.";
-            }
+            // if (mail($destinataire, $sujet, $message, $headers)) {
+            //     $messageErreur[] = "L'e-mail a été envoyé avec succès à $destinataire.";
+            // } else {
+            //     $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé.";
+            // }
 
             $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(array('message' => $messageErreur));

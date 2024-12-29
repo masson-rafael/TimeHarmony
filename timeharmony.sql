@@ -108,6 +108,8 @@ CREATE TABLE IF NOT EXISTS `timeharmony_utilisateur` (
     `tentativesEchouees` int DEFAULT 0 NOT NULL,
     `dateDernierEchecConnexion` DATETIME DEFAULT NULL,
     `statutCompte` varchar(255) DEFAULT 'actif' NOT NULL,
+    `token` varchar(100) DEFAULT NULL,
+    `dateExpirationToken` DATETIME DEFAULT NULL,
     `estAdmin` boolean DEFAULT false NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
