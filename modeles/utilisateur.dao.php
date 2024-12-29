@@ -215,7 +215,7 @@ class UtilisateurDao
         $utilisateur->setPhotoDeProfil($tableauAssoc['photoDeProfil']);
         $utilisateur->setEstAdmin($tableauAssoc['estAdmin']);
         $utilisateur->setTentativesEchouees($tableauAssoc['tentativesEchouees']);
-        $utilisateur->setDateDernierEchecConnexion(new DateTime($tableauAssoc['dateDernierEchecConnexion']));
+        $tableauAssoc['dateDernierEchecConnexion'] == null ? $utilisateur->setDateDernierEchecConnexion(null) : $utilisateur->setDateDernierEchecConnexion(new DateTime($tableauAssoc['dateDernierEchecConnexion']));
         $utilisateur->setStatutCompte($tableauAssoc['statutCompte']);
         return $utilisateur;
     }

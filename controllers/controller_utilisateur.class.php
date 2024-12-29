@@ -84,7 +84,8 @@ class ControllerUtilisateur extends Controller
         if ($emailValide && $passwdValide) {
             $manager = new UtilisateurDao($pdo);
             $compteUtilisateurCorrespondant = $manager->getObjetUtilisateur($_POST['email']);
-            var_dump($compteUtilisateurCorrespondant);
+
+            // Reactivation compte
             $compteUtilisateurCorrespondant->reactiverCompte();
 
             // On recupere un tuple avec un booleen et le mdp hache
@@ -97,6 +98,7 @@ class ControllerUtilisateur extends Controller
                     $utilisateur = $manager->getUserMail($_POST['email']);
                     $tableauErreurs[] = "Connexion réussie !";
                     $compteUtilisateurCorrespondant->reinitialiserTentativesConnexion();
+                    $compteUtilisateurCorrespondant->reactiverCompte();
                     $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
                     $this->genererVueConnecte($utilisateur, $tableauErreurs);
                 } 
@@ -104,8 +106,6 @@ class ControllerUtilisateur extends Controller
                 else {
                     $tableauErreurs[] = "Mot de passe incorrect. Réinitialisez votre mot de passe"; // Mauvais MDP
                     $compteUtilisateurCorrespondant->gererEchecConnexion();
-                    //$compteUtilisateurCorrespondant->setDateDernierEchecConnexion(new DateTime());
-                    var_dump($compteUtilisateurCorrespondant);
                     $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
                     $this->genererVueConnexion($tableauErreurs, null);
                 }
@@ -113,7 +113,6 @@ class ControllerUtilisateur extends Controller
 
             else {
                 $tableauErreurs[] = "Votre compte est bloqué. Temps restant avec deblocage : " . (string) abs($compteUtilisateurCorrespondant->tempsRestantAvantReactivationCompte()) . " secondes."; // Compte inactif
-                //$compteUtilisateurCorrespondant->setDateDernierEchecConnexion(new DateTime());
                 $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
                 $this->genererVueConnexion($tableauErreurs, null);
             }

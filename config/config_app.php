@@ -23,4 +23,4 @@ define('WEBSITE_LANGUAGE', 'fr');
 
 //Constantes connexion
 define('MAX_CONNEXION_ECHOUEES', 3);
-define('DELAI_ATTENTE_CONNEXION', 10*60); // 10 minutes
+define('DELAI_ATTENTE_CONNEXION', 1*60); // 10 minutes

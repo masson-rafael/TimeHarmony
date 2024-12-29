@@ -344,7 +344,7 @@ class Utilisateur {
     public function gererEchecConnexion(): void {
         $this->setTentativesEchouees($this->getTentativesEchouees() + 1);
 
-        if($this->getTentativesEchouees() > MAX_CONNEXION_ECHOUEES) {
+        if($this->getTentativesEchouees() >= MAX_CONNEXION_ECHOUEES) {
             $this->setDateDernierEchecConnexion(new DateTime());
             $this->setStatutCompte("bloque");
         }
@@ -357,6 +357,11 @@ class Utilisateur {
     public function reactiverCompte(): void {
         if($this->delaiAttenteEstEcoulé()) {
             $this->setStatutCompte("actif");
+            $this->reinitialiserTentativesConnexion();
+        }
+        //$this->reinitialiserTentativesConnexion();
+        if($this->getTentativesEchouees() < MAX_CONNEXION_ECHOUEES) {
+            $this->setDateDernierEchecConnexion(null);
         }
     }
 
@@ -390,7 +395,9 @@ class Utilisateur {
      */
     public function tempsRestantAvantReactivationCompte(): int {
         $dateActuelle = new DateTime();
-        var_dump(DELAI_ATTENTE_CONNEXION - ($dateActuelle->getTimestamp() - $this->getDateDernierEchecConnexion()->getTimestamp()));
+        if ($this->getDateDernierEchecConnexion() == null) {
+            $this->setDateDernierEchecConnexion(new DateTime());
+        }
         return DELAI_ATTENTE_CONNEXION - ($dateActuelle->getTimestamp() - $this->getDateDernierEchecConnexion()->getTimestamp());
     }
 }
