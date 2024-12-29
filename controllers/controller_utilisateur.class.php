@@ -72,54 +72,47 @@ class ControllerUtilisateur extends Controller
     {
         $pdo = $this->getPdo();
         $tableauErreurs = [];
-
-        /**
-         * Verifie que l'email et le mdp sont bien remplis et respectent les critères
-         * Verifie ensuite si l'email existe dans la bd
-         * Verifie si le mdp clair correspond au hachage dans bd
-         */
+        
+        // Validation des entrées
         $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
         $passwdValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs);
 
-        if ($emailValide && $passwdValide) {
-            $manager = new UtilisateurDao($pdo);
-            $compteUtilisateurCorrespondant = $manager->getObjetUtilisateur($_POST['email']);
-
+        $manager = new UtilisateurDao($pdo);
+        $compteUtilisateurCorrespondant = $manager->getObjetUtilisateur($_POST['email']);
+        
+        if ($emailValide && $passwdValide && $compteUtilisateurCorrespondant != null) {
             // Reactivation compte
             $compteUtilisateurCorrespondant->reactiverCompte();
-
+            
             // On recupere un tuple avec un booleen et le mdp hache
             $motDePasse = $manager->connexionReussie($_POST['email']);
-
+            
             if ($compteUtilisateurCorrespondant->getStatutCompte() === "actif") {
-                // Si les mdp sont les mêmes
                 if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
-                    // On recupere l'utilisateur
+                    // Connexion réussie
                     $utilisateur = $manager->getUserMail($_POST['email']);
                     $tableauErreurs[] = "Connexion réussie !";
                     $compteUtilisateurCorrespondant->reinitialiserTentativesConnexion();
                     $compteUtilisateurCorrespondant->reactiverCompte();
                     $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
                     $this->genererVueConnecte($utilisateur, $tableauErreurs);
-                } 
-
-                else {
-                    $tableauErreurs[] = "Mot de passe incorrect. Réinitialisez votre mot de passe"; // Mauvais MDP
+                } else {
+                    // Échec de connexion - mauvais mot de passe
+                    $tableauErreurs[] = "Mot de passe incorrect. Essayez de réinitialisez votre mot de passe";
                     $compteUtilisateurCorrespondant->gererEchecConnexion();
                     $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
                     $this->genererVueConnexion($tableauErreurs, null);
                 }
-            }
-
-            else {
-                $tableauErreurs[] = "Votre compte est bloqué. Temps restant avec deblocage : " . (string) abs($compteUtilisateurCorrespondant->tempsRestantAvantReactivationCompte()) . " secondes."; // Compte inactif
+            } else {
+                // Compte inactif
+                $tableauErreurs[] = "Votre compte est bloqué. Temps restant avec deblocage : " . 
+                    (string) abs($compteUtilisateurCorrespondant->tempsRestantAvantReactivationCompte()) . " secondes.";
                 $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
                 $this->genererVueConnexion($tableauErreurs, null);
             }
-
-        } 
-
-        else {
+        } else {
+            // Échec de validation des entrées
+            $tableauErreurs[] = "Aucun compte avec cette adresse mail n'existe";
             $this->genererVueConnexion($tableauErreurs, null);
         }
     }

@@ -447,12 +447,15 @@ class UtilisateurDao
      * @param string|null $email email de l'utilisateur
      * @return Utilisateur objet utilisateur
      */
-    public function getObjetUtilisateur(?string $email): Utilisateur {
+    public function getObjetUtilisateur(?string $email): ?Utilisateur {
+        $utilisateur = null;
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE email = :email";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("email" => $email));
         $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
-        $utilisateur = $this->hydrate($result);
+        if($result != false) {
+            $utilisateur = $this->hydrate($result);
+        }
         return $utilisateur;
     }
 
