@@ -203,7 +203,7 @@ class UtilisateurDao
      * set a hydrater le tableau associatif
      *
      * @param array|null $tableauAssoc tableau associatif
-     * @return CreneauLibre|null créneau libre
+     * @return Utilisateur|null $utilisateur objet utilisateur
      */
     public function hydrate(?array $tableauAssoc): ?Utilisateur {
         $utilisateur = new Utilisateur();
@@ -214,6 +214,11 @@ class UtilisateurDao
         $utilisateur->setMotDePasse($tableauAssoc['motDePasse']);
         $utilisateur->setPhotoDeProfil($tableauAssoc['photoDeProfil']);
         $utilisateur->setEstAdmin($tableauAssoc['estAdmin']);
+        $utilisateur->setTentativesEchouees($tableauAssoc['tentativesEchouees']);
+        $tableauAssoc['dateDernierEchecConnexion'] == null ? $utilisateur->setDateDernierEchecConnexion(null) : $utilisateur->setDateDernierEchecConnexion(new DateTime($tableauAssoc['dateDernierEchecConnexion']));
+        $utilisateur->setTokenReinitialisation($tableauAssoc['token']);
+        $tableauAssoc['dateExpirationToken'] == null ? $utilisateur->setDateExpirationToken(null) : $utilisateur->setDateExpirationToken(new DateTime($tableauAssoc['dateExpirationToken']));
+        $utilisateur->setStatutCompte($tableauAssoc['statutCompte']);
         return $utilisateur;
     }
 
@@ -437,6 +442,69 @@ class UtilisateurDao
         $sql = "DELETE FROM ".PREFIXE_TABLE."demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2= :id2";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id1' => $idDemandeur, 'id2' => $idReceveur));
+    }
+
+    /**
+     * Fonction permettant de récupérer un objet utilisateur dont l'email correspond à celui passé en paramètre
+     * @param string|null $email email de l'utilisateur
+     * @return Utilisateur objet utilisateur
+     */
+    public function getObjetUtilisateur(?string $email): ?Utilisateur {
+        $utilisateur = null;
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE email = :email";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("email" => $email));
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        if($result != false) {
+            $utilisateur = $this->hydrate($result);
+        }
+        return $utilisateur;
+    }
+
+    /**
+     * Fonction permettant de mettre à jour tous les champs d'un utilisateur
+     * @param Utilisateur|null $utilisateur utilisateur à mettre à jour
+     * @return void
+     */
+    public function miseAJourUtilisateur(?Utilisateur $utilisateur): void {
+        $date = null;
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur SET 
+            nom = :nom,
+            prenom = :prenom,
+            email = :email,
+            motDePasse = :motDePasse,
+            photoDeProfil = :photoDeProfil,
+            estAdmin = :estAdmin,
+            tentativesEchouees = :tentativesEchouees,
+            dateDernierEchecConnexion = :dateDernierEchecConnexion,
+            statutCompte = :statutCompte,
+            token = :token,
+            dateExpirationToken = :dateExpiraiton
+            WHERE id = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+
+        if(!is_null($utilisateur->getDateDernierEchecConnexion())) {
+            $date = $utilisateur->getDateDernierEchecConnexion()->format('Y-m-d H:i:s');
+        }
+
+        if(!is_null($utilisateur->getDateExpirationToken())) {
+            $dateToken = $utilisateur->getDateExpirationToken()->format('Y-m-d H:i:s');
+        }
+
+        $pdoStatement->execute(array(
+            "nom" => $utilisateur->getNom(),
+            "prenom" => $utilisateur->getPrenom(),
+            "email" => $utilisateur->getEmail(),
+            "motDePasse" => $utilisateur->getMotDePasse(),
+            "photoDeProfil" => $utilisateur->getPhotoDeProfil(),
+            "estAdmin" => $utilisateur->getEstAdmin(),
+            "tentativesEchouees" => $utilisateur->getTentativesEchouees(),
+            "dateDernierEchecConnexion" => $date,
+            "statutCompte" => $utilisateur->getStatutCompte(),
+            "token" => $utilisateur->getTokenReinitialisation(),
+            "dateExpiraiton" => $dateToken,
+            "id" => $utilisateur->getId()
+        ));
     }
 }
 

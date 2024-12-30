@@ -41,6 +41,31 @@ class Utilisateur {
      * @var boolean|null est admin de l'utilisateur
      */
     private bool|null $estAdmin;
+    /**
+     * 
+     * @var integer|null nombre de tentatives échouées de connexion
+     */
+    private int|null $tentativesEchouees;
+    /**
+     * 
+     * @var DateTime|null date du dernier échec de connexion
+     */
+    private DateTime|null $dateDernierEchecConnexion;
+    /**
+     * 
+     * @var string|null statut du compte de l'utilisateur
+     */
+    private string|null $statutCompte;
+    /**
+     * 
+     * @var string|null le token de réinitialisation
+     */
+    private string|null $tokenReinitialisation;
+    /**
+     * 
+     * @var DateTime|null la date d'expiration du token genere
+     */
+    private DateTime|null $dateExpirationToken;
 
     /**
      * Constructeur par défaut
@@ -161,6 +186,51 @@ class Utilisateur {
     }
 
     /**
+     * Get le nombre de tentatives échouées de connexion
+     *
+     * @return integer|null nombre de tentatives échouées de connexion
+     */
+    public function getTentativesEchouees(): ?int {
+        return $this->tentativesEchouees;
+    }
+
+    /**
+     * Get la date du dernier échec de connexion
+     *
+     * @return DateTime|null date du dernier échec de connexion
+     */
+    public function getDateDernierEchecConnexion(): ?DateTime {
+        return $this->dateDernierEchecConnexion;
+    }
+
+    /**
+     * Get le statut du compte de l'utilisateur
+     *
+     * @return string|null statut du compte de l'utilisateur
+     */
+    public function getStatutCompte(): ?string {
+        return $this->statutCompte;
+    }
+
+    /**
+     * Get le token de réinitialisation
+     * 
+     * @return string|null le token de réinitialisation
+     */
+    public function getTokenReinitialisation(): ?string {
+        return $this->tokenReinitialisation;
+    }
+
+    /**
+     * Get la date de réinitialisation du token
+     * 
+     * @return DateTime|null date de réinitialisation du token
+     */
+    public function getDateExpirationToken(): ?DateTime {
+        return $this->dateExpirationToken;
+    }
+
+    /**
      * Set l'id de l'utilisateur
      *
      * @param integer $id de l'utilisateur
@@ -215,7 +285,7 @@ class Utilisateur {
    *
    * @param string $photoDeProfil Le chemin de la photo de profil.
    */
-  public function setPhotoDeProfil($photoDeProfil) {
+    public function setPhotoDeProfil(string $photoDeProfil) {
     $this->photoDeProfil = $photoDeProfil;
 }
     /**
@@ -229,6 +299,57 @@ class Utilisateur {
     }
 
     /**
+     * Set le nombre de tentatives échouées de connexion
+     *
+     * @param integer $tentativesEchouees de l'utilisateur
+     * @return void
+     */
+    public function setTentativesEchouees(int $tentativesEchouees): void {
+        $this->tentativesEchouees = $tentativesEchouees;
+    }
+
+    /**
+     * Set la date du dernier échec de connexion
+     *
+     * @param DateTime|null $dateDernierEchecConnexion de l'utilisateur
+     * @return void
+     */
+    public function setDateDernierEchecConnexion(?DateTime $dateDernierEchecConnexion): void {
+        $this->dateDernierEchecConnexion = $dateDernierEchecConnexion;
+    }
+
+    /**
+     * Set le statut du compte de l'utilisateur
+     *
+     * @param string $statutCompte de l'utilisateur
+     * @return void
+     */
+    public function setStatutCompte(string $statutCompte): void {
+        $this->statutCompte = $statutCompte;
+    }
+
+    /**
+     * Set le token de reinitialisation
+     * 
+     * @param string $token le token de reinit
+     * @return void
+     */
+    public function setTokenReinitialisation(?string $token): void {
+        $this->tokenReinitialisation = $token;
+    }
+    
+
+    /**
+     * Set la date d'expiration du token
+     * 
+     * @param DateTime|null $date la date d'expritation du token
+     * @return void
+     */
+    public function setDateExpirationToken(?DateTime $date): void {
+        $this->dateExpirationToken = $date;
+    }
+
+    /**
      * ToString permettant d'afficher les paramtres de l'utilisateur
      *
      * @return string chaine de caractères a afficher
@@ -237,14 +358,14 @@ class Utilisateur {
         return "Utilisateur : " . $this->id . " " . $this->nom . " " . $this->prenom . " " . $this->email . " " . $this->motDePasse . " " . $this->photoDeProfil . " " . $this->estAdmin;
     }
 
-    public function getContact($pdo, $idUtilisateur): array|null {
-    $managerUtilisateur = new UtilisateurDao($pdo);
-    $tableau = $managerUtilisateur->findAllContact($idUtilisateur);  
-    $contacts = $managerUtilisateur->hydrateAll($tableau);
-    return $contacts;
+    public function getContact(?PDO $pdo, ?int $idUtilisateur): ?array {
+        $managerUtilisateur = new UtilisateurDao($pdo);
+        $tableau = $managerUtilisateur->findAllContact($idUtilisateur);  
+        $contacts = $managerUtilisateur->hydrateAll($tableau);
+        return $contacts;
     }
 
-    public function getGroupe($pdo,$idUtilisateur): array|null {
+    public function getGroupe(?PDO $pdo, ?int $idUtilisateur): ?array {
         // Récupération des groupes
         $managerGroupe = new GroupeDao($pdo);
 
@@ -254,7 +375,7 @@ class Utilisateur {
         return $groupes;
     }
 
-    public function getAgendas(): array|null {
+    public function getAgendas(): ?array {
         $db = Bd::getInstance();
         $pdo = $db->getConnexion();
 
@@ -262,5 +383,92 @@ class Utilisateur {
         $tableau = $managerAgenda->findAllByIdUtilisateur($this->getId(),$pdo);
         $agendas = $managerAgenda->hydrateAll($tableau);
         return $agendas;
+    }
+
+    /**
+     * Fonction qui augmente le nombre de tentatives échouées de connexion
+     * Si le nombre de tentatives échouées est supérieur à MAX_CONNEXION_ECHOUEES, le statut du compte est bloqué
+     * @return void
+     */
+    public function gererEchecConnexion(): void {
+        $this->setTentativesEchouees($this->getTentativesEchouees() + 1);
+
+        if($this->getTentativesEchouees() >= MAX_CONNEXION_ECHOUEES) {
+            $this->setDateDernierEchecConnexion(new DateTime());
+            $this->setStatutCompte("bloque");
+        }
+    }
+
+    /**
+     * Fonction qui réactive le compte si le délai d'attente est écoulé
+     * @return void
+     */
+    public function reactiverCompte(): void {
+        if($this->delaiAttenteEstEcoulé()) {
+            $this->setStatutCompte("actif");
+            $this->reinitialiserTentativesConnexion();
+        }
+        //$this->reinitialiserTentativesConnexion();
+        if($this->getTentativesEchouees() < MAX_CONNEXION_ECHOUEES) {
+            $this->setDateDernierEchecConnexion(null);
+        }
+    }
+
+    /**
+     * Fonction qui réiniialise le nombre de tentatives échouées de connexion
+     * @return void
+     */
+    public function reinitialiserTentativesConnexion(): void {
+        $this->setTentativesEchouees(0);
+    }
+
+    /**
+     * Fonction qui retourne vrai si le délai d'attente est écoulé, faux sinon
+     * @return bool|null vrai si le délai d'attente est écoulé, faux sinon
+     */
+    public function delaiAttenteEstEcoulé(): ?bool {
+        $delaisEcoule = false;
+
+        if($this->tempsRestantAvantReactivationCompte() < 0) {
+            $delaisEcoule = true;
+            $this->setDateDernierEchecConnexion(null);
+            $this->reinitialiserTentativesConnexion();
+        }
+
+        return $delaisEcoule;
+    }
+
+    /**
+     * Fonction qui retourne le temps restant avant la réactivation du compte
+     * @return DateTime temps restant avant réactivation du compte
+     */
+    public function tempsRestantAvantReactivationCompte(): int {
+        $dateActuelle = new DateTime();
+        if ($this->getDateDernierEchecConnexion() == null) {
+            $this->setDateDernierEchecConnexion(new DateTime());
+        }
+        return DELAI_ATTENTE_CONNEXION - ($dateActuelle->getTimestamp() - $this->getDateDernierEchecConnexion()->getTimestamp());
+    }
+
+    /**
+     * Fonction qui génère et retourne le token créé + son temps d'expiration
+     * 
+     * @return string|null le token généré
+     */
+    public function genererTokenReinitialisation(): ?string {
+        $this->setTokenReinitialisation(bin2hex(random_bytes(32)));
+        $this->setDateExpirationToken(new DateTime(date('Y-m-d H:i:s', strtotime('+1 hour'))));
+        return $this->getTokenReinitialisation();
+    }
+    
+    /**
+     * Fonction qui verifie que le token est bien valide
+     * 
+     * @param string|null $token le token de l'utilisateur
+     * @return bool si le token est valide ou non
+     */
+    public function estTokenValide(?string $token): bool {
+        return $this->getTokenReinitialisation() === $token 
+            && strtotime($this->getDateExpirationToken()) > time();
     }
 }

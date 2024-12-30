@@ -72,30 +72,47 @@ class ControllerUtilisateur extends Controller
     {
         $pdo = $this->getPdo();
         $tableauErreurs = [];
-
-        /**
-         * Verifie que l'email et le mdp sont bien remplis et respectent les critères
-         * Verifie ensuite si l'email existe dans la bd
-         * Verifie si le mdp clair correspond au hachage dans bd
-         */
+        
+        // Validation des entrées
         $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
         $passwdValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs);
 
-        if ($emailValide && $passwdValide) {
-            $manager = new UtilisateurDao($pdo);
+        $manager = new UtilisateurDao($pdo);
+        $compteUtilisateurCorrespondant = $manager->getObjetUtilisateur($_POST['email']);
+        
+        if ($emailValide && $passwdValide && $compteUtilisateurCorrespondant != null) {
+            // Reactivation compte
+            $compteUtilisateurCorrespondant->reactiverCompte();
+            
             // On recupere un tuple avec un booleen et le mdp hache
             $motDePasse = $manager->connexionReussie($_POST['email']);
-            // Si les mdp sont les mêmes
-            if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
-                // On recupere l'utilisateur
-                $utilisateur = $manager->getUserMail($_POST['email']);
-                $tableauErreurs[] = "Connexion réussie !";
-                $this->genererVueConnecte($utilisateur, $tableauErreurs);
+            
+            if ($compteUtilisateurCorrespondant->getStatutCompte() === "actif") {
+                if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
+                    // Connexion réussie
+                    $utilisateur = $manager->getUserMail($_POST['email']);
+                    $tableauErreurs[] = "Connexion réussie !";
+                    $compteUtilisateurCorrespondant->reinitialiserTentativesConnexion();
+                    $compteUtilisateurCorrespondant->reactiverCompte();
+                    $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
+                    $this->genererVueConnecte($utilisateur, $tableauErreurs);
+                } else {
+                    // Échec de connexion - mauvais mot de passe
+                    $tableauErreurs[] = "Mot de passe incorrect. Essayez de réinitialisez votre mot de passe";
+                    $compteUtilisateurCorrespondant->gererEchecConnexion();
+                    $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
+                    $this->genererVueConnexion($tableauErreurs, null);
+                }
             } else {
-                $tableauErreurs[] = "Mot de passe incorrect. Réinitialisez votre mot de passe"; // Mauvais MDP
+                // Compte inactif
+                $tableauErreurs[] = "Votre compte est bloqué. Temps restant avec deblocage : " . 
+                    (string) abs($compteUtilisateurCorrespondant->tempsRestantAvantReactivationCompte()) . " secondes.";
+                $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
                 $this->genererVueConnexion($tableauErreurs, null);
             }
         } else {
+            // Échec de validation des entrées
+            $tableauErreurs[] = "Aucun compte avec cette adresse mail n'existe";
             $this->genererVueConnexion($tableauErreurs, null);
         }
     }
@@ -283,11 +300,7 @@ class ControllerUtilisateur extends Controller
         $messageErreurs = [];
         $nomValide = utilitaire::validerNom($_POST['nom'], $messageErreurs);
         $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
-        //$roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
         @$photoValide = utilitaire::validerPhoto($_FILES['photo'], $messageErreurs);
-
-        // var_dump($nomValide);
-        // var_dump($prenomValide);
 
         if ($nomValide && $prenomValide) {//} && $roleValide) {
             $pdo = $this->getPdo();
@@ -429,6 +442,11 @@ class ControllerUtilisateur extends Controller
         $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
 
         if ($emailValide) {
+            $manager = new UtilisateurDAO($this->getPdo());
+            $utilisateur = $manager->getObjetUtilisateur($_POST['email']);
+            $token = $utilisateur->genererTokenReinitialisation();
+            $manager->miseAJourUtilisateur($utilisateur);
+
             // En-têtes du mail
             $headers = "From: no-reply@timeharmony.com\r\n";
             $headers .= "MIME-Version: 1.0\r\n";
@@ -436,7 +454,7 @@ class ControllerUtilisateur extends Controller
 
             $sujet = "Reinitialisation de votre mot de passe";
             $destinataire = $_POST['email'];
-            $lien = "http://lakartxela.iutbayonne.univ-pau.fr/~tlatxague/TimeHarmony/index.php?controleur=utilisateur&methode=mailRecu&email=$destinataire";
+            $lien = "http://lakartxela.iutbayonne.univ-pau.fr/~tlatxague/TimeHarmony/index.php?controleur=utilisateur&methode=mailRecu&token=$token&email=$destinataire";
 
             // Corps du message (format HTML)
             $message = "
@@ -488,14 +506,26 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
     public function mailRecu() {
-        $dest = $_GET['email'];
-        $template = $this->getTwig()->load('reinitialisationMdp.html.twig');
-        echo $template->render(
-            array(
-                'reinitialise' => false,
-                'email' => $dest,
-            )
-        );
+        $token = $_GET['token'];
+        $email = $_GET['email'];
+        $manager = new UtilisateurDAO($this->getPdo());
+        $tokenUtilisateur = $manager->getObjetUtilisateur($email);
+
+        if($tokenUtilisateur == $token) {
+            $template = $this->getTwig()->load('reinitialisationMdp.html.twig');
+            echo $template->render(
+                array(
+                    'reinitialise' => false,
+                    'email' => $email,
+                )
+            );
+        } else {
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render(
+                array(
+                )
+            );
+        }
     }
 
     /**
@@ -508,14 +538,21 @@ class ControllerUtilisateur extends Controller
         $tableauErreurs = [];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
-        $idUtilisateur = $manager->getIdFromMail($_GET['email']);
+        $utilisateur = $manager->getObjetUtilisateur($_GET['email']);
 
         // Cette methode verifie la valeur des champs et si les mdp sont les memes 
         $mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs, $_POST['pwdConfirme']);
 
         if ($mdpValide) {
+            /**
+             * @todo mauvais pressentiment. Verifier le fonctionnement
+             */
+            $utilisateur->setTokenReinitialisation(null);
+            $utilisateur->setDateExpirationToken(null);
+            $manager->miseAJourUtilisateur($utilisateur);
+
             $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
-            $manager->reinitialiserMotDePasse($idUtilisateur, $mdpHache);
+            $manager->reinitialiserMotDePasse($utilisateur->getId(), $mdpHache);
             $this->getTwig()->addGlobal('utilisateurGlobal', null);
             unset($_SESSION['utilisateur']);
             $this->genererVueConnexion($tableauErreurs, null);

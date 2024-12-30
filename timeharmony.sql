@@ -105,6 +105,11 @@ CREATE TABLE IF NOT EXISTS `timeharmony_utilisateur` (
     `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
     `motDePasse` VARCHAR(255) NOT NULL,
     `photoDeProfil` varchar(255) NOT NULL,
+    `tentativesEchouees` int DEFAULT 0 NOT NULL,
+    `dateDernierEchecConnexion` DATETIME DEFAULT NULL,
+    `statutCompte` varchar(255) DEFAULT 'actif' NOT NULL,
+    `token` varchar(100) DEFAULT NULL,
+    `dateExpirationToken` DATETIME DEFAULT NULL,
     `estAdmin` boolean DEFAULT false NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
