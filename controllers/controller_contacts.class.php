@@ -31,11 +31,7 @@ class ControllerContacts extends Controller
         $pdo = $this->getPdo();
 
         $managerUtilisateur = new UtilisateurDao($pdo);
-        $contactsId = $managerUtilisateur->findAllContact($idUtilisateur);  
-        $contacts=array();     
-        foreach ($contactsId as $contact) {
-            $contacts[] = $managerUtilisateur->find($contact['idUtilisateur2']);
-        }
+        $contacts = $managerUtilisateur->findAllContact($idUtilisateur);  
         return $contacts;
     }
 

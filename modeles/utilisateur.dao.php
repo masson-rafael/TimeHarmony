@@ -95,14 +95,12 @@ class UtilisateurDao
      * @return array|null Un tableau d'utilisateurs.
      */
     public function findAllContact(?int $id): array {
-        //$sql = "SELECT idUtilisateur2 FROM " . PREFIXE_TABLE . "contacter WHERE idUtilisateur1= :id";
         $sql="SELECT * FROM timeharmony_utilisateur INNER JOIN timeharmony_contacter ON id = idUtilisateur2 WHERE idUtilisateur1 = :id";
         $pdoStatement = $this->pdo->prepare($sql);
-        // Ajout des parametres
         $pdoStatement->execute(array("id" => $id));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $pdoStatement->fetchAll();
-
+        $result = $this->hydrateAll($result);
         return $result;
     }
 
@@ -146,14 +144,14 @@ class UtilisateurDao
     /**
      * Renvoie tous les utilisateurs
      *
-     * @return array|null tableau d'utilisateurs
+     * @return array|null tableau d'objets utilisateurs
      */
     public function findAll(): ?array {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
-        $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Utilisateur');
-        $utilisateur = $pdoStatement->fetchAll();
+        $utilisateur = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+        $utilisateur = $this->hydrateAll($utilisateur);
         return $utilisateur;
     }
 
