@@ -27,15 +27,13 @@ class ControllerAssistant extends Controller
     }
 
 
-    public function genererVueRecherche(): void
-    {
+    public function genererVueRecherche(): void {
         $pdo = $this->getPdo();
         unset($_SESSION['nbUserSelectionné']);
         // Récupération des contacts
         $utilisateur = $_SESSION['utilisateur'];
 
         $contacts = $utilisateur->getContact($pdo, $utilisateur->getId());
-
         $groupes = $utilisateur->getGroupe($pdo, $utilisateur->getId());
 
         //Génération de la vue
@@ -44,7 +42,6 @@ class ControllerAssistant extends Controller
             'contacts' => $contacts,
             'groupes' => $groupes
         ));
-
     }
 
     public function obtenir(): void
@@ -148,18 +145,23 @@ class ControllerAssistant extends Controller
         }
     }
 
-    public function genererVueCreneaux(?array $creneaux): void
-    {
+    /**
+     * Fonction qui permet de générer la vue qui contiendra les résultats de la recherche
+     * @param array|null $creneaux les creneaux libres communs trouvés grace a la recherche
+     * @return void
+     */
+    public function genererVueCreneaux(?array $creneaux): void {
         $template = $this->getTwig()->load('resultat.html.twig');
         echo $template->render([
             'creneauxCommuns' => $creneaux
         ]);
     }
 
-    public function genererVue(): void
-    {
-
-        //Génération de la vue
+    /**
+     * Fonction permettant de générer la vue par defaut de l'application
+     * @return void
+     */
+    public function genererVue(): void {
         $template = $this->getTwig()->load('index.html.twig');
         echo $template->render(array());
     }

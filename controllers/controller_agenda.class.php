@@ -72,16 +72,10 @@ class ControllerAgenda extends Controller
      * @return void
      */
     public function lister(?array $tabMessages = null): void {
-        //recupération des catégories
         $manager = new AgendaDao($this->getPdo());
-
         $id = $_SESSION['utilisateur']->getId();
-        $tableau = $manager->getAgendasUtilisateur($id);
-        $agendas = $manager->hydrateAll($tableau);
-
-        //Choix du template
+        $agendas = $manager->getAgendasUtilisateur($id);
         $template = $this->getTwig()->load('agenda.html.twig');
-
 
         //Affichage de la page
         echo $template->render(array(

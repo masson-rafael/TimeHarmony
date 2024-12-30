@@ -48,6 +48,7 @@ class GroupeDao {
         $pdoStatement->execute(array("id"=>$id));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $pdoStatement->fetchAll();
+        $result = $this->hydrateAll($result);
         
         return $result;
     }

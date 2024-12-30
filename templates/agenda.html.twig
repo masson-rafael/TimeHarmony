@@ -27,42 +27,42 @@
             <tbody>
                 {% for agenda in agendas %}
                 <tr>
-                    <td>{{ agenda.getNom }}</td>
-                    <td><a href="{{ agenda.getUrl }}">{{ agenda.getUrl }}</a></td>
+                    <td>{{ agenda.nom }}</td>
+                    <td><a href="{{ agenda.url }}">{{ agenda.url }}</a></td>
                     <td>
                         <div class="d-flex">
-                            <span class="rounded-circle me-2" style="width: 20px; height: 20px; background-color: {{ agenda.getCouleur }};"></span>
-                            <span>{{ agenda.getCouleur }}</span>
+                            <span class="rounded-circle me-2" style="width: 20px; height: 20px; background-color: {{ agenda.couleur }};"></span>
+                            <span>{{ agenda.couleur }}</span>
                         </div>
                     </td>
 					<td>
-                        <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ agenda.getId }}">
+                        <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ agenda.id }}">
                         <i class="fa-solid fa-pencil"></i></a>
-                        <a role="button" href="index.php?controleur=agenda&methode=supprimerAgenda&id={{ agenda.getId }}">
+                        <a role="button" href="index.php?controleur=agenda&methode=supprimerAgenda&id={{ agenda.id }}">
                         <i class="fa-solid fa-trash"></i></a>
                     </td>
                 </tr>
-                <div class="modal fade" id="fenetreModale{{ agenda.getId }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="fenetreModale{{ agenda.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Modification de l'agenda {{ agenda.getNom }}</h1>
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Modification de l'agenda {{ agenda.nom }}</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form action="index.php?controleur=agenda&methode=modifierAgenda&id={{ agenda.getId }}" method="POST" enctype="multipart/form-data">
+                            <form action="index.php?controleur=agenda&methode=modifierAgenda&id={{ agenda.id }}" method="POST" enctype="multipart/form-data">
                                 <div class="modal-body">
                                     <div class="container mt-2">
                                         <div class="form-group">
                                             <label for="nom">Nom</label>
-                                            <input type="text" class="form-control" id="nom" name="nom" value="{{ agenda.getNom }}" required>
+                                            <input type="text" class="form-control" id="nom" name="nom" value="{{ agenda.nom }}" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="url">URL</label>
-                                            <input type="text" class="form-control" id="url" name="url" value="{{ agenda.getUrl }}" required>
+                                            <input type="text" class="form-control" id="url" name="url" value="{{ agenda.url }}" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="couleur">Couleur</label>
-                                            <input type="text" class="form-control" id="couleur" name="couleur" value="{{ agenda.getCouleur }}" required>
+                                            <input type="text" class="form-control" id="couleur" name="couleur" value="{{ agenda.couleur }}" required>
                                         </div>
                                     </div>
                                 </div>
