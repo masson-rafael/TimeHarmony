@@ -360,18 +360,14 @@ class Utilisateur {
 
     public function getContact(?PDO $pdo, ?int $idUtilisateur): ?array {
         $managerUtilisateur = new UtilisateurDao($pdo);
-        $tableau = $managerUtilisateur->findAllContact($idUtilisateur);  
-        $contacts = $managerUtilisateur->hydrateAll($tableau);
+        $contacts = $managerUtilisateur->findAllContact($idUtilisateur);  
         return $contacts;
     }
 
     public function getGroupe(?PDO $pdo, ?int $idUtilisateur): ?array {
         // Récupération des groupes
         $managerGroupe = new GroupeDao($pdo);
-
-        $tableau = $managerGroupe->findAll($idUtilisateur);
-        $groupes = $managerGroupe->hydrateAll($tableau);
-
+        $groupes = $managerGroupe->findAll($idUtilisateur);
         return $groupes;
     }
 
@@ -380,8 +376,7 @@ class Utilisateur {
         $pdo = $db->getConnexion();
 
         $managerAgenda = new AgendaDao();
-        $tableau = $managerAgenda->findAllByIdUtilisateur($this->getId(),$pdo);
-        $agendas = $managerAgenda->hydrateAll($tableau);
+        $agendas = $managerAgenda->findAllByIdUtilisateur($this->getId(),$pdo);
         return $agendas;
     }
 

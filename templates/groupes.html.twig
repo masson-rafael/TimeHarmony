@@ -11,6 +11,7 @@
         <div class="row text-center mt-3 mb-3">
             <h1>Vos Groupes</h1>
         </div>
+        {% if groupes|length > 0 %}
         <table id="myTable" class="table table-striped">
             <thead>
                 <tr>
@@ -59,6 +60,15 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% else %}
+            <div class="row justify-content-center mt-4 h-25">
+                <div class="col-md-8">
+                    <div class="alert alert-info text-center" role="alert">
+                        Aucun groupe trouvé. Ajoutez-en un ci-dessous.
+                    </div>
+                </div>
+            </div>
+        {% endif %}
         <div class="text-center">
             <a class="px-5 btn btn-primary" href="index.php?controleur=groupes&methode=ajouter" role="button">Créer un groupe</a>
         </div>
@@ -131,8 +141,9 @@
 							<label for="description" class="form-label">Description *</label>
 							<input type="description" name="description" class="form-control" id="description" required placeholder="Entrez une description valide" title="Entrez la description de votre groupe">
 						</div>
-                        <div class="mb-4 card p-4 shadow-sm">
-                            <h5 class="fw-bold text-center mb-3">Choisir ses collaborateurs :</h5>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Choisir ses collaborateurs</label>
+                            {% if contacts %}
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr class="table-primary">
@@ -153,6 +164,12 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% else %}
+                            <div class="alert alert-info text-center" role="alert">Aucun collaborateur trouvé. Ajoutez-en un ci-dessous.</div>
+                            <div class="text-center">
+                                <a class="px-5 btn btn-secondary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter des collaborateurs</a>
+                            </div>
+                            {% endif %}
                         </div>
                         <div class="mb-3 text-center mt-5">
                             <button type="submit" class="btn btn-primary ">Ajouter un groupe</button>

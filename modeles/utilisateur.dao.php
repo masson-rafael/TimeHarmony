@@ -59,12 +59,10 @@ class UtilisateurDao
         }        
         $pdoStatement = $this->getPdo()->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
-
-        $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Utilisateur');
-        $utilisateur = $pdoStatement->fetch();
+        $utilisateur = $pdoStatement->fetch(PDO::FETCH_ASSOC);
 
         if ($utilisateur) {
-            $resultat = $utilisateur;
+            $resultat = $this->hydrate($utilisateur);
         }
 
         return $resultat;
@@ -97,14 +95,12 @@ class UtilisateurDao
      * @return array|null Un tableau d'utilisateurs.
      */
     public function findAllContact(?int $id): array {
-        //$sql = "SELECT idUtilisateur2 FROM " . PREFIXE_TABLE . "contacter WHERE idUtilisateur1= :id";
         $sql="SELECT * FROM timeharmony_utilisateur INNER JOIN timeharmony_contacter ON id = idUtilisateur2 WHERE idUtilisateur1 = :id";
         $pdoStatement = $this->pdo->prepare($sql);
-        // Ajout des parametres
         $pdoStatement->execute(array("id" => $id));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $pdoStatement->fetchAll();
-
+        $result = $this->hydrateAll($result);
         return $result;
     }
 
@@ -141,21 +137,21 @@ class UtilisateurDao
         // Ajout des parametres
         $pdoStatement->execute(array("email" => $mail));
         $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
-        $utilisateur = Utilisateur::createAvecParam($result['id'], $result['nom'], $result['prenom'], $result['email'], $result['motDePasse'], $result['photoDeProfil'], $result['estAdmin']);
+        $utilisateur = $this->hydrate($result);
         return $utilisateur;
     }
 
     /**
      * Renvoie tous les utilisateurs
      *
-     * @return array|null tableau d'utilisateurs
+     * @return array|null tableau d'objets utilisateurs
      */
     public function findAll(): ?array {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
-        $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Utilisateur');
-        $utilisateur = $pdoStatement->fetchAll();
+        $utilisateur = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+        $utilisateur = $this->hydrateAll($utilisateur);
         return $utilisateur;
     }
 
@@ -223,10 +219,10 @@ class UtilisateurDao
     }
 
     /**
-     * set a hydrater tous les créneaux libres
+     * Fonction qui sert a hydrater tous les utilisateurs
      *
      * @param array|null $tableau tableau associatif
-     * @return array|null tableau des créneaux libres
+     * @return array|null tableau des utilisateurs
      */
     public function hydrateAll(?array $tableau): ?array {
         $utilisateurs = [];
@@ -247,7 +243,6 @@ class UtilisateurDao
     public function ajouterDemandeContact(?int $id1, ?int $id2): void {
         $sql = "INSERT INTO ". PREFIXE_TABLE ."demander (idUtilisateur1, idUtilisateur2) VALUES (:id1, :id2)";
         $pdoStatement = $this->pdo->prepare($sql);
-        // Ajout des parametres
         $pdoStatement->execute(array("id1" => $id1, "id2" => $id2));
     }
 
@@ -350,10 +345,11 @@ class UtilisateurDao
      * @return array|null liste des admins
      */
     public function getAdministrateurs(): array {
-        $sql = "SELECT email FROM ".PREFIXE_TABLE."utilisateur WHERE estAdmin = 1";
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."utilisateur WHERE estAdmin = 1";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $this->hydrateAll($result);
         return $result;
     }
 
@@ -468,6 +464,7 @@ class UtilisateurDao
      */
     public function miseAJourUtilisateur(?Utilisateur $utilisateur): void {
         $date = null;
+        $dateToken = null;
         $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur SET 
             nom = :nom,
             prenom = :prenom,

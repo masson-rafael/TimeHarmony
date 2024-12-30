@@ -48,6 +48,7 @@ class GroupeDao {
         $pdoStatement->execute(array("id"=>$id));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $pdoStatement->fetchAll();
+        $result = $this->hydrateAll($result);
         
         return $result;
     }
@@ -93,7 +94,7 @@ class GroupeDao {
      * @param int|null $id id du chef de groupe
      * @return array|null tableau des groupes
      */
-    public function getGroupeFromUserId(?int $id): ?array {
+    public function getGroupesFromUserId(?int $id): ?array {
         $resultat = null;
         $sql = "SELECT * FROM ".PREFIXE_TABLE."groupe WHERE idChef = :id";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -103,7 +104,7 @@ class GroupeDao {
         $tableau = $pdoStatement->fetchAll();
         
         if ($tableau) {
-            $resultat = $tableau;
+            $resultat = $this->hydrateAll($tableau);
         }
         
         return $resultat;
@@ -144,8 +145,8 @@ class GroupeDao {
      * @param string|null $description description du groupe
      * @return array|null $tableau le tableau de réponses. Généralement l'id du groupe correspondant
      */
-    public function getIdGroupe(?int $idLeader, ?string $nom, ?string $description): ?array {
-        $sql = "SELECT id FROM ".PREFIXE_TABLE."groupe WHERE nom = :nom AND description = :description AND idChef = :idChef";
+    public function getGroupe(?int $idLeader, ?string $nom, ?string $description): ?array {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."groupe WHERE nom = :nom AND description = :description AND idChef = :idChef";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array(
             ":nom" => $nom,
@@ -154,6 +155,7 @@ class GroupeDao {
         ));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $tableau = $pdoStatement->fetch();
+        $tableau = $this->hydrate($tableau);
         
         return $tableau;
     }

@@ -28,25 +28,15 @@ class ControllerGroupes extends Controller
      * @return void
      */
     public function lister(?array $erreurs = []): void {
-        $tableauGroupes = $this->listerGroupesUtilisateur();
-        //$nombrePersonnes = $this->getNombrePersonnes($tableauGroupes);
+        $pdo = $this->getPdo();
+        $manager = new GroupeDao($pdo);
+        $tableauGroupes = $manager->getGroupesFromUserId($_SESSION['utilisateur']->getId());
 
         $template = $this->getTwig()->load('groupes.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
         echo $template->render(array(
             'groupes' => $tableauGroupes,
             'message' => $erreurs)
         );
-    }
-
-    /**
-     * Fonction qui renvoie la liste des groupes de l'utilisateur connecté (no object)
-     * @return array|null tableau des groupes
-     */
-    public function listerGroupesUtilisateur(): ?array {
-        $pdo = $this->getPdo();
-        $manager = new GroupeDao($pdo);
-        $tableauGroupes = $manager->getGroupeFromUserId($_SESSION['utilisateur']->getId());
-        return $tableauGroupes;
     }
 
     /**
@@ -82,11 +72,7 @@ class ControllerGroupes extends Controller
     public function getListeContacts(): ?array {
         $pdo = $this->getPdo();
         $managerUtilisateur = new UtilisateurDao($pdo);
-        $contactsId = $managerUtilisateur->findAllContact($_SESSION['utilisateur']->getId());  
-        $contacts = array();     
-        foreach ($contactsId as $contact) {
-            $contacts[] = $managerUtilisateur->find($contact['idUtilisateur2']);
-        }
+        $contacts = $managerUtilisateur->findAllContact($_SESSION['utilisateur']->getId());  
         return $contacts;
     }
 
@@ -118,10 +104,10 @@ class ControllerGroupes extends Controller
             $manager = new GroupeDao($this->getPdo());
             $manager->creerGroupe($_SESSION['utilisateur']->getId(), $_POST['nom'], $_POST['description']);
             $manager = new GroupeDao($this->getPdo());
-            $idGroupe = $manager->getIdGroupe($_SESSION['utilisateur']->getId(), $_POST['nom'], $_POST['description']);
+            $groupe = $manager->getGroupe($_SESSION['utilisateur']->getId(), $_POST['nom'], $_POST['description']);
 
             // Etape 2 : ajouter membres
-            $this->ajouterMembres($idGroupe['id'], $_POST['contacts']);
+            $this->ajouterMembres($groupe->getId(), $_POST['contacts']);
 
             $tableauErreurs[] = "Le groupe a bien été créé";
             $this->lister($tableauErreurs);

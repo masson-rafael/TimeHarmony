@@ -94,7 +94,10 @@ class ControllerInformations extends Controller {
             $mails = $manager->getAdministrateurs();
 
             // Extraire les emails des administrateurs
-            $emailsAdmin = array_column($mails, 'email');
+            foreach ($mails as $user) {
+                $emailsAdmin[] = $user->getEmail();
+                var_dump($user->getEmail());
+            }
 
             // Construire les en-têtes
             $headers = 'From: ' . $mailExpediteur . "\r\n";

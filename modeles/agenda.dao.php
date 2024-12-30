@@ -79,6 +79,7 @@ class AgendaDao{
         $pdoStatement = $pdo->prepare($sql);
         $pdoStatement->execute(array("id"=>$idUtilisateur));
         $agendas = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+        $agendas = $this->hydrateAll($agendas);
         return $agendas;
     }
 
@@ -92,6 +93,7 @@ class AgendaDao{
         $pdoStatement->execute();
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $agenda = $pdoStatement->fetchAll();
+        $agenda = $this->hydrateAll($agenda);
         return $agenda;
     }
 
@@ -112,19 +114,6 @@ class AgendaDao{
             "nom" => $agenda->getNom(),
             "idUtilisateur" => $agenda->getIdUtilisateur()
         ]);
-    }
-    
-    /**
-     * Fonction permettant de retourner tous les agendas de la base de données
-     * @return array|null le tableau des agendas
-     */
-    public function findAllAssoc(): ?array {
-        $sql="SELECT * FROM ".PREFIXE_TABLE."agenda";
-        $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute();
-        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-        $agenda = $pdoStatement->fetchAll();
-        return $agenda;
     }
 
     /**
@@ -184,6 +173,7 @@ class AgendaDao{
         $pdoStatement->execute(array("id" => $id));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $agenda = $pdoStatement->fetchAll();
+        $agendas = $this->hydrateAll($agenda);
         return $agenda;
     }
 }
