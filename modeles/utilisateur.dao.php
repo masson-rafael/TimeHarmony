@@ -59,12 +59,10 @@ class UtilisateurDao
         }        
         $pdoStatement = $this->getPdo()->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
-
-        $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Utilisateur');
-        $utilisateur = $pdoStatement->fetch();
+        $utilisateur = $pdoStatement->fetch(PDO::FETCH_ASSOC);
 
         if ($utilisateur) {
-            $resultat = $utilisateur;
+            $resultat = $this->hydrate($utilisateur);
         }
 
         return $resultat;
@@ -468,6 +466,7 @@ class UtilisateurDao
      */
     public function miseAJourUtilisateur(?Utilisateur $utilisateur): void {
         $date = null;
+        $dateToken = null;
         $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur SET 
             nom = :nom,
             prenom = :prenom,
