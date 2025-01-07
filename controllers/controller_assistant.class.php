@@ -33,8 +33,8 @@ class ControllerAssistant extends Controller
         // Récupération des contacts
         $utilisateur = $_SESSION['utilisateur'];
 
-        $contacts = $utilisateur->getContact($pdo, $utilisateur->getId());
-        $groupes = $utilisateur->getGroupe($pdo, $utilisateur->getId());
+        $contacts = $utilisateur->getContact($utilisateur->getId());
+        $groupes = $utilisateur->getGroupe($utilisateur->getId());
 
         //Génération de la vue
         $template = $this->getTwig()->load('recherche.html.twig');

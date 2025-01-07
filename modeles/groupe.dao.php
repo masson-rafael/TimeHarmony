@@ -143,9 +143,9 @@ class GroupeDao {
      * @param int|null $idLeader id de l'utilisateur qui a cree le groupe
      * @param string|null $nom nom du groupe
      * @param string|null $description description du groupe
-     * @return array|null $tableau le tableau de réponses. Généralement l'id du groupe correspondant
+     * @return Groupe|null $tableau l'objet groupe correspondant
      */
-    public function getGroupe(?int $idLeader, ?string $nom, ?string $description): ?array {
+    public function getGroupe(?int $idLeader, ?string $nom, ?string $description): ?Groupe {
         $sql = "SELECT * FROM ".PREFIXE_TABLE."groupe WHERE nom = :nom AND description = :description AND idChef = :idChef";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array(

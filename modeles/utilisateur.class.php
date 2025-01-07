@@ -358,13 +358,19 @@ class Utilisateur {
         return "Utilisateur : " . $this->id . " " . $this->nom . " " . $this->prenom . " " . $this->email . " " . $this->motDePasse . " " . $this->photoDeProfil . " " . $this->estAdmin;
     }
 
-    public function getContact(?PDO $pdo, ?int $idUtilisateur): ?array {
+    public function getContact(?int $idUtilisateur): ?array {
+        $db = Bd::getInstance();
+        $pdo = $db->getConnexion();
+
         $managerUtilisateur = new UtilisateurDao($pdo);
         $contacts = $managerUtilisateur->findAllContact($idUtilisateur);  
         return $contacts;
     }
 
-    public function getGroupe(?PDO $pdo, ?int $idUtilisateur): ?array {
+    public function getGroupe(?int $idUtilisateur): ?array {
+        $db = Bd::getInstance();
+        $pdo = $db->getConnexion();
+
         // Récupération des groupes
         $managerGroupe = new GroupeDao($pdo);
         $groupes = $managerGroupe->findAll($idUtilisateur);
@@ -375,7 +381,7 @@ class Utilisateur {
         $db = Bd::getInstance();
         $pdo = $db->getConnexion();
 
-        $managerAgenda = new AgendaDao();
+        $managerAgenda = new AgendaDao($pdo);
         $agendas = $managerAgenda->findAllByIdUtilisateur($this->getId());
         return $agendas;
     }
