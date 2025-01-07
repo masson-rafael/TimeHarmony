@@ -376,7 +376,7 @@ class Utilisateur {
         $pdo = $db->getConnexion();
 
         $managerAgenda = new AgendaDao();
-        $agendas = $managerAgenda->findAllByIdUtilisateur($this->getId(),$pdo);
+        $agendas = $managerAgenda->findAllByIdUtilisateur($this->getId());
         return $agendas;
     }
 

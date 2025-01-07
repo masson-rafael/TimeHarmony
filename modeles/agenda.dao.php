@@ -76,7 +76,7 @@ class AgendaDao{
      */
     public function findAllByIdUtilisateur(?int $idUtilisateur): array {
         $sql="SELECT * FROM ".PREFIXE_TABLE."agenda WHERE idUtilisateur= :id";
-        $pdoStatement = $pdo->prepare($sql);
+        $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id"=>$idUtilisateur));
         $agendas = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
         $agendas = $this->hydrateAll($agendas);
