@@ -5,15 +5,17 @@
 {% endblock %}
 
 {% block content %}
-    <main class="h-100 d-flex align-items-center justify-content-center">
-    <div class="container h-100">
-        <div class="row text-center mb-5">
-            <h4 class="text-center mt-4">Recherche d'un créneau</h4>
+<main>
+    <div class="container">
+        <div class="row text-center mt-3 mb-3">
+            <h1>Recherche d'un créneau</h1>
         </div>
+        <div class="row justify-content-center mt-3 mb-3">
         <form action="index.php?controleur=assistant&methode=obtenir" method="post">
             <!-- Section Collaborateurs -->
             <div class="mb-4 card p-4 shadow-sm">
-                <h5 class="fw-bold text-center mb-3">Choisir ses collaborateurs :</h5>
+                <h5 class="fw-bold text-center mb-3">Choisir ses contacts :</h5>
+                {% if contacts|length > 0 %}
                 <table class="table table-bordered table-hover">
                     <thead>
                         <tr class="table-primary">
@@ -34,29 +36,57 @@
                         {% endfor %}
                     </tbody>
                 </table>
-            </div>
+                {% else %}
+                    <div class="row justify-content-center mt-4 h-25">
+                        <div class="col-md-8">
+                            <div class="alert alert-info text-center" role="alert">
+                                Aucun contact trouvé. Ajoutez-en un ci-dessous.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
+                    </div>
+                </div> 
+                {# Div ci-dessus = fermeture de la shadow box ouverte avant la condition #}
+                {% endif %}
 
-            <!-- Section Groupes -->
-            <div class="mb-4 card p-4 shadow-sm">
-                <h5 class="fw-bold text-center mb-3">Choisir des groupes :</h5>
-                <table class="table table-bordered table-hover">
-                    <thead>
-                        <tr class="table-primary">
-                            <th scope="col">#</th>
-                            <th scope="col">Nom</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for groupe in groupes %}
-                        <tr>
-                            <td>
-                                <input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
-                            </td>
-                            <td>{{ groupe.getNom }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <!-- Section Groupes -->
+                <div class="mb-4 card p-4 shadow-sm">
+                    <h5 class="fw-bold text-center mb-3">Choisir des groupes :</h5>
+                    {% if contacts|length > 0 %}
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr class="table-primary">
+                                <th scope="col">#</th>
+                                <th scope="col">Nom</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for groupe in groupes %}
+                            <tr>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
+                                </td>
+                                <td>{{ groupe.getNom }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                                {% else %}
+                    <div class="row justify-content-center mt-4 h-25">
+                        <div class="col-md-8">
+                            <div class="alert alert-info text-center" role="alert">
+                                Aucun groupe trouvé. Ajoutez-en un ci-dessous.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <a class="px-5 btn btn-primary" href="index.php?controleur=groupes&methode=ajouter" role="button">Ajouter un groupe</a>
+                    </div>
+                </div> 
+                {# Div ci-dessus = fermeture de la shadow box ouverte avant la condition #}
+                {% endif %}
             </div>
 
             <!-- Section Période -->
@@ -83,6 +113,7 @@
                 <button type="submit" class="btn btn-primary shadow-lg hover-shadow">Rechercher des créneaux de rendez-vous</button>
             </div>
         </form>
+    </div>
     </div>
 </main>
 

@@ -142,7 +142,7 @@
 							<input type="description" name="description" class="form-control" id="description" required placeholder="Entrez une description valide" title="Entrez la description de votre groupe">
 						</div>
                         <div class="mb-3">
-                            <label for="description" class="form-label">Choisir ses collaborateurs</label>
+                            <label for="description" class="form-label">Choisir ses contacts</label>
                             {% if contacts %}
                             <table class="table table-bordered table-hover">
                                 <thead>
@@ -165,9 +165,9 @@
                                 </tbody>
                             </table>
                             {% else %}
-                            <div class="alert alert-info text-center" role="alert">Aucun collaborateur trouvé. Ajoutez-en un ci-dessous.</div>
+                            <div class="alert alert-info text-center" role="alert">Aucun contact trouvé. Ajoutez-en un ci-dessous.</div>
                             <div class="text-center">
-                                <a class="px-5 btn btn-secondary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter des collaborateurs</a>
+                                <a class="px-5 btn btn-secondary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter des contacts</a>
                             </div>
                             {% endif %}
                         </div>
