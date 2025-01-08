@@ -86,7 +86,7 @@ class ControllerUtilisateur extends Controller
             
             // On recupere un tuple avec un booleen et le mdp hache
             $motDePasse = $manager->connexionReussie($_POST['email']);
-            
+
             if ($compteUtilisateurCorrespondant->getStatutCompte() === "actif") {
                 if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
                     // Connexion réussie

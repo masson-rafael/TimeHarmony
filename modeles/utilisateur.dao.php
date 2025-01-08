@@ -494,7 +494,7 @@ class UtilisateurDao
             "email" => $utilisateur->getEmail(),
             "motDePasse" => $utilisateur->getMotDePasse(),
             "photoDeProfil" => $utilisateur->getPhotoDeProfil(),
-            "estAdmin" => $utilisateur->getEstAdmin(),
+            "estAdmin" => $utilisateur->getEstAdmin() == false ? 0 : 1,
             "tentativesEchouees" => $utilisateur->getTentativesEchouees(),
             "dateDernierEchecConnexion" => $date,
             "statutCompte" => $utilisateur->getStatutCompte(),

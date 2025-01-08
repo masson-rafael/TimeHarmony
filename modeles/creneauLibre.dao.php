@@ -46,7 +46,7 @@ class CreneauLibreDao{
      * @return void
      */
     public function supprimerCreneauxLibres(): void {
-        $sql = "DELETE FROM ".PREFIXE_TABLE."creneaulibre";
+        $sql = "DELETE FROM ".PREFIXE_TABLE."creneauLibre";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
     }
@@ -59,7 +59,7 @@ class CreneauLibreDao{
      */
     public function ajouterCreneauLibre(CreneauLibre $creneauLibre): void{
         // Préparation de la requête SQL
-        $sql = "INSERT INTO ".PREFIXE_TABLE."creneaulibre (dateDebut, dateFin, idAgenda) VALUES (:dateDebut, :dateFin, :idAgenda)";
+        $sql = "INSERT INTO ".PREFIXE_TABLE."creneauLibre (dateDebut, dateFin, idAgenda) VALUES (:dateDebut, :dateFin, :idAgenda)";
         $pdoStatement = $this->pdo->prepare($sql);
 
         // Exécution de la requête avec les valeurs formatées
@@ -77,7 +77,7 @@ class CreneauLibreDao{
      * @return array|null tableau des créneaux libres
      */
     public function findAllByIdUtilisateur(int $idUtilisateur): ?array {
-        $sql="SELECT * FROM ".PREFIXE_TABLE."creneaulibre c JOIN ".PREFIXE_TABLE."agenda a ON c.idAgenda = a.id WHERE a.idUtilisateur = :idUtilisateur" ;
+        $sql="SELECT * FROM ".PREFIXE_TABLE."creneauLibre c JOIN ".PREFIXE_TABLE."agenda a ON c.idAgenda = a.id WHERE a.idUtilisateur = :idUtilisateur" ;
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("idUtilisateur" => $idUtilisateur));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);

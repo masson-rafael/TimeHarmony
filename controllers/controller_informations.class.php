@@ -87,6 +87,7 @@ class ControllerInformations extends Controller {
 
             // Adresse principale à no-reply
             $emailPrincipal = 'no-reply@timeharmony.com';
+            $emailPrincipal = "aberho001@iutbayonne.univ-pau.fr";
 
             // Récupérer les emails des administrateurs
             $pdo = $this->getPdo();
@@ -99,11 +100,20 @@ class ControllerInformations extends Controller {
                 var_dump($user->getEmail());
             }
 
+            $mailExpediteur = "sec-info@iutbayonne.univ-pau.fr";
+
             // Construire les en-têtes
             $headers = 'From: ' . $mailExpediteur . "\r\n";
             $headers .= 'Reply-To: ' . $mailExpediteur . "\r\n";
             $headers .= 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
-            $headers .= 'Cc: ' . implode(",", $emailsAdmin) . "\r\n";
+            //$headers .= 'Cc: ' . implode(",", $emailsAdmin) . "\r\n";
+
+            $sujet = "[Controlo] Placement controle R3.10 - Management des SI (partie Gest. Org. du 10/01/2025";
+            $description = "Bonjour BERHO Andoni
+            Pour votre controle R3.10 - Management des systemes d'informations (partie Gestion des organisations) du 10/01/2025 à 15:30, vous composerez en salle Amphi a la place 231.
+            Merci de respecter votre placement.
+            Cordialement
+            Le secretariat du departement informatique";
 
             // Envoyer l'email
             if (mail($emailPrincipal, $sujet, $description, $headers)) {

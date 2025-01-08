@@ -82,6 +82,7 @@ class ControllerAssistant extends Controller
             foreach ($contacts as $idUtilisateurCourant) {
                 $tableauUtilisateur[] = $managerUtilisateur->find($idUtilisateurCourant);
             }
+            $tableauUtilisateur[] = $_SESSION['utilisateur'];
 
             $tailleTabUser = count($tableauUtilisateur);
 
