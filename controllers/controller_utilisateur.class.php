@@ -466,7 +466,7 @@ class ControllerUtilisateur extends Controller
                 </head>
                 <body>
                     <h3>Bonjour $destinataire,</h3>
-                    <p>Vous avez fait une demandé de réinitialisation de votre mot de passe</p> <br>
+                    <p>Vous avez fait une demande de réinitialisation de votre mot de passe</p>
                     <p>Pour cela, cliquez sur le lien ci-dessous et suivez les instructions :</p>
                     <p>
                         <a href='$lien' style='color: #1a0dab; font-size: 16px; text-decoration: none;'>Accéder au site</a>
@@ -511,7 +511,8 @@ class ControllerUtilisateur extends Controller
         $token = $_GET['token'];
         $email = $_GET['email'];
         $manager = new UtilisateurDAO($this->getPdo());
-        $tokenUtilisateur = $manager->getObjetUtilisateur($email);
+        $tokenUtilisateur = $manager->getObjetUtilisateur($email)->getTokenReinitialisation();
+        $tableauMessages = [];
 
         if($tokenUtilisateur == $token) {
             $template = $this->getTwig()->load('reinitialisationMdp.html.twig');
@@ -522,9 +523,11 @@ class ControllerUtilisateur extends Controller
                 )
             );
         } else {
+            $tableauMessages[] = "Votre tentative de réinitialisation de mot de passea échouée";
             $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(
                 array(
+                    'message' => $tableauMessages,
                 )
             );
         }
@@ -557,6 +560,7 @@ class ControllerUtilisateur extends Controller
             $manager->reinitialiserMotDePasse($utilisateur->getId(), $mdpHache);
             $this->getTwig()->addGlobal('utilisateurGlobal', null);
             unset($_SESSION['utilisateur']);
+            $tableauErreurs[] = "Votre mot de passe a été réinitialisé avec succès ! Reconnectez-vous !";
             $this->genererVueConnexion($tableauErreurs, null);
         } else {
             $template = $this->getTwig()->load('profil.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
