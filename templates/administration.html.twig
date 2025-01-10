@@ -5,7 +5,8 @@
 {% block content %}
 <main>
     <div class="container py-5">
-    <div class="table-responsive">
+    {# <div class="table-responsive"> #}
+    {% if utilisateurCourant.getEstAdmin %}
         {% if message %}
                 <div class="mt-5">
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -117,8 +118,23 @@
                 {% endfor %}
             </tbody>
         </table>
+    {% else %}
+        <div class="row text-center mt-3 mb-3">
+            <h1>Erreur !</h1>
+        </div>
+        <div class="row justify-content-center mt-4 h-25">
+            <div class="col-md-8">
+                <div class="alert alert-info text-center" role="alert">
+                    Cette page vous est interdite d'accès !
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <a class="px-5 btn btn-primary" href="index.php?controleur=utilisateur&methode=menuConnecte">Revenir en lieu sûr</a>
+        </div>
+    {% endif %}
     </div>
-    </div>
+    {# </div> #}
 </main>
 {% endblock %}
 
