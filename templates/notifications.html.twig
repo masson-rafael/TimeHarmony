@@ -10,9 +10,9 @@
 				<strong><h1>Mes demandes</h1></strong>
 			</div>
             <div class="row text-center mt-5 mb-3 pt-5">
-					<h3>Vos demandes envoyées</h3>
-				</div>
-				{% if demandesEnvoyees|length > 0 %}
+				<h3>Vos demandes envoyées</h3>
+			</div>
+			{% if demandesEnvoyees|length > 0 %}
 				<table id="myTable1" class="table table-striped mw-75"> <!-- w-75 fonctionne mais pas mw-75 SUS -->
 					<thead>
 						<tr>
@@ -65,7 +65,7 @@
 					<div class="row justify-content-center mt-4 h-25">
 						<div class="col-md-8">
 							<div class="alert alert-info text-center" role="alert">
-								Aucune demande en attente. Revenez plus tard !
+								Aucune demande envoyée. Ajoutez un contact pour envoyer une demande !
 							</div>
 						</div>
 					</div>
@@ -154,7 +154,7 @@
 					<div class="row justify-content-center mt-4 h-25">
 						<div class="col-md-8">
 							<div class="alert alert-info text-center" role="alert">
-								Aucune demande envoyée. Ajoutez un contact pour envoyer une demande !
+								Aucune demande en attente. Revenez plus tard !
 							</div>
 						</div>
 					</div>
