@@ -106,9 +106,9 @@ class ControllerInformations extends Controller {
 
             // Envoyer l'email
             if (mail($emailPrincipal, $sujet, $description, $headers)) {
-                $tableauErreurs = "Email envoyé avec succès à no-reply@timeharmony.com avec les administrateurs en copie.";
+                $tableauErreurs[] = "Email envoyé avec succès à no-reply@timeharmony.com avec les administrateurs en copie.";
             } else {
-                $tableauErreurs =  "Échec de l'envoi de l'email.";
+                $tableauErreurs[] =  "Échec de l'envoi de l'email.";
             }
 
             $template = $this->getTwig()->load('menu.html.twig');
@@ -118,7 +118,7 @@ class ControllerInformations extends Controller {
                 )
             );
         } else {
-            $tableauErreurs =  "Formulaire invalide : " . implode(", ", $tableauErreurs);
+            $tableauErreurs[] =  "Formulaire invalide : " . implode(", ", $tableauErreurs);
         }
     }
 }
