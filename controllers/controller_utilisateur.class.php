@@ -260,11 +260,13 @@ class ControllerUtilisateur extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $utilisateurs = $manager->findAll();
+        $utilisateurCourant = $_SESSION['utilisateur'];
         $template = $this->getTwig()->load('administration.html.twig');
         echo $template->render(
             array(
                 'listeUtilisateurs' => $utilisateurs,
                 'message' => $tableauDErreurs,
+                'utilisateurCourant' => $utilisateurCourant,
             )
         );
     }

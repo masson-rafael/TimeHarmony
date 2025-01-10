@@ -3,7 +3,8 @@
 {% block title %}Administration - {{ constant('WEBSITE_TITLE') }}{% endblock %}
 
 {% block content %}
-<main class="container py-5">
+<main>
+    <div class="container py-5">
     <div class="table-responsive">
         {% if message %}
                 <div class="mt-5">
@@ -41,8 +42,10 @@
                     <td>
                         <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ utilisateur.getId }}">
                         <i class="fa-solid fa-pencil"></i></a>
-                        <a role="button" href="index.php?controleur=utilisateur&methode=supprimer&id={{ utilisateur.getId }}&type='admin'">
-                        <i class="fa-solid fa-trash"></i></a>
+                        {% if utilisateur.getId != utilisateurCourant.getId %}
+                            <a role="button" href="index.php?controleur=utilisateur&methode=supprimer&id={{ utilisateur.getId }}&type='admin'">
+                            <i class="fa-solid fa-trash"></i></a>
+                        {% endif %}
                     </td>
                 </tr>
                 <div class="modal fade" id="fenetreModale{{ utilisateur.getId }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -91,6 +94,7 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
     </div>
 </main>
 {% endblock %}
