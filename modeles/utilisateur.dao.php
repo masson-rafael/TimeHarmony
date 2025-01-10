@@ -203,7 +203,6 @@ class UtilisateurDao
      */
     public function hydrate(?array $tableauAssoc): ?Utilisateur {
         $utilisateur = new Utilisateur();
-        var_dump(get_class($utilisateur));
         $utilisateur->setId($tableauAssoc['id']);
         $utilisateur->setNom($tableauAssoc['nom']);
         $utilisateur->setPrenom($tableauAssoc['prenom']);
@@ -499,8 +498,6 @@ class UtilisateurDao
         if(!is_null($utilisateur->getDateExpirationTokenActivationCompte())) {
             $dateTokenActivationCompte = $utilisateur->getDateExpirationTokenActivationCompte()->format('Y-m-d H:i:s');
         }
-
-        var_dump($utilisateur->getEstAdmin() == false ? 0 : 1);
 
         $pdoStatement->execute(array(
             "nom" => $utilisateur->getNom(),

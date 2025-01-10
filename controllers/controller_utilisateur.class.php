@@ -50,11 +50,8 @@ class ControllerUtilisateur extends Controller
             if (!$utilisateurExiste) {
                 $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
                 $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "utilisateurBase.png", false);
-                var_dump($nouvelUtilisateur);
                 $tokenActivation = $nouvelUtilisateur->genererTokenActivationCompte();
-                var_dump($tokenActivation);
                 $nouvelUtilisateur->setCompteEstActif(false);
-                var_dump($nouvelUtilisateur);
                 $manager->ajouterUtilisateur($nouvelUtilisateur);
                 $this->envoyerMailActivationCompte($nouvelUtilisateur->getEmail());
                 $tableauErreurs[] = "Inscription réussie !";
@@ -85,7 +82,7 @@ class ControllerUtilisateur extends Controller
 
         $manager = new UtilisateurDao($pdo);
         $compteUtilisateurCorrespondant = $manager->getObjetUtilisateur($_POST['email']);
-        $compteActif = $compteUtilisateurCorrespondant->getStatutCompte() === "actif";
+        $compteActif = $compteUtilisateurCorrespondant->getCompteEstActif() == true;
         
         if ($emailValide && $passwdValide && $compteUtilisateurCorrespondant != null && $compteActif) {
             // Reactivation compte
@@ -575,7 +572,11 @@ class ControllerUtilisateur extends Controller
         }
     }
 
-    public function activerCompte() {
+    /**
+     * Fonction qui active le compte de l'utilisateur
+     * @return void
+     */
+    public function activerCompte(): void {
         $tableauMessages = [];
         $token = $_GET['token'];
         $pdo = $this->getPdo();
@@ -606,7 +607,12 @@ class ControllerUtilisateur extends Controller
         }
     }
 
-    public function envoyerMailActivationCompte(?string $email) {
+    /**
+     * Fonction qui envoie un mail d'activation de compte à l'utilisateur
+     * @param string|null $email de l'utilisateur
+     * @return void
+     */
+    public function envoyerMailActivationCompte(?string $email): void {
         $tableauErreurs = [];
 
         $manager = new UtilisateurDAO($this->getPdo());

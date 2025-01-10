@@ -330,7 +330,7 @@ class Utilisateur {
         public function setPhotoDeProfil(string $photoDeProfil) {
         $this->photoDeProfil = $photoDeProfil;
     }
-    
+
     /**
      * Set si l'utilisateur est adminé
      *
@@ -466,7 +466,6 @@ class Utilisateur {
      */
     public function gererEchecConnexion(): void {
         $this->setTentativesEchouees($this->getTentativesEchouees() + 1);
-
         if($this->getTentativesEchouees() >= MAX_CONNEXION_ECHOUEES) {
             $this->setDateDernierEchecConnexion(new DateTime());
             $this->setStatutCompte("bloque");
@@ -535,6 +534,11 @@ class Utilisateur {
         return $this->getTokenReinitialisation();
     }
 
+    /**
+     * Fonction qui génère et retourne le token d'activation du compte
+     * 
+     * @return string|null le token généré
+     */
     public function genererTokenActivationCompte(): ?string {
         $this->setTokenActivationCompte(bin2hex(random_bytes(32)));
         $this->setDateExpirationTokenActivationCompte(new DateTime(date('Y-m-d H:i:s', strtotime('+1 hour'))));
