@@ -66,6 +66,21 @@ class Utilisateur {
      * @var DateTime|null la date d'expiration du token genere
      */
     private DateTime|null $dateExpirationToken;
+        /**
+     * 
+     * @var bool|null si le compte est active ou non
+     */
+    private bool|null $compteEstActif;
+    /**
+     * 
+     * @var string|null le token d'activation du compte
+     */
+    private string|null $tokenActivationCompte;
+    /**
+     * 
+     * @var DateTime|null la date d'expiration du token d'activation du compte
+     */
+    private DateTime|null $dateExpirationTokenActivationCompte;
 
     /**
      * Constructeur par défaut
@@ -231,13 +246,30 @@ class Utilisateur {
     }
 
     /**
-     * Set l'id de l'utilisateur
+     * Get si le compte est actif ou non
      *
-     * @param integer $id de l'utilisateur
-     * @return void
+     * @return bool|null si le compte est actif ou non
      */
-    public function setId(int $id): void {
-        $this->id = $id;
+    public function getCompteEstActif(): ?bool {
+        return $this->compteEstActif;
+    }
+
+    /**
+     * Get le token d'activation du compte
+     *
+     * @return string|null le token d'activation du compte
+     */
+    public function getTokenActivationCompte(): ?string {
+        return $this->tokenActivationCompte;
+    }
+
+    /**
+     * Get la date d'expiration du token d'activation du compte
+     *
+     * @return DateTime|null la date d'expiration du token d'activation du compte
+     */
+    public function getDateExpirationTokenActivationCompte(): ?DateTime {
+        return $this->dateExpirationTokenActivationCompte;
     }
 
     /**
@@ -347,6 +379,36 @@ class Utilisateur {
      */
     public function setDateExpirationToken(?DateTime $date): void {
         $this->dateExpirationToken = $date;
+    }
+
+    /**
+     * Set si le compte est actif ou non
+     *
+     * @param bool|null $compteEstActif si le compte est actif ou non
+     * @return void
+     */
+    public function setCompteEstActif(?bool $compteEstActif): void {
+        $this->compteEstActif = $compteEstActif;
+    }
+
+    /**
+     * Set le token d'activation du compte
+     *
+     * @param string|null $tokenActivationCompte le token d'activation du compte
+     * @return void
+     */
+    public function setTokenActivationCompte(?string $tokenActivationCompte): void {
+        $this->tokenActivationCompte = $tokenActivationCompte;
+    }
+
+    /**
+     * Set la date d'expiration du token d'activation du compte
+     *
+     * @param DateTime|null $dateExpirationTokenActivationCompte la date d'expiration du token d'activation du compte
+     * @return void
+     */
+    public function setDateExpirationTokenActivationCompte(?DateTime $dateExpirationTokenActivationCompte): void {
+        $this->dateExpirationTokenActivationCompte = $dateExpirationTokenActivationCompte;
     }
 
     /**
