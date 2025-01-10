@@ -109,7 +109,7 @@ class ControllerAgenda extends Controller
                 'message' => $erreurs,
                 'ajout' => false,
             )
-            );
+        );
     }
 
     /**
@@ -123,7 +123,7 @@ class ControllerAgenda extends Controller
             array(
                 'ajout' => true,
             )
-            );
+        );
     }
 
     /**
