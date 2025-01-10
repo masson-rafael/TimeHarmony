@@ -50,10 +50,13 @@ class ControllerUtilisateur extends Controller
             if (!$utilisateurExiste) {
                 $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
                 $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "utilisateurBase.png", false);
+                var_dump($nouvelUtilisateur);
                 $tokenActivation = $nouvelUtilisateur->genererTokenActivationCompte();
+                var_dump($tokenActivation);
                 $nouvelUtilisateur->setCompteEstActif(false);
-
+                var_dump($nouvelUtilisateur);
                 $manager->ajouterUtilisateur($nouvelUtilisateur);
+                $this->envoyerMailActivationCompte($nouvelUtilisateur->getEmail());
                 $tableauErreurs[] = "Inscription réussie !";
             } else {
                 // Si l'utilisateur existe deja
@@ -589,7 +592,7 @@ class ControllerUtilisateur extends Controller
             echo $template->render(
                 array(
                     'message' => $tableauMessages,
-                    'email' => $email,
+                    'email' => $emailUtilisateur,
                 )
             );
         } else {
@@ -603,11 +606,11 @@ class ControllerUtilisateur extends Controller
         }
     }
 
-    public function envoyerMailActivationCompte() {
+    public function envoyerMailActivationCompte(?string $email) {
         $tableauErreurs = [];
 
         $manager = new UtilisateurDAO($this->getPdo());
-        $utilisateur = $manager->getObjetUtilisateur($_POST['email']);
+        $utilisateur = $manager->getObjetUtilisateur($email);
         $token = $utilisateur->genererTokenReinitialisation();
         $utilisateur->setTokenActivationCompte($token);
         $manager->miseAJourUtilisateur($utilisateur);
@@ -618,7 +621,7 @@ class ControllerUtilisateur extends Controller
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
 
         $sujet = "Activation de votre compte";
-        $destinataire = $utilisateur->getEmail();
+        $destinataire = $email;
         $lien = "http://lakartxela.iutbayonne.univ-pau.fr/~tlatxague/TimeHarmony/index.php?controleur=utilisateur&methode=activerCompte&token=$token&email=$destinataire";
 
         // Corps du message (format HTML)
@@ -639,7 +642,7 @@ class ControllerUtilisateur extends Controller
         </html>";
 
         if (mail($destinataire, $sujet, $message, $headers)) {
-            $messageErreur[] = "L'e-mail a été envoyé avec succès à $destinataire.";
+            $messageErreur[] = "L'e-mail de confirmation de création de compte a été envoyé avec succès à $destinataire.";
         } else {
             $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé.";
         }

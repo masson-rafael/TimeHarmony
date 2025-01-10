@@ -172,7 +172,7 @@ class UtilisateurDao
             "email" => $utilisateur->getEmail(),
             "motDePasse" => $utilisateur->getMotDePasse(),
             "photoDeProfil" => $utilisateur->getPhotoDeProfil(),
-            "estAdmin" => $utilisateur->getEstAdmin()
+            "estAdmin" => $utilisateur->getEstAdmin() == false ? 0 : 1
         ));
     }
 
@@ -500,7 +500,7 @@ class UtilisateurDao
             $dateTokenActivationCompte = $utilisateur->getDateExpirationTokenActivationCompte()->format('Y-m-d H:i:s');
         }
 
-        var_dump($utilisateur->getEstAdmin());
+        var_dump($utilisateur->getEstAdmin() == false ? 0 : 1);
 
         $pdoStatement->execute(array(
             "nom" => $utilisateur->getNom(),
