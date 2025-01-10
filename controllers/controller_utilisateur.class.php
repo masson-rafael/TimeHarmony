@@ -50,6 +50,9 @@ class ControllerUtilisateur extends Controller
             if (!$utilisateurExiste) {
                 $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
                 $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "utilisateurBase.png", false);
+                $tokenActivation = $nouvelUtilisateur->genererTokenActivationCompte();
+                $nouvelUtilisateur->setCompteEstActif(false);
+
                 $manager->ajouterUtilisateur($nouvelUtilisateur);
                 $tableauErreurs[] = "Inscription réussie !";
             } else {
@@ -79,8 +82,9 @@ class ControllerUtilisateur extends Controller
 
         $manager = new UtilisateurDao($pdo);
         $compteUtilisateurCorrespondant = $manager->getObjetUtilisateur($_POST['email']);
+        $compteActif = $compteUtilisateurCorrespondant->getStatutCompte() === "actif";
         
-        if ($emailValide && $passwdValide && $compteUtilisateurCorrespondant != null) {
+        if ($emailValide && $passwdValide && $compteUtilisateurCorrespondant != null && $compteActif) {
             // Reactivation compte
             $compteUtilisateurCorrespondant->reactiverCompte();
             
@@ -112,7 +116,7 @@ class ControllerUtilisateur extends Controller
             }
         } else {
             // Échec de validation des entrées
-            $tableauErreurs[] = "Aucun compte avec cette adresse mail n'existe";
+            $tableauErreurs[] = "Aucun compte avec cette adresse mail n'existe ou le compte n'a pas été activé";
             $this->genererVueConnexion($tableauErreurs, null);
         }
     }
@@ -566,5 +570,81 @@ class ControllerUtilisateur extends Controller
             $template = $this->getTwig()->load('profil.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
             echo $template->render(array('message' => $tableauErreurs, 'reinitialise' => true));
         }
+    }
+
+    public function activerCompte() {
+        $tableauMessages = [];
+        $token = $_GET['token'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $utilisateur = $manager->getObjetUtilisateur($_GET['email']);
+        $tokenUtilisateur = $utilisateur->getTokenActivationCompte();
+        $emailUtilisateur = $utilisateur->getEmail();
+
+        if($tokenUtilisateur == $token && $emailUtilisateur == $_GET['email']) {
+            $utilisateur->setCompteEstActif(true);
+            $manager->miseAJourUtilisateur($utilisateur);
+            $tableauMessages[] = "Votre compte a été validé avec succès, tentez de vous connecter !";
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render(
+                array(
+                    'message' => $tableauMessages,
+                    'email' => $email,
+                )
+            );
+        } else {
+            $tableauMessages[] = "Une erreur est survenue lors de l'activation de votre compte";
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render(
+                array(
+                    'message' => $tableauMessages,
+                )
+            );
+        }
+    }
+
+    public function envoyerMailActivationCompte() {
+        $tableauErreurs = [];
+
+        $manager = new UtilisateurDAO($this->getPdo());
+        $utilisateur = $manager->getObjetUtilisateur($_POST['email']);
+        $token = $utilisateur->genererTokenReinitialisation();
+        $utilisateur->setTokenActivationCompte($token);
+        $manager->miseAJourUtilisateur($utilisateur);
+
+        // En-têtes du mail
+        $headers = "From: no-reply@timeharmony.com\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+        $sujet = "Activation de votre compte";
+        $destinataire = $utilisateur->getEmail();
+        $lien = "http://lakartxela.iutbayonne.univ-pau.fr/~tlatxague/TimeHarmony/index.php?controleur=utilisateur&methode=activerCompte&token=$token&email=$destinataire";
+
+        // Corps du message (format HTML)
+        $message = "
+        <html>
+            <head>
+                <title>$sujet</title>
+            </head>
+            <body>
+                <h3>Bonjour $destinataire,</h3>
+                <p>Vous avez fait une demande de création de compte sur notre site TimeHarmony</p>
+                <p>Pour cela, cliquez sur le lien ci-dessous et suivez les instructions :</p>
+                <p>
+                    <a href='$lien' style='color: #1a0dab; font-size: 16px; text-decoration: none;'>Accéder au site</a>
+                </p>
+                <p>Merci et à bientôt !</p>
+            </body>
+        </html>";
+
+        if (mail($destinataire, $sujet, $message, $headers)) {
+            $messageErreur[] = "L'e-mail a été envoyé avec succès à $destinataire.";
+        } else {
+            $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé.";
+        }
+
+        $template = $this->getTwig()->load('connexion.html.twig');
+        echo $template->render(array('message' => $messageErreur));
     }
 }

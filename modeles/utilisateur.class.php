@@ -273,6 +273,16 @@ class Utilisateur {
     }
 
     /**
+     * Set l'id de l'utilisateur
+     *
+     * @param integer $id de l'utilisateur
+     * @return void
+     */
+    public function setId(int $id): void {
+        $this->id = $id;
+    }
+
+    /**
      * Set le nom de l'utilisateur
      *
      * @param string $nom de l'utilisateur
@@ -312,14 +322,15 @@ class Utilisateur {
         $this->motDePasse = $motDePasse;
     }
 
-/**
-   * Définit une nouvelle photo de profil pour l'utilisateur.
-   *
-   * @param string $photoDeProfil Le chemin de la photo de profil.
-   */
-    public function setPhotoDeProfil(string $photoDeProfil) {
-    $this->photoDeProfil = $photoDeProfil;
-}
+    /**
+     * Définit une nouvelle photo de profil pour l'utilisateur.
+     *
+     * @param string $photoDeProfil Le chemin de la photo de profil.
+     */
+        public function setPhotoDeProfil(string $photoDeProfil) {
+        $this->photoDeProfil = $photoDeProfil;
+    }
+    
     /**
      * Set si l'utilisateur est adminé
      *
@@ -522,6 +533,12 @@ class Utilisateur {
         $this->setTokenReinitialisation(bin2hex(random_bytes(32)));
         $this->setDateExpirationToken(new DateTime(date('Y-m-d H:i:s', strtotime('+1 hour'))));
         return $this->getTokenReinitialisation();
+    }
+
+    public function genererTokenActivationCompte(): ?string {
+        $this->setTokenActivationCompte(bin2hex(random_bytes(32)));
+        $this->setDateExpirationTokenActivationCompte(new DateTime(date('Y-m-d H:i:s', strtotime('+1 hour'))));
+        return $this->getTokenActivationCompte();
     }
     
     /**
