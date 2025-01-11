@@ -15,9 +15,7 @@
 						class="d-flex align-items-center">
 						<!-- Image cercle -->
 						<div class="me-4 w-25 d-flex align-items-center justify-content-center">
-							<a href="#" class="d-block mt-2">
-								<img src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" alt="Photo de profil" class="rounded-circle shadow-lg" style="width: 120px; height: 120px; border: 4px solid #3498db;">
-							</a>
+							<img src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" alt="Photo de profil" class="rounded-circle shadow-lg" style="width: 120px; height: 120px; border: 4px solid #3498db;">
 						</div>
 
 						<!-- Formulaire -->
@@ -72,33 +70,34 @@
 						<div class="text-center mt-5">
 							<button type="button" data-bs-toggle="modal" data-bs-target="#fenetreModale" class="btn btn-danger px-5 shadow-sm" style="background-color: #e74c3c; border: none;">Supprimer mon compte</button>
 						</div>
-					</div>
+					</form>
 				</div>
 			</div>
+		</div>
 
-			<!-- Fenêtre modale -->
-			<div class="modal fade position-absolute" id="fenetreModale" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-				<div class="modal-dialog modal-md">
-					<div class="modal-content shadow-lg">
-						<form action="index.php?controleur=utilisateur&methode=supprimer&id={{ utilisateurGlobal.getId }}&type='utilisateur'" method="POST">
-							<div class="modal-header" style="background-color: #e74c3c; color: white;">
-								<h5 class="modal-title" id="exampleModalLabel">Supprimer mon compte</h5>
-								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-							</div>
-							<div class="modal-body text-center" style="padding: 30px;">
-								<p class="fs-5 text-danger">
-									<strong>!! Attention !!</strong><br>
-									Vous êtes sur le point de supprimer votre compte. Cette action est irréversible.
-								</p>
-							</div>
-							<div class="modal-footer d-flex justify-content-center">
-								<button type="submit" class="btn btn-danger px-4" style="background-color: #e74c3c; border: none;">Supprimer</button>
-								<button type="button" class="btn btn-secondary px-4" style="background-color: #95a5a6; border: none;" data-bs-dismiss="modal">Annuler</button>
-							</div>
-						</form>
-					</div>
+		<!-- Fenêtre modale -->
+		<div class="modal fade position-absolute" id="fenetreModale" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-md">
+				<div class="modal-content shadow-lg">
+					<form action="index.php?controleur=utilisateur&methode=supprimer&id={{ utilisateurGlobal.getId }}&type='utilisateur'" method="POST">
+						<div class="modal-header" style="background-color: #e74c3c; color: white;">
+							<h5 class="modal-title" id="exampleModalLabel">Supprimer mon compte</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body text-center" style="padding: 30px;">
+							<p class="fs-5 text-danger">
+								<strong>!! Attention !!</strong><br>
+								Vous êtes sur le point de supprimer votre compte. Cette action est irréversible.
+							</p>
+						</div>
+						<div class="modal-footer d-flex justify-content-center">
+							<button type="submit" class="btn btn-danger px-4" style="background-color: #e74c3c; border: none;">Supprimer</button>
+							<button type="button" class="btn btn-secondary px-4" style="background-color: #95a5a6; border: none;" data-bs-dismiss="modal">Annuler</button>
+						</div>
+					</form>
 				</div>
 			</div>
-		</main>
+		</div>
+	</main>
 
 	{% endblock %}

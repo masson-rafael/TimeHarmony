@@ -3,8 +3,10 @@
 {% block title %}Administration - {{ constant('WEBSITE_TITLE') }}{% endblock %}
 
 {% block content %}
-<main class="container py-5">
-    <div class="table-responsive">
+<main>
+    <div class="container py-5">
+    {# <div class="table-responsive"> #}
+    {% if utilisateurCourant.getEstAdmin %}
         {% if message %}
                 <div class="mt-5">
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -41,8 +43,10 @@
                     <td>
                         <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ utilisateur.getId }}">
                         <i class="fa-solid fa-pencil"></i></a>
-                        <a role="button" href="index.php?controleur=utilisateur&methode=supprimer&id={{ utilisateur.getId }}&type='admin'">
-                        <i class="fa-solid fa-trash"></i></a>
+                        {% if utilisateur.getId != utilisateurCourant.getId %}
+                            <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleSuppression{{ utilisateur.getId }}">
+                            <i class="fa-solid fa-trash"></i></a>
+                        {% endif %}
                     </td>
                 </tr>
                 <div class="modal fade" id="fenetreModale{{ utilisateur.getId }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -88,10 +92,49 @@
                         </div>
                     </div>
                 </div>
+                <!-- Fenêtre modale -->
+                <div class="modal fade position-absolute" id="fenetreModaleSuppression{{ utilisateur.getId }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content shadow-lg">
+                            <form action="index.php?controleur=utilisateur&methode=supprimer&id={{ utilisateur.getId }}&type='admin'" method="POST">
+                                <div class="modal-header" style="background-color: #e74c3c; color: white;">
+                                    <h5 class="modal-title" id="exampleModalLabel">Supprimer mon compte</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-center" style="padding: 30px;">
+                                    <p class="fs-5 text-danger">
+                                        <strong>!! Attention !!</strong><br>
+                                        Vous êtes sur le point de supprimer le compte {{utilisateur.getNom}}. Cette action est irréversible.
+                                    </p>
+                                </div>
+                                <div class="modal-footer d-flex justify-content-center">
+                                    <button type="submit" class="btn btn-danger px-4" style="background-color: #e74c3c; border: none;">Supprimer</button>
+                                    <button type="button" class="btn btn-secondary px-4" style="background-color: #95a5a6; border: none;" data-bs-dismiss="modal">Annuler</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 {% endfor %}
             </tbody>
         </table>
+    {% else %}
+        <div class="row text-center mt-3 mb-3">
+            <h1>Erreur !</h1>
+        </div>
+        <div class="row justify-content-center mt-4 h-25">
+            <div class="col-md-8">
+                <div class="alert alert-info text-center" role="alert">
+                    Cette page vous est interdite d'accès !
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <a class="px-5 btn btn-primary" href="index.php?controleur=utilisateur&methode=menuConnecte">Revenir en lieu sûr</a>
+        </div>
+    {% endif %}
     </div>
+    {# </div> #}
 </main>
 {% endblock %}
 

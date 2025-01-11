@@ -66,6 +66,21 @@ class Utilisateur {
      * @var DateTime|null la date d'expiration du token genere
      */
     private DateTime|null $dateExpirationToken;
+        /**
+     * 
+     * @var bool|null si le compte est active ou non
+     */
+    private bool|null $compteEstActif;
+    /**
+     * 
+     * @var string|null le token d'activation du compte
+     */
+    private string|null $tokenActivationCompte;
+    /**
+     * 
+     * @var DateTime|null la date d'expiration du token d'activation du compte
+     */
+    private DateTime|null $dateExpirationTokenActivationCompte;
 
     /**
      * Constructeur par défaut
@@ -231,6 +246,33 @@ class Utilisateur {
     }
 
     /**
+     * Get si le compte est actif ou non
+     *
+     * @return bool|null si le compte est actif ou non
+     */
+    public function getCompteEstActif(): ?bool {
+        return $this->compteEstActif;
+    }
+
+    /**
+     * Get le token d'activation du compte
+     *
+     * @return string|null le token d'activation du compte
+     */
+    public function getTokenActivationCompte(): ?string {
+        return $this->tokenActivationCompte;
+    }
+
+    /**
+     * Get la date d'expiration du token d'activation du compte
+     *
+     * @return DateTime|null la date d'expiration du token d'activation du compte
+     */
+    public function getDateExpirationTokenActivationCompte(): ?DateTime {
+        return $this->dateExpirationTokenActivationCompte;
+    }
+
+    /**
      * Set l'id de l'utilisateur
      *
      * @param integer $id de l'utilisateur
@@ -280,14 +322,15 @@ class Utilisateur {
         $this->motDePasse = $motDePasse;
     }
 
-/**
-   * Définit une nouvelle photo de profil pour l'utilisateur.
-   *
-   * @param string $photoDeProfil Le chemin de la photo de profil.
-   */
-    public function setPhotoDeProfil(string $photoDeProfil) {
-    $this->photoDeProfil = $photoDeProfil;
-}
+    /**
+     * Définit une nouvelle photo de profil pour l'utilisateur.
+     *
+     * @param string $photoDeProfil Le chemin de la photo de profil.
+     */
+        public function setPhotoDeProfil(string $photoDeProfil) {
+        $this->photoDeProfil = $photoDeProfil;
+    }
+
     /**
      * Set si l'utilisateur est adminé
      *
@@ -350,6 +393,36 @@ class Utilisateur {
     }
 
     /**
+     * Set si le compte est actif ou non
+     *
+     * @param bool|null $compteEstActif si le compte est actif ou non
+     * @return void
+     */
+    public function setCompteEstActif(?bool $compteEstActif): void {
+        $this->compteEstActif = $compteEstActif;
+    }
+
+    /**
+     * Set le token d'activation du compte
+     *
+     * @param string|null $tokenActivationCompte le token d'activation du compte
+     * @return void
+     */
+    public function setTokenActivationCompte(?string $tokenActivationCompte): void {
+        $this->tokenActivationCompte = $tokenActivationCompte;
+    }
+
+    /**
+     * Set la date d'expiration du token d'activation du compte
+     *
+     * @param DateTime|null $dateExpirationTokenActivationCompte la date d'expiration du token d'activation du compte
+     * @return void
+     */
+    public function setDateExpirationTokenActivationCompte(?DateTime $dateExpirationTokenActivationCompte): void {
+        $this->dateExpirationTokenActivationCompte = $dateExpirationTokenActivationCompte;
+    }
+
+    /**
      * ToString permettant d'afficher les paramtres de l'utilisateur
      *
      * @return string chaine de caractères a afficher
@@ -358,13 +431,19 @@ class Utilisateur {
         return "Utilisateur : " . $this->id . " " . $this->nom . " " . $this->prenom . " " . $this->email . " " . $this->motDePasse . " " . $this->photoDeProfil . " " . $this->estAdmin;
     }
 
-    public function getContact(?PDO $pdo, ?int $idUtilisateur): ?array {
+    public function getContact(?int $idUtilisateur): ?array {
+        $db = Bd::getInstance();
+        $pdo = $db->getConnexion();
+
         $managerUtilisateur = new UtilisateurDao($pdo);
         $contacts = $managerUtilisateur->findAllContact($idUtilisateur);  
         return $contacts;
     }
 
-    public function getGroupe(?PDO $pdo, ?int $idUtilisateur): ?array {
+    public function getGroupe(?int $idUtilisateur): ?array {
+        $db = Bd::getInstance();
+        $pdo = $db->getConnexion();
+
         // Récupération des groupes
         $managerGroupe = new GroupeDao($pdo);
         $groupes = $managerGroupe->findAll($idUtilisateur);
@@ -375,8 +454,8 @@ class Utilisateur {
         $db = Bd::getInstance();
         $pdo = $db->getConnexion();
 
-        $managerAgenda = new AgendaDao();
-        $agendas = $managerAgenda->findAllByIdUtilisateur($this->getId(),$pdo);
+        $managerAgenda = new AgendaDao($pdo);
+        $agendas = $managerAgenda->findAllByIdUtilisateur($this->getId());
         return $agendas;
     }
 
@@ -387,7 +466,6 @@ class Utilisateur {
      */
     public function gererEchecConnexion(): void {
         $this->setTentativesEchouees($this->getTentativesEchouees() + 1);
-
         if($this->getTentativesEchouees() >= MAX_CONNEXION_ECHOUEES) {
             $this->setDateDernierEchecConnexion(new DateTime());
             $this->setStatutCompte("bloque");
@@ -454,6 +532,17 @@ class Utilisateur {
         $this->setTokenReinitialisation(bin2hex(random_bytes(32)));
         $this->setDateExpirationToken(new DateTime(date('Y-m-d H:i:s', strtotime('+1 hour'))));
         return $this->getTokenReinitialisation();
+    }
+
+    /**
+     * Fonction qui génère et retourne le token d'activation du compte
+     * 
+     * @return string|null le token généré
+     */
+    public function genererTokenActivationCompte(): ?string {
+        $this->setTokenActivationCompte(bin2hex(random_bytes(32)));
+        $this->setDateExpirationTokenActivationCompte(new DateTime(date('Y-m-d H:i:s', strtotime('+1 hour'))));
+        return $this->getTokenActivationCompte();
     }
     
     /**

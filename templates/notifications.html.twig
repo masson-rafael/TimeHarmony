@@ -6,12 +6,13 @@
 <main>
     <div class="container">
         <div class="row">
-            <div class="row text-center mt-3 mb-3">
+            <div class="row text-center mt-3">
 				<strong><h1>Mes demandes</h1></strong>
 			</div>
             <div class="row text-center mt-5 mb-3 pt-5">
-					<h3>Vos demandes envoyées</h3>
-				</div>
+				<h3>Vos demandes envoyées</h3>
+			</div>
+			{% if demandesEnvoyees|length > 0 %}
 				<table id="myTable1" class="table table-striped mw-75"> <!-- w-75 fonctionne mais pas mw-75 SUS -->
 					<thead>
 						<tr>
@@ -60,11 +61,20 @@
 						{% endfor %}
 					</tbody>
 				</table>
-
+				{% else %}
+					<div class="row justify-content-center mt-4 h-25">
+						<div class="col-md-8">
+							<div class="alert alert-info text-center" role="alert">
+								Aucune demande envoyée. Ajoutez un contact pour envoyer une demande !
+							</div>
+						</div>
+					</div>
+				{% endif %}
 
                 <div class="row text-center mb-3 pt-5 mt-5">
 					<h3>Vos demandes reçues</h3>
 				</div>
+				{% if demandesRecues|length > 0 %}
 				<table id="myTable2" class="table table-striped mw-75">
 					<thead>
 						<tr>
@@ -140,11 +150,20 @@
 						{% endfor %}
 					</tbody>
 				</table>
+				{% else %}
+					<div class="row justify-content-center mt-4 h-25">
+						<div class="col-md-8">
+							<div class="alert alert-info text-center" role="alert">
+								Aucune demande en attente. Revenez plus tard !
+							</div>
+						</div>
+					</div>
+				{% endif %}
                 <div class="text-center pt-5">
-                    <a class="px-5 btn btn-secondary" href="index.php?controleur=contacts&methode=afficherdemandes" role="button">Afficher mes contacts</a>
+                    <a class="px-5 btn btn-secondary" href="index.php?controleur=contacts&methode=lister" role="button">Afficher mes contacts</a>
 				</div>
 				<div class="text-center pt-3">
-					<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherdemandes" role="button">Ajouter un contact</a>
+					<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
 				</div>
         </div>
     </div>

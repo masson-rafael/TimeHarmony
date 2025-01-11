@@ -3,9 +3,11 @@
 {% block title %}Résultat - {{ constant('WEBSITE_TITLE') }}{% endblock %}
 
 {% block content %}
-<main class="container my-5">
-
-    <h2 class="text-center mb-5">Résultat de la recherche</h2>
+<main>
+    <div class="container">
+    <div class="row text-center mt-3 mb-3">
+        <h1>Résultats de la recherche</h1>
+    </div>
 
     <form method="post" class="mb-4">
         <button type="submit" name="increment" class="btn btn-primary">Chercher avec un utilisateur en plus</button>
@@ -20,15 +22,16 @@
                     <div class="col-md-6">
                         <div class="creneau-item border rounded p-3 mb-3">
                             <p><strong>Plage horaire :</strong> {{ plage }}</p>
-                            <p><strong>Début :</strong> {{ plage.split(' - ')[0] }}</p>
-                            <p><strong>Fin :</strong> {{ plage.split(' - ')[1] }}</p>
+                            <p><strong>Début :</strong> {{ plage|split(' - ')[0] }}</p>
+                            <p><strong>Fin :</strong> {{ plage|split(' - ')[1] }}</p>
                             <p><strong>Personnes disponibles :</strong> 
-                                {% set personnes_dispo = [] %}
-                                {% if disponibilites.masson == 1 %} {% set personnes_dispo = personnes_dispo|merge(['Masson']) %} {% endif %}
-                                {% if disponibilites.keita == 1 %} {% set personnes_dispo = personnes_dispo|merge(['Keita']) %} {% endif %}
-                                {% if disponibilites.autant == 1 %} {% set personnes_dispo = personnes_dispo|merge(['Autant']) %} {% endif %}
-                                {% if disponibilites.etcheverry == 1 %} {% set personnes_dispo = personnes_dispo|merge(['Etcheverry']) %} {% endif %}
-                                {{ personnes_dispo|join(', ') }}
+                            {% set personnes_dispo = [] %}
+                            {% for personne, dispo in disponibilites %}
+                                {% if dispo == 1 %}
+                                    {% set personnes_dispo = personnes_dispo|merge([personne|capitalize]) %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ personnes_dispo|join(', ') }}
                             </p>
                         </div>
                     </div>
@@ -41,5 +44,6 @@
     {% else %}
         <p>Aucun créneau commun trouvé pour les dates fournies.</p>
     {% endfor %}
+    </div>
 </main>
 {% endblock %}

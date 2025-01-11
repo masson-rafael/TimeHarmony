@@ -44,10 +44,10 @@ class ControllerInformations extends Controller {
 
     /**
      * Méthode de rendu Twig pour une section donnée
-     * @param string $section qui sera affichée par la twig à la demande de l'utilisateur
+     * @param string|null $section qui sera affichée par la twig à la demande de l'utilisateur
      * @return void
      */
-    public function affichageTwig(string $section) {
+    public function affichageTwig(?string $section) {
         $validSections = ['CGDU', 'contact', 'aPropos', 'PDC'];
         $tableauExceptions = [];
 
@@ -96,7 +96,6 @@ class ControllerInformations extends Controller {
             // Extraire les emails des administrateurs
             foreach ($mails as $user) {
                 $emailsAdmin[] = $user->getEmail();
-                var_dump($user->getEmail());
             }
 
             // Construire les en-têtes
@@ -107,12 +106,19 @@ class ControllerInformations extends Controller {
 
             // Envoyer l'email
             if (mail($emailPrincipal, $sujet, $description, $headers)) {
-                echo "Email envoyé avec succès à no-reply@timeharmony.com avec les administrateurs en copie.";
+                $tableauErreurs[] = "Email envoyé avec succès à no-reply@timeharmony.com avec les administrateurs en copie.";
             } else {
-                echo "Échec de l'envoi de l'email.";
+                $tableauErreurs[] =  "Échec de l'envoi de l'email.";
             }
+
+            $template = $this->getTwig()->load('menu.html.twig');
+            echo $template->render(
+                array(
+                    'message' => $tableauErreurs,
+                )
+            );
         } else {
-            echo "Formulaire invalide : " . implode(", ", $tableauErreurs);
+            $tableauErreurs[] =  "Formulaire invalide : " . implode(", ", $tableauErreurs);
         }
     }
 }

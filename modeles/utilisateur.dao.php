@@ -172,7 +172,7 @@ class UtilisateurDao
             "email" => $utilisateur->getEmail(),
             "motDePasse" => $utilisateur->getMotDePasse(),
             "photoDeProfil" => $utilisateur->getPhotoDeProfil(),
-            "estAdmin" => $utilisateur->getEstAdmin()
+            "estAdmin" => $utilisateur->getEstAdmin() == false ? 0 : 1
         ));
     }
 
@@ -215,7 +215,10 @@ class UtilisateurDao
         $utilisateur->setTokenReinitialisation($tableauAssoc['token']);
         $tableauAssoc['dateExpirationToken'] == null ? $utilisateur->setDateExpirationToken(null) : $utilisateur->setDateExpirationToken(new DateTime($tableauAssoc['dateExpirationToken']));
         $utilisateur->setStatutCompte($tableauAssoc['statutCompte']);
-        return $utilisateur;
+        $utilisateur->setCompteEstActif($tableauAssoc['estActif']);
+        $utilisateur->setTokenActivationCompte($tableauAssoc['tokenActivationCompte']);
+        $utilisateur->setDateExpirationTokenActivationCompte($tableauAssoc['dateExpirationTokenActivationCompte']);
+    return $utilisateur;
     }
 
     /**
@@ -465,6 +468,7 @@ class UtilisateurDao
     public function miseAJourUtilisateur(?Utilisateur $utilisateur): void {
         $date = null;
         $dateToken = null;
+        $dateTokenActivationCompte = null;
         $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur SET 
             nom = :nom,
             prenom = :prenom,
@@ -476,7 +480,10 @@ class UtilisateurDao
             dateDernierEchecConnexion = :dateDernierEchecConnexion,
             statutCompte = :statutCompte,
             token = :token,
-            dateExpirationToken = :dateExpiraiton
+            dateExpirationToken = :dateExpiraiton,
+            estActif = :estActif,
+            tokenActivationCompte = :tokenActivationCompte,
+            dateExpirationTokenActivationCompte = :dateExpirationTokenActivationCompte
             WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
 
@@ -488,18 +495,25 @@ class UtilisateurDao
             $dateToken = $utilisateur->getDateExpirationToken()->format('Y-m-d H:i:s');
         }
 
+        if(!is_null($utilisateur->getDateExpirationTokenActivationCompte())) {
+            $dateTokenActivationCompte = $utilisateur->getDateExpirationTokenActivationCompte()->format('Y-m-d H:i:s');
+        }
+
         $pdoStatement->execute(array(
             "nom" => $utilisateur->getNom(),
             "prenom" => $utilisateur->getPrenom(),
             "email" => $utilisateur->getEmail(),
             "motDePasse" => $utilisateur->getMotDePasse(),
             "photoDeProfil" => $utilisateur->getPhotoDeProfil(),
-            "estAdmin" => $utilisateur->getEstAdmin(),
+            "estAdmin" => $utilisateur->getEstAdmin() == false ? 0 : 1,
             "tentativesEchouees" => $utilisateur->getTentativesEchouees(),
             "dateDernierEchecConnexion" => $date,
             "statutCompte" => $utilisateur->getStatutCompte(),
             "token" => $utilisateur->getTokenReinitialisation(),
             "dateExpiraiton" => $dateToken,
+            "estActif" => $utilisateur->getCompteEstActif() == false ? 0 : 1,
+            "tokenActivationCompte" => $utilisateur->getTokenActivationCompte(),
+            "dateExpirationTokenActivationCompte" => $dateTokenActivationCompte,
             "id" => $utilisateur->getId()
         ));
     }
