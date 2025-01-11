@@ -5,7 +5,7 @@ use ICal\ICal;
 /**
  * @author Félix Autant
  * @describe Controller de la page de recherche de créneaux libres
- * @todo Verifier que le undocumented class soit pas à remplir. S'il existe même
+ * @todo Verifier que le undocumented class soit pas à remplir. S'il existe mêmegit
  * @version 0.1
  */
 
@@ -27,10 +27,15 @@ class ControllerAssistant extends Controller
     }
 
 
+    /**
+     * Fonction qui permet de générer la vue qui contiendra les paramètres de la recherche
+     * @return void
+     */
     public function genererVueRecherche(): void {
-        // $pdo = $this->getPdo();
+        
+        // vide la variable de session nbUserSelectionné
         unset($_SESSION['nbUserSelectionné']);
-        // Récupération des contacts
+
         $utilisateur = $_SESSION['utilisateur'];
 
         $contacts = $utilisateur->getContact($utilisateur->getId());
@@ -44,6 +49,10 @@ class ControllerAssistant extends Controller
         ));
     }
 
+    /**
+     * Fonction de faire la recherche et d'obtenir les créneaux communs disponibles
+     * @return void
+     */
     public function obtenir(): void
     {
         $datesCommunes = [];
@@ -99,9 +108,11 @@ class ControllerAssistant extends Controller
 
             $assistantRecherche = new Assistant(new Datetime($debut), new Datetime($fin), $tableauUtilisateur);
 
-            $chronoStart = new DateTime();
+            // $chronoStart = new DateTime();
+
             // Génération des dates pour la période
             $dates = $assistantRecherche->genererDates($debut, $fin);
+
             // $chronoEnd = new DateTime();
             // $chronoInterval = $chronoStart->diff($chronoEnd);
             // $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
@@ -112,6 +123,7 @@ class ControllerAssistant extends Controller
 
             // Initialisation de la matrice
             $matrice = $assistantRecherche->initMatrice($tableauUtilisateur, $dates,$dureeMin);
+            
             // $chronoEnd = new DateTime();
             // $chronoInterval = $chronoStart->diff($chronoEnd);
             // $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
@@ -138,7 +150,7 @@ class ControllerAssistant extends Controller
                 // echo "Durée totale en secondes recup events agendas : $chronoSeconds secondes." . "<br>" . "<br>";
 
                 $mergedEvents = $agenda->mergeAgendas($allEvents);
-                $creneauxByUtilisateur = $agenda->rechercheCreneauxLibres($mergedEvents, $debut, $fin, $pdo);
+                $creneauxByUtilisateur = $agenda->recherche('Europe/Paris', $debut, $fin, $mergedEvents);
 
                 // $chronoStart = new DateTime();
                 foreach ($creneauxByUtilisateur as $key => $creneau) {
