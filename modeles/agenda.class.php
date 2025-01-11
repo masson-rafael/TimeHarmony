@@ -165,32 +165,6 @@ class Agenda
     }
 
     /**
-     * Fonction d'obtention des créneaux libres
-     *
-     * @return void
-     */
-    // public function rechercheCreneauxLibres($idAgenda,$urlIcs,$debut, $fin,$pdo): void {
-
-    //         // $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
-    //         // Trier les événements par date de début
-    //         $evenements = $this->triEvenementsOrdreArrivee($evenements);
-    //         // Recherche des créneaux libres
-    //         $this->recherche('Europe/Paris', $debut, $fin, $evenements,$idAgenda,$pdo);
-    // }
-
-    public function rechercheCreneauxLibres($evenementsByUtilisateur, $debut, $fin, $pdo): array
-    {
-        // $evenements = $this->recuperationEvenementsAgenda($urlIcs, $debut, $fin);
-        // Trier les événements par date de début
-        // $evenements = $this->triEvenementsOrdreArrivee($evenementsByUtilisateur);
-
-        // var_dump($evenements);
-        // Recherche des créneaux libres
-        $evenements = $this->recherche('Europe/Paris', $debut, $fin, $evenementsByUtilisateur, $pdo);
-        return $evenements;
-    }
-
-    /**
      * Recupere les evenements des agendas
      *
      * @param string|null $url de l'agenda
@@ -234,17 +208,14 @@ class Agenda
     /**
      * Fonction de recherche des créneaux libres
      *
-     * @param CreneauLibreDao|null $managerCreneau Manager de créneaux libres afin d'appeler les méthodes DAO
      * @param string|null $timeZone Fuseau horaire de la recherche
      * @param string|null $debut date de debut de la recherche
      * @param string|null $fin Date de fin de la recherche
      * @param array|null $evenements tableau d'evenements triés
      * @return void
      */
-    private function recherche(?string $timeZone, ?string $debut, ?string $fin, ?array $evenements, $pdo): array
+    public function recherche(?string $timeZone, ?string $debut, ?string $fin, ?array $evenements): array
     {
-
-        // $managerCreneau = new CreneauLibreDao($pdo);
         $creneauxLibres = array();
 
         $fuseauHoraire = new DateTimeZone($timeZone);
@@ -295,9 +266,12 @@ class Agenda
     }
 
     /**
-     * @todo FELIX FAIS TA DOC
+     * Fusionner les evenements récupérer afin d'avoir des évènements triés et fusionnés
+     *
+     * @param string|null $events évènements à triés et à fusionner
+     * @return array|object $mergedEvents tableau d'évènements
      */
-    function mergeAgendas($events)
+    function mergeAgendas($events): array|object
     {
         // Convertir les plages horaires en DateTime et organiser les événements par ordre croissant
         usort($events, function ($a, $b) {

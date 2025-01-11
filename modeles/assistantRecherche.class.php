@@ -1,19 +1,45 @@
 <?php
 /**
  * @author Félix AUTANT
- * @describe Classe des agendas
+ * @describe Classe de l'assistant de recherche
  * @version 0.1
- * @todo FAIS TA DOC FELIX
  */
 
 class Assistant
 {
 
+    /**
+     *
+     * @var integer|null id de l'assistant
+     */
     private int|null $id;
+
+    /**
+     *
+     * @var DateTime|null date du début de la recherche
+     */
     private DateTime|null $dateDebPeriode;
+
+    /**
+     *
+     * @var DateTime|null date de la fin de la recherche
+     */
     private DateTime|null $dateFinPeriode;
+
+    /**
+     *
+     * @var array|null tableau des utilisateurs
+     */
     private array|null $utilisateurs;
 
+
+    /**
+     * Constructeur par défaut
+     *
+     * @param DateTime $dateDebPeriode de la recherche
+     * @param DateTime $dateFinPeriode de la recherche
+     * @param array $utilisateurs concernés par la recherche
+     */
     public function __construct(?DateTime $dateDebPeriode, ?DateTime $dateFinPeriode, ?array $utilisateurs)
     {
         $this->dateDebPeriode = $dateDebPeriode;
@@ -21,47 +47,99 @@ class Assistant
         $this->utilisateurs = $utilisateurs;
     }
 
+    /**
+     * Get l'id de l'assistant
+     *
+     * @return integer $id de l'assistant
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getDateDebPeriode(): ?int
+    /**
+     * Get la date du début de la période de recherche
+     *
+     * @return DateTime $dateDebutPeriode de la recherche
+     */
+    public function getDateDebPeriode(): ?DateTime
     {
         return $this->dateDebPeriode;
     }
 
-    public function getDateFinPeriode(): ?int
+    /**
+     * Get la date de fin de la période de recherche
+     *
+     * @return DateTime $dateFinPeriode de la recherche
+     */
+    public function getDateFinPeriode(): ?DateTime
     {
         return $this->dateFinPeriode;
     }
 
+    /**
+     * Get les utilisateurs concernés par la recherche
+     *
+     * @return array $utilisateurs
+     */
     public function getUtilisateurs(): ?array
     {
         return $this->utilisateurs;
     }
 
+    /**
+     * Set l'id de l'assistant
+     *
+     * @param integer $id de l'assitant
+     * @return void
+     */
     public function setId(int $id): void
     {
         $this->id = $id;
     }
 
+    /**
+     * Set la date de début de la période de recherche
+     *
+     * @param DateTime $dateDebPeriode de la recherche
+     * @return void
+     */
     public function setDateDebPeriode(int $dateDebPeriode): void
     {
         $this->id = $dateDebPeriode;
     }
 
+    /**
+     * Set la date de fin de la période de recherche
+     *
+     * @param DateTime $dateFinPeriode de la recherche
+     * @return void
+     */
     public function setDateFinPeriode(int $dateFinPeriode): void
     {
         $this->id = $dateFinPeriode;
     }
 
+    /**
+     * Set les utilisateurs concernés par la recherche
+     *
+     * @param array $utilisateurs de la recherche
+     * @return void
+     */
     public function setUtilisateurs(array $utilisateurs): void
     {
         $this->utilisateurs = $utilisateurs;
     }
 
-    function initMatrice($utilisateurs, $dates, $duration = "00:30")
+    /**
+     * Fonction de génération de la matrice qui contriendra créneaux libres des utilisateurs
+     *
+     * @param array|null $utilisateurs concernés par la recherche d'un créneau commun
+     * @param array|null $dates concernés par la recherche
+     * @param string|null $duration durée des créneaux communs demandés
+     * @return array
+     */
+    function initMatrice($utilisateurs, $dates, $duration = "00:30"): array
     {
         $matrice = [];
         list($durationHours, $durationMinutes) = explode(':', $duration); // Extraire les heures et minutes depuis la chaîne
@@ -88,8 +166,14 @@ class Assistant
     }
 
 
-    // Fonction pour générer les dates entre deux datetime
-    function genererDates($debut, $fin)
+    /**
+     * Fonction pour générer les dates entre deux datetime
+     *
+     * @param string|null $debut date de debut de la recherche
+     * @param string|null $fin Date de fin de la recherche
+     * @return array
+     */
+    function genererDates($debut, $fin): array
     {
         $debut = new DateTime($debut);
         $fin = new DateTime($fin);
@@ -102,7 +186,14 @@ class Assistant
         return $dates;
     }
 
-    // Fonction pour remplir la matrice avec un créneau
+    /**
+     * Fonction pour remplir la matrice avec un créneau
+     *
+     * @param array|null $matrice 
+     * @param string|null $debut date de debut de la recherche
+     * @param string|null $fin Date de fin de la recherche
+     * @return void
+     */
     function remplirCreneau(&$matrice, $datetime_debut, $datetime_fin, $utilisateur)
     {
         foreach ($matrice as $date => $creneaux) {
@@ -123,6 +214,13 @@ class Assistant
 
     }
 
+    /**
+     * Fonction pour récupérer les créneaux communs en fonction d'un nombre d'utilisateur
+     *
+     * @param array|null $matrice 
+     * @param string|null $nb_utilisateurs_exact concernés par la recherche
+     * @return array
+     */
     function getCreneauxCommunsExact(array $matrice, int $nb_utilisateurs_exact): array
     {
         $resultat = [];
