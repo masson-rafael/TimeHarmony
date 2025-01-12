@@ -1,6 +1,9 @@
 <?php
 
 /**
+ * @author Thibault Latxague
+ * @brief Classe DAO des agendas
+ * @version 0.1
  * @todo FAIS TA DOC FELIX (Faite par le magnifique Thibault)
  */
 

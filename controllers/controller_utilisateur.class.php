@@ -6,7 +6,7 @@ require_once 'include.php';
 
 /**
  * @author Thibault Latxague
- * @describe Controller de la page des utilisateur
+ * @brief Controller de la page des utilisateur
  * @version 0.1
  * @todo POURQUOI LA MESSAGE BOX NE FONCTIONNE PAS ?????? (a cause de l'insertion des scripts ? dans base_template) + detailler doxygen nav connexion inscription
  */

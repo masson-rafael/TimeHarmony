@@ -2,7 +2,7 @@
 
 /**
  * @author Rafael Masson
- * @describe Controller de la page des contacts
+ * @brief Controller de la page des contacts
  * @version 0.2
  */
 

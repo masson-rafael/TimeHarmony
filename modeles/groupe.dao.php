@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Thibault Latxague
- * @describe Classe DAO des groupes
+ * @brief Classe DAO des groupes
  * @version 0.1
  */
 
@@ -40,6 +40,12 @@ class GroupeDao {
         $this->pdo = $pdo;
     }
 
+    /**
+     * Fonction permettant de trouver tous les groupes d'un utilisateur
+     * 
+     * @param int|null $id id de l'utilisateur
+     * @return array tableau des groupes
+     */
     public function findAll(?int $id): array {
         $sql="SELECT * FROM ".PREFIXE_TABLE."groupe g INNER JOIN ".PREFIXE_TABLE."composer c ON c.idGroupe = g.id  WHERE c.idUtilisateur = :id";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -53,6 +59,12 @@ class GroupeDao {
         return $result;
     }
 
+    /**
+     * Fonction permettant de trouver un groupe en fonction de son id
+     * 
+     * @param int|null $id id du groupe
+     * @return Groupe|null objet groupe associé
+     */
     public function find(?int $id): ?Groupe {
         $resultat = null;
         $sql = "SELECT * FROM ".PREFIXE_TABLE."groupe WHERE id = :id";
@@ -63,7 +75,6 @@ class GroupeDao {
         $tableau = $pdoStatement->fetch();
         $groupe = $this->hydrate($tableau);
     
-        
         if ($groupe) {
             $resultat = $groupe;
         }
@@ -71,6 +82,12 @@ class GroupeDao {
         return $resultat;
     }
 
+    /**
+     * Fonction permettant de transformer un tableau en objet groupe
+     * 
+     * @param array $tableau le tableau qu'on doit transformer
+     * @return Groupe notre objet groupe
+     */
     public function hydrate(array $tableau): Groupe{
         $groupe = new Groupe();
         $groupe->setId($tableau['id']);
@@ -80,6 +97,12 @@ class GroupeDao {
         return $groupe;
     }
 
+    /**
+     * Fonction permettant de transformer un tableau de tableaux en tableau d'objet groupe
+     * 
+     * @param array|null $tableau les tableaux que l'on doit transformer
+     * @return array|null le tableau de groupes
+     */
     public function hydrateAll(?array $tableau): ?array{
         $groupes = [];
         foreach($tableau as $tableauAssoc){

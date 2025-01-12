@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Félix Autant
- * @describe controller
+ * @brief controller
  * @version 0.1
  */
 

@@ -2,7 +2,7 @@
 
 /**
  * @author Thibault Latxague
- * @describe Controller de la page des groupes
+ * @brief Controller de la page des groupes
  * @version 0.2
  */
 

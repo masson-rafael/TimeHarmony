@@ -4,7 +4,7 @@ use ICal\ICal;
 
 /**
  * @author Félix Autant
- * @describe Controller de la page de recherche de créneaux libres
+ * @brief Controller de la page de l'assistant qui recherche les crébneaux libres
  * @todo Verifier que le undocumented class soit pas à remplir. S'il existe mêmegit
  * @version 0.1
  */

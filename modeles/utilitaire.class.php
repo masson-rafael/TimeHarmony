@@ -1,6 +1,8 @@
 <?php
 /**
- * Undocumented class
+ * @author Thibault Latxague
+ * @brief Classe de vérifcation et des champs de formulaire et d'autres fonctions
+ * @version 0.4
  */
 
 class utilitaire {
@@ -378,12 +380,10 @@ class utilitaire {
     public static function validerPhoto(?array $photo, array &$messagesErreurs): bool {
         $valide = true;
         // 1. Champs obligatoires : vérifier la présence du champ (pas obligatoire mais sert d'indication)
-        if(empty($photo)){
+        if(!isset($photo)){
             $messagesErreurs[] = "Aucune photo renseignée";
             $valide = false;
-        }
-
-        else {
+        } else {
             // 2. Type de données : vérifier que le nom est une chaine de caractères
             if(!is_array($photo)){
                 $messagesErreurs[] = "La photo doit être un fichier";
@@ -399,7 +399,7 @@ class utilitaire {
             // 4. Format des données : vérifier le format de la photo
             if($photo['error'] != UPLOAD_ERR_OK) {
                 $valide = false;
-                $messagesErreurs[] = "Erreur lors de l'upload de la photo";
+                $messagesErreurs[] = "Aucune photo renseignée";
             }
         }
         return $valide;
@@ -558,6 +558,14 @@ class utilitaire {
         return $valide;
     }
 
+    /**
+     * Fonction qui permet de valider la durée de recherche
+     * 
+     * @param string|null $debut le debut de la recherche
+     * @param string|null $fin la fin de la recherche
+     * @param array $tableauErreurs le tableau des erreurs
+     * @return bool si le champ est correct ou non
+     */
     public static function validerDuree(?string $debut, ?string $fin, array &$messagesErreurs): bool {
         $valide = true;
 
@@ -577,6 +585,13 @@ class utilitaire {
         return $valide;
     }
 
+    /**
+     * Fonction qui permet de valider la durée minimale de recherche
+     * 
+     * @param string|null $dureeMin la durée minimale
+     * @param array $tableauErreurs le tableau des erreurs
+     * @return bool si le champ est correct ou non
+     */
     public static function validerDureeMin(?string $dureeMin, array &$messagesErreurs): bool {
         $valide = true;
 
@@ -592,6 +607,13 @@ class utilitaire {
         return $valide;
     }
 
+    /**
+     * Fonction qui permet de valider les contacts de recherche
+     * 
+     * @param array|null $contacts le tableau des contacts de recherche
+     * @param array $tableauErreurs le tableau des erreurs
+     * @return bool si le champ est correct ou non
+     */
     public static function validerContacts(?array $contacts, array &$messagesErreurs): bool {
         $valide = true;
 
