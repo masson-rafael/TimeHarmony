@@ -26,7 +26,7 @@
                     <tr>
                         <td>{{ groupe.nom }}</td>
                         <td>{{ groupe.description }}</td>
-                        <td>{{ nombrePersonnes }}</td>
+                        <td>{{ nombrePersonnes[loop.index0] }}</td> {# Utilise loop.index0 pour accéder à l'index (commence à 0) #}
                         <td>
                         <a role="button" href="index.php?controleur=groupes&methode=afficherPageModification&id={{ groupe.id }}">
                         <i class="fa-solid fa-pencil"></i></a>
