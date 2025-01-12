@@ -91,12 +91,10 @@
 							<td>{{ demande.prenom }}</td>
 							<td>{{ demande.nom }}</td>
 							<td>
-								<a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModaleRecueAccepte{{demande.id}}" aria-expanded="false">
-									<i class="fa-solid fa-check"></i>
-								</a>
-								<a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModaleRecueRefuse{{demande.id}}" aria-expanded="false">
-									<i class="fa-solid fa-trash"></i>
-								</a>
+								<a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleRecueAccepte{{demande.id}}" aria-expanded="false">
+								<i class="fa-solid fa-check"></i></a>
+								<a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleRecueRefuse{{demande.id}}" aria-expanded="false">
+								<i class="fa-solid fa-trash"></i></a>
 							</td>
 						</tr>
 						<div class="modal fade" id="fenetreModaleRecueAccepte{{demande.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -690,7 +690,8 @@ class ControllerUtilisateur extends Controller
             </body>
         </html>";
 
-        if (mail($destinataire, $sujet, $message, $headers)) {
+        // On met un @ car sur localhost, pas de serveur de mail
+        if (@mail($destinataire, $sujet, $message, $headers)) {
             $messageErreur[] = "L'e-mail de confirmation de création de compte a été envoyé avec succès à $destinataire.";
         } else {
             $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé à $destinataire.";

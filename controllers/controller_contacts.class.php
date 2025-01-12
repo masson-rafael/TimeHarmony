@@ -170,6 +170,11 @@ class ControllerContacts extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $tabDemandesPourMoi = $manager->refuserDemande($_SESSION['utilisateur']->getId(), $idReceveur);
+        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur->getDemandes();
+        $manager->miseAJourUtilisateur($utilisateur);
+        $_SESSION['utilisateur'] = $utilisateur;
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
         $tableauMessages[] = "Demande refusée avec succès !";
         $this->afficherPageNotifications($tableauMessages);
     }
@@ -183,6 +188,11 @@ class ControllerContacts extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $tabDemandesPourMoi = $manager->accepterDemande($_SESSION['utilisateur']->getId(), $idReceveur);
+        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur->getDemandes();
+        $manager->miseAJourUtilisateur($utilisateur);
+        $_SESSION['utilisateur'] = $utilisateur;
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
         $tableauMessages[] = "Demande acceptée avec succès !";
         $this->afficherPageNotifications($tableauMessages);
     }
