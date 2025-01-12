@@ -377,24 +377,31 @@ class utilitaire {
      */
     public static function validerPhoto(?array $photo, array &$messagesErreurs): bool {
         $valide = true;
-        // 2. Type de données : vérifier que le nom est une chaine de caractères
-        if(!is_array($photo)){
-            $messagesErreurs[] = "La photo doit être un fichier";
+        // 1. Champs obligatoires : vérifier la présence du champ (pas obligatoire mais sert d'indication)
+        if(empty($chaine)){
+            $messagesErreurs[] = "Aucune photo renseignée";
             $valide = false;
         }
 
-        // 3. Longueur de la chaine (cf. taille) 2 Mo maximum
-        if(sizeof($photo) > 2000000) {
-            $valide = false;
-            $messagesErreurs[] = "La taille de la photo est trop grande (2Mo maximum)";
-        }
+        else {
+            // 2. Type de données : vérifier que le nom est une chaine de caractères
+            if(!is_array($photo)){
+                $messagesErreurs[] = "La photo doit être un fichier";
+                $valide = false;
+            }
 
-        // 4. Format des données : vérifier le format de la photo
-        if($photo['error'] != UPLOAD_ERR_OK) {
-            $valide = false;
-            $messagesErreurs[] = "Erreur lors de l'upload de la photo";
-        }
+            // 3. Longueur de la chaine (cf. taille) 2 Mo maximum
+            if(sizeof($photo) > 2000000) {
+                $valide = false;
+                $messagesErreurs[] = "La taille de la photo est trop grande (2Mo maximum)";
+            }
 
+            // 4. Format des données : vérifier le format de la photo
+            if($photo['error'] != UPLOAD_ERR_OK) {
+                $valide = false;
+                $messagesErreurs[] = "Erreur lors de l'upload de la photo";
+            }
+        }
         return $valide;
     }
 
