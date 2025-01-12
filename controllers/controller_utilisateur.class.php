@@ -59,6 +59,12 @@ class ControllerUtilisateur extends Controller
                 // Si l'utilisateur existe deja
                 $tableauErreurs[] = "L'utilisateur existe déjà ! Connectez-vous !";
             }
+        } else {
+            $manager = new UtilisateurDao($pdo); //Lien avec PDO
+            $utilisateurExiste = $manager->findMail($_POST['email']);
+            if ($utilisateurExiste) {
+                $tableauErreurs[] = "L'utilisateur existe déjà ! Connectez-vous !";
+            }
         }
         // Affichage de la page avec les erreurs ou le message de succès. Utilisation du @ car si l'utilisateur n'a pas renseigné de mail, cette action génère une erreur
         @$this->genererVue($_POST['email'], null, $tableauErreurs);
@@ -484,7 +490,7 @@ class ControllerUtilisateur extends Controller
             if (mail($destinataire, $sujet, $message, $headers)) {
                 $messageErreur[] = "L'e-mail a été envoyé avec succès à $destinataire.";
             } else {
-                $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé.";
+                $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé à $destinataire.";
             }
 
             $template = $this->getTwig()->load('connexion.html.twig');
@@ -569,8 +575,15 @@ class ControllerUtilisateur extends Controller
             $tableauErreurs[] = "Votre mot de passe a été réinitialisé avec succès ! Reconnectez-vous !";
             $this->genererVueConnexion($tableauErreurs, null);
         } else {
-            $template = $this->getTwig()->load('profil.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
-            echo $template->render(array('message' => $tableauErreurs, 'reinitialise' => true));
+            $template = $this->getTwig()->load('reinitialisationMdp.html.twig');
+            echo $template->render(
+                array(
+                    'reinitialise' => false,
+                    'message' => $tableauErreurs,
+                    'email' => $_GET['email'],
+                    'token' => $_GET['token']
+                )
+            );
         }
     }
 
@@ -654,7 +667,7 @@ class ControllerUtilisateur extends Controller
         if (mail($destinataire, $sujet, $message, $headers)) {
             $messageErreur[] = "L'e-mail de confirmation de création de compte a été envoyé avec succès à $destinataire.";
         } else {
-            $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé.";
+            $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé à $destinataire.";
         }
 
         $template = $this->getTwig()->load('connexion.html.twig');
