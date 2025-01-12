@@ -548,7 +548,8 @@ class utilitaire {
         // 4. Format des données - non pertinent
 
         // 5. Plage des valeurs
-        $valeursPossibles = ['desactive', 'actif', 'bloque']; // + autres valeurs possibles
+        $statut = strtolower($statut);
+        $valeursPossibles = ['desactive', 'actif', 'bloque', 'Actif', 'Désactivé', 'Bloqué']; // + autres valeurs possibles
         if($statut != null && !in_array($statut, $valeursPossibles)){
             $messagesErreurs[] = "Le statut n'est pas valide";
             $valide = false;

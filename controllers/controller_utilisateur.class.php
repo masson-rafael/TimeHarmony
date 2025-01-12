@@ -415,12 +415,17 @@ class ControllerUtilisateur extends Controller
             $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $_POST['email'], $role, $nomFichier, $_POST['statut']);
             $utilisateurTemporaire = $manager->find($id);
             
-            if ($utilisateurTemporaire->getId() == $_SESSION['utilisateur']->getId()) {
+            if ($utilisateurTemporaire->getId() == $_SESSION['utilisateur']->getId() && strtolower($_POST['statut']) == 'actif') {
                 $_SESSION['utilisateur'] = $utilisateurTemporaire;
                 $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurTemporaire);
+            } elseif ($utilisateurTemporaire->getId() == $_SESSION['utilisateur']->getId()) {
+                $this->deconnecter();
+                $this->genererVueVide('index');
             }
         }
-        $_SESSION['utilisateur']->getEstAdmin() == false ? $this->afficherProfil($messageErreurs) : $this->lister($messageErreurs);
+        if(isset($_SESSION['utilisateur'])) {
+            $_SESSION['utilisateur']->getEstAdmin() == false ? $this->afficherProfil() : $this->lister($messageErreurs);
+        }
     }
 
 
