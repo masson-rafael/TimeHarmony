@@ -35,6 +35,7 @@ class ControllerAgenda extends Controller
         $pdo = $this->getPdo(); // Récupérer l'instance PDO
 
         $tableauErreurs = [];
+        $id = $_SESSION['utilisateur']->getId();
         $urlValide = utilitaire::validerURLAgenda($_POST['url'], $tableauErreurs);
         $couleurValide = utilitaire::validerCouleur($_POST['couleur'], $tableauErreurs);
         $nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
@@ -44,12 +45,9 @@ class ControllerAgenda extends Controller
             // Créer une instance de AgendaDao pour interagir avec la base de données
             $manager = new AgendaDao($pdo);
 
-            // Vérifier si l'agenda existe déjà avec cette URL
-            $agendaExiste = $manager->findURL($_POST['url']);
-
-            if (!$agendaExiste) {
+            if($manager->URLEstUnique($_POST['url'], $id)) {
                 // Créer une nouvelle instance d'Agenda avec les données du formulaire
-                $nouvelAgenda = new Agenda($_POST['url'], $_POST['couleur'], $_POST['nom'], $_SESSION['utilisateur']->getId());
+                $nouvelAgenda = new Agenda($_POST['url'], $_POST['couleur'], $_POST['nom'], $id);
                 // Ajouter l'agenda dans la base de données
                 $manager->ajouterAgenda($nouvelAgenda);
 
@@ -63,7 +61,7 @@ class ControllerAgenda extends Controller
             }
         } else {
             // Si le formulaire n'est pas correctement rempli, afficher la vue générique
-            $this->genererVueAgenda($tableauErreurs);
+            $this->lister($tableauErreurs);
         }
     }
 
@@ -156,7 +154,7 @@ class ControllerAgenda extends Controller
             }
         } else {
             // Si le formulaire n'est pas correctement rempli, afficher la vue générique
-            $this->genererVueAgenda($tableauErreurs);
+            $this->lister($tableauErreurs);
         }
     }
 

@@ -186,11 +186,10 @@ class AgendaDao{
      */
     public function URLEstUnique(?string $url, ?int $id): bool {
         $result = true;
-        $sql = "SELECT url FROM ".PREFIXE_TABLE."agenda WHERE url = :url";
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."agenda WHERE url = :url AND idUtilisateur = :id";
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(array("url" => $url));
+        $pdoStatement->execute(array("url" => $url, "id" => $id));
         $resultat = $pdoStatement->fetch(PDO::FETCH_ASSOC);
-
         if($resultat){
             $result = false;
         }
