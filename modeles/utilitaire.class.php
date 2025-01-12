@@ -556,4 +556,50 @@ class utilitaire {
 
         return $valide;
     }
+
+    public static function validerDuree(?string $debut, ?string $fin, array &$messagesErreurs): bool {
+        $valide = true;
+
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        $valide = utilitaire::validerPresence($debut, $messagesErreurs, "debut du créneau");
+        $valide = utilitaire::validerPresence($fin, $messagesErreurs, "fin du créneau");
+
+        // 5. Plage des valeurs
+        $dateDebut = new DateTime($debut);
+        $dateFin = new DateTime($fin);
+
+        if($dateDebut >= $dateFin) {
+            $valide = false;
+            $messagesErreurs[] = "La date de début doit être inférieure à la date de fin";
+        }
+
+        return $valide;
+    }
+
+    public static function validerDureeMin(?string $dureeMin, array &$messagesErreurs): bool {
+        $valide = true;
+
+        // 5. Plage des valeurs
+        $dureeMinSeconds = strtotime($dureeMin);
+
+        $valide = $dureeMinSeconds > 5*60;
+        if(!$valide) {
+            $messagesErreurs[] = "La durée minimale doit être supérieure à 5 minutes";
+        }
+
+        // Vérification que la durée est supérieure ou égale à 5 minutes
+        return $valide;
+    }
+
+    public static function validerContacts(?array $contacts, array &$messagesErreurs): bool {
+        $valide = true;
+
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        if(empty($contacts)){
+            $messagesErreurs[] = "Aucun contact renseigné";
+            $valide = false;
+        }
+
+        return $valide;
+    }
 }
