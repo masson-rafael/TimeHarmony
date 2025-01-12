@@ -291,7 +291,7 @@ class UtilisateurDao
      * @param string|null $statut le statut de l'utilisateur
      * @return void
      */
-    public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?string $email, ?bool $estAdmin, ?string $photoDeProfil, $statut): void {
+    public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?string $email, ?bool $estAdmin, ?string $photoDeProfil, ?string $statut = 'actif'): void {
         $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET nom = :nom, prenom = :prenom, email = :email, estAdmin = :estAdmin, photoDeProfil = :pdp, statutCompte = :statut WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $estAdmin == false ? $estAdmin = 0 : $estAdmin = 1;

@@ -16,7 +16,7 @@
                         <form action="index.php?controleur=utilisateur&methode=demandeReinitialisation" method="post">
                             <div class="mb-3">
                                 <label for="exampleInputEmail1" class="form-label">E-mail *</label>
-                                <input type="email" name="email" id="exampleInputEmail1" class="form-control form-control-lg" required maxlength="255" minlength="5" title="Entrez l'adresse email du compte qui recevra la demande de réinitialisation" placeholder="Entrez l'e-mail lié au compte">
+                                <input type="email" name="email" {% if utilisateurGlobal != null %} value="{{utilisateurGlobal.getEmail}}" {% endif %} id="exampleInputEmail1" class="form-control form-control-lg" required maxlength="255" minlength="5" title="Entrez l'adresse email du compte qui recevra la demande de réinitialisation" placeholder="Entrez l'e-mail lié au compte">
                             </div>
                             <button type="submit" class="btn btn-primary w-100 py-2">Envoyer la demande</button>
                         </form>

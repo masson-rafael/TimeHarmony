@@ -165,9 +165,11 @@ class ControllerUtilisateur extends Controller
      */
     public function deconnecter()
     {
+        $page = $_GET['page'];
         $this->getTwig()->addGlobal('utilisateurGlobal', null);
         unset($_SESSION['utilisateur']);
-        $this->genererVueVide('index');
+        if ($page != null) {$this->genererVueVide($page);}
+        //$this->genererVueVide('index');
     }
 
     /**
@@ -520,6 +522,7 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
     public function mailRecu() {
+        $this->deconnecter();
         $token = $_GET['token'];
         $email = $_GET['email'];
         $manager = new UtilisateurDAO($this->getPdo());
