@@ -378,7 +378,7 @@ class utilitaire {
     public static function validerPhoto(?array $photo, array &$messagesErreurs): bool {
         $valide = true;
         // 1. Champs obligatoires : vérifier la présence du champ (pas obligatoire mais sert d'indication)
-        if(empty($chaine)){
+        if(empty($photo)){
             $messagesErreurs[] = "Aucune photo renseignée";
             $valide = false;
         }
