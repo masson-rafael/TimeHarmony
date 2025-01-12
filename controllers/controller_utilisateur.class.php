@@ -311,7 +311,12 @@ class ControllerUtilisateur extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $manager->supprimerUtilisateur($id);
-        $this->lister();
+        if($id == $_SESSION['utilisateur']->getId()) {
+            $this->deconnecter();
+            $this->genererVueVide('index');
+        } else {
+            $this->lister();
+        }
     }
 
     /**
