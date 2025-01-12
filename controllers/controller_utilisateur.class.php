@@ -88,43 +88,49 @@ class ControllerUtilisateur extends Controller
 
         $manager = new UtilisateurDao($pdo);
         $compteUtilisateurCorrespondant = $manager->getObjetUtilisateur($_POST['email']);
-        $compteActif = $compteUtilisateurCorrespondant->getStatutCompte() != "desactive";
-        
-        if ($emailValide && $passwdValide && $compteUtilisateurCorrespondant != null && $compteActif) {
-            // Reactivation compte
-            $compteUtilisateurCorrespondant->reactiverCompte();
-            
-            // On recupere un tuple avec un booleen et le mdp hache
-            $motDePasse = $manager->connexionReussie($_POST['email']);
 
-            if ($compteUtilisateurCorrespondant->getStatutCompte() === "actif") {
-                if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
-                    // Connexion réussie
-                    $utilisateur = $manager->getUserMail($_POST['email']);
-                    $utilisateur->getDemandes();
-                    $tableauErreurs[] = "Connexion réussie !";
-                    $compteUtilisateurCorrespondant->reinitialiserTentativesConnexion();
-                    $compteUtilisateurCorrespondant->reactiverCompte();
-                    $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
-                    $this->genererVueConnecte($utilisateur, $tableauErreurs);
+        if($compteUtilisateurCorrespondant == null) {
+            // Échec de validation des entrées
+            $tableauErreurs[] = "Aucun compte avec cette adresse mail n'existe";
+            $this->genererVueConnexion($tableauErreurs, null);
+        } else {
+            $compteActif = $compteUtilisateurCorrespondant->getStatutCompte() != "desactive";
+            if ($emailValide && $passwdValide && $compteActif) {
+                // Reactivation compte
+                $compteUtilisateurCorrespondant->reactiverCompte();
+                
+                // On recupere un tuple avec un booleen et le mdp hache
+                $motDePasse = $manager->connexionReussie($_POST['email']);
+    
+                if ($compteUtilisateurCorrespondant->getStatutCompte() === "actif") {
+                    if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
+                        // Connexion réussie
+                        $utilisateur = $manager->getObjetUtilisateur($_POST['email']);
+                        $utilisateur->getDemandes();
+                        $tableauErreurs[] = "Connexion réussie !";
+                        $compteUtilisateurCorrespondant->reinitialiserTentativesConnexion();
+                        $compteUtilisateurCorrespondant->reactiverCompte();
+                        $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
+                        $this->genererVueConnecte($utilisateur, $tableauErreurs);
+                    } else {
+                        // Échec de connexion - mauvais mot de passe
+                        $tableauErreurs[] = "Mot de passe incorrect. Essayez de réinitialisez votre mot de passe";
+                        $compteUtilisateurCorrespondant->gererEchecConnexion();
+                        $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
+                        $this->genererVueConnexion($tableauErreurs, null);
+                    }
                 } else {
-                    // Échec de connexion - mauvais mot de passe
-                    $tableauErreurs[] = "Mot de passe incorrect. Essayez de réinitialisez votre mot de passe";
-                    $compteUtilisateurCorrespondant->gererEchecConnexion();
+                    // Compte inactif
+                    $tableauErreurs[] = "Votre compte est bloqué. Temps restant avec deblocage : " . 
+                        (string) abs($compteUtilisateurCorrespondant->tempsRestantAvantReactivationCompte()) . " secondes.";
                     $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
                     $this->genererVueConnexion($tableauErreurs, null);
                 }
             } else {
-                // Compte inactif
-                $tableauErreurs[] = "Votre compte est bloqué. Temps restant avec deblocage : " . 
-                    (string) abs($compteUtilisateurCorrespondant->tempsRestantAvantReactivationCompte()) . " secondes.";
-                $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
+                // Échec de validation des entrées
+                $tableauErreurs[] = "Le compte n'a pas été activé";
                 $this->genererVueConnexion($tableauErreurs, null);
             }
-        } else {
-            // Échec de validation des entrées
-            $tableauErreurs[] = "Aucun compte avec cette adresse mail n'existe ou le compte n'a pas été activé";
-            $this->genererVueConnexion($tableauErreurs, null);
         }
     }
 
@@ -165,7 +171,8 @@ class ControllerUtilisateur extends Controller
      */
     public function deconnecter()
     {
-        $page = $_GET['page'];
+        // @ Car nous n'utilisons pas tout le temps les pages ce qui peut entrainer des erreurs
+        @$page = $_GET['page'];
         $this->getTwig()->addGlobal('utilisateurGlobal', null);
         unset($_SESSION['utilisateur']);
         if ($page != null) {$this->genererVueVide($page);}
@@ -274,14 +281,20 @@ class ControllerUtilisateur extends Controller
         $manager = new UtilisateurDao($pdo);
         $utilisateurs = $manager->findAll();
         $utilisateurCourant = $_SESSION['utilisateur'];
-        $template = $this->getTwig()->load('administration.html.twig');
-        echo $template->render(
-            array(
-                'listeUtilisateurs' => $utilisateurs,
-                'message' => $tableauDErreurs,
-                'utilisateurCourant' => $utilisateurCourant,
-            )
-        );
+        if($utilisateurCourant->getEstAdmin()) {
+            $template = $this->getTwig()->load('administration.html.twig');
+            echo $template->render(
+                array(
+                    'listeUtilisateurs' => $utilisateurs,
+                    'message' => $tableauDErreurs,
+                    'utilisateurCourant' => $utilisateurCourant,
+                )
+            );
+        }
+        else {
+            $this->deconnecter();
+            $this->genererVueVide('connexion');
+        }
     }
 
     /**
