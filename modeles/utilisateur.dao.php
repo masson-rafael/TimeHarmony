@@ -244,9 +244,16 @@ class UtilisateurDao
      * @return void
      */
     public function ajouterDemandeContact(?int $id1, ?int $id2): void {
-        $sql = "INSERT INTO ". PREFIXE_TABLE ."demander (idUtilisateur1, idUtilisateur2) VALUES (:id1, :id2)";
-        $pdoStatement = $this->pdo->prepare($sql);
+        $verifsql = "SELECT COUNT(*) FROM " . PREFIXE_TABLE . "demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2 = :id2";
+        $pdoStatement = $this->pdo->prepare($verifsql);
         $pdoStatement->execute(array("id1" => $id1, "id2" => $id2));
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+
+        if($result['COUNT(*)'] == 0) {
+            $sql = "INSERT INTO ". PREFIXE_TABLE ."demander (idUtilisateur1, idUtilisateur2) VALUES (:id1, :id2)";
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute(array("id1" => $id1, "id2" => $id2));
+        }
     }
 
     /**

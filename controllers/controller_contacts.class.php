@@ -40,13 +40,14 @@ class ControllerContacts extends Controller
      *
      * @return void
      */
-    function lister(): void {
+    function lister(?array $tableauMessages = null): void {
         $contacts = $this->recupererContacts($_SESSION['utilisateur']->getId());
         //Génération de la vue
         $template = $this->getTwig()->load('contacts.html.twig');
         echo $template->render(array(
             'menu' => 'contacts',
-            'contacts' => $contacts
+            'contacts' => $contacts,
+            'message' => $tableauMessages
         ));
     }
 
@@ -62,8 +63,8 @@ class ControllerContacts extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $manager->supprimerContact($id1,$id2);
-
-        $this->lister();
+        $tableauMessages[] = "Contact supprimé avec succès !";
+        $this->lister($tableauMessages);
     }
 
     /**
@@ -96,8 +97,8 @@ class ControllerContacts extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $manager->ajouterDemandeContact($id1,$id2);
-
-        $this->lister();
+        $tableauMessages[] = "Contact ajouté avec succès !";
+        $this->lister($tableauMessages);
     }
 
     /**
