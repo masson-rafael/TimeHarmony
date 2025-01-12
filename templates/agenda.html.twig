@@ -15,89 +15,100 @@
 			<!-- Liste des agendas -->
 			{% if agendas|length > 0 %}
             <div class="row justify-content-center">
-			<table id="myTable" class="table table-striped table-bordered w-100">
-            <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>URL</th>
-                    <th>Couleur</th>
-					<th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for agenda in agendas %}
-                <tr>
-                    <td>{{ agenda.nom }}</td>
-                    <td><a href="{{ agenda.url }}">{{ agenda.url }}</a></td>
-                    <td>
-                        <div class="d-flex">
-                            <span class="rounded-circle me-2" style="width: 20px; height: 20px; background-color: {{ agenda.couleur }};"></span>
-                            <span>{{ agenda.couleur }}</span>
-                        </div>
-                    </td>
-					<td>
-                        <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ agenda.id }}">
-                        <i class="fa-solid fa-pencil"></i></a>
-                        <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleSuppression{{ agenda.id }}" >
-                        <i class="fa-solid fa-trash"></i></a>
-                    </td>
-                </tr>
-                <div class="modal fade" id="fenetreModale{{ agenda.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Modification de l'agenda {{ agenda.nom }}</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <table id="myTable" class="table table-striped table-bordered w-100">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>URL</th>
+                        <th>Couleur</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for agenda in agendas %}
+                    <tr>
+                        <td>{{ agenda.nom }}</td>
+                        <td><a href="{{ agenda.url }}">{{ agenda.url }}</a></td>
+                        <td>
+                            <div class="d-flex">
+                                <span class="rounded-circle me-2" style="width: 20px; height: 20px; background-color: {{ agenda.couleur }};"></span>
+                                <span>{{ agenda.couleur }}</span>
                             </div>
-                            <form action="index.php?controleur=agenda&methode=modifierAgenda&id={{ agenda.id }}" method="POST" enctype="multipart/form-data">
-                                <div class="modal-body">
-                                    <div class="container mt-2">
-                                        <div class="form-group">
-                                            <label for="nom">Nom</label>
-                                            <input type="text" class="form-control" id="nom" name="nom" value="{{ agenda.nom }}" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="url">URL</label>
-                                            <input type="text" class="form-control" id="url" name="url" value="{{ agenda.url }}" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="couleur">Couleur</label>
-                                            <input type="text" class="form-control" id="couleur" name="couleur" value="{{ agenda.couleur }}" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" name="update_article">Mettre à jour</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade" id="fenetreModaleSuppression{{ agenda.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <form action="index.php?controleur=agenda&methode=supprimerAgenda&id={{ agenda.id }}" method="POST">
+                        </td>
+                        <td>
+                            <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ agenda.id }}">
+                            <i class="fa-solid fa-pencil"></i></a>
+                            <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleSuppression{{ agenda.id }}" >
+                            <i class="fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    <div class="modal fade" id="fenetreModale{{ agenda.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Supprimer l'agenda {{ agenda.nom }}</h1>
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modification de l'agenda {{ agenda.nom }}</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <div class="modal-body">
-                                    <div class="container mt-2">
-                                        <p>Etes vous sur de vouloir supprimer l'agenda {{ agenda.nom }} ?</p>
+                                <form action="index.php?controleur=agenda&methode=modifierAgenda&id={{ agenda.id }}" method="POST" enctype="multipart/form-data">
+                                    <div class="modal-body">
+                                        <div class="container mt-2">
+                                            <div class="form-group">
+                                                <label for="nom">Nom</label>
+                                                <input type="text" class="form-control" id="nom" name="nom" value="{{ agenda.nom }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="url">URL</label>
+                                                <input type="text" class="form-control" id="url" name="url" value="{{ agenda.url }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <div class="mb-3">
+                                                    <label for="couleur" class="form-label">Couleur *</label>
+                                                    <select name="couleur" class="form-select" id="couleur" required>
+                                                        <option selected value="{{agenda.couleur}}">{{agenda.couleur}}</option>
+                                                        <option value="#e66465" style="background-color: #e66465; color: white;">#e66465</option>
+                                                        <option value="#4CAF50" style="background-color: #4CAF50; color: white;">#4CAF50</option>
+                                                        <option value="#2196F3" style="background-color: #2196F3; color: white;">#2196F3</option>
+                                                        <option value="#FF5722" style="background-color: #FF5722; color: white;">#FF5722</option>
+                                                        <option value="#9C27B0" style="background-color: #9C27B0; color: white;">#9C27B0</option>
+                                                        <option value="#FFC107" style="background-color: #FFC107; color: black;">#FFC107</option>
+                                                    </select>
+                                                    <small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-danger">Supprimer</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                </div>
-                            </form>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary" name="update_article">Mettre à jour</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {% endfor %}
-            </tbody>
-        </table>
+                    <div class="modal fade" id="fenetreModaleSuppression{{ agenda.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <form action="index.php?controleur=agenda&methode=supprimerAgenda&id={{ agenda.id }}" method="POST">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Supprimer l'agenda {{ agenda.nom }}</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container mt-2">
+                                            <p>Etes vous sur de vouloir supprimer l'agenda {{ agenda.nom }} ?</p>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
 			{% else %}
                 <div class="row justify-content-center mt-4 h-25">
@@ -108,7 +119,6 @@
                     </div>
                 </div>
 			{% endif %}
-        </div>
         <div class="text-center">
             <a class="px-5 btn btn-primary" href="index.php?controleur=agenda&methode=genererVueAjoutAgenda">Ajouter un agenda</a>
         </div>
@@ -141,11 +151,11 @@
 								</select>
 								<small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
 							</div>
-							<div class="mb-3">
-								<input type="color" name="couleur_custom" class="form-control" id="couleur_custom" title="Sélectionnez une couleur ou entrez un code hexadécimal personnalisé" minlength="7" maxlength="7">
-							</div>
 						</div>
-                        <div class="mb-3 text-center mt-5">
+                        <div class="text-center pt-5">
+                            <a class="px-5 btn btn-secondary" href="index.php?controleur=agenda&methode=lister" role="button">Revenir à mes agendas</a>
+                        </div>
+                        <div class="mb-3 text-center pt-3">
                             <button type="submit" class="btn btn-primary ">Ajouter un agenda</button>
                         </div>
 					</form>
@@ -165,6 +175,7 @@
                 </div>
 			{% endif %}
 		</div>
+                </div>
 	</main>
 
 {% endblock %}
