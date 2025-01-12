@@ -63,17 +63,20 @@
 	</head>
 	<body class="d-flex flex-column min-vh-100">
 		{% if utilisateurGlobal is not null %}
-			<nav class="navbar navbar-expand-lg bg-primary py-1" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+			<nav class="navbar navbar-expand-lg bg-secondary py-1" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
 				<div class="container-fluid">
-					<div
-						class="row w-100 align-items-center">
+					<div class="row w-100 align-items-center">
 						<!-- Logo -->
 						<div class="col-auto">
 							<a class="navbar-brand" href="index.php?controleur=utilisateur&methode=menuConnecte">
 								<img src="image/logoNoir.png" alt="logo" style="width: 60px;">
 							</a>
 						</div>
+					</div>
+				</div>
 						<!-- Menu principal avec espace entre les éléments -->
+				<div class="container-fluid">
+					<div class="row w-100 align-items-center">
 						<div class="col">
 							<ul class="navbar-nav d-flex justify-content-center w-100">
 								<li class="nav-item me-3">
@@ -90,10 +93,14 @@
 								</li>
 							</ul>
 						</div>
+					</div>
+				</div>
+				<div class="container-fluid">
+					<div class="row w-100 justify-content-end">
 						<!-- Menu aligné à droite -->
 						<div class="col-auto ms-3">
 							<ul class="navbar-nav d-flex flex-row">
-								<li class="nav-item dropdown d-flex align-items-center">
+								<li class="nav-item dropdown d-flex">
 									<a class="nav-link" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 										<img src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" alt="Photo de profil" class="rounded-circle" style="width: 50px; height: 50px;">
 									</a>
@@ -129,33 +136,42 @@
 
 		{% else %}
 
-			<nav class="h-3em bg-primary " style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+			<nav class="navbar navbar-expand-lg bg-primary py-1" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
 				<div class="container-fluid">
-					<div
-						class="row  d-flex justify-content-center align-items-center">
+					<div class="row w-100 align-items-center">
 						<!-- Logo -->
-						<div class="col-1">
-							<a class="navbar-brand" href="index.php?controleur=utilisateur&methode=deconnecter">
-								<img src="image/logoNoir.png" alt="logo" style="width: 50px;">
+						<div class="col-auto">
+							<a class="navbar-brand" href="index.php">
+								<img src="image/logoNoir.png" alt="logo" style="width: 60px;">
 							</a>
 						</div>
-						<!-- Image de la marque centrée -->
-						<div class="col-9 d-flex justify-content-center">
-							<img src="image/marque.png" alt="logo" style="width: 300px; transform: translateX(15%);">
-						</div>
-						<!-- Liens de connexion et d'inscription alignés à droite -->
-						<div class="col-2 d-flex justify-content-end">
-							<ul class="navbar-nav d-flex flex-row align-items-center">
-								<li class="nav-item d-flex justify-content-center align-items-center fs-5 me-3">
-									<a class="nav-link mt-0" href="index.php?controleur=utilisateur&methode=premiereConnexion">Se connecter</a>
-								</li>
-								<li class="nav-item d-flex justify-content-center align-items-center fs-5">
-									<a class="nav-link" href="index.php?controleur=utilisateur&methode=premiereInscription">S'inscrire</a>
+					</div>
+				</div>
+
+				<div class="container-fluid">
+					<div class="row w-100 align-items-center">
+						<div class="col">
+							<ul class="navbar-nav d-flex justify-content-center w-100">
+								<li class="nav-link dt fs-5" style="font-weight: bold; font-size: 100%;">
+									TimeHarmony
 								</li>
 							</ul>
 						</div>
 					</div>
 				</div>
+
+						<!-- Liens de connexion et d'inscription alignés à droite -->
+				<div class="container-fluid">
+					<div class="row w-100 justify-content-end">
+						<!-- Menu aligné à droite -->
+						<div class="col-auto ms-3">
+							<ul class="navbar-nav d-flex flex-row">
+								<li class="nav-item d-flex align-items-center">
+									<a class="nav-link fs-5" href="index.php?controleur=utilisateur&methode=premiereConnexion">Se connecter</a>
+									<a class="nav-link fs-5" href="index.php?controleur=utilisateur&methode=premiereInscription">S'inscrire</a>
+								</li>
+							</ul>
+						</div>
 			</nav>
 
 		{% endif %}
@@ -163,25 +179,24 @@
 		{% block content %}
 		{% endblock %}
 		</div>
-		<div class="addthis_inline_share_toolbox"></div>
 
-			<footer class="text-muted py-3 bg-primary mt-5 small-footer position-relative bottom-0 vw-100" style="box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);">
-				<div class="container">
+			<footer class="text- py-3 bg-primary mt-5 small-footer position-relative bottom-0 vw-100" style="box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);">
+				<div class="container-fluid">
 					<div class="row">
 						<div class="col d-flex align-items-center justify-content-center">
-							<p class="mb-1">&copy; 2024 - TimeHarmony</p>
+							<p style="color: black;" class="mb-1 fs-5">&copy; 2024 - TimeHarmony</p>
 						</div>
 						<div class="col d-flex align-items-center justify-content-center">
-							<a class="nav-link" href="index.php?controleur=informations&methode=afficherAPropos"><p class="mb-1">A Propos</p></a>
+							<a style="color: black;" class="nav-link fs-5" href="index.php?controleur=informations&methode=afficherAPropos"><p class="mb-1">A Propos</p></a>
 						</div>
 						<div class="col d-flex align-items-center justify-content-center">
-							<a class="nav-link" href="index.php?controleur=informations&methode=afficherCGDU"><p class="mb-1">Conditions générales d'utilisation</p></a>
+							<a style="color: black;" class="nav-link fs-5" href="index.php?controleur=informations&methode=afficherCGDU"><p class="mb-1">Conditions générales d'utilisation</p></a>
 						</div>
 						<div class="col d-flex align-items-center justify-content-center">
-							<a class="nav-link" href="index.php?controleur=informations&methode=afficherPDC"><p class="mb-1">Politique de confidentialité</p></a>
+							<a style="color: black;" class="nav-link fs-5" href="index.php?controleur=informations&methode=afficherPDC"><p class="mb-1">Politique de confidentialité</p></a>
 						</div>
 						<div class="col d-flex align-items-center justify-content-center">
-							<a class="nav-link" href="index.php?controleur=informations&methode=afficherContact"><p class="mb-1">Nous contacter</p></a>
+							<a style="color: black;" class="nav-link fs-5" href="index.php?controleur=informations&methode=afficherContact"><p class="mb-1">Nous contacter</p></a>
 						</div>
 					</div>
 				</div>
