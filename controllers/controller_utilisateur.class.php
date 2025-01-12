@@ -361,9 +361,10 @@ class ControllerUtilisateur extends Controller
         $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
         $roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
         $emailValide = utilitaire::validerEmail($_POST['email'], $messageErreurs);
+        $statutValide = utilitaire::validerStatut($_POST['statut'], $messageErreurs);
         @$photoValide = utilitaire::validerPhoto($_FILES['photo'], $messageErreurs);
 
-        if ($nomValide && $prenomValide && $roleValide) {
+        if ($nomValide && $prenomValide && $roleValide && $emailValide && $statutValide) {
             $pdo = $this->getPdo();
             $manager = new UtilisateurDao($pdo);
 
@@ -389,7 +390,7 @@ class ControllerUtilisateur extends Controller
             $nomFichier = empty($nomFichier) ? $utilisateurConcerne->getPhotoDeProfil() : $nomFichier;
             
             // Mise à jour du profil utilisateur
-            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $_POST['email'], $role, $nomFichier);
+            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $_POST['email'], $role, $nomFichier, $_POST['statut']);
             $utilisateurTemporaire = $manager->find($id);
             
             if ($utilisateurTemporaire->getId() == $_SESSION['utilisateur']->getId()) {

@@ -7,16 +7,6 @@
     <div class="container py-5">
     {# <div class="table-responsive"> #}
     {% if utilisateurCourant.getEstAdmin %}
-        {% if message %}
-                <div class="mt-5">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {% for messages in message %}
-                        {{messages}} <br>
-                        {% endfor %}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            {% endif %}
         <table id="myTable" class="table table-striped table-bordered" style="width: 100%;">
             <thead>
                 <tr>
@@ -25,6 +15,7 @@
                     <th>Nom</th>
                     <th>Prenom</th>
                     <th>Rôle</th>
+                    <th>Statut</th>
                     <th>Photo de profil</th>
                     <th>Actions</th>
                 </tr>
@@ -37,6 +28,7 @@
                     <td>{{ utilisateur.getNom }}</td>
                     <td>{{ utilisateur.getPrenom }}</td>
                     <td>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</td>
+                    <td>{{ utilisateur.getStatutCompte }}</td>
                     <td>
                         <img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photo de profil" class="rounded-circle" style="width: 50px; height: 50px;">
                     </td>
@@ -61,21 +53,37 @@
                                     <div class="container mt-2">
                                         <div class="form-group">
                                             <label for="nom">Nom *</label>
-                                            <input type="text" class="form-control" id="nom" name="nom" value="{{ utilisateur.getNom }}" required>
+                                            <input type="text" class="form-control" id="nom" name="nom" value="{{ utilisateur.getNom }}"  placeholder="Entrez le nom de l'utilisateur" required maxlength="50" minlength="2" title="Entrez le vrai nom de l'utilisateur">
                                         </div>
                                         <div class="form-group">
                                             <label for="prenom">Prenom *</label>
-                                            <input type="text" class="form-control" id="prenom" name="prenom" value="{{ utilisateur.getPrenom }}" required>
+                                            <input type="text" class="form-control" id="prenom" name="prenom" value="{{ utilisateur.getPrenom }}" placeholder="Entrez le prenom de l'utilisateur" required maxlength="50" minlength="2" title="Entrez le vrai prénom de l'utilisateur">
                                         </div>
                                         <div class="form-group">
                                             <label for="email">Adresse mail *</label>
-                                            <input type="text" class="form-control" id="email" name="email" value="{{ utilisateur.getEmail }}" required>
+                                            <input type="email" class="form-control" id="email" name="email" value="{{ utilisateur.getEmail }}" placeholder="Entrez l'e-mail de l'utilisateur" required maxlength="255" minlength="5" title="Entrez l'adresse email qui sera liée au compte de l'utilisateur">
                                         </div>
                                         <div class="form-group">
                                             <label for="role">Role *</label>
                                             <select class="form-control" id="role" name="role">
                                                 <option selected>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</option>
                                                 <option>{{ utilisateur.getEstAdmin ? 'User' : 'Admin' }}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="statut">Statut *</label>
+                                            <select class="form-control" id="statut" name="statut">
+                                                <option selected>{{ utilisateur.getStatutCompte|capitalize }}</option>
+                                                {% if utilisateur.getStatutCompte == 'actif' %}
+                                                    <option value="desactive">Désactivé</option>
+                                                    <option value="bloque">Bloqué</option>
+                                                {% elseif utilisateur.getStatutCompte == 'desactive' %}
+                                                    <option value="actif">Actif</option>
+                                                    <option value="bloque">Bloqué</option>
+                                                {% elseif utilisateur.getStatutCompte == 'bloque' %}
+                                                    <option value="actif">Actif</option>
+                                                    <option value="desactive">Désactivé</option>
+                                                {% endif %}
                                             </select>
                                         </div>
                                         <div class="form-group">
@@ -118,6 +126,16 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% if message %}
+            <div class="mt-5">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {% for messages in message %}
+                    {{messages}} <br>
+                    {% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        {% endif %}
     {% else %}
         <div class="row text-center mt-3 mb-3">
             <h1>Erreur !</h1>

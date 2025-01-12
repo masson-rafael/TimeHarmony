@@ -282,7 +282,7 @@ class utilitaire {
         // Le champ n'est pas obligatoire
 
         // 2. Type de données : vérifier que le mot de passe est une chaine de caractères
-        $valide = utilitaire::validerType($role, $messagesErreurs);
+        $valide = utilitaire::validerType($role, $messagesErreurs, "role");
 
         // 3. Longueur de la chaine - non pertinent
 
@@ -509,13 +509,41 @@ class utilitaire {
         $valide = utilitaire::validerType($sujet, $messagesErreurs, "sujet de la demande");
 
         // 3. Longueur de la chaine - non pertinent
-
         // 4. Format des données - non pertinent
 
         // 5. Plage des valeurs
         $valeursPossibles = ['Demande generale d\'information', 'Question conditions generales d\'utilisation', 'Question politique de confidentialite', 'Commentaires ou Suggestions', 'Consulter ses donnees', 'Rectifier ses donnees', 'Supprimer ses donnees', 'Autre']; // + autres valeurs possibles
         if($sujet != null && !in_array($sujet, $valeursPossibles)){
             $messagesErreurs[] = "Le sujet n'est pas valide";
+            $valide = false;
+        }
+
+        return $valide;
+    }
+
+    /**
+     * Fonction qui permet de valider le statut de l'utilisateur dans la page admin
+     * 
+     * @param string|null $statut le statut de l'utilisateur
+     * @param array $messagesErreurs le tabeleau de message d'erreurs
+     * @return bool si le statut est valide ou non
+     */
+    public static function validerStatut(?string $statut, array &$messagesErreurs): bool {
+        $valide = true;
+
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        $valide = utilitaire::validerPresence($statut, $messagesErreurs, "statut de compte de l'utilisateur");
+
+        // 2. Type de données : vérifier que le prenom est une chaine de caractères
+        $valide = utilitaire::validerType($statut, $messagesErreurs, "statut de compte de l'utilisateur");
+
+        // 3. Longueur de la chaine - non pertinent
+        // 4. Format des données - non pertinent
+
+        // 5. Plage des valeurs
+        $valeursPossibles = ['desactive', 'actif', 'bloque']; // + autres valeurs possibles
+        if($statut != null && !in_array($statut, $valeursPossibles)){
+            $messagesErreurs[] = "Le statut n'est pas valide";
             $valide = false;
         }
 
