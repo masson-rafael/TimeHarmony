@@ -107,11 +107,10 @@ CREATE TABLE IF NOT EXISTS `timeharmony_utilisateur` (
     `photoDeProfil` varchar(255) NOT NULL,
     `tentativesEchouees` int DEFAULT 0 NOT NULL,
     `dateDernierEchecConnexion` DATETIME DEFAULT NULL,
-    `statutCompte` varchar(255) DEFAULT 'actif' NOT NULL,
+    `statutCompte` varchar(255) DEFAULT 'desactive' NOT NULL,
     `token` varchar(100) DEFAULT NULL,
     `dateExpirationToken` DATETIME DEFAULT NULL,
     `estAdmin` boolean DEFAULT false NOT NULL,
-    `estActif` boolean DEFAULT false NOT NULL,
     `tokenActivationCompte` varchar(100) DEFAULT NULL,
     `dateExpirationTokenActivationCompte` DATETIME DEFAULT NULL,
     PRIMARY KEY (`id`)
@@ -121,18 +120,18 @@ CREATE TABLE IF NOT EXISTS `timeharmony_utilisateur` (
 -- Chargement des données de la table 'utilisateur'
 --
 
-INSERT INTO `timeharmony_utilisateur` (`nom`, `prenom`, `email`, `motDePasse`, `photoDeProfil`, `estAdmin`) VALUES
- ('latxague', 'thibault', 'tlatxague@iutbayonne.univ-pau.fr', '$2y$10$qvncYojGHH/dKVUuOn.rH.v5CgT4pjjAPWzN/Pa467mUelIxAPs5i', 'thibault.jpg', true),
- ('masson', 'rafael', 'rmasson003@iutbayonne.univ-pau.fr', '$2y$10$xbOlwSyP7aYhW14EtImaUuOo4pBjJ2Z4RoQSTmlG9/Kt0JAvW./h.', 'raf.jpg', true),
- ('keita', 'mouhamadou', 'mkmouhamadou@iutbayonne.univ-pau.fr', '$2y$10$Ez.7guQv7jseSeGwzXBWJe3qTVig.U9NR2PvkdnZwUjuAG82RY.Ru', 'mkm.png', true),
- ('autant', 'félix', 'fautant@iutbayonne.univ-pau.fr', '$2y$10$.qzWFHVUE3cpUVy3TAs1yO/.QVNp.gjKqwoKSgV0kpnUvwTsSW1r2', 'felix.jpg', true),
- ('etcheverry', 'patrick', 'patrick.etcheverry@iutbayonne.univ-pau.fr', '$2y$10$mBTdsf6nYV6ZAYm7wuD4p.lyH1xlxHCBFZxFQrjp9MQTCWPmndupi', 'petch.jpg', false),
- ('moulin', 'antoine', 'antoine.moulin@iutbayonne.univ-pau.fr', '$2y$10$zkyNPYF7XebIXxNH4QW6veoVeeGWUbWhRcVKRlQF0UG9cvbVp/Shu', 'antoine.jpg', false),
- ('pantxika', 'dagorret', 'pantxika.dagorret@iutbayonne.univ-pau.fr', '$2y$10$F8u3lSyuhU4mugsBJVIgmeccowZupq5dgQl5SaPhjJ60a/l8VtmGq', 'pantxika.jpg', false),
- ('sophie', 'voisin', 'sophie.voisin@iutbayonne.univ-pau.fr', '$2y$10$EbNnJgh848jUnqrqeVHKx.vchALW7ZHdUPFIgiRLwsg45AfOA.50O', 'sophie.jpg', false),
- ('christophe', 'marquesuzaa', 'christophe.marquesuzaa@iutbayonne.univ-pau.fr', '$2y$10$DqHEdsa3Y1cJ4KC2IccV3eImTTx8k622vnI1KnYPkVg3UndA2YgZm', 'christophe.png', false),
- ('olivier', 'dezeque', 'olivier.dezeque@iutbayonne.univ-pau.fr', '$2y$10$Wx.XZ34n6xF93ToBnzfdiOb8rXxIPgVUcq5n4fxpP2jA3zF/I/8Ma', 'olivier.jpg', false),
- ('chiara', 'rustici', 'chiara.rustici@iutbayonne.univ-pau.fr', '$2y$10$INfusoSi/dQSmXxy5RtQhuPN.UyKuESik1QO.i8gOZpg8MGtO3bS2', 'chiara.jpg', false);
+INSERT INTO `timeharmony_utilisateur` (`nom`, `prenom`, `email`, `motDePasse`, `photoDeProfil`, `estAdmin`, `statutCompte`) VALUES
+ ('latxague', 'thibault', 'tlatxague@iutbayonne.univ-pau.fr', '$2y$10$qvncYojGHH/dKVUuOn.rH.v5CgT4pjjAPWzN/Pa467mUelIxAPs5i', 'thibault.jpg', true, 'actif'),
+ ('masson', 'rafael', 'rmasson003@iutbayonne.univ-pau.fr', '$2y$10$xbOlwSyP7aYhW14EtImaUuOo4pBjJ2Z4RoQSTmlG9/Kt0JAvW./h.', 'raf.jpg', true, 'actif'),
+ ('keita', 'mouhamadou', 'mkmouhamadou@iutbayonne.univ-pau.fr', '$2y$10$Ez.7guQv7jseSeGwzXBWJe3qTVig.U9NR2PvkdnZwUjuAG82RY.Ru', 'mkm.png', true, 'actif'),
+ ('autant', 'félix', 'fautant@iutbayonne.univ-pau.fr', '$2y$10$.qzWFHVUE3cpUVy3TAs1yO/.QVNp.gjKqwoKSgV0kpnUvwTsSW1r2', 'felix.jpg', true, 'actif'),
+ ('etcheverry', 'patrick', 'patrick.etcheverry@iutbayonne.univ-pau.fr', '$2y$10$mBTdsf6nYV6ZAYm7wuD4p.lyH1xlxHCBFZxFQrjp9MQTCWPmndupi', 'petch.jpg', false, 'actif'),
+ ('moulin', 'antoine', 'antoine.moulin@iutbayonne.univ-pau.fr', '$2y$10$zkyNPYF7XebIXxNH4QW6veoVeeGWUbWhRcVKRlQF0UG9cvbVp/Shu', 'antoine.jpg', false, 'actif'),
+ ('pantxika', 'dagorret', 'pantxika.dagorret@iutbayonne.univ-pau.fr', '$2y$10$F8u3lSyuhU4mugsBJVIgmeccowZupq5dgQl5SaPhjJ60a/l8VtmGq', 'pantxika.jpg', false, 'actif'),
+ ('sophie', 'voisin', 'sophie.voisin@iutbayonne.univ-pau.fr', '$2y$10$EbNnJgh848jUnqrqeVHKx.vchALW7ZHdUPFIgiRLwsg45AfOA.50O', 'sophie.jpg', false, 'actif'),
+ ('christophe', 'marquesuzaa', 'christophe.marquesuzaa@iutbayonne.univ-pau.fr', '$2y$10$DqHEdsa3Y1cJ4KC2IccV3eImTTx8k622vnI1KnYPkVg3UndA2YgZm', 'christophe.png', false, 'actif'),
+ ('olivier', 'dezeque', 'olivier.dezeque@iutbayonne.univ-pau.fr', '$2y$10$Wx.XZ34n6xF93ToBnzfdiOb8rXxIPgVUcq5n4fxpP2jA3zF/I/8Ma', 'olivier.jpg', false, 'desactive'),
+ ('chiara', 'rustici', 'chiara.rustici@iutbayonne.univ-pau.fr', '$2y$10$INfusoSi/dQSmXxy5RtQhuPN.UyKuESik1QO.i8gOZpg8MGtO3bS2', 'chiara.jpg', false, 'desactive');
 
 
 --

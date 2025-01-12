@@ -66,11 +66,6 @@ class Utilisateur {
      * @var DateTime|null la date d'expiration du token genere
      */
     private DateTime|null $dateExpirationToken;
-        /**
-     * 
-     * @var bool|null si le compte est active ou non
-     */
-    private bool|null $compteEstActif;
     /**
      * 
      * @var string|null le token d'activation du compte
@@ -246,15 +241,6 @@ class Utilisateur {
     }
 
     /**
-     * Get si le compte est actif ou non
-     *
-     * @return bool|null si le compte est actif ou non
-     */
-    public function getCompteEstActif(): ?bool {
-        return $this->compteEstActif;
-    }
-
-    /**
      * Get le token d'activation du compte
      *
      * @return string|null le token d'activation du compte
@@ -390,16 +376,6 @@ class Utilisateur {
      */
     public function setDateExpirationToken(?DateTime $date): void {
         $this->dateExpirationToken = $date;
-    }
-
-    /**
-     * Set si le compte est actif ou non
-     *
-     * @param bool|null $compteEstActif si le compte est actif ou non
-     * @return void
-     */
-    public function setCompteEstActif(?bool $compteEstActif): void {
-        $this->compteEstActif = $compteEstActif;
     }
 
     /**

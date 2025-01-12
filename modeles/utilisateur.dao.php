@@ -215,9 +215,8 @@ class UtilisateurDao
         $utilisateur->setTokenReinitialisation($tableauAssoc['token']);
         $tableauAssoc['dateExpirationToken'] == null ? $utilisateur->setDateExpirationToken(null) : $utilisateur->setDateExpirationToken(new DateTime($tableauAssoc['dateExpirationToken']));
         $utilisateur->setStatutCompte($tableauAssoc['statutCompte']);
-        $utilisateur->setCompteEstActif($tableauAssoc['estActif']);
         $utilisateur->setTokenActivationCompte($tableauAssoc['tokenActivationCompte']);
-        $utilisateur->setDateExpirationTokenActivationCompte($tableauAssoc['dateExpirationTokenActivationCompte']);
+        $tableauAssoc['dateExpirationTokenActivationCompte']  == null ? $utilisateur->setDateExpirationTokenActivationCompte(null) : $utilisateur->setDateExpirationTokenActivationCompte(new DateTime($tableauAssoc['dateExpirationTokenActivationCompte']));
     return $utilisateur;
     }
 
@@ -481,7 +480,6 @@ class UtilisateurDao
             statutCompte = :statutCompte,
             token = :token,
             dateExpirationToken = :dateExpiraiton,
-            estActif = :estActif,
             tokenActivationCompte = :tokenActivationCompte,
             dateExpirationTokenActivationCompte = :dateExpirationTokenActivationCompte
             WHERE id = :id";
@@ -511,7 +509,6 @@ class UtilisateurDao
             "statutCompte" => $utilisateur->getStatutCompte(),
             "token" => $utilisateur->getTokenReinitialisation(),
             "dateExpiraiton" => $dateToken,
-            "estActif" => $utilisateur->getCompteEstActif() == false ? 0 : 1,
             "tokenActivationCompte" => $utilisateur->getTokenActivationCompte(),
             "dateExpirationTokenActivationCompte" => $dateTokenActivationCompte,
             "id" => $utilisateur->getId()

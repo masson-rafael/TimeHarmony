@@ -51,7 +51,7 @@ class ControllerUtilisateur extends Controller
                 $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
                 $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "utilisateurBase.png", false);
                 $tokenActivation = $nouvelUtilisateur->genererTokenActivationCompte();
-                $nouvelUtilisateur->setCompteEstActif(false);
+                // $nouvelUtilisateur->setCompteEstActif(false); // On peut supprimer car par défaut, la valeur est desactive
                 $manager->ajouterUtilisateur($nouvelUtilisateur);
                 $this->envoyerMailActivationCompte($nouvelUtilisateur->getEmail());
                 $tableauErreurs[] = "Inscription réussie !";
@@ -82,7 +82,7 @@ class ControllerUtilisateur extends Controller
 
         $manager = new UtilisateurDao($pdo);
         $compteUtilisateurCorrespondant = $manager->getObjetUtilisateur($_POST['email']);
-        $compteActif = $compteUtilisateurCorrespondant->getCompteEstActif() == true;
+        $compteActif = $compteUtilisateurCorrespondant->getStatutCompte() != "desactive";
         
         if ($emailValide && $passwdValide && $compteUtilisateurCorrespondant != null && $compteActif) {
             // Reactivation compte
@@ -586,7 +586,9 @@ class ControllerUtilisateur extends Controller
         $emailUtilisateur = $utilisateur->getEmail();
 
         if($tokenUtilisateur == $token && $emailUtilisateur == $_GET['email']) {
-            $utilisateur->setCompteEstActif(true);
+            $utilisateur->setStatutCompte("actif");
+            $utilisateur->setTokenActivationCompte(null);
+            $utilisateur->setDateExpirationTokenActivationCompte(null);
             $manager->miseAJourUtilisateur($utilisateur);
             $tableauMessages[] = "Votre compte a été validé avec succès, tentez de vous connecter !";
             $template = $this->getTwig()->load('connexion.html.twig');
@@ -617,7 +619,7 @@ class ControllerUtilisateur extends Controller
 
         $manager = new UtilisateurDAO($this->getPdo());
         $utilisateur = $manager->getObjetUtilisateur($email);
-        $token = $utilisateur->genererTokenReinitialisation();
+        $token = $utilisateur->genererTokenActivationCompte();
         $utilisateur->setTokenActivationCompte($token);
         $manager->miseAJourUtilisateur($utilisateur);
 
