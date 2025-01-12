@@ -145,11 +145,15 @@ class ControllerAgenda extends Controller
             // Créer une instance de AgendaDao pour interagir avec la base de données
             $manager = new AgendaDao($pdo);
             // Ajouter l'agenda dans la base de données
-            $manager->modifierAgenda($id, $_POST['url'], $_POST['couleur'], $_POST['nom']);
-
-            // Retourner un message de succès
-            $tableauErreurs[] = "Modification réussie !";
-            $this->lister($tableauErreurs);
+            if($manager->URLEstUnique($_POST['url'], $id)) {
+                $manager->modifierAgenda($id, $_POST['url'], $_POST['couleur'], $_POST['nom']);
+                // Retourner un message de succès
+                $tableauErreurs[] = "Modification réussie !";
+                $this->lister($tableauErreurs);
+            } else {
+                $tableauErreurs[] = "Agenda avec cette URL existe déjà !";
+                $this->lister($tableauErreurs); 
+            }
         } else {
             // Si le formulaire n'est pas correctement rempli, afficher la vue générique
             $this->genererVueAgenda($tableauErreurs);

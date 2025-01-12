@@ -176,4 +176,24 @@ class AgendaDao{
         $agendas = $this->hydrateAll($agenda);
         return $agenda;
     }
+
+    /**
+     * Fonction qui verifie que l'url est unique sur le profil utilisateur
+     * 
+     * @param string|null $url url de l'agenda
+     * @param int|null $id id de l'agenda
+     * @return bool si l'url est unique ou non
+     */
+    public function URLEstUnique(?string $url, ?int $id): bool {
+        $result = true;
+        $sql = "SELECT url FROM ".PREFIXE_TABLE."agenda WHERE url = :url";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("url" => $url));
+        $resultat = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+
+        if($resultat){
+            $result = false;
+        }
+        return $result;
+    }
 }
