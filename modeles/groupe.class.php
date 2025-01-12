@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Thibault Latxague
- * @describe Classe des groupes
+ * @brief Classe des groupes
  * @version 0.1
  */
 

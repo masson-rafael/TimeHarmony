@@ -2,7 +2,7 @@
 
 /**
  * @author Thibault Latxague
- * @describe Controller des informations du site (A propos, Conditions générales d'utilisation et Contact)
+ * @brief Controller des informations du site (A propos, Conditions générales d'utilisation et Contact)
  * @version 0.1
  */
 

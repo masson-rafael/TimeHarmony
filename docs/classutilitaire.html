@@ -90,6 +90,9 @@ $(function(){ initResizable(false); });
   <div class="headertitle"><div class="title">utilitaire Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Classe de vérifcation et des champs de formulaire et d'autres fonctions.  
+ <a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -143,7 +146,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a8ca11d647a7bb0fa88e1db5059f6ce54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Undocumented class </p>
+<div class="textblock"><p>Classe de vérifcation et des champs de formulaire et d'autres fonctions. </p>
+<dl class="section author"><dt>Author</dt><dd>Thibault Latxague </dd></dl>
+<dl class="section version"><dt>Version</dt><dd>0.4 </dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="aab88fd4cfc063acd60df07c7d9c0aeb8" name="aab88fd4cfc063acd60df07c7d9c0aeb8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aab88fd4cfc063acd60df07c7d9c0aeb8">&#9670;&#160;</a></span>redimage()</h2>
@@ -221,6 +226,15 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Fonction qui permet de valider les contacts de recherche</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">array&#160;|&#160;null</td><td class="paramname">$contacts</td><td>le tableau des contacts de recherche </td></tr>
+    <tr><td class="paramtype">array</td><td class="paramname">$tableauErreurs</td><td>le tableau des erreurs </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>bool si le champ est correct ou non </dd></dl>
 
 </div>
 </div>
@@ -407,6 +421,16 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Fonction qui permet de valider la durée de recherche</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">string&#160;|&#160;null</td><td class="paramname">$debut</td><td>le debut de la recherche </td></tr>
+    <tr><td class="paramtype">string&#160;|&#160;null</td><td class="paramname">$fin</td><td>la fin de la recherche </td></tr>
+    <tr><td class="paramtype">array</td><td class="paramname">$tableauErreurs</td><td>le tableau des erreurs </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>bool si le champ est correct ou non </dd></dl>
 
 </div>
 </div>
@@ -436,6 +460,15 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Fonction qui permet de valider la durée minimale de recherche</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">string&#160;|&#160;null</td><td class="paramname">$dureeMin</td><td>la durée minimale </td></tr>
+    <tr><td class="paramtype">array</td><td class="paramname">$tableauErreurs</td><td>le tableau des erreurs </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>bool si le champ est correct ou non </dd></dl>
 
 </div>
 </div>

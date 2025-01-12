@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Félix Autant
- * @describe classe de la base de données
+ * @brief classe de la base de données
  * @version 0.1
  * @todo faire methode __clone
  */

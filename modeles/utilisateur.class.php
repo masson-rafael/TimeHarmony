@@ -1,7 +1,7 @@
 <?php 
 /**
  * @author Thibault Latxague
- * @describe classe Utilisateur
+ * @brief classe Utilisateur
  * @version 0.1
  */
 

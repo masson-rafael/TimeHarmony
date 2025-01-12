@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Félix Autant
- * @describe Classe des créneaux libres (DAO)
+ * @brief Classe des créneaux libres (DAO)
  * @version 0.1
  */
 

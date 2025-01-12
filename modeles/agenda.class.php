@@ -4,7 +4,7 @@ use ICal\ICal;
 
 /**
  * @author Thibault Latxague
- * @describe Classe des agendas
+ * @brief Classe des agendas
  * @version 0.1
  */
 

@@ -2,7 +2,7 @@
 
 /**
  * @author Félix Autant
- * @describe Controller de la page de recherche de créneaux libres
+ * @brief Controller de la page des agendas
  * @todo Verifier que le undocumented class soit pas à remplir. S'il existe même
  * @version 0.1
  */
@@ -158,6 +158,11 @@ class ControllerAgenda extends Controller
         }
     }
 
+    /**
+     * Fonction permettant de supprimer un agenda
+     * 
+     * @return void
+     */
     public function supprimerAgenda(): void {
         $id = $_GET['id'];
         $manager = new AgendaDao($this->getPdo());

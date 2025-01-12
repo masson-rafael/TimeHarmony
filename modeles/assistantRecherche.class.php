@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Félix AUTANT
- * @describe Classe de l'assistant de recherche
+ * @brief Classe de l'assistant de recherche
  * @version 0.1
  */
 

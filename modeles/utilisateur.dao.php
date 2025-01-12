@@ -2,7 +2,7 @@
 
 /**
  * @author Thibault Latxague et Rafael Masson
- * @describe Classe des utilisateurs (DAO)
+ * @brief Classe des utilisateurs (DAO)
  * @version 0.2
  */
 
