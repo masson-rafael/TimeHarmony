@@ -103,11 +103,30 @@ class GroupeDao {
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $tableau = $pdoStatement->fetchAll();
         
-        if ($tableau) {
-            $resultat = $this->hydrateAll($tableau);
+        // if ($tableau) {
+        //     $resultat = $this->hydrateAll($tableau);
+        // }
+
+        foreach ($tableau as $result) {
+            $resultat['groupe'][] = $this->hydrate($result);
+            $resultat['nombrePersonnes'][] = $this->getNombrePersonnes($result['id']);
         }
-        
+
         return $resultat;
+    }
+
+    /**
+     * Fonction permettant de renvoyer le nombre de personnes dans un groupe
+     * @param int|null $id id du groupe
+     * @return int $nombrePersonnes nombre de personnes dans le groupe
+     */
+    public function getNombrePersonnes(?int $id): int {
+        $sql = "SELECT COUNT(*) FROM ".PREFIXE_TABLE."composer WHERE idGroupe = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("id" => $id));
+        $result = $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $nombrePersonnes = $pdoStatement->fetchColumn();
+        return $nombrePersonnes;
     }
 
     /**

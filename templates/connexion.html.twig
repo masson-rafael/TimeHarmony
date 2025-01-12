@@ -7,8 +7,9 @@
 
 {% block content %}
 	{# {{ dump(creneauxLibres) }} #}
-	<main class="h-100 w-100">
-		<div class="container-fluid h-100">
+	<main>
+		<div class="container">
+			{% if utilisateurGlobal == null %}
 			<div class="row justify-content-center align-items-center h-100 pt-5">
 				<div class="col-12 col-md-6 col-lg-4 d-flex align-items-center" style="width: 100%; max-width: 700px;">
 					<!-- Card for the form -->
@@ -41,6 +42,12 @@
 					</div>
 				{% endif %}
 			</div>
+			{% else %}
+			<div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
+				Vous devez vous déconnecter pour accéder à cette page !
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+			{% endif %}
 		</div>
 	</main>
     

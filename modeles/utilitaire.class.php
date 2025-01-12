@@ -49,23 +49,23 @@ class utilitaire {
      *
      * @param string $prenom Le prénom de l'utilisateur
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
-     * @return boolean Retourne vrai si le prénom est valide, faux sinon
+     * @return bool Retourne vrai si le prénom est valide, faux sinon
      */
     public static function validerPrenom(?string $prenom, array &$messagesErreurs): bool
     {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        $valide = utilitaire::validerPresence($prenom, $messagesErreurs);
+        $valide = utilitaire::validerPresence($prenom, $messagesErreurs, "prenom");
 
         // 2. Type de données : vérifier que le prenom est une chaine de caractères
-        $valide = utilitaire::validerType($prenom, $messagesErreurs);
+        $valide = utilitaire::validerType($prenom, $messagesErreurs, "prenom");
 
         // 3. Longueur de la chaine : vérifier que le prenom est compris entre 2 et 50 caractères
         $valide = utilitaire::validerTaille($prenom, 2, 50, $messagesErreurs);
 
         // 4. Format des données : vérifier le format du prénom
-        $valide = utilitaire::validerPreg($prenom, "/^[a-zA-ZÀ-ÿ-]+$/", $messagesErreurs);
+        $valide = utilitaire::validerPreg($prenom, "/^[a-zA-ZÀ-ÿ-]+$/", $messagesErreurs, "prenom");
 
         return $valide;
     }
@@ -75,23 +75,23 @@ class utilitaire {
      *
      * @param string $nom Le nom de l'utilisateur
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
-     * @return boolean Retourne vrai si le nom est valide, faux sinon
+     * @return bool Retourne vrai si le nom est valide, faux sinon
      */
     public static function validerNom(?string $nom, array &$messagesErreurs): bool
     {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        $valide = utilitaire::validerPresence($nom, $messagesErreurs);
+        $valide = utilitaire::validerPresence($nom, $messagesErreurs, "nom");
 
         // 2. Type de données : vérifier que le nom est une chaine de caractères
-        $valide = utilitaire::validerType($nom, $messagesErreurs);
+        $valide = utilitaire::validerType($nom, $messagesErreurs, "nom");
 
         // 3. Longueur de la chaine : vérifier que le nom est compris entre 2 et 50 caractères
         $valide = utilitaire::validerTaille($nom, 2, 50, $messagesErreurs);
 
         // 4. Format des données : vérifier le format du nom
-        $valide = utilitaire::validerPreg($nom, "/^[a-zA-ZÀ-ÿ0-9-]+$/", $messagesErreurs);
+        $valide = utilitaire::validerPreg($nom, "/^[a-zA-ZÀ-ÿ0-9-]+$/", $messagesErreurs, "nom");
 
         return $valide;
     }
@@ -101,17 +101,17 @@ class utilitaire {
      *
      * @param string $nom Le nom de l'utilisateur
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
-     * @return boolean Retourne vrai si le nom est valide, faux sinon
+     * @return bool Retourne vrai si le nom est valide, faux sinon
      */
     public static function validerNomAgenda(?string $nom, array &$messagesErreurs): bool
     {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        $valide = utilitaire::validerPresence($nom, $messagesErreurs);
+        $valide = utilitaire::validerPresence($nom, $messagesErreurs, "nom agenda");
 
         // 2. Type de données : vérifier que le nom est une chaine de caractères
-        $valide = utilitaire::validerType($nom, $messagesErreurs);
+        $valide = utilitaire::validerType($nom, $messagesErreurs, "nom agenda");
 
         // 3. Longueur de la chaine : vérifier que le nom est compris entre 2 et 50 caractères
         $valide = utilitaire::validerTaille($nom, 2, 50, $messagesErreurs);
@@ -126,17 +126,17 @@ class utilitaire {
      *
      * @param string $email L'email de l'utilisateur
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
-     * @return boolean Retourne vrai si l'email est valide, faux sinon
+     * @return bool Retourne vrai si l'email est valide, faux sinon
      */
     public static function validerEmail(?string $email, array &$messagesErreurs): bool
     {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        $valide = utilitaire::validerPresence($email, $messagesErreurs);
+        $valide = utilitaire::validerPresence($email, $messagesErreurs, "email");
 
         // 2. Type de données : vérifier que l'email est une chaine de caractères
-        $valide = utilitaire::validerType($email, $messagesErreurs);
+        $valide = utilitaire::validerType($email, $messagesErreurs, "email");
 
         // 3. Longueur de la chaine : vérifier que l'email est compris entre 5 et 255 caractères
         $valide = utilitaire::validerTaille($email, 5, 255, $messagesErreurs);
@@ -155,17 +155,17 @@ class utilitaire {
      *
      * @param string $urlAgenda L'URL de l'agenda
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
-     * @return boolean Retourne vrai si l'URL de l'agenda est valide, faux sinon
+     * @return bool Retourne vrai si l'URL de l'agenda est valide, faux sinon
      */
     public static function validerURLAgenda(?string $urlAgenda, array &$messagesErreurs): bool
     {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        $valide = utilitaire::validerPresence($urlAgenda, $messagesErreurs);
+        $valide = utilitaire::validerPresence($urlAgenda, $messagesErreurs, "URL agenda");
 
         // 2. Type de données : vérifier que l'URL est une chaine de caractères
-        $valide = utilitaire::validerType($urlAgenda, $messagesErreurs);
+        $valide = utilitaire::validerType($urlAgenda, $messagesErreurs, "URL agenda");
 
         // 3. Longueur de la chaine - non pertinent
 
@@ -174,7 +174,7 @@ class utilitaire {
             $messagesErreurs[] = "L'URL de l'agenda n'est pas valide.";
             $valide = false;
         } else {
-            $valide = utilitaire::validerPreg($urlAgenda, '/^https?:\/\/calendar\.google\.com\/calendar\/ical\/.+\/basic\.ics$/', $messagesErreurs);
+            $valide = utilitaire::validerPreg($urlAgenda, '/^https?:\/\/calendar\.google\.com\/calendar\/ical\/.+\/basic\.ics$/', $messagesErreurs, "URL agenda");
         }
 
         return $valide;
@@ -185,23 +185,23 @@ class utilitaire {
      *
      * @param string $couleurAgenda La couleur de l'agenda
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
-     * @return boolean Retourne vrai si la couleur de l'agenda est valide, faux sinon
+     * @return bool Retourne vrai si la couleur de l'agenda est valide, faux sinon
      */
     public static function validerCouleurAgenda(?string $couleurAgenda, array &$messagesErreurs): bool
     {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        $valide = utilitaire::validerPresence($couleurAgenda, $messagesErreurs);
+        $valide = utilitaire::validerPresence($couleurAgenda, $messagesErreurs, "couleur agenda");
 
         // 2. Type de données : vérifier que le prenom est une chaine de caractères
-        $valide = utilitaire::validerType($couleurAgenda, $messagesErreurs);
+        $valide = utilitaire::validerType($couleurAgenda, $messagesErreurs, "couleur agenda");
 
         // 3. Longueur de la chaine : vérifier que le prenom a exactement 7 caractères
         $valide = utilitaire::validerTaille($couleurAgenda, 7, 7, $messagesErreurs);
 
         // 4. Format des données : vérifier le format de la couleur
-        $valide = utilitaire::validerPreg($couleurAgenda, "/^#[a-fA-F0-9]{6}$/", $messagesErreurs);
+        $valide = utilitaire::validerPreg($couleurAgenda, "/^#[a-fA-F0-9]{6}$/", $messagesErreurs, "couleur agenda");
 
         return $valide;
     }
@@ -212,26 +212,26 @@ class utilitaire {
      * @param string $motDePasse Le mot de passe de l'utilisateur
      * @param string $motDePasse2 Le mot de passe confirmé de l'utilisateur
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
-     * @return boolean Retourne vrai si le mot de passe est valide, faux sinon
+     * @return bool Retourne vrai si le mot de passe est valide, faux sinon
      */
     public static function validerMotDePasseInscription(?string $motDePasse, array &$messagesErreurs, ?string $motDePasse2 = null): bool {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        $valide = utilitaire::validerPresence($motDePasse, $messagesErreurs);
-        $motDePasse2 != null ? $valide = utilitaire::validerPresence($motDePasse2, $messagesErreurs) : $valide = true;
+        $valide = utilitaire::validerPresence($motDePasse, $messagesErreurs, "mot de passe");
+        $motDePasse2 != null ? $valide = utilitaire::validerPresence($motDePasse2, $messagesErreurs, "mot de passe") : $valide = true;
 
         // 2. Type de données : vérifier que le mot de passe est une chaine de caractères
-        $valide = utilitaire::validerType($motDePasse, $messagesErreurs);
-        $motDePasse2 != null ? $valide = utilitaire::validerType($motDePasse2, $messagesErreurs) : $valide = true;
+        $valide = utilitaire::validerType($motDePasse, $messagesErreurs, "mot de passe");
+        $motDePasse2 != null ? $valide = utilitaire::validerType($motDePasse2, $messagesErreurs, "mot de passe") : $valide = true;
 
         // 3. Longueur de la chaine : vérifier que le mot de passe est compris entre 8 et 25 caractères
         $valide = utilitaire::validerTaille($motDePasse, 8, 25, $messagesErreurs);
         $motDePasse2 != null ? $valide = utilitaire::validerTaille($motDePasse2, 8, 25, $messagesErreurs) : $valide = true;
 
         // 4. Format des données : vérifier le format du mdp avec preg preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/'
-        $valide = utilitaire::validerPreg($motDePasse, '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $messagesErreurs);
-        $motDePasse2 != null ? $valide = utilitaire::validerPreg($motDePasse2, '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $messagesErreurs) : $valide = true;
+        $valide = utilitaire::validerPreg($motDePasse, '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $messagesErreurs, "mot de passe");
+        $motDePasse2 != null ? $valide = utilitaire::validerPreg($motDePasse2, '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $messagesErreurs, "mot de passe") : $valide = true;
 
         // 5. Plage des valeurs : vérifier que les mots de passe sont les mêmes
         if(($motDePasse != $motDePasse2) && $motDePasse2 != null){
@@ -247,22 +247,22 @@ class utilitaire {
      *
      * @param string|null $motDePasse Le mot de passe de l'utilisateur donné dans le formulaire
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra retourner si erreur détectée
-     * @return boolean Retourne vrai si le mot de passe est valide, faux sinon
+     * @return bool Retourne vrai si le mot de passe est valide, faux sinon
      */
     public static function validerMotDePasse(?string $motDePasse, array &$messagesErreurs): bool {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        $valide = utilitaire::validerPresence($motDePasse, $messagesErreurs);
+        $valide = utilitaire::validerPresence($motDePasse, $messagesErreurs, "mot de passe");
 
         // 2. Type de données : vérifier que le mot de passe est une chaine de caractères
-        $valide = utilitaire::validerType($motDePasse, $messagesErreurs);
+        $valide = utilitaire::validerType($motDePasse, $messagesErreurs, "mot de passe");
 
         // 3. Longueur de la chaine : vérifier que le mot de passe est compris entre 8 et 25 caractères
         $valide = utilitaire::validerTaille($motDePasse, 8, 25, $messagesErreurs);
 
         // 4. Format des données : vérifier le format du mdp avec preg preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/'
-        $valide = utilitaire::validerPreg($motDePasse, '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $messagesErreurs);
+        $valide = utilitaire::validerPreg($motDePasse, '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $messagesErreurs, "mot de passe");
 
         return $valide;
     }
@@ -272,7 +272,7 @@ class utilitaire {
      *
      * @param string|null $role Le role de l'utilisateur donné dans le formulaire de modification
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra retourner si erreur détectée
-     * @return boolean Retourne vrai si le role est valide, faux sinon
+     * @return bool Retourne vrai si le role est valide, faux sinon
      */
     public static function validerRole(?string $role, array &$messagesErreurs): bool{
         $valide = true;
@@ -282,7 +282,7 @@ class utilitaire {
         // Le champ n'est pas obligatoire
 
         // 2. Type de données : vérifier que le mot de passe est une chaine de caractères
-        $valide = utilitaire::validerType($role, $messagesErreurs);
+        $valide = utilitaire::validerType($role, $messagesErreurs, "role");
 
         // 3. Longueur de la chaine - non pertinent
 
@@ -302,7 +302,7 @@ class utilitaire {
      * @param integer $min La taille minimale de la chaine
      * @param integer $max La taille maximale de la chaine
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
-     * @return boolean Retourne vrai si la taille est valide, faux sinon
+     * @return bool Retourne vrai si la taille est valide, faux sinon
      */
     public static function validerTaille(?string $chaine, int $min, int $max, array &$messagesErreurs): bool {
         $valide = true;
@@ -319,13 +319,14 @@ class utilitaire {
      *
      * @param string|null $chaine La chaine à valider
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
-     * @return boolean Retourne vrai si le champ est présent, faux sinon
+     * @param string|null $nomChamp le nom du champ pour personnaliser le message d'erreur
+     * @return bool Retourne vrai si le champ est présent, faux sinon
      */
-    public static function validerPresence(?string $chaine, array &$messagesErreurs): bool {
+    public static function validerPresence(?string $chaine, array &$messagesErreurs, ?string $nomChamp): bool {
         $valide = true;
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
         if(empty($chaine)){
-            $messagesErreurs[] = "Le champ est obligatoire";
+            $messagesErreurs[] = "Le " . $nomChamp . " est obligatoire";
             $valide = false;
         }
         return $valide;
@@ -336,13 +337,14 @@ class utilitaire {
      *
      * @param string|null $chaine La chaine à valider
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
-     * @return boolean Retourne vrai si le type est valide, faux sinon
+     * @param string|null $nomChamp le nom du champ pour personnaliser le message d'erreur
+     * @return bool Retourne vrai si le type est valide, faux sinon
      */
-    public static function validerType(?string $chaine, array &$messagesErreurs): bool {
+    public static function validerType(?string $chaine, array &$messagesErreurs, ?string $nomChamp): bool {
         $valide = true;
         // 2. Type de données : vérifier que le champ est une chaine de caractères
         if(!is_string($chaine)){
-            $messagesErreurs[] = "Le champ doit être une chaine de caractères";
+            $messagesErreurs[] = "Le " . $nomChamp . " doit être une chaine de caractères";
             $valide = false;
         }
         return $valide;
@@ -354,13 +356,13 @@ class utilitaire {
      * @param string|null $chaine La chaine à valider
      * @param string $pattern Le pattern à respecter que l'on donne au preg_match
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
-     * @return boolean Retourne vrai si le format est valide, faux sinon
+     * @return bool Retourne vrai si le format est valide, faux sinon
      */
-    public static function validerPreg(?string $chaine, string $pattern, array &$messagesErreurs): bool {
+    public static function validerPreg(?string $chaine, string $pattern, array &$messagesErreurs, ?string $nomChamp): bool {
         $valide = true;
         // 2. Type de données : vérifier que le champ est une chaine de caractères
         if(!preg_match($pattern, $chaine)){
-            $messagesErreurs[] = "Le champ ne respecte pas le format attendu";
+            $messagesErreurs[] = "Le " . $nomChamp . " ne respecte pas le format attendu";
             $valide = false;
         }
         return $valide;
@@ -371,28 +373,35 @@ class utilitaire {
      *
      * @param array|null $photo La photo de profil de l'utilisateur
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
-     * @return boolean Retourne vrai si la photo est valide, faux sinon
+     * @return bool Retourne vrai si la photo est valide, faux sinon
      */
     public static function validerPhoto(?array $photo, array &$messagesErreurs): bool {
         $valide = true;
-        // 2. Type de données : vérifier que le nom est une chaine de caractères
-        if(!is_array($photo)){
-            $messagesErreurs[] = "Le champ doit être un fichier";
+        // 1. Champs obligatoires : vérifier la présence du champ (pas obligatoire mais sert d'indication)
+        if(empty($photo)){
+            $messagesErreurs[] = "Aucune photo renseignée";
             $valide = false;
         }
 
-        // 3. Longueur de la chaine (cf. taille) 2 Mo maximum
-        if(sizeof($photo) > 2000000) {
-            $valide = false;
-            $messagesErreurs[] = "La taille de la photo est trop grande (2Mo maximum)";
-        }
+        else {
+            // 2. Type de données : vérifier que le nom est une chaine de caractères
+            if(!is_array($photo)){
+                $messagesErreurs[] = "La photo doit être un fichier";
+                $valide = false;
+            }
 
-        // 4. Format des données : vérifier le format de la photo
-        if($photo['error'] != UPLOAD_ERR_OK) {
-            $valide = false;
-            $messagesErreurs[] = "Erreur lors de l'upload de la photo";
-        }
+            // 3. Longueur de la chaine (cf. taille) 2 Mo maximum
+            if(sizeof($photo) > 2000000) {
+                $valide = false;
+                $messagesErreurs[] = "La taille de la photo est trop grande (2Mo maximum)";
+            }
 
+            // 4. Format des données : vérifier le format de la photo
+            if($photo['error'] != UPLOAD_ERR_OK) {
+                $valide = false;
+                $messagesErreurs[] = "Erreur lors de l'upload de la photo";
+            }
+        }
         return $valide;
     }
 
@@ -401,20 +410,20 @@ class utilitaire {
      *
      * @param string|null $date La date de début de la recherche
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
-     * @return boolean Retourne vrai si la date est valide, faux sinon
+     * @return bool Retourne vrai si la date est valide, faux sinon
      */
     public static function validerDate(?string $date, array &$messagesErreurs): bool {
         $valide = true;
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        $valide = utilitaire::validerPresence($date, $messagesErreurs);
+        $valide = utilitaire::validerPresence($date, $messagesErreurs, "date");
 
         // 2. Type de données : vérifier que le champ est une chaine de caractères
-        $valide = utilitaire::validerType($date, $messagesErreurs);
+        $valide = utilitaire::validerType($date, $messagesErreurs, "date");
 
         // 3. Longueur de la chaine - non pertinent
 
         // 4. Format des données : vérifier le format de la date
-        $valide = utilitaire::validerPreg($date, "/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/", $messagesErreurs);
+        $valide = utilitaire::validerPreg($date, "/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/", $messagesErreurs, "date");
 
         return $valide;
     }
@@ -424,20 +433,20 @@ class utilitaire {
      *
      * @param string|null $heure L'heure de début de la recherche
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
-     * @return boolean Retourne vrai si l'heure est valide, faux sinon
+     * @return bool Retourne vrai si l'heure est valide, faux sinon
      */
     public static function validerDureeMinimale(?string $heure, array &$messagesErreurs): bool {
         $valide = true;
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        $valide = utilitaire::validerPresence($heure, $messagesErreurs);
+        $valide = utilitaire::validerPresence($heure, $messagesErreurs, "duree minimale");
 
         // 2. Type de données : vérifier que le champ est une chaine de caractères
-        $valide = utilitaire::validerType($heure, $messagesErreurs);
+        $valide = utilitaire::validerType($heure, $messagesErreurs, "duree minimale");
 
         // 3. Longueur de la chaine - non pertinent
 
         // 4. Format des données : vérifier le format de l'heure
-        $valide = utilitaire::validerPreg($heure, "/^(2[0-3]|[01]\d):[0-5]\d$/", $messagesErreurs);
+        $valide = utilitaire::validerPreg($heure, "/^(2[0-3]|[01]\d):[0-5]\d$/", $messagesErreurs, "duree minimale");
 
         return $valide;
     }
@@ -447,34 +456,41 @@ class utilitaire {
      *
      * @param string|null $couleur La couleur de l'agenda
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
-     * @return boolean Retourne vrai si la couleur est valide, faux sinon
+     * @return bool Retourne vrai si la couleur est valide, faux sinon
      */
     public static function validerCouleur(?string $couleur, array &$messagesErreurs): bool {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        $valide = utilitaire::validerPresence($couleur, $messagesErreurs);
+        $valide = utilitaire::validerPresence($couleur, $messagesErreurs, "couleur agenda");
 
         // 2. Type de données : vérifier que le prenom est une chaine de caractères
-        $valide = utilitaire::validerType($couleur, $messagesErreurs);
+        $valide = utilitaire::validerType($couleur, $messagesErreurs, "couleur agenda");
 
         // 3. Longueur de la chaine : vérifier que le prenom a exactement 7 caractères
         $valide = utilitaire::validerTaille($couleur, 7, 7, $messagesErreurs);
 
         // 4. Format des données : vérifier le format de la couleur
-        $valide = utilitaire::validerPreg($couleur, "/^#[a-fA-F0-9]{6}$/", $messagesErreurs);
+        $valide = utilitaire::validerPreg($couleur, "/^#[a-fA-F0-9]{6}$/", $messagesErreurs, "couleur agenda");
 
         return $valide;
     }
 
+    /**
+     * Fonction qui valide la description d'une demande de contact de l'équipe TH
+     * 
+     * @param string|null $description la description du message
+     * @param array $messagesErreurs le tableau qui contiendra les messages d'erreur
+     * @return bool si le champ est valide ou non
+     */
     public static function validerDescription(?string $description, array &$messagesErreurs): bool {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        $valide = utilitaire::validerPresence($description, $messagesErreurs);
+        $valide = utilitaire::validerPresence($description, $messagesErreurs, "description d'un groupe");
 
         // 2. Type de données : vérifier que le prenom est une chaine de caractères
-        $valide = utilitaire::validerType($description, $messagesErreurs);
+        $valide = utilitaire::validerType($description, $messagesErreurs, "description d'un groupe");
 
         // 3. Longueur de la chaine - non pertinent
 
@@ -483,23 +499,105 @@ class utilitaire {
         return $valide;
     }
 
+    /**
+     * Fonction qui valide le sujet d'une demande de contact de l'équipe TH
+     * 
+     * @param string|null $sujet le sujet de la demande
+     * @param array $messagesErreurs le tableau des messages d'erreur
+     * @return bool retourne vrai si le champ est valide
+     */
     public static function validerSujet(?string $sujet, array &$messagesErreurs): bool {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        $valide = utilitaire::validerPresence($sujet, $messagesErreurs);
+        $valide = utilitaire::validerPresence($sujet, $messagesErreurs, "sujet de la demande");
 
         // 2. Type de données : vérifier que le prenom est une chaine de caractères
-        $valide = utilitaire::validerType($sujet, $messagesErreurs);
+        $valide = utilitaire::validerType($sujet, $messagesErreurs, "sujet de la demande");
 
         // 3. Longueur de la chaine - non pertinent
-
         // 4. Format des données - non pertinent
 
         // 5. Plage des valeurs
         $valeursPossibles = ['Demande generale d\'information', 'Question conditions generales d\'utilisation', 'Question politique de confidentialite', 'Commentaires ou Suggestions', 'Consulter ses donnees', 'Rectifier ses donnees', 'Supprimer ses donnees', 'Autre']; // + autres valeurs possibles
         if($sujet != null && !in_array($sujet, $valeursPossibles)){
             $messagesErreurs[] = "Le sujet n'est pas valide";
+            $valide = false;
+        }
+
+        return $valide;
+    }
+
+    /**
+     * Fonction qui permet de valider le statut de l'utilisateur dans la page admin
+     * 
+     * @param string|null $statut le statut de l'utilisateur
+     * @param array $messagesErreurs le tabeleau de message d'erreurs
+     * @return bool si le statut est valide ou non
+     */
+    public static function validerStatut(?string $statut, array &$messagesErreurs): bool {
+        $valide = true;
+
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        $valide = utilitaire::validerPresence($statut, $messagesErreurs, "statut de compte de l'utilisateur");
+
+        // 2. Type de données : vérifier que le prenom est une chaine de caractères
+        $valide = utilitaire::validerType($statut, $messagesErreurs, "statut de compte de l'utilisateur");
+
+        // 3. Longueur de la chaine - non pertinent
+        // 4. Format des données - non pertinent
+
+        // 5. Plage des valeurs
+        $statut = strtolower($statut);
+        $valeursPossibles = ['desactive', 'actif', 'bloque', 'Actif', 'Désactivé', 'Bloqué']; // + autres valeurs possibles
+        if($statut != null && !in_array($statut, $valeursPossibles)){
+            $messagesErreurs[] = "Le statut n'est pas valide";
+            $valide = false;
+        }
+
+        return $valide;
+    }
+
+    public static function validerDuree(?string $debut, ?string $fin, array &$messagesErreurs): bool {
+        $valide = true;
+
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        $valide = utilitaire::validerPresence($debut, $messagesErreurs, "debut du créneau");
+        $valide = utilitaire::validerPresence($fin, $messagesErreurs, "fin du créneau");
+
+        // 5. Plage des valeurs
+        $dateDebut = new DateTime($debut);
+        $dateFin = new DateTime($fin);
+
+        if($dateDebut >= $dateFin) {
+            $valide = false;
+            $messagesErreurs[] = "La date de début doit être inférieure à la date de fin";
+        }
+
+        return $valide;
+    }
+
+    public static function validerDureeMin(?string $dureeMin, array &$messagesErreurs): bool {
+        $valide = true;
+
+        // 5. Plage des valeurs
+        $dureeMinSeconds = strtotime($dureeMin);
+
+        $valide = $dureeMinSeconds > 5*60;
+        if(!$valide) {
+            $messagesErreurs[] = "La durée minimale doit être supérieure à 5 minutes";
+        }
+
+        // Vérification que la durée est supérieure ou égale à 5 minutes
+        return $valide;
+    }
+
+    public static function validerContacts(?array $contacts, array &$messagesErreurs): bool {
+        $valide = true;
+
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        if(empty($contacts)){
+            $messagesErreurs[] = "Aucun contact renseigné";
             $valide = false;
         }
 

@@ -40,13 +40,14 @@ class ControllerContacts extends Controller
      *
      * @return void
      */
-    function lister(): void {
+    function lister(?array $tableauMessages = null): void {
         $contacts = $this->recupererContacts($_SESSION['utilisateur']->getId());
         //Génération de la vue
         $template = $this->getTwig()->load('contacts.html.twig');
         echo $template->render(array(
             'menu' => 'contacts',
-            'contacts' => $contacts
+            'contacts' => $contacts,
+            'message' => $tableauMessages
         ));
     }
 
@@ -62,8 +63,8 @@ class ControllerContacts extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $manager->supprimerContact($id1,$id2);
-
-        $this->lister();
+        $tableauMessages[] = "Contact supprimé avec succès !";
+        $this->lister($tableauMessages);
     }
 
     /**
@@ -96,15 +97,15 @@ class ControllerContacts extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $manager->ajouterDemandeContact($id1,$id2);
-
-        $this->lister();
+        $tableauMessages[] = "Contact ajouté avec succès !";
+        $this->lister($tableauMessages);
     }
 
     /**
      * Fonction permettant d'afficher le twig correspondant à la page des notifications
      * @return void
      */
-    public function afficherPageNotifications(): void {
+    public function afficherPageNotifications(?array $tableauMessage = null): void {
         /**
          * Step 1 : Appel de la fonction qui trouve ET RENVOIE les contacts que j'ai envoyé
          * Step 2 : Appel de la fonction qui trouve ET RENVOIE les demandes de contact d'autres utilisateurs
@@ -116,7 +117,8 @@ class ControllerContacts extends Controller
         $template = $this->getTwig()->load('notifications.html.twig');
         echo $template->render(array(
             'demandesEnvoyees' => $mesDemandes,
-            'demandesRecues' => $demandesRecues
+            'demandesRecues' => $demandesRecues,
+            'message' => $tableauMessage
         ));
     }
 
@@ -155,7 +157,8 @@ class ControllerContacts extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $tabDemandesPourMoi = $manager->supprimerDemandeEnvoyee($_SESSION['utilisateur']->getId(), $idReceveur);
-        $this->afficherPageNotifications();
+        $tableauMessages[] = "Demande supprimée avec succès !";
+        $this->afficherPageNotifications($tableauMessages);
     }
 
     /**
@@ -167,7 +170,8 @@ class ControllerContacts extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $tabDemandesPourMoi = $manager->refuserDemande($_SESSION['utilisateur']->getId(), $idReceveur);
-        $this->afficherPageNotifications();
+        $tableauMessages[] = "Demande refusée avec succès !";
+        $this->afficherPageNotifications($tableauMessages);
     }
 
     /**
@@ -179,6 +183,7 @@ class ControllerContacts extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $tabDemandesPourMoi = $manager->accepterDemande($_SESSION['utilisateur']->getId(), $idReceveur);
-        $this->afficherPageNotifications();
+        $tableauMessages[] = "Demande acceptée avec succès !";
+        $this->afficherPageNotifications($tableauMessages);
     }
 }

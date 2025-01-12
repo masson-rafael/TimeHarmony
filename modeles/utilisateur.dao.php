@@ -215,9 +215,9 @@ class UtilisateurDao
         $utilisateur->setTokenReinitialisation($tableauAssoc['token']);
         $tableauAssoc['dateExpirationToken'] == null ? $utilisateur->setDateExpirationToken(null) : $utilisateur->setDateExpirationToken(new DateTime($tableauAssoc['dateExpirationToken']));
         $utilisateur->setStatutCompte($tableauAssoc['statutCompte']);
-        $utilisateur->setCompteEstActif($tableauAssoc['estActif']);
         $utilisateur->setTokenActivationCompte($tableauAssoc['tokenActivationCompte']);
-        $utilisateur->setDateExpirationTokenActivationCompte($tableauAssoc['dateExpirationTokenActivationCompte']);
+        $tableauAssoc['dateExpirationTokenActivationCompte']  == null ? $utilisateur->setDateExpirationTokenActivationCompte(null) : $utilisateur->setDateExpirationTokenActivationCompte(new DateTime($tableauAssoc['dateExpirationTokenActivationCompte']));
+        //$utilisateur->setNombreDemandesEnCours($utilisateur->getDemandes());
     return $utilisateur;
     }
 
@@ -244,9 +244,16 @@ class UtilisateurDao
      * @return void
      */
     public function ajouterDemandeContact(?int $id1, ?int $id2): void {
-        $sql = "INSERT INTO ". PREFIXE_TABLE ."demander (idUtilisateur1, idUtilisateur2) VALUES (:id1, :id2)";
-        $pdoStatement = $this->pdo->prepare($sql);
+        $verifsql = "SELECT COUNT(*) FROM " . PREFIXE_TABLE . "demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2 = :id2";
+        $pdoStatement = $this->pdo->prepare($verifsql);
         $pdoStatement->execute(array("id1" => $id1, "id2" => $id2));
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+
+        if($result['COUNT(*)'] == 0) {
+            $sql = "INSERT INTO ". PREFIXE_TABLE ."demander (idUtilisateur1, idUtilisateur2) VALUES (:id1, :id2)";
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute(array("id1" => $id1, "id2" => $id2));
+        }
     }
 
     /**
@@ -288,10 +295,11 @@ class UtilisateurDao
      * @param string|null $email de l'utilisateur
      * @param boolean|null $estAdmin de l'utilisateur
      * @param string|null $photoDeProfil de l'utilisateur
+     * @param string|null $statut le statut de l'utilisateur
      * @return void
      */
-    public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?string $email, ?bool $estAdmin, ?string $photoDeProfil): void {
-        $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET nom = :nom, prenom = :prenom, email = :email, estAdmin = :estAdmin, photoDeProfil = :pdp WHERE id = :id";
+    public function modifierUtilisateur(?int $id, ?string $nom, ?string $prenom, ?string $email, ?bool $estAdmin, ?string $photoDeProfil, ?string $statut = 'actif'): void {
+        $sql = "UPDATE ".PREFIXE_TABLE."utilisateur SET nom = :nom, prenom = :prenom, email = :email, estAdmin = :estAdmin, photoDeProfil = :pdp, statutCompte = :statut WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $estAdmin == false ? $estAdmin = 0 : $estAdmin = 1;
         $pdoStatement->execute(array(
@@ -300,7 +308,8 @@ class UtilisateurDao
             "email" => $email,
             "estAdmin" => $estAdmin,
             "id" => $id,
-            "pdp" => $photoDeProfil
+            "pdp" => $photoDeProfil,
+            "statut" => $statut
         ));
     }
 
@@ -368,7 +377,7 @@ class UtilisateurDao
                 WHERE D.idUtilisateur1 = :idDemandeur";
         
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['idDemandeur' => $id]);
+        $stmt->execute(array('idDemandeur' => $id));
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         return $result ?: null;
@@ -385,7 +394,7 @@ class UtilisateurDao
         WHERE D.idUtilisateur2 = :idDemandeur";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['idDemandeur' => $id]);
+        $stmt->execute(array('idDemandeur' => $id));
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $result ?: null;
@@ -481,7 +490,6 @@ class UtilisateurDao
             statutCompte = :statutCompte,
             token = :token,
             dateExpirationToken = :dateExpiraiton,
-            estActif = :estActif,
             tokenActivationCompte = :tokenActivationCompte,
             dateExpirationTokenActivationCompte = :dateExpirationTokenActivationCompte
             WHERE id = :id";
@@ -511,11 +519,25 @@ class UtilisateurDao
             "statutCompte" => $utilisateur->getStatutCompte(),
             "token" => $utilisateur->getTokenReinitialisation(),
             "dateExpiraiton" => $dateToken,
-            "estActif" => $utilisateur->getCompteEstActif() == false ? 0 : 1,
             "tokenActivationCompte" => $utilisateur->getTokenActivationCompte(),
             "dateExpirationTokenActivationCompte" => $dateTokenActivationCompte,
             "id" => $utilisateur->getId()
         ));
+    }
+
+    /**
+     * Fonction qui retourne le nombre de demandes en cours d'un utilisateur
+     * 
+     * @param int|null $id id de l'utilisateur dont on veut chercher les demandes
+     * @return int|null le nombre de demandes
+     */
+    public function getNombreDemandesDeContact(?int $id): ?int {
+        $sql = "SELECT COUNT(idUtilisateur2) AS nombreDemandes FROM " . PREFIXE_TABLE . "demander WHERE idUtilisateur2 = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("id" => $id));
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        $result = $result['nombreDemandes'];
+        return $result;
     }
 }
 

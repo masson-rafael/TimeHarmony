@@ -51,12 +51,18 @@ class ControllerUtilisateur extends Controller
                 $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
                 $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "utilisateurBase.png", false);
                 $tokenActivation = $nouvelUtilisateur->genererTokenActivationCompte();
-                $nouvelUtilisateur->setCompteEstActif(false);
+                // $nouvelUtilisateur->setCompteEstActif(false); // On peut supprimer car par défaut, la valeur est desactive
                 $manager->ajouterUtilisateur($nouvelUtilisateur);
                 $this->envoyerMailActivationCompte($nouvelUtilisateur->getEmail());
                 $tableauErreurs[] = "Inscription réussie !";
             } else {
                 // Si l'utilisateur existe deja
+                $tableauErreurs[] = "L'utilisateur existe déjà ! Connectez-vous !";
+            }
+        } else {
+            $manager = new UtilisateurDao($pdo); //Lien avec PDO
+            $utilisateurExiste = $manager->findMail($_POST['email']);
+            if ($utilisateurExiste) {
                 $tableauErreurs[] = "L'utilisateur existe déjà ! Connectez-vous !";
             }
         }
@@ -82,42 +88,49 @@ class ControllerUtilisateur extends Controller
 
         $manager = new UtilisateurDao($pdo);
         $compteUtilisateurCorrespondant = $manager->getObjetUtilisateur($_POST['email']);
-        $compteActif = $compteUtilisateurCorrespondant->getCompteEstActif() == true;
-        
-        if ($emailValide && $passwdValide && $compteUtilisateurCorrespondant != null && $compteActif) {
-            // Reactivation compte
-            $compteUtilisateurCorrespondant->reactiverCompte();
-            
-            // On recupere un tuple avec un booleen et le mdp hache
-            $motDePasse = $manager->connexionReussie($_POST['email']);
 
-            if ($compteUtilisateurCorrespondant->getStatutCompte() === "actif") {
-                if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
-                    // Connexion réussie
-                    $utilisateur = $manager->getUserMail($_POST['email']);
-                    $tableauErreurs[] = "Connexion réussie !";
-                    $compteUtilisateurCorrespondant->reinitialiserTentativesConnexion();
-                    $compteUtilisateurCorrespondant->reactiverCompte();
-                    $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
-                    $this->genererVueConnecte($utilisateur, $tableauErreurs);
+        if($compteUtilisateurCorrespondant == null) {
+            // Échec de validation des entrées
+            $tableauErreurs[] = "Aucun compte avec cette adresse mail n'existe";
+            $this->genererVueConnexion($tableauErreurs, null);
+        } else {
+            $compteActif = $compteUtilisateurCorrespondant->getStatutCompte() != "desactive";
+            if ($emailValide && $passwdValide && $compteActif) {
+                // Reactivation compte
+                $compteUtilisateurCorrespondant->reactiverCompte();
+                
+                // On recupere un tuple avec un booleen et le mdp hache
+                $motDePasse = $manager->connexionReussie($_POST['email']);
+    
+                if ($compteUtilisateurCorrespondant->getStatutCompte() === "actif") {
+                    if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
+                        // Connexion réussie
+                        $utilisateur = $manager->getObjetUtilisateur($_POST['email']);
+                        $utilisateur->getDemandes();
+                        $tableauErreurs[] = "Connexion réussie !";
+                        $compteUtilisateurCorrespondant->reinitialiserTentativesConnexion();
+                        $compteUtilisateurCorrespondant->reactiverCompte();
+                        $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
+                        $this->genererVueConnecte($utilisateur, $tableauErreurs);
+                    } else {
+                        // Échec de connexion - mauvais mot de passe
+                        $tableauErreurs[] = "Mot de passe incorrect. Essayez de réinitialisez votre mot de passe";
+                        $compteUtilisateurCorrespondant->gererEchecConnexion();
+                        $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
+                        $this->genererVueConnexion($tableauErreurs, null);
+                    }
                 } else {
-                    // Échec de connexion - mauvais mot de passe
-                    $tableauErreurs[] = "Mot de passe incorrect. Essayez de réinitialisez votre mot de passe";
-                    $compteUtilisateurCorrespondant->gererEchecConnexion();
+                    // Compte inactif
+                    $tableauErreurs[] = "Votre compte est bloqué. Temps restant avec deblocage : " . 
+                        (string) abs($compteUtilisateurCorrespondant->tempsRestantAvantReactivationCompte()) . " secondes.";
                     $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
                     $this->genererVueConnexion($tableauErreurs, null);
                 }
             } else {
-                // Compte inactif
-                $tableauErreurs[] = "Votre compte est bloqué. Temps restant avec deblocage : " . 
-                    (string) abs($compteUtilisateurCorrespondant->tempsRestantAvantReactivationCompte()) . " secondes.";
-                $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
+                // Échec de validation des entrées
+                $tableauErreurs[] = "Le compte n'a pas été activé";
                 $this->genererVueConnexion($tableauErreurs, null);
             }
-        } else {
-            // Échec de validation des entrées
-            $tableauErreurs[] = "Aucun compte avec cette adresse mail n'existe ou le compte n'a pas été activé";
-            $this->genererVueConnexion($tableauErreurs, null);
         }
     }
 
@@ -158,9 +171,12 @@ class ControllerUtilisateur extends Controller
      */
     public function deconnecter()
     {
+        // @ Car nous n'utilisons pas tout le temps les pages ce qui peut entrainer des erreurs
+        @$page = $_GET['page'];
         $this->getTwig()->addGlobal('utilisateurGlobal', null);
         unset($_SESSION['utilisateur']);
-        $this->genererVueVide('index');
+        if ($page != null) {$this->genererVueVide($page);}
+        //$this->genererVueVide('index');
     }
 
     /**
@@ -265,14 +281,20 @@ class ControllerUtilisateur extends Controller
         $manager = new UtilisateurDao($pdo);
         $utilisateurs = $manager->findAll();
         $utilisateurCourant = $_SESSION['utilisateur'];
-        $template = $this->getTwig()->load('administration.html.twig');
-        echo $template->render(
-            array(
-                'listeUtilisateurs' => $utilisateurs,
-                'message' => $tableauDErreurs,
-                'utilisateurCourant' => $utilisateurCourant,
-            )
-        );
+        if($utilisateurCourant->getEstAdmin()) {
+            $template = $this->getTwig()->load('administration.html.twig');
+            echo $template->render(
+                array(
+                    'listeUtilisateurs' => $utilisateurs,
+                    'message' => $tableauDErreurs,
+                    'utilisateurCourant' => $utilisateurCourant,
+                )
+            );
+        }
+        else {
+            $this->deconnecter();
+            $this->genererVueVide('connexion');
+        }
     }
 
     /**
@@ -361,9 +383,10 @@ class ControllerUtilisateur extends Controller
         $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
         $roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
         $emailValide = utilitaire::validerEmail($_POST['email'], $messageErreurs);
+        $statutValide = utilitaire::validerStatut($_POST['statut'], $messageErreurs);
         @$photoValide = utilitaire::validerPhoto($_FILES['photo'], $messageErreurs);
 
-        if ($nomValide && $prenomValide && $roleValide) {
+        if ($nomValide && $prenomValide && $roleValide && $emailValide && $statutValide) {
             $pdo = $this->getPdo();
             $manager = new UtilisateurDao($pdo);
 
@@ -389,15 +412,20 @@ class ControllerUtilisateur extends Controller
             $nomFichier = empty($nomFichier) ? $utilisateurConcerne->getPhotoDeProfil() : $nomFichier;
             
             // Mise à jour du profil utilisateur
-            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $_POST['email'], $role, $nomFichier);
+            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $_POST['email'], $role, $nomFichier, $_POST['statut']);
             $utilisateurTemporaire = $manager->find($id);
             
-            if ($utilisateurTemporaire->getId() == $_SESSION['utilisateur']->getId()) {
+            if ($utilisateurTemporaire->getId() == $_SESSION['utilisateur']->getId() && strtolower($_POST['statut']) == 'actif') {
                 $_SESSION['utilisateur'] = $utilisateurTemporaire;
                 $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurTemporaire);
+            } elseif ($utilisateurTemporaire->getId() == $_SESSION['utilisateur']->getId()) {
+                $this->deconnecter();
+                $this->genererVueVide('index');
             }
         }
-        $_SESSION['utilisateur']->getEstAdmin() == false ? $this->afficherProfil($messageErreurs) : $this->lister($messageErreurs);
+        if(isset($_SESSION['utilisateur'])) {
+            $_SESSION['utilisateur']->getEstAdmin() == false ? $this->afficherProfil() : $this->lister($messageErreurs);
+        }
     }
 
 
@@ -482,7 +510,7 @@ class ControllerUtilisateur extends Controller
             if (mail($destinataire, $sujet, $message, $headers)) {
                 $messageErreur[] = "L'e-mail a été envoyé avec succès à $destinataire.";
             } else {
-                $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé.";
+                $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé à $destinataire.";
             }
 
             $template = $this->getTwig()->load('connexion.html.twig');
@@ -512,6 +540,7 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
     public function mailRecu() {
+        $this->deconnecter();
         $token = $_GET['token'];
         $email = $_GET['email'];
         $manager = new UtilisateurDAO($this->getPdo());
@@ -567,8 +596,15 @@ class ControllerUtilisateur extends Controller
             $tableauErreurs[] = "Votre mot de passe a été réinitialisé avec succès ! Reconnectez-vous !";
             $this->genererVueConnexion($tableauErreurs, null);
         } else {
-            $template = $this->getTwig()->load('profil.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
-            echo $template->render(array('message' => $tableauErreurs, 'reinitialise' => true));
+            $template = $this->getTwig()->load('reinitialisationMdp.html.twig');
+            echo $template->render(
+                array(
+                    'reinitialise' => false,
+                    'message' => $tableauErreurs,
+                    'email' => $_GET['email'],
+                    'token' => $_GET['token']
+                )
+            );
         }
     }
 
@@ -586,7 +622,9 @@ class ControllerUtilisateur extends Controller
         $emailUtilisateur = $utilisateur->getEmail();
 
         if($tokenUtilisateur == $token && $emailUtilisateur == $_GET['email']) {
-            $utilisateur->setCompteEstActif(true);
+            $utilisateur->setStatutCompte("actif");
+            $utilisateur->setTokenActivationCompte(null);
+            $utilisateur->setDateExpirationTokenActivationCompte(null);
             $manager->miseAJourUtilisateur($utilisateur);
             $tableauMessages[] = "Votre compte a été validé avec succès, tentez de vous connecter !";
             $template = $this->getTwig()->load('connexion.html.twig');
@@ -617,7 +655,7 @@ class ControllerUtilisateur extends Controller
 
         $manager = new UtilisateurDAO($this->getPdo());
         $utilisateur = $manager->getObjetUtilisateur($email);
-        $token = $utilisateur->genererTokenReinitialisation();
+        $token = $utilisateur->genererTokenActivationCompte();
         $utilisateur->setTokenActivationCompte($token);
         $manager->miseAJourUtilisateur($utilisateur);
 
@@ -650,7 +688,7 @@ class ControllerUtilisateur extends Controller
         if (mail($destinataire, $sujet, $message, $headers)) {
             $messageErreur[] = "L'e-mail de confirmation de création de compte a été envoyé avec succès à $destinataire.";
         } else {
-            $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé.";
+            $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé à $destinataire.";
         }
 
         $template = $this->getTwig()->load('connexion.html.twig');

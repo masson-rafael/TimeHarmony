@@ -31,7 +31,7 @@ class ControllerAssistant extends Controller
      * Fonction qui permet de générer la vue qui contiendra les paramètres de la recherche
      * @return void
      */
-    public function genererVueRecherche(): void {
+    public function genererVueRecherche(?array $tabMessages = null): void {
         
         // vide la variable de session nbUserSelectionné
         unset($_SESSION['nbUserSelectionné']);
@@ -45,7 +45,8 @@ class ControllerAssistant extends Controller
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
             'contacts' => $contacts,
-            'groupes' => $groupes
+            'groupes' => $groupes,
+            'message' => $tabMessages
         ));
     }
 
@@ -56,11 +57,16 @@ class ControllerAssistant extends Controller
     public function obtenir(): void
     {
         $datesCommunes = [];
+        $messagesErreur = [];
 
         $pdo = $this->getPdo();
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $chronoStartGen = new DateTime();
+        $valideDuree = Utilitaire::validerDuree($_POST['debut'], $_POST['fin'], $messagesErreur);
+        $dureeMinValide = Utilitaire::validerDureeMin($_POST['dureeMin'], $messagesErreur);
+        @$contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur); // @ Car dans le futur, on pourra seulement sélectionner des groupes et pas uniquement contacts
+
+        if($valideDuree && $dureeMinValide && $contactsValide) {
+            // $chronoStartGen = new DateTime();
             $managerCreneau = new CreneauLibreDao($pdo);
             $managerCreneau->supprimerCreneauxLibres();
 
@@ -179,7 +185,7 @@ class ControllerAssistant extends Controller
             // Générer la vue avec les données structurées
             $this->genererVueCreneaux($datesCommunes);
         } else {
-            $this->genererVue();
+            $this->genererVueRecherche($messagesErreur);
         }
     }
 
