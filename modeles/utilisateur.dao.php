@@ -217,6 +217,7 @@ class UtilisateurDao
         $utilisateur->setStatutCompte($tableauAssoc['statutCompte']);
         $utilisateur->setTokenActivationCompte($tableauAssoc['tokenActivationCompte']);
         $tableauAssoc['dateExpirationTokenActivationCompte']  == null ? $utilisateur->setDateExpirationTokenActivationCompte(null) : $utilisateur->setDateExpirationTokenActivationCompte(new DateTime($tableauAssoc['dateExpirationTokenActivationCompte']));
+        //$utilisateur->setNombreDemandesEnCours($utilisateur->getDemandes());
     return $utilisateur;
     }
 
@@ -369,7 +370,7 @@ class UtilisateurDao
                 WHERE D.idUtilisateur1 = :idDemandeur";
         
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['idDemandeur' => $id]);
+        $stmt->execute(array('idDemandeur' => $id));
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         return $result ?: null;
@@ -386,7 +387,7 @@ class UtilisateurDao
         WHERE D.idUtilisateur2 = :idDemandeur";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['idDemandeur' => $id]);
+        $stmt->execute(array('idDemandeur' => $id));
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $result ?: null;
@@ -515,6 +516,21 @@ class UtilisateurDao
             "dateExpirationTokenActivationCompte" => $dateTokenActivationCompte,
             "id" => $utilisateur->getId()
         ));
+    }
+
+    /**
+     * Fonction qui retourne le nombre de demandes en cours d'un utilisateur
+     * 
+     * @param int|null $id id de l'utilisateur dont on veut chercher les demandes
+     * @return int|null le nombre de demandes
+     */
+    public function getNombreDemandesDeContact(?int $id): ?int {
+        $sql = "SELECT COUNT(idUtilisateur2) AS nombreDemandes FROM " . PREFIXE_TABLE . "demander WHERE idUtilisateur2 = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("id" => $id));
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        $result = $result['nombreDemandes'];
+        return $result;
     }
 }
 

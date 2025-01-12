@@ -115,7 +115,11 @@
 									</ul>
 								</li>
 								<li class="nav-item d-flex align-items-center">
+									{% if utilisateurGlobal.getNombreDemandesEnCours > 0 %}
+									<a class="nav-link" href="index.php?controleur=contacts&methode=afficherPageNotifications"><img src="image/notificationTrue.png" style="width: 35px;" alt="notification"></a>
+									{% else %}
 									<a class="nav-link" href="index.php?controleur=contacts&methode=afficherPageNotifications"><img src="image/notificationFalse.png" style="width: 35px;" alt="notification"></a>
+									{% endif %}
 								</li>
 							</ul>
 						</div>

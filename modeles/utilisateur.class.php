@@ -76,6 +76,11 @@ class Utilisateur {
      * @var DateTime|null la date d'expiration du token d'activation du compte
      */
     private DateTime|null $dateExpirationTokenActivationCompte;
+    /**
+     * 
+     * @var int|null le nombre de demandes reçues
+     */
+    private int|null $nombreDemandesEnCours;
 
     /**
      * Constructeur par défaut
@@ -88,6 +93,7 @@ class Utilisateur {
         $this->motDePasse = $motDePasse;
         $this->photoDeProfil = $photoDeProfil;
         $this->estAdmin = $estAdmin;
+        $this->nombreDemandesEnCours = $this->getDemandes();
     }
 
     /**
@@ -111,6 +117,7 @@ class Utilisateur {
         $instance->motDePasse = $motDePasse;
         $instance->photoDeProfil = $photoDeProfil;
         $instance->estAdmin = $estAdmin;
+        //$instance->nombreDemandesEnCours = $this->getDemandes();
         return $instance;
     }
 
@@ -129,6 +136,7 @@ class Utilisateur {
         $instance->motDePasse = $utilisateur->motDePasse;
         $instance->photoDeProfil = $utilisateur->photoDeProfil;
         $instance->estAdmin = $utilisateur->estAdmin;
+        $instance->nombreDemandesEnCours = $utilisateur->nombreDemandesEnCours;
         return $instance;
     }
 
@@ -256,6 +264,15 @@ class Utilisateur {
      */
     public function getDateExpirationTokenActivationCompte(): ?DateTime {
         return $this->dateExpirationTokenActivationCompte;
+    }
+
+    /**
+     * Get le nombre de demandes reçues
+     *
+     * @return int|null Le nombre de demandes en cours
+     */
+    public function getNombreDemandesEnCours(): ?int {
+        return $this->nombreDemandesEnCours;
     }
 
     /**
@@ -399,6 +416,17 @@ class Utilisateur {
     }
 
     /**
+     * Set le nombre de demandes reçues
+     *
+     * @param int|null $nombreDemandesEnCours Le nombre de demandes en cours à définir
+     * @return self
+     */
+    public function setNombreDemandesEnCours(?int $nombreDemandesEnCours): self {
+        $this->nombreDemandesEnCours = $nombreDemandesEnCours;
+        return $this;
+    }
+
+    /**
      * ToString permettant d'afficher les paramtres de l'utilisateur
      *
      * @return string chaine de caractères a afficher
@@ -407,6 +435,12 @@ class Utilisateur {
         return "Utilisateur : " . $this->id . " " . $this->nom . " " . $this->prenom . " " . $this->email . " " . $this->motDePasse . " " . $this->photoDeProfil . " " . $this->estAdmin;
     }
 
+    /**
+     * Fonction permettant de retourner un tableau de contacts associés à un utilisateur.
+     * 
+     * @param int|null $idUtilisateur L'identifiant de l'utilisateur dont on veut récupérer les contacts.
+     * @return array|null Le tableau des contacts, ou null si aucun contact n'est trouvé.
+     */
     public function getContact(?int $idUtilisateur): ?array {
         $db = Bd::getInstance();
         $pdo = $db->getConnexion();
@@ -416,6 +450,12 @@ class Utilisateur {
         return $contacts;
     }
 
+    /**
+     * Fonction permettant de retourner un tableau de groupes associés à un utilisateur.
+     * 
+     * @param int|null $idUtilisateur L'identifiant de l'utilisateur dont on veut récupérer les groupes.
+     * @return array|null Le tableau des groupes, ou null si aucun groupe n'est trouvé.
+     */
     public function getGroupe(?int $idUtilisateur): ?array {
         $db = Bd::getInstance();
         $pdo = $db->getConnexion();
@@ -426,6 +466,11 @@ class Utilisateur {
         return $groupes;
     }
 
+    /**
+     * Fonction permettant de retourner un tableau des agendas associés à l'utilisateur actuel.
+     * 
+     * @return array|null Le tableau des agendas, ou null si aucun agenda n'est trouvé.
+     */
     public function getAgendas(): ?array {
         $db = Bd::getInstance();
         $pdo = $db->getConnexion();
@@ -433,6 +478,22 @@ class Utilisateur {
         $managerAgenda = new AgendaDao($pdo);
         $agendas = $managerAgenda->findAllByIdUtilisateur($this->getId());
         return $agendas;
+    }
+
+    /**
+     * Fonction qui retourne le nombre de demandes que l'utilisateur a en cours
+     * 
+     * @return int|null le nombre de demandes
+     */
+    public function getDemandes(): ?int {
+        $nombreDemandes = 0;
+        $db = Bd::getInstance();
+        $pdo = $db->getConnexion();  
+        
+        $managerUtilisateur = new UtilisateurDAO($pdo);
+        $nombreDemandes = $managerUtilisateur->getNombreDemandesDeContact($this->getId());
+        $this->setNombreDemandesEnCours($nombreDemandes);
+        return $nombreDemandes;
     }
 
     /**

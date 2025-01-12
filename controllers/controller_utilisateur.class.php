@@ -95,6 +95,7 @@ class ControllerUtilisateur extends Controller
                 if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
                     // Connexion réussie
                     $utilisateur = $manager->getUserMail($_POST['email']);
+                    $utilisateur->getDemandes();
                     $tableauErreurs[] = "Connexion réussie !";
                     $compteUtilisateurCorrespondant->reinitialiserTentativesConnexion();
                     $compteUtilisateurCorrespondant->reactiverCompte();
