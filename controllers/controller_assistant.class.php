@@ -61,9 +61,18 @@ class ControllerAssistant extends Controller
 
         $pdo = $this->getPdo();
 
-        $valideDuree = Utilitaire::validerDuree($_POST['debut'], $_POST['fin'], $messagesErreur);
-        $dureeMinValide = Utilitaire::validerDureeMin($_POST['dureeMin'], $messagesErreur);
-        @$contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur); // @ Car dans le futur, on pourra seulement sélectionner des groupes et pas uniquement contacts
+        if(!isset($_SESSION['debut']) || !isset($_SESSION['fin']) || !isset($_SESSION['dureeMin']) || !isset($_SESSION['contacts'])) {
+            $_SESSION['debut'] = $_POST['debut'];
+            $_SESSION['fin'] = $_POST['fin'];
+            $_SESSION['dureeMin'] = $_POST['dureeMin'];
+            $_SESSION['contacts'] = $_POST['contacts'];
+        }
+
+
+
+        $valideDuree = Utilitaire::validerDuree($_SESSION['debut'], $_SESSION['fin'], $messagesErreur);
+        $dureeMinValide = Utilitaire::validerDureeMin($_SESSION['dureeMin'], $messagesErreur);
+        @$contactsValide = Utilitaire::validerContacts($_SESSION['contacts'], $messagesErreur); // @ Car dans le futur, on pourra seulement sélectionner des groupes et pas uniquement contacts
 
         if($valideDuree && $dureeMinValide && $contactsValide) {
             // $chronoStartGen = new DateTime();
