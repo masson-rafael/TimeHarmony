@@ -1,16 +1,27 @@
 let formulaire = document.getElementById('form');
 let btn = document.getElementById('boutonInscription');
 
+let nom = formulaire[0];
+let prenom = formulaire[1];
+let email = formulaire[2];
 let mdp = formulaire[3];
 let mdpConfirme = formulaire[4];
 
-console.log(mdp);
-console.log(mdpConfirme);
+nom.value = localStorage.getItem('nom');
+prenom.value = localStorage.getItem('prenom');
+email.value = localStorage.getItem('email');
 
 mdp.addEventListener('input', verifierCorrespondance);
 mdpConfirme.addEventListener('input', verifierCorrespondance);
 mdp.addEventListener('input', () => verifierPattern(mdp));
 mdpConfirme.addEventListener('input', () => verifierPattern(mdpConfirme));
+
+nom.addEventListener('input', verifierPresence);
+prenom.addEventListener('input', verifierPresence);
+email.addEventListener('input', verifierPresence);
+
+btn.addEventListener('click', sauvegarderVariables);
+
 btn.disabled = true;
 
 function verifierCorrespondance() {
@@ -40,4 +51,18 @@ function verifierPattern(motDePasse) {
             btn.disabled = true;
         }
     }
+}
+
+function verifierPresence() {
+    if (nom.value === '' || prenom.value === '' || email.value === '') {
+        btn.disabled = true;
+    } else {
+        btn.disabled = false;
+    }
+}
+
+function sauvegarderVariables() {
+    localStorage.setItem('nom', nom.value);
+    localStorage.setItem('prenom', prenom.value);
+    localStorage.setItem('email', email.value);
 }
