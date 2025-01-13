@@ -64,7 +64,7 @@ class utilitaire {
         $valide = utilitaire::validerType($prenom, $messagesErreurs, "prenom");
 
         // 3. Longueur de la chaine : vérifier que le prenom est compris entre 2 et 50 caractères
-        $valide = utilitaire::validerTaille($prenom, 2, 50, $messagesErreurs);
+        $valide = utilitaire::validerTaille($prenom, 2, 50, $messagesErreurs, "prenom");
 
         // 4. Format des données : vérifier le format du prénom
         $valide = utilitaire::validerPreg($prenom, "/^[a-zA-ZÀ-ÿ-]+$/", $messagesErreurs, "prenom");
@@ -90,7 +90,7 @@ class utilitaire {
         $valide = utilitaire::validerType($nom, $messagesErreurs, "nom");
 
         // 3. Longueur de la chaine : vérifier que le nom est compris entre 2 et 50 caractères
-        $valide = utilitaire::validerTaille($nom, 2, 50, $messagesErreurs);
+        $valide = utilitaire::validerTaille($nom, 2, 50, $messagesErreurs, "nom");
 
         // 4. Format des données : vérifier le format du nom
         $valide = utilitaire::validerPreg($nom, "/^[a-zA-ZÀ-ÿ0-9-]+$/", $messagesErreurs, "nom");
@@ -116,7 +116,7 @@ class utilitaire {
         $valide = utilitaire::validerType($nom, $messagesErreurs, "nom agenda");
 
         // 3. Longueur de la chaine : vérifier que le nom est compris entre 2 et 50 caractères
-        $valide = utilitaire::validerTaille($nom, 2, 50, $messagesErreurs);
+        $valide = utilitaire::validerTaille($nom, 2, 50, $messagesErreurs, "nom agenda");
 
         // 4. Format des données : - non pertinent
 
@@ -141,7 +141,7 @@ class utilitaire {
         $valide = utilitaire::validerType($email, $messagesErreurs, "email");
 
         // 3. Longueur de la chaine : vérifier que l'email est compris entre 5 et 255 caractères
-        $valide = utilitaire::validerTaille($email, 5, 255, $messagesErreurs);
+        $valide = utilitaire::validerTaille($email, 5, 255, $messagesErreurs, "mail");
 
         // 4. Format des données : vérifier le format de l'email
         if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
@@ -200,7 +200,7 @@ class utilitaire {
         $valide = utilitaire::validerType($couleurAgenda, $messagesErreurs, "couleur agenda");
 
         // 3. Longueur de la chaine : vérifier que le prenom a exactement 7 caractères
-        $valide = utilitaire::validerTaille($couleurAgenda, 7, 7, $messagesErreurs);
+        $valide = utilitaire::validerTaille($couleurAgenda, 7, 7, $messagesErreurs, "couleur agenda");
 
         // 4. Format des données : vérifier le format de la couleur
         $valide = utilitaire::validerPreg($couleurAgenda, "/^#[a-fA-F0-9]{6}$/", $messagesErreurs, "couleur agenda");
@@ -228,8 +228,8 @@ class utilitaire {
         $motDePasse2 != null ? $valide = utilitaire::validerType($motDePasse2, $messagesErreurs, "mot de passe") : $valide = true;
 
         // 3. Longueur de la chaine : vérifier que le mot de passe est compris entre 8 et 25 caractères
-        $valide = utilitaire::validerTaille($motDePasse, 8, 25, $messagesErreurs);
-        $motDePasse2 != null ? $valide = utilitaire::validerTaille($motDePasse2, 8, 25, $messagesErreurs) : $valide = true;
+        $valide = utilitaire::validerTaille($motDePasse, 8, 25, $messagesErreurs, "mot de passe");
+        $motDePasse2 != null ? $valide = utilitaire::validerTaille($motDePasse2, 8, 25, $messagesErreurs, "mot de passe") : $valide = true;
 
         // 4. Format des données : vérifier le format du mdp avec preg preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/'
         $valide = utilitaire::validerPreg($motDePasse, '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $messagesErreurs, "mot de passe");
@@ -261,7 +261,7 @@ class utilitaire {
         $valide = utilitaire::validerType($motDePasse, $messagesErreurs, "mot de passe");
 
         // 3. Longueur de la chaine : vérifier que le mot de passe est compris entre 8 et 25 caractères
-        $valide = utilitaire::validerTaille($motDePasse, 8, 25, $messagesErreurs);
+        $valide = utilitaire::validerTaille($motDePasse, 8, 25, $messagesErreurs, "mot de passe");
 
         // 4. Format des données : vérifier le format du mdp avec preg preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/'
         $valide = utilitaire::validerPreg($motDePasse, '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $messagesErreurs, "mot de passe");
@@ -306,11 +306,11 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
      * @return bool Retourne vrai si la taille est valide, faux sinon
      */
-    public static function validerTaille(?string $chaine, int $min, int $max, array &$messagesErreurs): bool {
+    public static function validerTaille(?string $chaine, int $min, int $max, array &$messagesErreurs, ?string $champ): bool {
         $valide = true;
         // 3. Longueur de la chaine : vérifier que le champ est compris entre min et max caractères
         if(strlen($chaine) < $min || strlen($chaine) > $max){
-            $messagesErreurs[] = "Le champ doit être compris entre $min et $max caractères";
+            $messagesErreurs[] = "Le " . $champ . " doit être compris entre $min et $max caractères";
             $valide = false;
         }
         return $valide;
@@ -468,7 +468,7 @@ class utilitaire {
         $valide = utilitaire::validerType($couleur, $messagesErreurs, "couleur agenda");
 
         // 3. Longueur de la chaine : vérifier que le prenom a exactement 7 caractères
-        $valide = utilitaire::validerTaille($couleur, 7, 7, $messagesErreurs);
+        $valide = utilitaire::validerTaille($couleur, 7, 7, $messagesErreurs, "couleur agenda");
 
         // 4. Format des données : vérifier le format de la couleur
         $valide = utilitaire::validerPreg($couleur, "/^#[a-fA-F0-9]{6}$/", $messagesErreurs, "couleur agenda");

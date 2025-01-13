@@ -28,7 +28,7 @@
                     {% for agenda in agendas %}
                     <tr>
                         <td>{{ agenda.nom }}</td>
-                        <td><a href="{{ agenda.url }}">{{ agenda.url }}</a></td>
+                        <td><p class="text-wrap text-truncate" style="width: 200px;"><a href="{{ agenda.url }}">{{ agenda.url }}</a></p></td>
                         <td>
                             <div class="d-flex">
                                 <span class="rounded-circle me-2" style="width: 20px; height: 20px; background-color: {{ agenda.couleur }};"></span>

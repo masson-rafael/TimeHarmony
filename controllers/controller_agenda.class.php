@@ -44,8 +44,10 @@ class ControllerAgenda extends Controller
         if ($urlValide && $couleurValide && $nomValide) {
             // Créer une instance de AgendaDao pour interagir avec la base de données
             $manager = new AgendaDao($pdo);
+            var_dump($_SESSION['utilisateur']->getId());
+            var_dump($id);
 
-            if($manager->URLEstUnique($_POST['url'], $id)) {
+            if($manager->URLEstUnique($_POST['url'], $id, $_SESSION['utilisateur']->getId())) {
                 // Créer une nouvelle instance d'Agenda avec les données du formulaire
                 $nouvelAgenda = new Agenda($_POST['url'], $_POST['couleur'], $_POST['nom'], $id);
                 // Ajouter l'agenda dans la base de données
@@ -143,7 +145,7 @@ class ControllerAgenda extends Controller
             // Créer une instance de AgendaDao pour interagir avec la base de données
             $manager = new AgendaDao($pdo);
             // Ajouter l'agenda dans la base de données
-            if($manager->URLEstUnique($_POST['url'], $id)) {
+            if($manager->URLEstUnique($_POST['url'], $id, $_SESSION['utilisateur']->getId())) {
                 $manager->modifierAgenda($id, $_POST['url'], $_POST['couleur'], $_POST['nom']);
                 // Retourner un message de succès
                 $tableauErreurs[] = "Modification réussie !";

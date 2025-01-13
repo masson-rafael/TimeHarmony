@@ -187,11 +187,11 @@ class AgendaDao{
      * @param int|null $id id de l'agenda
      * @return bool si l'url est unique ou non
      */
-    public function URLEstUnique(?string $url, ?int $id): bool {
+    public function URLEstUnique(?string $url, ?int $idAgenda, ?int $idUtilisateur): bool {
         $result = true;
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."agenda WHERE url = :url AND idUtilisateur = :id";
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."agenda WHERE url = :url AND idUtilisateur = :id AND id != :idAgenda";
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(array("url" => $url, "id" => $id));
+        $pdoStatement->execute(array("url" => $url, "id" => $idUtilisateur, "idAgenda" => $idAgenda));
         $resultat = $pdoStatement->fetch(PDO::FETCH_ASSOC);
         if($resultat){
             $result = false;
