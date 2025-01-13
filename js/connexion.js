@@ -6,11 +6,14 @@ let mdp = formulaire[1];
 
 btn.disabled = true;
 
+console.log(email);
+console.log(mdp);
+
 email.value = localStorage.getItem('email');
 
-mdp.addEventListener('input', verifierPattern);
 email.addEventListener('input', verifierPresence);
 mdp.addEventListener('input', verifierPresence);
+mdp.addEventListener('input', () => verifierPattern(mdp));
 
 function verifierPattern(motDePasse) {
     const motif = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/;
@@ -22,15 +25,14 @@ function verifierPattern(motDePasse) {
     } else {
         btn.disabled = false;
         motDePasse.style.borderColor = '';
+        motDePasse.setCustomValidity('');
     }
 }
 
 function verifierPresence() {
     if (email.value === '' || mdp.value === '') {
-        motDePasse.style.borderColor = 'red';
         btn.disabled = true;
     } else {
         btn.disabled = false;
-        motDePasse.style.borderColor = '';
     }
 }
