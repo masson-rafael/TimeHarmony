@@ -17,7 +17,9 @@ On retrouve également 8 dossiers :
   - modeles/ -> contient les modeles de l'application
   - scss/ -> contient le scss, pour modifier la librairie bootstrap
   - templates/ -> contient les vues de l'application, les pages twig
-  
+
+#### Vous pouvez retrouver la documentation de l'application sur cette page : https://masson-rafael.github.io/TimeHarmony/index.html
+
 ## 💻 Technologies
 
 [![My Skills](https://skillicons.dev/icons?i=php,html,css,js,bootstrap,git,mysql)](https://skillicons.dev)

@@ -1,26 +1,20 @@
 <?php
 
 // Connexion à la base de données (logins wamp)
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'timeharmony');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-
-// Connexion à la base de données (logins wamp)
-// define('DB_HOST', 'lakartxela.iutbayonne.univ-pau.fr');
-// define('DB_NAME', 'tlatxague_pro');
-// define('DB_USER', 'tlatxague_pro');
-// define('DB_PASS', 'tlatxague_pro');
+define('DB_HOST', ''); // Le nom de l'hote
+define('DB_NAME', ''); // Le nom de la base de données
+define('DB_USER', ''); // Le nom d'utilisateur
+define('DB_PASS', ''); // Le mot de passe utilisateur
 
 // Spécifique aux bases de donnees sur lakartxela
-define('PREFIXE_TABLE', 'timeharmony_');
+define('PREFIXE_TABLE', ''); // Le début du nom de la table
 
 // Constante de la partie vue
-define('WEBSITE_TITLE', 'TimeHarmony');
-define('WEBSITE_VERSION', '0.2');
-define('WEBSITE_DESCRIPTION', 'Une application web qui permet de trouver des créneaux de rendez-vous facilement');
-define('WEBSITE_LANGUAGE', 'fr');
+define('WEBSITE_TITLE', ''); // Le nom de l'application
+define('WEBSITE_VERSION', ''); // La version de l'application
+define('WEBSITE_DESCRIPTION', ''); // La description de l'application
+define('WEBSITE_LANGUAGE', ''); // La langue de l'application
 
 //Constantes connexion
-define('MAX_CONNEXION_ECHOUEES', 3);
-define('DELAI_ATTENTE_CONNEXION', 10*60); // 10 minutes
+define('MAX_CONNEXION_ECHOUEES', ); // Le nom de connexions échouées maximum
+define('DELAI_ATTENTE_CONNEXION', ); // Le temps d'attente avant de réactiver un compte (ex. 5*60 pour 5 minutes)
