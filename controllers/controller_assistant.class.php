@@ -93,6 +93,7 @@ class ControllerAssistant extends Controller
                 $_SESSION['contacts'] = $_POST['contacts'];
                 $_SESSION['debut'] = $_POST['debut'];
                 $_SESSION['fin'] = $_POST['fin'];
+                $_SESSION['nbUserSelectionné'] = sizeof($_POST['contacts']);
             }
 
             $dureeMin = $_SESSION['dureeMin'];
@@ -190,9 +191,7 @@ class ControllerAssistant extends Controller
             }
 
             // Appel de la fonction
-            var_dump($_SESSION['nbUserSelectionné']);
-            echo "START getCreneauxCommunsExact <br>";
-            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné']);
+            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné']+1);
 
             // $chronoEndGen = new DateTime();
             // $chronoInterval = $chronoStartGen->diff($chronoEndGen);
