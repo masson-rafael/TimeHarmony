@@ -14,7 +14,7 @@
 					<div class="card card_custom shadow-lg w-100" style="height: auto; padding: 1rem;">
 						<div class="card-body ">
 							<h4 class="card-title text-center mb-4" style="font-size: 1.5rem;">Inscription</h4>
-							<form action="index.php?controleur=utilisateur&methode=inscription" method="post" required>
+							<form id="form" action="index.php?controleur=utilisateur&methode=inscription" method="post" required>
 								<div class="mb-3">
 									<label for="nom" class="form-label" style="font-size: 1rem;">Nom *</label>
 									<input type="text" name="nom" class="form-control form-control-lg" id="nom" placeholder="Entrez votre nom" required maxlength="50" minlength="2" title="Entrez votre vrai nom pour votre compte">
@@ -59,4 +59,7 @@
 			{% endif %}
 		</div>
 	</main>
+	{% block javascripts %}
+		<script src="js/motDePasses.js"></script>
+	{% endblock %}
 {% endblock %}
