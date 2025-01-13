@@ -55,13 +55,13 @@
 ~*
 
 # ignore configuration files
-/config/config_app.php
+config/config_app.php
 
 # ignore todo files
 todo.txt
 
 # ignore Doxygen files
-docs/
+/docs
 
 # ignore node/grunt dependency directories
 /node_modules

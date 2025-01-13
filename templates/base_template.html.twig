@@ -64,115 +64,99 @@
 	<body class="d-flex flex-column min-vh-100">
 		{% if utilisateurGlobal is not null %}
 			<nav class="navbar navbar-expand-lg bg-primary py-1" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
-				<div class="container-fluid">
-					<div class="row w-100 align-items-center">
-						<!-- Logo -->
-						<div class="col-auto">
-							<a class="navbar-brand" href="index.php?controleur=utilisateur&methode=menuConnecte">
-								<img src="image/logoNoir.png" alt="logo" style="width: 60px;">
-							</a>
-						</div>
-					</div>
-				</div>
-						<!-- Menu principal avec espace entre les éléments -->
-				<div class="container-fluid">
-					<div class="row w-100 align-items-center">
-						<div class="col">
-							<ul class="navbar-nav d-flex justify-content-center w-100">
-								<li class="nav-item me-3">
-									<a class="nav-link fs-5 {% if menu == 'recherche' %} active {% endif %}" href="index.php?controleur=assistant&methode=genererVueRecherche">Rechercher un créneau</a>
-								</li>
-								<li class="nav-item me-3">
-									<a class="nav-link fs-5 {% if menu == 'agenda' %} active {% endif %}" href="index.php?controleur=agenda&methode=lister">Agendas</a>
-								</li>
-								<li class="nav-item me-3">
-									<a class="nav-link fs-5 {% if menu == 'groupes' %} active {% endif %}" href="index.php?controleur=groupes&methode=lister">Groupes</a>
-								</li>
-								<li class="nav-item me-3">
-									<a class="nav-link fs-5 {% if menu == 'contacts' %} active {% endif %}" href="index.php?controleur=contacts&methode=lister">Contacts</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-				<div class="container-fluid">
-					<div class="row w-100 justify-content-end">
-						<!-- Menu aligné à droite -->
-						<div class="col-auto ms-3">
-							<ul class="navbar-nav d-flex flex-row">
-								<li class="nav-item dropdown d-flex">
-									<a class="nav-link" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-										<img src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" alt="Photo de profil" class="rounded-circle" style="width: 50px; height: 50px;">
-									</a>
-									<ul class="dropdown-menu dropdown-menu-custom dropdown-menu-start">
-										<li>
-											<a class="dropdown-item" href="index.php?controleur=utilisateur&methode=afficherProfil">Profil</a>
-										</li>
-										{# <li>
-											<a class="dropdown-item" href="#">Préférences du profil</a>
-										</li> #}
-										{% if utilisateurGlobal.getEstAdmin %}
-											<li>
-												<a class="dropdown-item" href="index.php?controleur=utilisateur&methode=lister">Administration</a>
-											</li>
-										{% endif %}
-										<li>
-											<a class="dropdown-item" href="index.php?controleur=utilisateur&methode=deconnecter&page=index">Déconnexion</a>
-										</li>
-									</ul>
-								</li>
-								<li class="nav-item d-flex align-items-center">
-									{% if utilisateurGlobal.getNombreDemandesEnCours > 0 %}
-									<a class="nav-link" href="index.php?controleur=contacts&methode=afficherPageNotifications"><img src="image/notificationTrue.png" style="width: 35px;" alt="notification"></a>
-									{% else %}
-									<a class="nav-link" href="index.php?controleur=contacts&methode=afficherPageNotifications"><img src="image/notificationFalse.png" style="width: 35px;" alt="notification"></a>
-									{% endif %}
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</nav>
+    <div class="container-fluid">
+        <!-- Logo et bouton de bascule -->
+        <a class="navbar-brand" href="index.php?controleur=utilisateur&methode=menuConnecte">
+            <img src="image/logoNoir.png" alt="logo" style="width: 60px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Contenu collapsible -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Menu principal -->
+            <ul class="navbar-nav me-auto d-flex justify-content-center w-100">
+                <li class="nav-item me-3">
+                    <a class="nav-link fs-5 {% if menu == 'recherche' %} active {% endif %}" href="index.php?controleur=assistant&methode=genererVueRecherche">Rechercher un créneau</a>
+                </li>
+                <li class="nav-item me-3">
+                    <a class="nav-link fs-5 {% if menu == 'agenda' %} active {% endif %}" href="index.php?controleur=agenda&methode=lister">Agendas</a>
+                </li>
+                <li class="nav-item me-3">
+                    <a class="nav-link fs-5 {% if menu == 'groupes' %} active {% endif %}" href="index.php?controleur=groupes&methode=lister">Groupes</a>
+                </li>
+                <li class="nav-item me-3">
+                    <a class="nav-link fs-5 {% if menu == 'contacts' %} active {% endif %}" href="index.php?controleur=contacts&methode=lister">Contacts</a>
+                </li>
+            </ul>
+
+            <!-- Menu aligné à droite -->
+            <ul class="navbar-nav d-flex align-items-center">
+                <li class="nav-item dropdown d-flex">
+                    <a class="nav-link" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" alt="Photo de profil" class="rounded-circle" style="width: 50px; height: 50px;">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="index.php?controleur=utilisateur&methode=afficherProfil">Profil</a>
+                        </li>
+                        {% if utilisateurGlobal.getEstAdmin %}
+                        <li>
+                            <a class="dropdown-item" href="index.php?controleur=utilisateur&methode=lister">Administration</a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a class="dropdown-item" href="index.php?controleur=utilisateur&methode=deconnecter&page=index">Déconnexion</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item d-flex align-items-center">
+                    {% if utilisateurGlobal.getNombreDemandesEnCours > 0 %}
+                    <a class="nav-link" href="index.php?controleur=contacts&methode=afficherPageNotifications"><img src="image/notificationTrue.png" style="width: 35px;" alt="notification"></a>
+                    {% else %}
+                    <a class="nav-link" href="index.php?controleur=contacts&methode=afficherPageNotifications"><img src="image/notificationFalse.png" style="width: 35px;" alt="notification"></a>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
 
 		{% else %}
+<nav class="navbar navbar-expand-lg bg-primary py-1" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+    <div class="container-fluid">
+        <!-- Logo et bouton de bascule -->
+        <a class="navbar-brand" href="index.php">
+            <img src="image/logoNoir.png" alt="logo" style="width: 60px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-			<nav class="navbar navbar-expand-lg bg-primary py-1" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
-				<div class="container-fluid">
-					<div class="row w-100 align-items-center">
-						<!-- Logo -->
-						<div class="col-auto">
-							<a class="navbar-brand" href="index.php">
-								<img src="image/logoNoir.png" alt="logo" style="width: 60px;">
-							</a>
-						</div>
-					</div>
-				</div>
+        <!-- Contenu collapsible -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <!-- Titre centré -->
+                <li class="nav-item">
+                    <span class="nav-link dt fs-5 text-black fw-bold">TimeHarmony</span>
+                </li>
+            </ul>
 
-				<div class="container-fluid">
-					<div class="row w-100 align-items-center">
-						<div class="col">
-							<ul class="navbar-nav d-flex justify-content-center w-100">
-								<li class="nav-link dt fs-5" style="font-weight: bold; font-size: 100%; color: black;">
-									TimeHarmony
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
+            <!-- Liens alignés à droite -->
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link fs-5 text-black" href="index.php?controleur=utilisateur&methode=premiereConnexion">Se connecter</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fs-5 text-black" href="index.php?controleur=utilisateur&methode=premiereInscription">S'inscrire</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-						<!-- Liens de connexion et d'inscription alignés à droite -->
-				<div class="container-fluid">
-					<div class="row w-100 justify-content-end">
-						<!-- Menu aligné à droite -->
-						<div class="col-auto ms-3">
-							<ul class="navbar-nav d-flex flex-row">
-								<li class="nav-item d-flex align-items-center">
-									<a style="color: black;" class="nav-link fs-5" href="index.php?controleur=utilisateur&methode=premiereConnexion">Se connecter</a>
-									<a style="color: black;" class="nav-link fs-5" href="index.php?controleur=utilisateur&methode=premiereInscription">S'inscrire</a>
-								</li>
-							</ul>
-						</div>
-			</nav>
 
 		{% endif %}
 		<div class="flex-grow-1"> 
@@ -180,27 +164,33 @@
 		{% endblock %}
 		</div>
 
-			<footer class="py-3 bg-primary mt-5" style="box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col d-flex align-items-center justify-content-center">
-							<p style="color: black;" class="mb-1 fs-5">&copy; 2024 - TimeHarmony</p>
-						</div>
-						<div class="col d-flex align-items-center justify-content-center">
-							<a style="color: black;" class="nav-link fs-5" href="index.php?controleur=informations&methode=afficherAPropos"><p class="mb-1">A Propos</p></a>
-						</div>
-						<div class="col d-flex align-items-center justify-content-center">
-							<a style="color: black;" class="nav-link fs-5" href="index.php?controleur=informations&methode=afficherCGDU"><p class="mb-1">Conditions générales d'utilisation</p></a>
-						</div>
-						<div class="col d-flex align-items-center justify-content-center">
-							<a style="color: black;" class="nav-link fs-5" href="index.php?controleur=informations&methode=afficherPDC"><p class="mb-1">Politique de confidentialité</p></a>
-						</div>
-						<div class="col d-flex align-items-center justify-content-center">
-							<a style="color: black;" class="nav-link fs-5" href="index.php?controleur=informations&methode=afficherContact"><p class="mb-1">Nous contacter</p></a>
-						</div>
-					</div>
-				</div>
-			</footer>
+<footer class="py-3 bg-primary mt-5" style="box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);">
+    <div class="container">
+        <div class="row text-center">
+            <!-- Section 1 -->
+            <div class="col-12 col-md-4 mb-2">
+                <p class="mb-1 fs-5" style="color: black;">&copy; 2024 - TimeHarmony</p>
+            </div>
+            <!-- Section 2 -->
+            <div class="col-6 col-md-2 mb-2">
+                <a class="nav-link fs-5" style="color: black;" href="index.php?controleur=informations&methode=afficherAPropos">À Propos</a>
+            </div>
+            <!-- Section 3 -->
+            <div class="col-6 col-md-2 mb-2">
+                <a class="nav-link fs-5" style="color: black;" href="index.php?controleur=informations&methode=afficherCGDU">CGU</a>
+            </div>
+            <!-- Section 4 -->
+            <div class="col-6 col-md-2 mb-2">
+                <a class="nav-link fs-5" style="color: black;" href="index.php?controleur=informations&methode=afficherPDC">Confidentialité</a>
+            </div>
+            <!-- Section 5 -->
+            <div class="col-6 col-md-2 mb-2">
+                <a class="nav-link fs-5" style="color: black;" href="index.php?controleur=informations&methode=afficherContact">Contact</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
 
 		<script type="text/javascript">
         tarteaucitron.user.addthisPubId = 'YOUR-PUB-ID';
