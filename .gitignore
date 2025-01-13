@@ -55,7 +55,7 @@
 ~*
 
 # ignore configuration files
-/config/config_app.php
+config/config_app.php
 
 # ignore todo files
 todo.txt
