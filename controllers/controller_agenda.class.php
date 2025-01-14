@@ -44,8 +44,8 @@ class ControllerAgenda extends Controller
         if ($urlValide && $couleurValide && $nomValide) {
             // Créer une instance de AgendaDao pour interagir avec la base de données
             $manager = new AgendaDao($pdo);
-            var_dump($_SESSION['utilisateur']->getId());
-            var_dump($id);
+            // var_dump($_SESSION['utilisateur']->getId());
+            // var_dump($id);
 
             if($manager->URLEstUnique($_POST['url'], $id, $_SESSION['utilisateur']->getId())) {
                 // Créer une nouvelle instance d'Agenda avec les données du formulaire

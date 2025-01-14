@@ -15,6 +15,8 @@ email.addEventListener('input', verifierPresence);
 mdp.addEventListener('input', verifierPresence);
 mdp.addEventListener('input', () => verifierPattern(mdp));
 
+btn.addEventListener('click', sauvegarderVariables);
+
 function verifierPattern(motDePasse) {
     const motif = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/;
 
@@ -35,4 +37,8 @@ function verifierPresence() {
     } else {
         btn.disabled = false;
     }
+}
+
+function sauvegarderVariables() {
+    localStorage.setItem('email', email.value);
 }

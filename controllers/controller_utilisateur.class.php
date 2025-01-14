@@ -35,21 +35,28 @@ class ControllerUtilisateur extends Controller
         $pdo = $this->getPdo();
         $tableauErreurs = [];
 
-        $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
-        $nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
-        $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $tableauErreurs);
-        $mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs, $_POST['pwdConfirme']);
+        $emailValide = utilitaire::validerEmail(htmlspecialchars($_POST['email']), $tableauErreurs);
+        $nomValide = utilitaire::validerNom(htmlspecialchars($_POST['nom']), $tableauErreurs);
+        $prenomValide = utilitaire::validerPrenom(htmlspecialchars($_POST['prenom']), $tableauErreurs);
+        $mdpValide = utilitaire::validerMotDePasseInscription(htmlspecialchars($_POST['pwd']), $tableauErreurs, $_POST['pwdConfirme']);
 
         if ($emailValide && $nomValide && $prenomValide && $mdpValide) {
+            $email = htmlspecialchars($_POST['email']);
+            $nom = htmlspecialchars($_POST['nom']);
+            $prenom = htmlspecialchars($_POST['prenom']);
+            $mdp = htmlspecialchars($_POST['pwd']);
+
+            var_dump(htmlspecialchars("<Adminé00000!"));
+
             $manager = new UtilisateurDao($pdo); //Lien avec PDO
             /**
              * Verifie que l'utilisateur n'existe pas.
              * On hash le mdp, on crée un nouvel utilisateur et on l'ajoute dans la bd
              */
-            $utilisateurExiste = $manager->findMail($_POST['email']);
+            $utilisateurExiste = $manager->findMail($email);
             if (!$utilisateurExiste) {
-                $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
-                $nouvelUtilisateur = Utilisateur::createAvecParam(null, $_POST['nom'], $_POST['prenom'], $_POST['email'], $mdpHache, "utilisateurBase.png", false);
+                $mdpHache = password_hash($mdp, PASSWORD_DEFAULT);
+                $nouvelUtilisateur = Utilisateur::createAvecParam(null, $nom, $prenom, $email, $mdpHache, "utilisateurBase.png", false);
                 $tokenActivation = $nouvelUtilisateur->genererTokenActivationCompte();
                 // $nouvelUtilisateur->setCompteEstActif(false); // On peut supprimer car par défaut, la valeur est desactive
                 $manager->ajouterUtilisateur($nouvelUtilisateur);
@@ -61,13 +68,15 @@ class ControllerUtilisateur extends Controller
             }
         } else {
             $manager = new UtilisateurDao($pdo); //Lien avec PDO
-            $utilisateurExiste = $manager->findMail($_POST['email']);
+            $email = htmlspecialchars($_POST['email']);
+            $utilisateurExiste = $manager->findMail($email);
             if ($utilisateurExiste) {
                 $tableauErreurs[] = "L'utilisateur existe déjà ! Connectez-vous !";
             }
         }
         // Affichage de la page avec les erreurs ou le message de succès. Utilisation du @ car si l'utilisateur n'a pas renseigné de mail, cette action génère une erreur
-        @$this->genererVue($_POST['email'], null, $tableauErreurs);
+        $email = htmlspecialchars($_POST['email']);
+        @$this->genererVue($email, null, $tableauErreurs);
     }
 
     /**
