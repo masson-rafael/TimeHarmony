@@ -92,11 +92,11 @@ class ControllerUtilisateur extends Controller
         $tableauErreurs = [];
         
         // Validation des entrées
-        $emailValide = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
-        $passwdValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs);
+        $emailValide = utilitaire::validerEmail(htmlspecialchars($_POST['email']), $tableauErreurs);
+        $passwdValide = utilitaire::validerMotDePasseInscription(htmlspecialchars($_POST['pwd']), $tableauErreurs);
 
         $manager = new UtilisateurDao($pdo);
-        $compteUtilisateurCorrespondant = $manager->getObjetUtilisateur($_POST['email']);
+        $compteUtilisateurCorrespondant = $manager->getObjetUtilisateur(htmlspecialchars($_POST['email']));
 
         if($compteUtilisateurCorrespondant == null) {
             // Échec de validation des entrées
@@ -107,14 +107,17 @@ class ControllerUtilisateur extends Controller
             if ($emailValide && $passwdValide && $compteActif) {
                 // Reactivation compte
                 $compteUtilisateurCorrespondant->reactiverCompte();
+
+                $email = htmlspecialchars($_POST['email']);
+                $pwd = htmlspecialchars($_POST['pwd']);
                 
                 // On recupere un tuple avec un booleen et le mdp hache
-                $motDePasse = $manager->connexionReussie($_POST['email']);
+                $motDePasse = $manager->connexionReussie($email);
     
                 if ($compteUtilisateurCorrespondant->getStatutCompte() === "actif") {
-                    if ($motDePasse[0] && password_verify($_POST['pwd'], $motDePasse[1])) {
+                    if ($motDePasse[0] && password_verify($pwd, $motDePasse[1])) {
                         // Connexion réussie
-                        $utilisateur = $manager->getObjetUtilisateur($_POST['email']);
+                        $utilisateur = $manager->getObjetUtilisateur($email);
                         $utilisateur->getDemandes();
                         $tableauErreurs[] = "Connexion réussie !";
                         $compteUtilisateurCorrespondant->reinitialiserTentativesConnexion();

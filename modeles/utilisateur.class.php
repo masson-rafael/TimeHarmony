@@ -550,7 +550,7 @@ class Utilisateur {
 
     /**
      * Fonction qui retourne le temps restant avant la réactivation du compte
-     * @return DateTime temps restant avant réactivation du compte
+     * @return int temps restant avant réactivation du compte
      */
     public function tempsRestantAvantReactivationCompte(): int {
         $dateActuelle = new DateTime();
@@ -589,7 +589,6 @@ class Utilisateur {
      * @return bool si le token est valide ou non
      */
     public function estTokenValide(?string $token): bool {
-        return $this->getTokenReinitialisation() === $token 
-            && strtotime($this->getDateExpirationToken()) > time();
+        return $this->getTokenReinitialisation() === $token && $this->getDateExpirationToken() > time();
     }
 }
