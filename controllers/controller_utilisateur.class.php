@@ -46,8 +46,6 @@ class ControllerUtilisateur extends Controller
             $prenom = htmlspecialchars($_POST['prenom']);
             $mdp = htmlspecialchars($_POST['pwd']);
 
-            var_dump(htmlspecialchars("<Adminé00000!"));
-
             $manager = new UtilisateurDao($pdo); //Lien avec PDO
             /**
              * Verifie que l'utilisateur n'existe pas.
