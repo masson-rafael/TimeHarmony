@@ -55,7 +55,7 @@ class ControllerUtilisateur extends Controller
             if (!$utilisateurExiste) {
                 $mdpHache = password_hash($mdp, PASSWORD_DEFAULT);
                 $nouvelUtilisateur = Utilisateur::createAvecParam(null, $nom, $prenom, $email, $mdpHache, "utilisateurBase.png", false);
-                $tokenActivation = $nouvelUtilisateur->genererTokenActivationCompte();
+                // $tokenActivation = $nouvelUtilisateur->genererTokenActivationCompte();
                 // $nouvelUtilisateur->setCompteEstActif(false); // On peut supprimer car par défaut, la valeur est desactive
                 $manager->ajouterUtilisateur($nouvelUtilisateur);
                 $this->envoyerMailActivationCompte($nouvelUtilisateur->getEmail());
@@ -559,10 +559,13 @@ class ControllerUtilisateur extends Controller
         $token = $_GET['token'];
         $email = $_GET['email'];
         $manager = new UtilisateurDAO($this->getPdo());
-        $tokenUtilisateur = $manager->getObjetUtilisateur($email)->getTokenReinitialisation();
+        $utilisateur = $manager->getObjetUtilisateur($email);
+        $tokenUtilisateur = $utilisateur->getTokenReinitialisation();
+        $dateExpiration = $utilisateur->getDateExpirationToken();
+        $dateActuelle = new DateTime();
         $tableauMessages = [];
 
-        if($tokenUtilisateur == $token) {
+        if($tokenUtilisateur == $token && $email == $utilisateur->getEmail() && $dateExpiration >= $dateActuelle) {
             $template = $this->getTwig()->load('reinitialisationMdp.html.twig');
             echo $template->render(
                 array(
@@ -594,17 +597,14 @@ class ControllerUtilisateur extends Controller
         $utilisateur = $manager->getObjetUtilisateur($_GET['email']);
 
         // Cette methode verifie la valeur des champs et si les mdp sont les memes 
-        $mdpValide = utilitaire::validerMotDePasseInscription($_POST['pwd'], $tableauErreurs, $_POST['pwdConfirme']);
+        $mdpValide = utilitaire::validerMotDePasseInscription(htmlspecialchars($_POST['pwd']), $tableauErreurs, htmlspecialchars($_POST['pwdConfirme']));
 
         if ($mdpValide) {
-            /**
-             * @todo mauvais pressentiment. Verifier le fonctionnement
-             */
             $utilisateur->setTokenReinitialisation(null);
             $utilisateur->setDateExpirationToken(null);
             $manager->miseAJourUtilisateur($utilisateur);
 
-            $mdpHache = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
+            $mdpHache = password_hash(htmlspecialchars($_POST['pwd']), PASSWORD_DEFAULT);
             $manager->reinitialiserMotDePasse($utilisateur->getId(), $mdpHache);
             $this->getTwig()->addGlobal('utilisateurGlobal', null);
             unset($_SESSION['utilisateur']);
@@ -635,8 +635,10 @@ class ControllerUtilisateur extends Controller
         $utilisateur = $manager->getObjetUtilisateur($_GET['email']);
         $tokenUtilisateur = $utilisateur->getTokenActivationCompte();
         $emailUtilisateur = $utilisateur->getEmail();
+        $dateExpiration = $utilisateur->getDateExpirationTokenActivationCompte();
+        $dateActuelle = new DateTime();
 
-        if($tokenUtilisateur == $token && $emailUtilisateur == $_GET['email']) {
+        if($tokenUtilisateur == $token && $emailUtilisateur == $_GET['email'] && $dateExpiration >= $dateActuelle) {
             $utilisateur->setStatutCompte("actif");
             $utilisateur->setTokenActivationCompte(null);
             $utilisateur->setDateExpirationTokenActivationCompte(null);
