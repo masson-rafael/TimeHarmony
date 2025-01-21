@@ -29,7 +29,6 @@ class ControllerAgenda extends Controller
      *
      * @return void
      */
-
     public function ajouterAgenda(): void
     {
         $pdo = $this->getPdo(); // Récupérer l'instance PDO

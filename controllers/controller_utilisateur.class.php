@@ -292,6 +292,8 @@ class ControllerUtilisateur extends Controller
         $utilisateurs = $manager->findAll();
         $utilisateurCourant = $_SESSION['utilisateur'];
         if($utilisateurCourant->getEstAdmin()) {
+            $db = Bd::getInstance();
+            $db->backup();
             $template = $this->getTwig()->load('administration.html.twig');
             echo $template->render(
                 array(

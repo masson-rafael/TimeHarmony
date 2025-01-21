@@ -68,7 +68,27 @@ class Bd{
      * @throws Exception si on tente de déserialiser un singleton
      */
     public function __wakeup(){
-            throw new Exception("Un singleton ne doit pas être deserialisé");
+        throw new Exception("Un singleton ne doit pas être deserialisé");
     }
 
+    /**
+     * Faire une backup de toute la base de données
+     *
+     * @return void
+     */
+    public function backup() {
+        $date = new DateTime();
+        $fichierBackup = "backup/backup_". PREFIXE_TABLE . $date->format('Y-m-d_H-i-s').".sql";
+        $commande = "mysqldump --host=". DB_HOST ." --user=".DB_USER." --password=".DB_PASS." ".DB_NAME." > ".$fichierBackup;
+        exec($commande . " 2>&1", $output, $result);
+    
+        if ($result === 0) {
+            echo "La base de données " . DB_NAME . " a été sauvegardée avec succès dans le fichier : $fichierBackup";
+        } else {
+            echo "Erreur lors de la sauvegarde de la base de données.\n";
+            echo "Commande : $commande\n";
+            echo "Output : " . implode("\n", $output);
+        }
+    }
+    
 }
