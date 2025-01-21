@@ -283,6 +283,8 @@ class ControllerUtilisateur extends Controller
     /**
      * Listage de tous les utilisateurs
      * Redirection vers la page d'administration
+     * 
+     * @param array|null $tableauDErreurs tableau des erreurs
      * @return void
      */
     public function lister(?array $tableauDErreurs = null)
@@ -292,8 +294,6 @@ class ControllerUtilisateur extends Controller
         $utilisateurs = $manager->findAll();
         $utilisateurCourant = $_SESSION['utilisateur'];
         if($utilisateurCourant->getEstAdmin()) {
-            $db = Bd::getInstance();
-            $db->backup();
             $template = $this->getTwig()->load('administration.html.twig');
             echo $template->render(
                 array(
