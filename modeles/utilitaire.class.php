@@ -1,11 +1,13 @@
 <?php
+
 /**
  * @author Thibault Latxague
  * @brief Classe de vérifcation et des champs de formulaire et d'autres fonctions
  * @version 0.4
  */
 
-class utilitaire {
+class utilitaire
+{
     /**
      * Redimensionne une image
      *
@@ -93,7 +95,7 @@ class utilitaire {
         $valide = utilitaire::validerTaille($nom, 2, 50, $messagesErreurs, "nom");
 
         // 4. Format des données : vérifier le format du nom
-        $valide = utilitaire::validerPreg($nom, "/^[a-zA-ZÀ-ÿ0-9-]+$/", $messagesErreurs, "nom");
+        $valide = utilitaire::validerPreg($nom, "/^[a-zA-ZÀ-ÿ0-9- ]+$/", $messagesErreurs, "nom");
 
         return $valide;
     }
@@ -144,7 +146,7 @@ class utilitaire {
         $valide = utilitaire::validerTaille($email, 5, 255, $messagesErreurs, "mail");
 
         // 4. Format des données : vérifier le format de l'email
-        if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $messagesErreurs[] = "L'email n'est pas valide";
             $valide = false;
         }
@@ -216,7 +218,8 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra ajouter si erreur détectée
      * @return bool Retourne vrai si le mot de passe est valide, faux sinon
      */
-    public static function validerMotDePasseInscription(?string $motDePasse, array &$messagesErreurs, ?string $motDePasse2 = null): bool {
+    public static function validerMotDePasseInscription(?string $motDePasse, array &$messagesErreurs, ?string $motDePasse2 = null): bool
+    {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
@@ -236,7 +239,7 @@ class utilitaire {
         $motDePasse2 != null ? $valide = utilitaire::validerPreg($motDePasse2, '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/', $messagesErreurs, "mot de passe") : $valide = true;
 
         // 5. Plage des valeurs : vérifier que les mots de passe sont les mêmes
-        if(($motDePasse != $motDePasse2) && $motDePasse2 != null){
+        if (($motDePasse != $motDePasse2) && $motDePasse2 != null) {
             $messagesErreurs[] = "Les mots de passe ne correspondent pas";
             $valide = false;
         }
@@ -251,7 +254,8 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra retourner si erreur détectée
      * @return bool Retourne vrai si le mot de passe est valide, faux sinon
      */
-    public static function validerMotDePasse(?string $motDePasse, array &$messagesErreurs): bool {
+    public static function validerMotDePasse(?string $motDePasse, array &$messagesErreurs): bool
+    {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
@@ -276,7 +280,8 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra retourner si erreur détectée
      * @return bool Retourne vrai si le role est valide, faux sinon
      */
-    public static function validerRole(?string $role, array &$messagesErreurs): bool{
+    public static function validerRole(?string $role, array &$messagesErreurs): bool
+    {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
@@ -289,7 +294,7 @@ class utilitaire {
         // 3. Longueur de la chaine - non pertinent
 
         // 4. Format de données : vérifier si le role est utilisateur ou admin
-        if(($role != '0' && $role != '1') && ($role != 'Admin' && $role != 'User')){
+        if (($role != '0' && $role != '1') && ($role != 'Admin' && $role != 'User')) {
             $messagesErreurs[] = "Le role n'est pas valide";
             $valide = false;
         }
@@ -306,10 +311,11 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
      * @return bool Retourne vrai si la taille est valide, faux sinon
      */
-    public static function validerTaille(?string $chaine, int $min, int $max, array &$messagesErreurs, ?string $champ): bool {
+    public static function validerTaille(?string $chaine, int $min, int $max, array &$messagesErreurs, ?string $champ): bool
+    {
         $valide = true;
         // 3. Longueur de la chaine : vérifier que le champ est compris entre min et max caractères
-        if(strlen($chaine) < $min || strlen($chaine) > $max){
+        if (strlen($chaine) < $min || strlen($chaine) > $max) {
             $messagesErreurs[] = "Le " . $champ . " doit être compris entre $min et $max caractères";
             $valide = false;
         }
@@ -324,10 +330,11 @@ class utilitaire {
      * @param string|null $nomChamp le nom du champ pour personnaliser le message d'erreur
      * @return bool Retourne vrai si le champ est présent, faux sinon
      */
-    public static function validerPresence(?string $chaine, array &$messagesErreurs, ?string $nomChamp): bool {
+    public static function validerPresence(?string $chaine, array &$messagesErreurs, ?string $nomChamp): bool
+    {
         $valide = true;
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        if(empty($chaine)){
+        if (empty($chaine)) {
             $messagesErreurs[] = "Le " . $nomChamp . " est obligatoire";
             $valide = false;
         }
@@ -342,10 +349,11 @@ class utilitaire {
      * @param string|null $nomChamp le nom du champ pour personnaliser le message d'erreur
      * @return bool Retourne vrai si le type est valide, faux sinon
      */
-    public static function validerType(?string $chaine, array &$messagesErreurs, ?string $nomChamp): bool {
+    public static function validerType(?string $chaine, array &$messagesErreurs, ?string $nomChamp): bool
+    {
         $valide = true;
         // 2. Type de données : vérifier que le champ est une chaine de caractères
-        if(!is_string($chaine)){
+        if (!is_string($chaine)) {
             $messagesErreurs[] = "Le " . $nomChamp . " doit être une chaine de caractères";
             $valide = false;
         }
@@ -360,10 +368,11 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
      * @return bool Retourne vrai si le format est valide, faux sinon
      */
-    public static function validerPreg(?string $chaine, string $pattern, array &$messagesErreurs, ?string $nomChamp): bool {
+    public static function validerPreg(?string $chaine, string $pattern, array &$messagesErreurs, ?string $nomChamp): bool
+    {
         $valide = true;
         // 2. Type de données : vérifier que le champ est une chaine de caractères
-        if(!preg_match($pattern, $chaine)){
+        if (!preg_match($pattern, $chaine)) {
             $messagesErreurs[] = "Le " . $nomChamp . " ne respecte pas le format attendu";
             $valide = false;
         }
@@ -377,27 +386,28 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
      * @return bool Retourne vrai si la photo est valide, faux sinon
      */
-    public static function validerPhoto(?array $photo, array &$messagesErreurs): bool {
+    public static function validerPhoto(?array $photo, array &$messagesErreurs): bool
+    {
         $valide = true;
         // 1. Champs obligatoires : vérifier la présence du champ (pas obligatoire mais sert d'indication)
-        if(!isset($photo)){
+        if (!isset($photo)) {
             $messagesErreurs[] = "Aucune photo renseignée";
             $valide = false;
         } else {
             // 2. Type de données : vérifier que le nom est une chaine de caractères
-            if(!is_array($photo)){
+            if (!is_array($photo)) {
                 $messagesErreurs[] = "La photo doit être un fichier";
                 $valide = false;
             }
 
             // 3. Longueur de la chaine (cf. taille) 2 Mo maximum
-            if(sizeof($photo) > 2000000) {
+            if (sizeof($photo) > 2000000) {
                 $valide = false;
                 $messagesErreurs[] = "La taille de la photo est trop grande (2Mo maximum)";
             }
 
             // 4. Format des données : vérifier le format de la photo
-            if($photo['error'] != UPLOAD_ERR_OK) {
+            if ($photo['error'] != UPLOAD_ERR_OK) {
                 $valide = false;
                 $messagesErreurs[] = "Aucune photo renseignée";
             }
@@ -412,7 +422,8 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
      * @return bool Retourne vrai si la date est valide, faux sinon
      */
-    public static function validerDate(?string $date, array &$messagesErreurs): bool {
+    public static function validerDate(?string $date, array &$messagesErreurs): bool
+    {
         $valide = true;
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
         $valide = utilitaire::validerPresence($date, $messagesErreurs, "date");
@@ -435,7 +446,8 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
      * @return bool Retourne vrai si l'heure est valide, faux sinon
      */
-    public static function validerDureeMinimale(?string $heure, array &$messagesErreurs): bool {
+    public static function validerDureeMinimale(?string $heure, array &$messagesErreurs): bool
+    {
         $valide = true;
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
         $valide = utilitaire::validerPresence($heure, $messagesErreurs, "duree minimale");
@@ -458,7 +470,8 @@ class utilitaire {
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
      * @return bool Retourne vrai si la couleur est valide, faux sinon
      */
-    public static function validerCouleur(?string $couleur, array &$messagesErreurs): bool {
+    public static function validerCouleur(?string $couleur, array &$messagesErreurs): bool
+    {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
@@ -483,7 +496,8 @@ class utilitaire {
      * @param array $messagesErreurs le tableau qui contiendra les messages d'erreur
      * @return bool si le champ est valide ou non
      */
-    public static function validerDescription(?string $description, array &$messagesErreurs): bool {
+    public static function validerDescription(?string $description, array &$messagesErreurs): bool
+    {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
@@ -506,7 +520,8 @@ class utilitaire {
      * @param array $messagesErreurs le tableau des messages d'erreur
      * @return bool retourne vrai si le champ est valide
      */
-    public static function validerSujet(?string $sujet, array &$messagesErreurs): bool {
+    public static function validerSujet(?string $sujet, array &$messagesErreurs): bool
+    {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
@@ -520,7 +535,7 @@ class utilitaire {
 
         // 5. Plage des valeurs
         $valeursPossibles = ['Demande generale d\'information', 'Question conditions generales d\'utilisation', 'Question politique de confidentialite', 'Commentaires ou Suggestions', 'Consulter ses donnees', 'Rectifier ses donnees', 'Supprimer ses donnees', 'Autre']; // + autres valeurs possibles
-        if($sujet != null && !in_array($sujet, $valeursPossibles)){
+        if ($sujet != null && !in_array($sujet, $valeursPossibles)) {
             $messagesErreurs[] = "Le sujet n'est pas valide";
             $valide = false;
         }
@@ -535,7 +550,8 @@ class utilitaire {
      * @param array $messagesErreurs le tabeleau de message d'erreurs
      * @return bool si le statut est valide ou non
      */
-    public static function validerStatut(?string $statut, array &$messagesErreurs): bool {
+    public static function validerStatut(?string $statut, array &$messagesErreurs): bool
+    {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
@@ -550,7 +566,7 @@ class utilitaire {
         // 5. Plage des valeurs
         $statut = strtolower($statut);
         $valeursPossibles = ['desactive', 'actif', 'bloque', 'Actif', 'Désactivé', 'Bloqué']; // + autres valeurs possibles
-        if($statut != null && !in_array($statut, $valeursPossibles)){
+        if ($statut != null && !in_array($statut, $valeursPossibles)) {
             $messagesErreurs[] = "Le statut n'est pas valide";
             $valide = false;
         }
@@ -566,7 +582,8 @@ class utilitaire {
      * @param array $tableauErreurs le tableau des erreurs
      * @return bool si le champ est correct ou non
      */
-    public static function validerDuree(?string $debut, ?string $fin, array &$messagesErreurs): bool {
+    public static function validerDuree(?string $debut, ?string $fin, array &$messagesErreurs): bool
+    {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
@@ -577,7 +594,7 @@ class utilitaire {
         $dateDebut = new DateTime($debut);
         $dateFin = new DateTime($fin);
 
-        if($dateDebut >= $dateFin) {
+        if ($dateDebut >= $dateFin) {
             $valide = false;
             $messagesErreurs[] = "La date de début doit être inférieure à la date de fin";
         }
@@ -592,14 +609,15 @@ class utilitaire {
      * @param array $tableauErreurs le tableau des erreurs
      * @return bool si le champ est correct ou non
      */
-    public static function validerDureeMin(?string $dureeMin, array &$messagesErreurs): bool {
+    public static function validerDureeMin(?string $dureeMin, array &$messagesErreurs): bool
+    {
         $valide = true;
 
         // 5. Plage des valeurs
         $dureeMinSeconds = strtotime($dureeMin);
 
-        $valide = $dureeMinSeconds > 5*60;
-        if(!$valide) {
+        $valide = $dureeMinSeconds > 5 * 60;
+        if (!$valide) {
             $messagesErreurs[] = "La durée minimale doit être supérieure à 5 minutes";
         }
 
@@ -614,11 +632,12 @@ class utilitaire {
      * @param array $tableauErreurs le tableau des erreurs
      * @return bool si le champ est correct ou non
      */
-    public static function validerContacts(?array $contacts, array &$messagesErreurs): bool {
+    public static function validerContacts(?array $contacts, array &$messagesErreurs): bool
+    {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        if(empty($contacts)){
+        if (empty($contacts)) {
             $messagesErreurs[] = "Aucun contact renseigné";
             $valide = false;
         }
