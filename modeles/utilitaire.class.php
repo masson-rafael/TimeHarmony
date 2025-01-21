@@ -5,6 +5,8 @@
  * @version 0.4
  */
 
+use ICal\ICal;
+
 class utilitaire {
     /**
      * Redimensionne une image
@@ -173,29 +175,30 @@ class utilitaire {
         // 3. Longueur de la chaine - non pertinent
 
         // 4. Format des données : vérifier le format de l'URL
-        if (!filter_var($urlAgenda, FILTER_VALIDATE_URL) && utilitaire::validerPreg($urlAgenda, '/^https?:\/\/calendar\.google\.com\/calendar\/ical\/.+\/basic\.ics$/', $messagesErreurs, "URL agenda")) {
+        if (!filter_var($urlAgenda, FILTER_VALIDATE_URL) && !utilitaire::validerPreg($urlAgenda, '/^https?:\/\/calendar\.google\.com\/calendar\/ical\/.+\/basic\.ics$/', $messagesErreurs, "URL agenda")) {
             $messagesErreurs[] = "L'URL de l'agenda n'est pas valide.";
             $valide = false;
         }
-
-        // Vérification du type MIME du fichier
-        $headers = get_headers($url, 1);
-        if (isset($headers['Content-Type'])) {
-            if (!strpos($headers['Content-Type'], 'text/calendar')) {
-                $messagesErreurs[] = "Le fichier obtenir à partir de l'URL n'est pas un agenda";
+        else {
+            // Vérification du type MIME du fichier
+            $headers = get_headers($urlAgenda, 1);
+            if (!isset($headers['Content-Type'])) {
+                $messagesErreurs[] = "Impossible de vérifier le type du fichier à partir de l'URL";
                 $valide = false;
             }
-            $messagesErreurs[] = "Impossible de vérifier le type du fichier à partir de l'URl";
-            $valide = false;
-        }
+            elseif (strpos($headers['Content-Type'], 'text/calendar') === false) {
+                $messagesErreurs[] = "Le fichier obtenu à partir de l'URL n'est pas un agenda";
+                $valide = false;
+            }
 
-        // Test de création de l'objet ICal à partir de l'URL
-        try {
-            // @ nécessaire pour enlever les erreurs
-            @$calendrier = new ICal($url);
-        } catch (Exception $e) {
-            $messagesErreurs[] = "Impossible d'importer les données ";
-            $valide = false;
+            // Test de création de l'objet ICal à partir de l'URL
+            try {
+                // @ nécessaire pour enlever les erreurs
+                @$calendrier = new ICal($urlAgenda);
+            } catch (Exception $e) {
+                $messagesErreurs[] = "Impossible d'importer les données ";
+                $valide = false;
+            }
         }
 
         return $valide;
