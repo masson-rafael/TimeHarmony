@@ -21,6 +21,7 @@ require_once 'controllers/controller_contacts.class.php';
 require_once 'controllers/controller_assistant.class.php';
 require_once 'controllers/controller_informations.class.php';
 require_once 'controllers/controller_groupes.class.php';
+require_once 'controllers/controller_bd.class.php';
 
 //Ajout des modèles
 require_once 'modeles/utilisateur.class.php';

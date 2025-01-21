@@ -1,4 +1,4 @@
-let formulaire = document.getElementById('form');
+let formulaire = document.getElementById('formConnexion');
 let btn = document.getElementById('boutonConnexion');
 
 let email = formulaire[0];
@@ -25,9 +25,9 @@ function verifierPattern(motDePasse) {
         motDePasse.style.borderColor = 'red';
         btn.disabled = true;
     } else {
+        motDePasse.style.borderColor = '';
         btn.disabled = false;
-        // motDePasse.style.borderColor = '';
-        motDePasse.setCustomValidity('');
+        // motDePasse.setCustomValidity('');
     }
 }
 

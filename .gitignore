@@ -54,6 +54,9 @@
 .*
 ~*
 
+# ignore SQL backup folder
+/backup
+
 # ignore configuration files
 config/config_app.php
 
