@@ -21,8 +21,8 @@ try  {
 
     //Gestion de la page d'accueil par défaut
     if ($controllerName == '' && $methode ==''){
-        // $controllerName='index';
-        // $methode='lister';
+        //$controllerName='index';
+        //$methode='lister';
         $template = $twig->load('index.html.twig');
         echo $template->render(array());
     }
@@ -32,11 +32,10 @@ try  {
     else if ($methode == '' ){
         throw new Exception('La méthode n\'est pas définie');
     }
-    else {
-        $controller = ControllerFactory::getController($controllerName, $loader, $twig);
-    
-        $controller->call($methode);
-    }
+
+    $controller = ControllerFactory::getController($controllerName, $loader, $twig);
+    $controller->declencherBackup(ControllerFactory::getController("bd", $loader, $twig));
+    $controller->call($methode);
     
 }catch (Exception $e) {
     die('Erreur : ' . $e->getMessage());

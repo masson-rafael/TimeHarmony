@@ -25,16 +25,5 @@ class ControllerBd extends Controller
     public function sauvegarder(): void {
         $db = Bd::getInstance();
         $db->backup($tableauDErreurs);
-        $pdo = $this->getPdo();
-        $manager = new UtilisateurDao($pdo);
-        $utilisateurs = $manager->findAll();
-        $template = $this->getTwig()->load('administration.html.twig');
-        echo $template->render(
-            array(
-                'listeUtilisateurs' => $utilisateurs,
-                'message' => $tableauDErreurs,
-                'utilisateurCourant' => $_SESSION['utilisateur'],
-            )
-        );
     }
 }

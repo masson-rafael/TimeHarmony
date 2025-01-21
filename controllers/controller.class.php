@@ -67,6 +67,13 @@ class Controller{
         return $this->$methode();
     }
 
+    public function declencherBackup(?ControllerBd $controller): void {
+        $dateActuelle = new DateTime();
+        //if($dateActuelle) {
+            $controller->sauvegarder();
+        //}
+    }
+
     /**
      * Get la valeur du pdo
      *
