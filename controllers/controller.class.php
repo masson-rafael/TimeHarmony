@@ -68,10 +68,42 @@ class Controller{
     }
 
     public function declencherBackup(?ControllerBd $controller): void {
-        $dateActuelle = new DateTime();
-        //if($dateActuelle) {
-            $controller->sauvegarder();
-        //}
+        $backupDir = 'backup'; // Dossier de sauvegarde
+
+        // Vérifier si le dossier existe
+        if (!is_dir($backupDir)) {
+            mkdir($backupDir, 0777, true); // Créer le dossier s'il n'existe pas
+        }
+    
+        $latestFile = null;
+        $latestTime = 0;
+    
+        // Parcourir les fichiers du dossier
+        foreach (scandir($backupDir) as $file) {
+            $filePath = $backupDir . DIRECTORY_SEPARATOR . $file;
+    
+            // Ignorer les fichiers spéciaux (., ..)
+            if (!is_file($filePath)) {
+                continue;
+            }
+    
+            // Récupérer le dernier fichier modifié
+            $fileTime = filemtime($filePath);
+            if ($fileTime > $latestTime) {
+                $latestTime = $fileTime;
+                $latestFile = $filePath;
+            }
+        }
+    
+        // Vérifier la date du dernier fichier
+        $currentTime = new DateTime();
+        $lastBackupTime = new DateTime();
+        $lastBackupTime->setTimestamp($latestTime);
+    
+        $interval = $lastBackupTime->diff($currentTime);
+        if ($interval->days > 1) { // Si plus de 1 jour depuis le dernier backup
+            $controller->sauvegarder(); // Appeler la méthode backup
+        }
     }
 
     /**
