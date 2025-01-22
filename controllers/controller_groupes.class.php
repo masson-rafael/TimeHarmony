@@ -155,6 +155,7 @@ class ControllerGroupes extends Controller
             }
         }
     }
+
     /**
      * Fonction qui permet de modifier le nom, la description et la composition d'un groupe 
      * @return void
@@ -165,6 +166,7 @@ class ControllerGroupes extends Controller
         $description = $_POST['description']; // Description du groupe
         $checkedUsers = $_POST['contacts']; // Tableau des utilisateurs cochés
         $id = $_GET['id']; // id du groupe
+        $currentIdUser = $_SESSION['utilisateur']->getId(); // id de l'utilisateur actuel
 
         $messages = [];
 
@@ -175,33 +177,21 @@ class ControllerGroupes extends Controller
         if ($nomValide && $descriptionValide && $checkedUsersValides) {
             $pdo = $this->getPdo();
             $manager = new GroupeDao($pdo);
+            $managerUtilisateur = new UtilisateurDao($pdo);
 
             // Récupérer les membres du groupe
             $membres = $manager->getUsersFromGroup($id);
-
-            // Récupérer tous les contacts de l'utilisateur
-            $managerUtilisateur = new UtilisateurDao($pdo);
-            $utilisateur = $managerUtilisateur->find($_SESSION['utilisateur']->getId());
-            $contacts = $managerUtilisateur->findAllContact($utilisateur->getId());
 
             // Convertir les ids des utilisateurs cochés en entier
             foreach ($checkedUsers as $key => $value) {
                 $checkedUsers[$key] = (int)$value;
             }
 
-            // Ajouter l'utilisateur actuel pour qu'il ne soit pas supprimé du groupe
-            $checkedUsers[] = $utilisateur->getId();
-
-            // Extraire les IDs des utilisateurs du tableau $contacts
-            foreach ($contacts as $contact) {
-                $contactIds[] = $contact->getId();
-            }
-
             // Parcourir les membres actuels du groupe
             foreach ($membres as $membre) {
-                // Si l'utilisateur n'est plus coché, supprimer l'utilisateur du groupe
-                if (!in_array($membre['idUtilisateur'], $checkedUsers)) {
-                    $manager->deleteUserFromGroup($id, $membre['idUtilisateur']);
+                // Supprimer les utilisateurs non cochés qui font partie du groupe à part l'utilisateur actuel
+                if (!in_array($membre['idUtilisateur'], $checkedUsers) && $membre['idUtilisateur'] != $currentIdUser) {
+                    $manager->supprimerMembreGroupe($id, $membre['idUtilisateur']);
 
                     // Récupérer le nom de l'utilisateur supprimé
                     $deletedUser = $managerUtilisateur->find($membre['idUtilisateur']);
@@ -209,6 +199,20 @@ class ControllerGroupes extends Controller
                     $prenom = $deletedUser->getPrenom();
 
                     $messages[] = "Suppression de "  . $prenom . " " . $nom . " du groupe \"" . $nomGroupe . "\" ";
+                }
+            }
+            
+            // Ajouter les utilisateurs cochés qui ne font pas encore partie du groupe
+            foreach ($checkedUsers as $userId) {
+                if (!in_array($userId, array_column($membres, 'idUtilisateur'))) {
+                    $manager->ajouterMembreGroupe($id, $userId);
+
+                    // Récupérer le nom de l'utilisateur ajouté
+                    $addedUser = $managerUtilisateur->find($userId);
+                    $nom = $addedUser->getNom();
+                    $prenom = $addedUser->getPrenom();
+
+                    $messages[] = "Ajout de " . $prenom . " " . $nom . " au groupe \"" . $nomGroupe . "\" ";
                 }
             }
 

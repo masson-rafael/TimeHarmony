@@ -503,12 +503,14 @@ class utilitaire
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
         $valide = utilitaire::validerPresence($description, $messagesErreurs, "description d'un groupe");
 
-        // 2. Type de données : vérifier que le prenom est une chaine de caractères
+        // 2. Type de données : vérifier que la description est une chaine de caractères
         $valide = utilitaire::validerType($description, $messagesErreurs, "description d'un groupe");
 
-        // 3. Longueur de la chaine - non pertinent
+        // 3. Longueur de la chaine
+        $valide = utilitaire::validerTaille($description, 0, 255, $messagesErreurs, "description d'un groupe");
 
-        // 4. Format des données - non pertinent
+        // 4. Format des données
+        $valide = utilitaire::validerPreg($description, "/^[a-zA-ZÀ-ÿ0-9- ',.]+$/", $messagesErreurs, "description d'un groupe");
 
         return $valide;
     }

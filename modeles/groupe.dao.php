@@ -302,7 +302,7 @@ class GroupeDao
      * @param int|null $idUtilisateur id de l'utilisateur
      * @return void
      */
-    public function deleteUserFromGroup(?int $idGroupe, ?int $idUtilisateur): void
+    public function supprimerMembreGroupe(?int $idGroupe, ?int $idUtilisateur): void
     {
         $sql = "DELETE FROM " . PREFIXE_TABLE . "composer WHERE idGroupe = :idGroupe AND idUtilisateur = :idUtilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
