@@ -77,7 +77,7 @@ class Bd{
      * @param array|null $messageErreur le tableau contenant les messages d'erreur
      * @return void
      */
-    public function backup(?array &$messageErreur) : void
+    public function backup(?string $ancienneSauvegarde) : void
     {
         $messageErreur = [];
         $date = new DateTime(); // Initialiser la date actuelle
