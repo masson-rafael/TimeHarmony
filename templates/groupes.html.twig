@@ -1,212 +1,202 @@
 {% extends 'base_template.html.twig' %}
 
-{% block title %}Groupes -
-	{{ constant('WEBSITE_TITLE')}}
+{% block title %}
+	Groupes -
+	{{ constant('WEBSITE_TITLE') }}
 {% endblock %}
 
 {% block content %}
 	<main>
-	<div class="container">
-        {% if modification == false and creation == false %}
-        <div class="row text-center mt-3 mb-3">
-            <h1>Vos Groupes</h1>
-        </div>
-        {% if groupes|length > 0 %}
-        <table id="myTable" class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Description</th>
-                    <th>Membres</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for groupe in groupes %}
-                    <tr>
-                        <td>{{ groupe.nom }}</td>
-                        <td>{{ groupe.description }}</td>
-                        <td>{{ nombrePersonnes[loop.index0] }}</td> {# Utilise loop.index0 pour accéder à l'index (commence à 0) #}
-                        <td>
-                        <a role="button" href="index.php?controleur=groupes&methode=afficherPageModification&id={{ groupe.id }}">
-                        <i class="fa-solid fa-pencil"></i></a>
-                        <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleSuppression{{ groupe.id }}">
-                        <i class="fa-solid fa-trash"></i></a>
-                        </td>
-                    </tr>
-                    <div class="modal fade " id="fenetreModaleSuppression{{groupe.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Suppression du groupe
-                                        {{groupe.nom}}
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <form action="index.php?controleur=groupes&methode=supprimer&id={{ groupe.id }}" method="POST" enctype="multipart/form-data">
-                                    <div class="modal-body">
-                                        <label>Êtes-vous sûr de vouloir supprimer le groupe
-                                            {{groupe.nom}}
-                                            ?</label>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary" name="update_article">Supprimer</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-            <div class="row justify-content-center mt-4 h-25">
-                <div class="col-md-8">
-                    <div class="alert alert-info text-center" role="alert">
-                        Aucun groupe trouvé. Ajoutez-en un ci-dessous.
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-        <div class="text-center">
-            <a class="px-5 btn btn-primary" href="index.php?controleur=groupes&methode=ajouter" role="button">Créer un groupe</a>
-        </div>
-        {% if message %}
-            <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
-                {% for messages in message %}
-                    {{messages}}
-                    <br>
-                {% endfor %}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endif %}
-        {% elseif modification == true %}
-        <div class="row text-center mt-3 mb-3">
-            <h1>Modifier mon groupe</h1>
-        </div>
-        <div class="d-flex align-items-center">
-            <!-- Formulaire -->
-            <div class="w-100">
-                <form method="POST" action="index.php?controleur=groupes&methode=modifier&id={{ groupeCourant.id }}">
-                    <div class="mb-3">
-                        <label for="nom" class="form-label" style="color: #2c3e50;">Nom *</label>
-                        <input type="text" class="form-control shadow-sm" id="nom" name="nom" value="{{ groupeCourant.nom }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="50" title="Le nom de votre compte" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label" style="color: #2c3e50;">Description *</label>
-                        <input type="text" class="form-control shadow-sm" id="description" name="description" value="{{ groupeCourant.description }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="50" title="Le prénom de votre compte" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="membres" class="form-label" style="color: #2c3e50;">Membres *</label>
-                        <!-- Section Collaborateurs -->
-                        <table class="table table-bordered table-hover">
-                            <thead>
-                                <tr class="table-primary">
-                                    <th scope="col">#</th>
-                                    <th scope="col">Prénom</th>
-                                    <th scope="col">Nom</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for contact in contacts %}
-                                <tr>
-                                    <td>
-                                        <input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
-                                    </td>
-                                    <td>{{ contact.getPrenom }}</td>
-                                    <td>{{ contact.getNom }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-primary px-4 shadow-sm" style="background-color: #3498db; border: none;">Modifier mon groupe</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        {% endif %}
-        {% if creation == true %}
-				<div class="row justify-content-center mt-5 h-75">
-				<div class="col-md-6">
-					<h4 class="text-center mb-4">Créer un groupe</h4>
-					<form action="index.php?controleur=groupes&methode=creer" method="post" required>
-						<div class="mb-3">
-							<label for="nom" class="form-label">Nom *</label>
-							<input type="text" name="nom" class="form-control" id="nom" required placeholder="Entrez le nom de votre groupe" maxlength="50" title="Entrez le nom de votre groupe pour pouvoir le différencier des autres">
-						</div>
-						<div class="mb-3">
-							<label for="description" class="form-label">Description *</label>
-							<input type="description" name="description" class="form-control" id="description" required placeholder="Entrez une description valide" title="Entrez la description de votre groupe">
-						</div>
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Choisir ses contacts</label>
-                            {% if contacts %}
-                            <table class="table table-bordered table-hover">
-                                <thead>
-                                    <tr class="table-primary">
-                                        <th scope="col">#</th>
-                                        <th scope="col">Prénom</th>
-                                        <th scope="col">Nom</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for contact in contacts %}
-                                    <tr>
-                                        <td>
-                                            <input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
-                                        </td>
-                                        <td>{{ contact.getPrenom }}</td>
-                                        <td>{{ contact.getNom }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                            {% else %}
-                            <div class="alert alert-info text-center" role="alert">Aucun contact trouvé. Ajoutez-en un ci-dessous.</div>
-                            <div class="text-center">
-                                <a class="px-5 btn btn-secondary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter des contacts</a>
-                            </div>
-                            {% endif %}
-                        </div>
-                        <div class="text-center pt-5">
-                            <a class="px-5 btn btn-secondary" href="index.php?controleur=groupes&methode=lister" role="button">Revenir à mes groupes</a>
-                        </div>
-                        <div class="mb-3 text-center pt-3">
-                            <button type="submit" class="btn btn-primary ">Ajouter un groupe</button>
-                        </div>
-					</form>
+		<div class="container">
+			{% if modification == false and creation == false %}
+				<div class="row text-center mt-3 mb-3">
+					<h1>Vos Groupes</h1>
 				</div>
-
 				{% if message %}
 					<div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
 						{% for messages in message %}
-							{{messages}}
-							<br>
+							{{ messages }}<br>
 						{% endfor %}
 						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 					</div>
 				{% endif %}
-			</div>
-        {% endif %}
-	</div>
-	</main>
+				{% if groupes|length > 0 %}
+					<table id="myTable" class="table table-striped">
+						<thead>
+							<tr>
+								<th>Nom</th>
+								<th>Description</th>
+								<th>Membres</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for groupe in groupes %}
+								<tr>
+									<td>{{ groupe.nom }}</td>
+									<td>{{ groupe.description }}</td>
+									<td>{{ nombrePersonnes[loop.index0] }}</td>
+									<td>
+										<a role="button" href="index.php?controleur=groupes&methode=afficherPageModification&id={{ groupe.id }}">
+											<i class="fa-solid fa-pencil"></i>
+										</a>
+										<a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleSuppression{{ groupe.id }}">
+											<i class="fa-solid fa-trash"></i>
+										</a>
+									</td>
+								</tr>
+								<div class="modal fade" id="fenetreModaleSuppression{{ groupe.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal-dialog modal-lg">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h1 class="modal-title fs-5" id="exampleModalLabel">Suppression du groupe
+													{{ groupe.nom }}</h1>
+												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											</div>
+											<form action="index.php?controleur=groupes&methode=supprimer&id={{ groupe.id }}" method="POST" enctype="multipart/form-data">
+												<div class="modal-body">
+													<label>Êtes-vous sûr de vouloir supprimer le groupe
+														{{ groupe.nom }}
+														?</label>
+												</div>
+												<div class="modal-footer">
+													<button type="submit" class="btn btn-primary" name="update_article">Supprimer</button>
+													<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							{% endfor %}
+						</tbody>
+					</table>
+				{% else %}
+					<div class="row justify-content-center mt-4 h-25">
+						<div class="col-md-8">
+							<div class="alert alert-info text-center" role="alert">
+								Aucun groupe trouvé. Ajoutez-en un ci-dessous.
+							</div>
+						</div>
+					</div>
+				{% endif %}
 
+				<div class="text-center">
+					<a class="px-5 btn btn-primary" href="index.php?controleur=groupes&methode=ajouter" role="button">Créer un groupe</a>
+				</div>
+			{% elseif modification %}
+				<div class="row text-center mt-3 mb-3">
+					<h1>Modifier mon groupe</h1>
+				</div>
+				<div
+					class="d-flex align-items-center">
+					<!-- Formulaire -->
+					<div class="w-100">
+						<form method="POST" action="index.php?controleur=groupes&methode=modifier&id={{ groupeCourant.id }}">
+							<div class="mb-3">
+								<label for="nom" class="form-label" style="color: #2c3e50;">Nom *</label>
+								<input type="text" class="form-control shadow-sm" id="nom" name="nom" value="{{ groupeCourant.nom }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="50" required>
+							</div>
+							<div class="mb-3">
+								<label for="description" class="form-label" style="color: #2c3e50;">Description *</label>
+								<input type="text" class="form-control shadow-sm" id="description" name="description" value="{{ groupeCourant.description }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="50" required>
+							</div>
+							<div class="mb-3">
+								<label for="contacts[]" class="form-label" style="color: #2c3e50;">Membres *</label>
+								<table class="table table-bordered table-hover">
+									<thead>
+										<tr class="table-primary">
+											<th>#</th>
+											<th>Prénom</th>
+											<th>Nom</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for contact in contacts %}
+											<tr>
+												<!-- Si l'id du contact est dans idsMembres, on coche la case -->
+												<td>
+													<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}" {% if contact.getId in idsMembres %} checked {% endif %}>
+												</td>
+												<td>{{ contact.getPrenom }}</td>
+												<td>{{ contact.getNom }}</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+							<div class="text-center mt-4">
+								<button type="submit" class="btn btn-primary px-4 shadow-sm" style="background-color: #3498db; border: none;">Modifier mon groupe</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			{% elseif creation %}
+				<div class="row justify-content-center mt-5 h-75">
+					<div class="col-md-6">
+						<h4 class="text-center mb-4">Créer un groupe</h4>
+						<form action="index.php?controleur=groupes&methode=creer" method="post" required>
+							<div class="mb-3">
+								<label for="nom" class="form-label">Nom *</label>
+								<input type="text" name="nom" class="form-control" id="nom" required placeholder="Entrez le nom de votre groupe" maxlength="50">
+							</div>
+							<div class="mb-3">
+								<label for="description" class="form-label">Description *</label>
+								<input type="text" name="description" class="form-control" id="description" required placeholder="Entrez une description valide">
+							</div>
+							<div class="mb-3">
+								<label for="description" class="form-label">Choisir ses contacts</label>
+								{% if contacts %}
+									<table class="table table-bordered table-hover">
+										<thead>
+											<tr class="table-primary">
+												<th>#</th>
+												<th>Prénom</th>
+												<th>Nom</th>
+											</tr>
+										</thead>
+										<tbody>
+											{% for contact in contacts %}
+												<tr>
+													<td><input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}"></td>
+													<td>{{ contact.getPrenom }}</td>
+													<td>{{ contact.getNom }}</td>
+												</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								{% else %}
+									<div class="alert alert-info text-center" role="alert">Aucun contact trouvé. Ajoutez-en un ci-dessous.</div>
+									<div class="text-center">
+										<a class="px-5 btn btn-secondary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter des contacts</a>
+									</div>
+								{% endif %}
+							</div>
+							<div class="text-center pt-5">
+								<a class="px-5 btn btn-secondary" href="index.php?controleur=groupes&methode=lister" role="button">Revenir à mes groupes</a>
+							</div>
+							<div class="mb-3 text-center pt-3">
+								<button type="submit" class="btn btn-primary">Ajouter un groupe</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+	</main>
 {% endblock %}
 {% block javascripts %}
-    {{ parent() }}
-    <script>
-        $(document).ready(function() {
-            $('#myTable').DataTable({
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
-                },
-                responsive: true, // Important pour les petits écrans
-                autoWidth: false, // Évite les problèmes de calcul automatique de largeur
-                pageLength: 10,
-                ordering: true
-            });
-        });
-    </script>
+	{{ parent() }}
+	 <script>
+			        $(document).ready(function() {
+			            $('#myTable').DataTable({
+			                language: {
+			                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
+			                },
+			                responsive: true, // Important pour les petits écrans
+			                autoWidth: false, // Évite les problèmes de calcul automatique de largeur
+			                pageLength: 10,
+			                ordering: true
+			            });
+			        });
+			    </script>
 {% endblock %}

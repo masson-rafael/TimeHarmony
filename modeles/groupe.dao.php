@@ -279,4 +279,30 @@ class GroupeDao
             ":description" => $description,
         ));
     }
+
+    /**
+     * Fonction permettant de renvoyer les utilisateurs d'un groupe
+     * @param int|null $idGroupe id du groupe
+     * @return array|null tableau des utilisateurs
+     */
+
+    public function getUsersFromGroup(?int $idGroupe): ?array
+    {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "composer WHERE idGroupe = :idGroupe";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("idGroupe" => $idGroupe));
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $result = $pdoStatement->fetchAll();
+        return $result;
+    }
+
+    public function deleteUserFromGroup(?int $idGroupe, ?int $idUtilisateur): void
+    {
+        $sql = "DELETE FROM " . PREFIXE_TABLE . "composer WHERE idGroupe = :idGroupe AND idUtilisateur = :idUtilisateur";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array(
+            "idGroupe" => $idGroupe,
+            "idUtilisateur" => $idUtilisateur,
+        ));
+    }
 }

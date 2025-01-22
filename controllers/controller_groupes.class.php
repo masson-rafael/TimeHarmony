@@ -66,9 +66,21 @@ class ControllerGroupes extends Controller
         $id = $_GET['id'];
         $manager = new GroupeDao($this->getPdo());
         $groupeCourant = $manager->find($id);
+        $membres = $manager->getUsersFromGroup($id);
         $contacts = $this->getListeContacts();
         $template = $this->getTwig()->load('groupes.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
-        echo $template->render(array('modification' => true, 'groupeCourant' => $groupeCourant, 'contacts' => $contacts));
+
+        // Créer un tableau idsMembres qui contient les IDs des membres du groupe
+        $idsMembres = array_map(function ($membre) {
+            return $membre['idUtilisateur'];
+        }, $membres);
+
+        echo $template->render(array(
+            'modification' => true,
+            'groupeCourant' => $groupeCourant,
+            'contacts' => $contacts,
+            'idsMembres' => $idsMembres,
+        ));
     }
 
     /**
@@ -148,21 +160,53 @@ class ControllerGroupes extends Controller
      * Fonction qui permet de modifier le nom et la description d'un groupe (pour l'instant)
      * @return void
      */
-    public function modifier() : void
+    public function modifier(): void
     {
-        $id = $_GET['id'];
+        $id = $_GET['id']; // id du groupe
 
-        $messageErreurs = [];
-        $nomValide = utilitaire::validerNom($_POST['nom'], $messageErreurs);
-        $descriptionValide = utilitaire::validerDescription($_POST['description'], $messageErreurs);
+        $messages = [];
+        $nomValide = utilitaire::validerNom($_POST['nom'], $messages);
+        $descriptionValide = utilitaire::validerDescription($_POST['description'], $messages);
+        $contactsValides = utilitaire::validerContacts($_POST['contacts'], $messages);
 
-        if ($nomValide && $descriptionValide) {
+        if ($nomValide && $descriptionValide && $contactsValides) {
             $pdo = $this->getPdo();
             $manager = new GroupeDao($pdo);
 
+            // Récupérer les membres du groupe
+            $contacts = $_POST['contacts'];
+            $membres = $manager->getUsersFromGroup($id);
+
+            // Ajouter le chef du groupe
+            $contacts[] = $_SESSION['utilisateur']->getId();
+
+            // Convertir les ids des contacts en int
+            foreach ($contacts as $key => $contact) {
+                $contacts[$key] = (int)$contact;
+            }
+
+            // Parcourir le tableau contacts
+            foreach ($membres as $membre) {
+                // Si l'id n'est pas dans le tableau des contacts, supprimer l'utilisateur du groupe
+                if (!in_array($membre['idUtilisateur'], $contacts)) {
+                    $manager->deleteUserFromGroup($id, $membre['idUtilisateur']);
+
+                    // Récupérer le nom du groupe
+                    $groupe = $manager->find($id);
+                    $nomGroupe = $groupe->getNom();
+
+                    // Récupérer le nom de l'utilisateur
+                    $managerUtilisateur = new UtilisateurDao($pdo);
+                    $utilisateur = $managerUtilisateur->find($membre['idUtilisateur']);
+                    $nom = $utilisateur->getNom();
+                    $prenom = $utilisateur->getPrenom();
+
+                    $messages[] = "Suppression de "  . $prenom . " " . $nom . " du groupe \"" . $nomGroupe . "\" ";
+                }
+            }
 
             $manager->modifierGroupe($id, $_POST['nom'], $_POST['description']);
         }
-        $this->lister($messageErreurs); // Retourne à la page de liste des groupes
+        $this->lister($messages); // Retourne à la page de liste des groupes
     }
 }
