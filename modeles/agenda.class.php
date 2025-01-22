@@ -248,24 +248,6 @@ class Agenda
     }
 
     /**
-     * tester la validité de l'URL d'un Agenda
-     *
-     * @param string|null $url de l'agenda a verifier
-     * @throws Exception erreur de l'url si il n'est pas valide
-     * @return boolean true si l'url est valide, false sinon
-     */
-    public function testerValiditeUrl(?string $url): bool
-    {
-        try {
-            // @ nécessaire pour enlever les erreurs
-            @$calendrier = new ICal($url);
-            return true;
-        } catch (Exception $e) {
-            return false;
-        }
-    }
-
-    /**
      * Fusionner les evenements récupérer afin d'avoir des évènements triés et fusionnés
      *
      * @param string|null $events évènements à triés et à fusionner
