@@ -22,14 +22,9 @@ class ControllerBd extends Controller
         parent::__construct($twig, $loader);
     }
 
-    /**
-     * Fonction permettant d'appeller la fonction de backup
-     * 
-     * @param string|null $cheminDerniereSave le chemin du fichier contenant last save si existe
-     * @return void
-     */
-    public function sauvegarder(?string $cheminDerniereSave = null): void {
+    public function sauvegarder(): void {
+        echo "Fonction sauvegarder appellee";
         $db = Bd::getInstance();
-        $db->backup($tableauDErreurs);
+        $db->backup();
     }
 }
