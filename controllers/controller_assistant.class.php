@@ -35,8 +35,13 @@ class ControllerAssistant extends Controller
     {
 
         // vide la variable de session nbUserSelectionné
-        // unset($_SESSION['nbUserSelectionné']);
+        unset($_SESSION['nbUserSelectionné']);
         unset($_SESSION['contacts']);
+        unset($_SESSION['debut']);
+        unset($_SESSION['fin']);
+        unset($_SESSION['groupes']);
+        unset($_POST['increment']);
+        unset($_POST['decrement']);
 
         $utilisateur = $_SESSION['utilisateur'];
 
@@ -62,7 +67,6 @@ class ControllerAssistant extends Controller
         $messagesErreur = [];
 
         $pdo = $this->getPdo();
-
 
         if (isset($_SESSION['debut']) && isset($_SESSION['fin']) && isset($_SESSION['dureeMin']) && isset($_SESSION['contacts'])) {
             $_POST['debut'] = $_SESSION['debut'];
@@ -93,7 +97,7 @@ class ControllerAssistant extends Controller
                 $_SESSION['contacts'] = $_POST['contacts'];
                 $_SESSION['debut'] = $_POST['debut'];
                 $_SESSION['fin'] = $_POST['fin'];
-                $_SESSION['nbUserSelectionné'] = sizeof($_POST['contacts']);
+                // $_SESSION['nbUserSelectionné'] = sizeof($_POST['contacts']);
             }
 
             $dureeMin = $_SESSION['dureeMin'];
@@ -108,8 +112,10 @@ class ControllerAssistant extends Controller
                 $tableauUtilisateur[] = $managerUtilisateur->find($idUtilisateurCourant);
             }
             $tableauUtilisateur[] = $_SESSION['utilisateur'];
+            
+            // $_SESSION['contacts'] = 
 
-            var_dump($tableauUtilisateur);
+            // var_dump($tableauUtilisateur);
 
             if (isset($_POST['groupes'])) {
                 $managerGroupe = new GroupeDao($pdo);
@@ -118,12 +124,13 @@ class ControllerAssistant extends Controller
                 }
                 $idUtilisateurs = array_column($tableauUtilisateurGroupe[0], 'idUtilisateur');
 
-                var_dump($idUtilisateurs);
+                // var_dump($idUtilisateurs);
 
                 foreach ($idUtilisateurs as $idUtilisateurGroupe) {
                     $verif = false;
                     foreach ($tableauUtilisateur as $utilisateur) {
                         if ($idUtilisateurGroupe === $utilisateur->getId()) {
+
                             // echo $utilisateur->getId() . '<br>';
                             // echo $idUtilisateurGroupe . '<br> ok <br>';
                             $verif = true;
@@ -131,15 +138,15 @@ class ControllerAssistant extends Controller
                     }
                     if ($verif === false) {
                         $tableauUtilisateur[] = $managerUtilisateur->find($idUtilisateurGroupe);
-                        // echo $idUtilisateurGroupe . "zrighdisghiqhgidhfidqshf";
+                        $_SESSION['contacts'][] = $idUtilisateurGroupe;
                     }
                 }
-
-                var_dump($tableauUtilisateur);
-
             }
 
+            // var_dump($_SESSION['contacts']);
             $tailleTabUser = count($tableauUtilisateur);
+
+            // var_dump($tableauUtilisateur);
 
             // Initialisez la session pour stocker la variable
             if (!isset($_SESSION['nbUserSelectionné'])) {
@@ -184,9 +191,10 @@ class ControllerAssistant extends Controller
             // var_dump($matrice);
             foreach ($assistantRecherche->getUtilisateurs() as $utilisateurCourant) {
                 $utilisateur = new Utilisateur($utilisateurCourant->getId(), $utilisateurCourant->getNom());
-
                 $agendas = $utilisateur->getAgendas();
                 $allEvents = [];
+
+                // var_dump($agendas);
 
                 // $chronoStart = new DateTime();
                 foreach ($agendas as $agenda) {
@@ -218,9 +226,11 @@ class ControllerAssistant extends Controller
                 // echo "Durée totale en secondes remplir creneau : $chronoSeconds secondes." . "<br>" . "<br>";
             }
 
-            // Appel de la fonction
-            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'] + 1);
+            // var_dump($matrice);
 
+            // Appel de la fonction
+            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné']);
+            // var_dump($_SESSION['nbUserSelectionné']);
             // $chronoEndGen = new DateTime();
             // $chronoInterval = $chronoStartGen->diff($chronoEndGen);
             // $chronoSeconds = $chronoEndGen->getTimestamp() - $chronoStartGen->getTimestamp();
