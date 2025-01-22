@@ -155,58 +155,67 @@ class ControllerGroupes extends Controller
             }
         }
     }
-
     /**
-     * Fonction qui permet de modifier le nom et la description d'un groupe (pour l'instant)
+     * Fonction qui permet de modifier le nom, la description et la composition d'un groupe 
      * @return void
      */
     public function modifier(): void
     {
+        $nomGroupe = $_POST['nom']; // Nom du groupe
+        $description = $_POST['description']; // Description du groupe
+        $checkedUsers = $_POST['contacts']; // Tableau des utilisateurs cochés
         $id = $_GET['id']; // id du groupe
 
         $messages = [];
-        $nomValide = utilitaire::validerNom($_POST['nom'], $messages);
-        $descriptionValide = utilitaire::validerDescription($_POST['description'], $messages);
-        $contactsValides = utilitaire::validerContacts($_POST['contacts'], $messages);
 
-        if ($nomValide && $descriptionValide && $contactsValides) {
+        $nomValide = utilitaire::validerNom($nomGroupe, $messages);
+        $descriptionValide = utilitaire::validerDescription($description, $messages);
+        $checkedUsersValides = utilitaire::validerContacts($checkedUsers, $messages);
+
+        if ($nomValide && $descriptionValide && $checkedUsersValides) {
             $pdo = $this->getPdo();
             $manager = new GroupeDao($pdo);
 
             // Récupérer les membres du groupe
-            $contacts = $_POST['contacts'];
             $membres = $manager->getUsersFromGroup($id);
 
-            // Ajouter le chef du groupe
-            $contacts[] = $_SESSION['utilisateur']->getId();
+            // Récupérer tous les contacts de l'utilisateur
+            $managerUtilisateur = new UtilisateurDao($pdo);
+            $utilisateur = $managerUtilisateur->find($_SESSION['utilisateur']->getId());
+            $contacts = $managerUtilisateur->findAllContact($utilisateur->getId());
 
-            // Convertir les ids des contacts en int
-            foreach ($contacts as $key => $contact) {
-                $contacts[$key] = (int)$contact;
+            // Convertir les ids des utilisateurs cochés en entier
+            foreach ($checkedUsers as $key => $value) {
+                $checkedUsers[$key] = (int)$value;
             }
 
-            // Parcourir le tableau contacts
+            // Ajouter l'utilisateur actuel pour qu'il ne soit pas supprimé du groupe
+            $checkedUsers[] = $utilisateur->getId();
+
+            // Extraire les IDs des utilisateurs du tableau $contacts
+            foreach ($contacts as $contact) {
+                $contactIds[] = $contact->getId();
+            }
+
+            // Parcourir les membres actuels du groupe
             foreach ($membres as $membre) {
-                // Si l'id n'est pas dans le tableau des contacts, supprimer l'utilisateur du groupe
-                if (!in_array($membre['idUtilisateur'], $contacts)) {
+                // Si l'utilisateur n'est plus coché, supprimer l'utilisateur du groupe
+                if (!in_array($membre['idUtilisateur'], $checkedUsers)) {
                     $manager->deleteUserFromGroup($id, $membre['idUtilisateur']);
 
-                    // Récupérer le nom du groupe
-                    $groupe = $manager->find($id);
-                    $nomGroupe = $groupe->getNom();
-
-                    // Récupérer le nom de l'utilisateur
-                    $managerUtilisateur = new UtilisateurDao($pdo);
-                    $utilisateur = $managerUtilisateur->find($membre['idUtilisateur']);
-                    $nom = $utilisateur->getNom();
-                    $prenom = $utilisateur->getPrenom();
+                    // Récupérer le nom de l'utilisateur supprimé
+                    $deletedUser = $managerUtilisateur->find($membre['idUtilisateur']);
+                    $nom = $deletedUser->getNom();
+                    $prenom = $deletedUser->getPrenom();
 
                     $messages[] = "Suppression de "  . $prenom . " " . $nom . " du groupe \"" . $nomGroupe . "\" ";
                 }
             }
 
-            $manager->modifierGroupe($id, $_POST['nom'], $_POST['description']);
+            // Ajouter ou modifier les utilisateurs dans le groupe
+            $manager->modifierGroupe($id, $nomGroupe, $_POST['description']);
         }
+
         $this->lister($messages); // Retourne à la page de liste des groupes
     }
 }

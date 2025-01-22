@@ -296,6 +296,12 @@ class GroupeDao
         return $result;
     }
 
+    /**
+     * Fonction permettant de supprimer un utilisateur d'un groupe
+     * @param int|null $idGroupe id du groupe
+     * @param int|null $idUtilisateur id de l'utilisateur
+     * @return void
+     */
     public function deleteUserFromGroup(?int $idGroupe, ?int $idUtilisateur): void
     {
         $sql = "DELETE FROM " . PREFIXE_TABLE . "composer WHERE idGroupe = :idGroupe AND idUtilisateur = :idUtilisateur";
