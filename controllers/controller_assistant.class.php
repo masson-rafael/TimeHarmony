@@ -1,4 +1,5 @@
 <?php
+
 use ICal\ICal;
 
 
@@ -31,8 +32,9 @@ class ControllerAssistant extends Controller
      * Fonction qui permet de générer la vue qui contiendra les paramètres de la recherche
      * @return void
      */
-    public function genererVueRecherche(?array $tabMessages = null): void {
-        
+    public function genererVueRecherche(?array $tabMessages = null): void
+    {
+
         // vide la variable de session nbUserSelectionné
         // unset($_SESSION['nbUserSelectionné']);
         unset($_SESSION['contacts']);
@@ -42,12 +44,29 @@ class ControllerAssistant extends Controller
         $contacts = $utilisateur->getContact($utilisateur->getId());
         $groupes = $utilisateur->getGroupe($utilisateur->getId());
 
+        // Récupérer les ids des membres des groupes
+        $membres = [];
+        $pdo = $this->getPdo();
+        $manager = new GroupeDao($pdo);
+
+        // Récupérer les membres de chaque groupe
+        foreach ($groupes as $groupe) {
+            $membresGroupe = $manager->getUsersFromGroup($groupe->getId());
+
+            // Stocker les IDs des membres dans un tableau
+            $membres[$groupe->getId()] = [];
+            foreach ($membresGroupe as $membre) {
+                $membres[$groupe->getId()][] = $membre['idUtilisateur'];
+            }
+        }
+
         //Génération de la vue
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
             'contacts' => $contacts,
             'groupes' => $groupes,
-            'message' => $tabMessages
+            'message' => $tabMessages,
+            'membres' => $membres,
         ));
     }
 
@@ -62,7 +81,7 @@ class ControllerAssistant extends Controller
 
         $pdo = $this->getPdo();
 
-        if(isset($_SESSION['debut']) && isset($_SESSION['fin']) && isset($_SESSION['dureeMin']) && isset($_SESSION['contacts'])) {
+        if (isset($_SESSION['debut']) && isset($_SESSION['fin']) && isset($_SESSION['dureeMin']) && isset($_SESSION['contacts'])) {
             $_POST['debut'] = $_SESSION['debut'];
             $_POST['fin'] = $_SESSION['fin'];
             $_POST['dureeMin'] = $_SESSION['dureeMin'];
@@ -71,10 +90,11 @@ class ControllerAssistant extends Controller
 
         $valideDuree = Utilitaire::validerDuree($_POST['debut'], $_POST['fin'], $messagesErreur);
         $dureeMinValide = Utilitaire::validerDureeMin($_POST['dureeMin'], $messagesErreur);
-        @$contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur); // @ Car dans le futur, on pourra seulement sélectionner des groupes et pas uniquement contacts
+        //@
+        $contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur); // @ Car dans le futur, on pourra seulement sélectionner des groupes et pas uniquement contacts
 
-        if($valideDuree && $dureeMinValide && $contactsValide) {
-            if(!isset($_SESSION['debut']) || !isset($_SESSION['fin']) || !isset($_SESSION['dureeMin']) || !isset($_SESSION['contacts'])) {
+        if ($valideDuree && $dureeMinValide && $contactsValide) {
+            if (!isset($_SESSION['debut']) || !isset($_SESSION['fin']) || !isset($_SESSION['dureeMin']) || !isset($_SESSION['contacts'])) {
                 $_SESSION['debut'] = $_POST['debut'];
                 $_SESSION['fin'] = $_POST['fin'];
                 $_SESSION['dureeMin'] = $_POST['dureeMin'];
@@ -141,12 +161,12 @@ class ControllerAssistant extends Controller
             // $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
             // echo "Durée genererDates : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
             // echo "Durée totale en secondes genererDates : $chronoSeconds secondes." . "<br>" . "<br>";
-            
+
             // $chronoStart = new DateTime();
 
             // Initialisation de la matrice
-            $matrice = $assistantRecherche->initMatrice($tableauUtilisateur, $dates,$dureeMin);
-            
+            $matrice = $assistantRecherche->initMatrice($tableauUtilisateur, $dates, $dureeMin);
+
             // $chronoEnd = new DateTime();
             // $chronoInterval = $chronoStart->diff($chronoEnd);
             // $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
@@ -191,7 +211,7 @@ class ControllerAssistant extends Controller
             }
 
             // Appel de la fonction
-            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné']+1);
+            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'] + 1);
 
             // $chronoEndGen = new DateTime();
             // $chronoInterval = $chronoStartGen->diff($chronoEndGen);
@@ -215,7 +235,8 @@ class ControllerAssistant extends Controller
      * @param int|null $ttlPersonnesChoisies le nombre de personnes choisies
      * @return void
      */
-    public function genererVueCreneaux(?array $creneaux, ?int $ttlPersonnes, ?int $ttlPersonnesChoisies): void {
+    public function genererVueCreneaux(?array $creneaux, ?int $ttlPersonnes, ?int $ttlPersonnesChoisies): void
+    {
         $template = $this->getTwig()->load('resultat.html.twig');
         echo $template->render([
             'creneauxCommuns' => $creneaux,
@@ -228,9 +249,9 @@ class ControllerAssistant extends Controller
      * Fonction permettant de générer la vue par defaut de l'application
      * @return void
      */
-    public function genererVue(): void {
+    public function genererVue(): void
+    {
         $template = $this->getTwig()->load('index.html.twig');
         echo $template->render(array());
     }
 }
-

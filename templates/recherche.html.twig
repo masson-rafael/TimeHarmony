@@ -5,149 +5,207 @@
 {% endblock %}
 
 {% block content %}
-<main>
-    <div class="container-fluid">
-        <div class="row text-center mt-3 mb-3">
-                <h1>Recherche d'un créneau</h1>
-        </div>
-        <div class="column justify-content-center pb-5">
-        <form action="index.php?controleur=assistant&methode=obtenir" method="post">
-            <div class="row">
-                <!-- Section Collaborateurs -->
-                <div class="col-md-4 mb-4">
-                    <div class="card p-4 shadow-sm">
-                        <h5 class="fw-bold text-center mb-3">Choisir ses contacts :</h5>
-                        {% if contacts|length > 0 %}
-                        <table class="table table-bordered table-hover">
-                            <thead>
-                                <tr class="table-primary">
-                                    <th scope="col">#</th>
-                                    <th scope="col">Nom prénom</th>
-                                    {# <th scope="col">Nom</th> #}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for contact in contacts %}
-                                <tr>
-                                    <td>
-                                        <input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
-                                    </td>
-                                    <td>{{ contact.getPrenom }} {{ contact.getNom }}</td>
-                                    {# <td>{{ contact.getNom }}</td> #}
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        {% else %}
-                        <div class="row justify-content-center mt-4 h-25">
-                            <div class="col-md-8">
-                                <div class="alert alert-info text-center" role="alert">
-                                    Aucun contact trouvé. Ajoutez-en un ci-dessous.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-center">
-                            <a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
+	<main>
+		<div class="container-fluid">
+			<div class="row text-center mt-3 mb-3">
+				<h1>Recherche d'un créneau</h1>
+			</div>
+			<div class="column justify-content-center pb-5">
+				<form action="index.php?controleur=assistant&methode=obtenir" method="post">
+					<div
+						class="row">
+						<!-- Section Collaborateurs -->
+						<div class="col-md-4 mb-4">
+							<div class="card p-4 shadow-sm">
+								<h5 class="fw-bold text-center mb-3">Choisir ses contacts :</h5>
+								{% if contacts|length > 0 %}
+									<table class="table table-bordered table-hover">
+										<thead>
+											<tr class="table-primary">
+												<th scope="col">#</th>
+												<th scope="col">Nom prénom</th>
+												{# <th scope="col">Nom</th> #}
+											</tr>
+										</thead>
+										<tbody>
+											{% for contact in contacts %}
+												<tr>
+													<td>
+														<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
+													</td>
+													<td>{{ contact.getPrenom }}
+														{{ contact.getNom }}</td>
+													{# <td>{{ contact.getNom }}</td> #}
+												</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								{% else %}
+									<div class="row justify-content-center mt-4 h-25">
+										<div class="col-md-8">
+											<div class="alert alert-info text-center" role="alert">
+												Aucun contact trouvé. Ajoutez-en un ci-dessous.
+											</div>
+										</div>
+									</div>
+									<div class="text-center">
+										<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
+									</div>
+								{% endif %}
+							</div>
+						</div>
 
-                <!-- Section Groupes -->
-                <div class="col-md-4 mb-4">
-                    <div class="card p-4 shadow-sm">
-                        <h5 class="fw-bold text-center mb-3">Choisir des groupes :</h5>
-                        {% if groupes|length > 0 %}
-                        <table class="table table-bordered table-hover">
-                            <thead>
-                                <tr class="table-primary">
-                                    <th scope="col">#</th>
-                                    <th scope="col">Nom</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for groupe in groupes %}
-                                <tr>
-                                    <td>
-                                        <input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
-                                    </td>
-                                    <td>{{ groupe.getNom }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        {% else %}
-                        <div class="row justify-content-center mt-4 h-25">
-                            <div class="col-md-8">
-                                <div class="alert alert-info text-center" role="alert">
-                                    Aucun groupe trouvé. Ajoutez-en un ci-dessous.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-center">
-                            <a class="px-5 btn btn-primary" href="index.php?controleur=groupes&methode=ajouter" role="button">Ajouter un groupe</a>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
+						<!-- Section Groupes -->
+						<div class="col-md-4 mb-4">
+							<div class="card p-4 shadow-sm">
+								<h5 class="fw-bold text-center mb-3">Choisir des groupes :</h5>
+								{% if groupes|length > 0 %}
+									<table class="table table-bordered table-hover">
+										<thead>
+											<tr class="table-primary">
+												<th scope="col">#</th>
+												<th scope="col">Nom</th>
+											</tr>
+										</thead>
+										<tbody>
+											{% for groupe in groupes %}
+												<tr>
+													<td>
+														<input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
+													</td>
+													<td>{{ groupe.getNom }}</td>
+												</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								{% else %}
+									<div class="row justify-content-center mt-4 h-25">
+										<div class="col-md-8">
+											<div class="alert alert-info text-center" role="alert">
+												Aucun groupe trouvé. Ajoutez-en un ci-dessous.
+											</div>
+										</div>
+									</div>
+									<div class="text-center">
+										<a class="px-5 btn btn-primary" href="index.php?controleur=groupes&methode=ajouter" role="button">Ajouter un groupe</a>
+									</div>
+								{% endif %}
+							</div>
+						</div>
 
-                <!-- Section Période -->
-                <div class="col-md-4 mb-4">
-                    <div class="card p-4 shadow-sm">
-                        <h5 class="fw-bold text-center mb-3">Période de recherche :</h5>
-                        <div class="mb-3">
-                            <label for="Datedebut" class="form-label">Début *</label>
-                            <input name="debut" type="date" class="form-control" id="Datedebut" required title="Entrez la date de début de votre recherche">
-                        </div>
+						<!-- Section Période -->
+						<div class="col-md-4 mb-4">
+							<div class="card p-4 shadow-sm">
+								<h5 class="fw-bold text-center mb-3">Période de recherche :</h5>
+								<div class="mb-3">
+									<label for="Datedebut" class="form-label">Début *</label>
+									<input name="debut" type="date" class="form-control" id="Datedebut" required title="Entrez la date de début de votre recherche">
+								</div>
 
-                        <div class="mb-3">
-                            <label for="Datefin" class="form-label">Fin *</label>
-                            <input name="fin" type="date" class="form-control" id="Datefin" required title="Entrez la date de fin de votre recherche">
-                        </div>
+								<div class="mb-3">
+									<label for="Datefin" class="form-label">Fin *</label>
+									<input name="fin" type="date" class="form-control" id="Datefin" required title="Entrez la date de fin de votre recherche">
+								</div>
 
-                        <div class="mb-3">
-                            <label for="dureeMin" class="form-label">Durée exacte du rendez-vous *</label>
-                            <input name="dureeMin" type="time" class="form-control" value="00:05" min="00:05" required title="Entrez la durée minimale du créneau à rechercher">
-                        </div>
-                    </div>
-                </div>
-            </div>
+								<div class="mb-3">
+									<label for="dureeMin" class="form-label">Durée exacte du rendez-vous *</label>
+									<input name="dureeMin" type="time" class="form-control" value="00:05" min="00:05" required title="Entrez la durée minimale du créneau à rechercher">
+								</div>
+							</div>
+						</div>
+					</div>
 
 
-            <!-- Section Bouton -->
-            <div class="text-center mb-4">
-                <button type="submit" class="btn btn-primary shadow-lg hover-shadow">Rechercher des créneaux de rendez-vous</button>
-            </div>
-        </form>
-        </div>
-        {% if message %}
-        <div class="row text-center mb-4 justify-content-center">
-            <div class="text-center alert alert-success justify-content-center alert-dismissible fade show mt-4 w-50" role="alert">
-                {% for messages in message %}
-                    {{messages}}
-                    <br>
-                {% endfor %}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
-        {% endif %}
-    </div>
-</main>
+					<!-- Section Bouton -->
+					<div class="text-center mb-4">
+						<button type="submit" class="btn btn-primary shadow-lg hover-shadow">Rechercher des créneaux de rendez-vous</button>
+					</div>
+				</form>
+			</div>
+			{% if message %}
+				<div class="row text-center mb-4 justify-content-center">
+					<div class="text-center alert alert-success justify-content-center alert-dismissible fade show mt-4 w-50" role="alert">
+						{% for messages in message %}
+							{{messages}}
+							<br>
+						{% endfor %}
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+	</main>
 
 {% endblock %}
 
-{# {% block javascripts %}
+{# 
+$(document).ready(function() {
+	$('#myTable').DataTable({
+		language: {
+		url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'},
+		"pageLength": 10,
+		"ordering": true,
+		"responsive": true
+		});
+	});      
+#}
+    
+
+{% block javascripts %}
     {{ parent() }}
     <script>
-        $(document).ready(function() {
-            $('#myTable').DataTable({
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
-                },
-                "pageLength": 10,
-                "ordering": true,
-                "responsive": true
-            });
+	         
+	/* 
+    Quand l’utilisateur coche ou décoche un groupe, 
+    tous les contacts qui sont dans ce groupe sont aussi cochés ou décochés
+    */
+    let groupes = document.querySelectorAll('input[name="groupes[]"]'); // Récupérer tous les groupes
+    const membres = {{ membres|json_encode|raw }}; // Transférer les données PHP vers JavaScript
+    
+    let groupesCoches = new Set(); // Ensemble des groupes cochés
+
+    groupes.forEach(groupe => {
+        groupe.addEventListener('change', function () {
+            const idGroupe = this.value; // ID du groupe
+            const isChecked = this.checked; // État coché ou décoché du groupe
+
+            if (isChecked) {
+                groupesCoches.add(idGroupe);
+            } else {
+                groupesCoches.delete(idGroupe);
+            }
+
+            // Parcourir les membres du groupe modifié
+            if (membres[idGroupe]) {
+                const users = membres[idGroupe];
+
+                users.forEach(idUtilisateur => {
+                    const userCheckbox = document.querySelector(`input[name="contacts[]"][value="${idUtilisateur}"]`);
+
+                    // Si l'utilisateur est dans la liste de contact affichée
+                    if (userCheckbox) {
+                        if (isChecked) {
+                            userCheckbox.checked = true;
+                            userCheckbox.disabled = true;
+                        } else {
+                            // Vérifier si l'utilisateur appartient à un autre groupe coché
+                            let estDansUnAutreGroupe = false;
+
+                            groupesCoches.forEach(groupeId => {
+                                if (membres[groupeId] && membres[groupeId].includes(idUtilisateur)) {
+                                    estDansUnAutreGroupe = true;
+                                }
+                            });
+
+                            if (!estDansUnAutreGroupe) {
+                                userCheckbox.checked = false;
+                                userCheckbox.disabled = false;
+                            }
+                        }
+                    }
+                });
+            }
         });
+    });
     </script>
-{% endblock %} #}
+{% endblock %}
