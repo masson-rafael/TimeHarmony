@@ -137,75 +137,23 @@
 	</main>
 
 {% endblock %}
-
-{# 
-$(document).ready(function() {
-	$('#myTable').DataTable({
-		language: {
-		url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'},
-		"pageLength": 10,
-		"ordering": true,
-		"responsive": true
-		});
-	});      
-#}
     
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="js/recherche.js"></script>
     <script>
-	         
-	/* 
-    Quand l’utilisateur coche ou décoche un groupe, 
-    tous les contacts qui sont dans ce groupe sont aussi cochés ou décochés
-    */
-    let groupes = document.querySelectorAll('input[name="groupes[]"]'); // Récupérer tous les groupes
-    const membres = {{ membres|json_encode|raw }}; // Transférer les données PHP vers JavaScript
-    
-    let groupesCoches = new Set(); // Ensemble des groupes cochés
-
-    groupes.forEach(groupe => {
-        groupe.addEventListener('change', function () {
-            const idGroupe = this.value; // ID du groupe
-            const isChecked = this.checked; // État coché ou décoché du groupe
-
-            if (isChecked) {
-                groupesCoches.add(idGroupe);
-            } else {
-                groupesCoches.delete(idGroupe);
-            }
-
-            // Parcourir les membres du groupe modifié
-            if (membres[idGroupe]) {
-                const users = membres[idGroupe];
-
-                users.forEach(idUtilisateur => {
-                    const userCheckbox = document.querySelector(`input[name="contacts[]"][value="${idUtilisateur}"]`);
-
-                    // Si l'utilisateur est dans la liste de contact affichée
-                    if (userCheckbox) {
-                        if (isChecked) {
-                            userCheckbox.checked = true;
-                            userCheckbox.disabled = true;
-                        } else {
-                            // Vérifier si l'utilisateur appartient à un autre groupe coché
-                            let estDansUnAutreGroupe = false;
-
-                            groupesCoches.forEach(groupeId => {
-                                if (membres[groupeId] && membres[groupeId].includes(idUtilisateur)) {
-                                    estDansUnAutreGroupe = true;
-                                }
-                            });
-
-                            if (!estDansUnAutreGroupe) {
-                                userCheckbox.checked = false;
-                                userCheckbox.disabled = false;
-                            }
-                        }
-                    }
+        const membres = {{ membres|json_encode|raw }}; // Récupérer les membres des groupes
+        {# 
+        $(document).ready(function() {
+            $('#myTable').DataTable({
+                language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'},
+                "pageLength": 10,
+                "ordering": true,
+                "responsive": true
                 });
-            }
-        });
-    });
+            });      
+        #}
     </script>
 {% endblock %}
