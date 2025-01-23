@@ -5,134 +5,136 @@
 {% endblock %}
 
 {% block content %}
-<main>
-    <div class="container-fluid">
-        <div class="row text-center mt-3 mb-3">
-                <h1>Recherche d'un créneau</h1>
-        </div>
-        <div class="column justify-content-center pb-5">
-        <form action="index.php?controleur=assistant&methode=obtenir" method="post">
-            <div class="row">
-                <!-- Section Collaborateurs -->
-                <div class="col-md-4 mb-4">
-                    <div class="card p-4 shadow-sm">
-                        <h5 class="fw-bold text-center mb-3">Choisir ses contacts :</h5>
-                        {% if contacts|length > 0 %}
-                        <table class="table table-bordered table-hover">
-                            <thead>
-                                <tr class="table-primary">
-                                    <th scope="col">#</th>
-                                    <th scope="col">Nom prénom</th>
-                                    {# <th scope="col">Nom</th> #}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for contact in contacts %}
-                                <tr>
-                                    <td>
-                                        <input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
-                                    </td>
-                                    <td>{{ contact.getPrenom }} {{ contact.getNom }}</td>
-                                    {# <td>{{ contact.getNom }}</td> #}
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        {% else %}
-                        <div class="row justify-content-center mt-4 h-25">
-                            <div class="col-md-8">
-                                <div class="alert alert-info text-center" role="alert">
-                                    Aucun contact trouvé. Ajoutez-en un ci-dessous.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-center">
-                            <a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
+	<main>
+		<div class="container-fluid">
+			<div class="row text-center mt-3 mb-3">
+				<h1>Recherche d'un créneau</h1>
+			</div>
+			<div class="column justify-content-center pb-5">
+				<form action="index.php?controleur=assistant&methode=obtenir" method="post">
+					<div
+						class="row">
+						<!-- Section Collaborateurs -->
+						<div class="col-md-4 mb-4">
+							<div class="card p-4 shadow-sm">
+								<h5 class="fw-bold text-center mb-3">Choisir ses contacts :</h5>
+								{% if contacts|length > 0 %}
+									<table class="table table-bordered table-hover">
+										<thead>
+											<tr class="table-primary">
+												<th scope="col">#</th>
+												<th scope="col">Nom prénom</th>
+												{# <th scope="col">Nom</th> #}
+											</tr>
+										</thead>
+										<tbody>
+											{% for contact in contacts %}
+												<tr>
+													<td>
+														<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
+													</td>
+													<td>{{ contact.getPrenom }}
+														{{ contact.getNom }}</td>
+													{# <td>{{ contact.getNom }}</td> #}
+												</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								{% else %}
+									<div class="row justify-content-center mt-4 h-25">
+										<div class="col-md-8">
+											<div class="alert alert-info text-center" role="alert">
+												Aucun contact trouvé. Ajoutez-en un ci-dessous.
+											</div>
+										</div>
+									</div>
+									<div class="text-center">
+										<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
+									</div>
+								{% endif %}
+							</div>
+						</div>
 
-                <!-- Section Groupes -->
-                <div class="col-md-4 mb-4">
-                    <div class="card p-4 shadow-sm">
-                        <h5 class="fw-bold text-center mb-3">Choisir des groupes :</h5>
-                        {% if groupes|length > 0 %}
-                        <table class="table table-bordered table-hover">
-                            <thead>
-                                <tr class="table-primary">
-                                    <th scope="col">#</th>
-                                    <th scope="col">Nom</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for groupe in groupes %}
-                                <tr>
-                                    <td>
-                                        <input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
-                                    </td>
-                                    <td>{{ groupe.getNom }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        {% else %}
-                        <div class="row justify-content-center mt-4 h-25">
-                            <div class="col-md-8">
-                                <div class="alert alert-info text-center" role="alert">
-                                    Aucun groupe trouvé. Ajoutez-en un ci-dessous.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-center">
-                            <a class="px-5 btn btn-primary" href="index.php?controleur=groupes&methode=ajouter" role="button">Ajouter un groupe</a>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
+						<!-- Section Groupes -->
+						<div class="col-md-4 mb-4">
+							<div class="card p-4 shadow-sm">
+								<h5 class="fw-bold text-center mb-3">Choisir des groupes :</h5>
+								{% if groupes|length > 0 %}
+									<table class="table table-bordered table-hover">
+										<thead>
+											<tr class="table-primary">
+												<th scope="col">#</th>
+												<th scope="col">Nom</th>
+											</tr>
+										</thead>
+										<tbody>
+											{% for groupe in groupes %}
+												<tr>
+													<td>
+														<input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
+													</td>
+													<td>{{ groupe.getNom }}</td>
+												</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								{% else %}
+									<div class="row justify-content-center mt-4 h-25">
+										<div class="col-md-8">
+											<div class="alert alert-info text-center" role="alert">
+												Aucun groupe trouvé. Ajoutez-en un ci-dessous.
+											</div>
+										</div>
+									</div>
+									<div class="text-center">
+										<a class="px-5 btn btn-primary" href="index.php?controleur=groupes&methode=ajouter" role="button">Ajouter un groupe</a>
+									</div>
+								{% endif %}
+							</div>
+						</div>
 
-                <!-- Section Période -->
-                <div class="col-md-4 mb-4">
-                    <div class="card p-4 shadow-sm">
-                        <h5 class="fw-bold text-center mb-3">Période de recherche :</h5>
-                        <div class="mb-3">
-                            <label for="Datedebut" class="form-label">Début *</label>
-                            <input name="debut" type="date" class="form-control" id="Datedebut" required title="Entrez la date de début de votre recherche">
-                        </div>
+						<!-- Section Période -->
+						<div class="col-md-4 mb-4">
+							<div class="card p-4 shadow-sm">
+								<h5 class="fw-bold text-center mb-3">Période de recherche :</h5>
+								<div class="mb-3">
+									<label for="Datedebut" class="form-label">Début *</label>
+									<input name="debut" type="datetime-local" class="form-control" id="Datedebut" required title="Entrez la date de début de votre recherche">
+								</div>
 
-                        <div class="mb-3">
-                            <label for="Datefin" class="form-label">Fin *</label>
-                            <input name="fin" type="date" class="form-control" id="Datefin" required title="Entrez la date de fin de votre recherche">
-                        </div>
+								<div class="mb-3">
+									<label for="Datefin" class="form-label">Fin *</label>
+									<input name="fin" type="datetime-local" class="form-control" id="Datefin" required title="Entrez la date de fin de votre recherche">
+								</div>
 
-                        <div class="mb-3">
-                            <label for="dureeMin" class="form-label">Durée exacte du rendez-vous *</label>
-                            <input name="dureeMin" type="time" class="form-control" value="00:05" min="00:05" required title="Entrez la durée minimale du créneau à rechercher">
-                        </div>
-                    </div>
-                </div>
-            </div>
+								<div class="mb-3">
+									<label for="dureeMin" class="form-label">Durée exacte du rendez-vous *</label>
+									<input name="dureeMin" type="time" class="form-control" value="00:05" min="00:05" required title="Entrez la durée minimale du créneau à rechercher">
+								</div>
+							</div>
+						</div>
+					</div>
 
 
-            <!-- Section Bouton -->
-            <div class="text-center mb-4">
-                <button type="submit" class="btn btn-primary shadow-lg hover-shadow">Rechercher des créneaux de rendez-vous</button>
-            </div>
-        </form>
-        </div>
-        {% if message %}
-        <div class="row text-center mb-4 justify-content-center">
-            <div class="text-center alert alert-success justify-content-center alert-dismissible fade show mt-4 w-50" role="alert">
-                {% for messages in message %}
-                    {{messages}}
-                    <br>
-                {% endfor %}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
-        {% endif %}
-    </div>
-</main>
+					<!-- Section Bouton -->
+					<div class="text-center mb-4">
+						<button type="submit" class="btn btn-primary shadow-lg hover-shadow">Rechercher des créneaux de rendez-vous</button>
+					</div>
+				</form>
+			</div>
+			{% if message %}
+				<div class="row text-center mb-4 justify-content-center">
+					<div class="text-center alert alert-success justify-content-center alert-dismissible fade show mt-4 w-50" role="alert">
+						{% for messages in message %}
+							{{messages}}
+							<br>
+						{% endfor %}
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+	</main>
 
 {% endblock %}
 
@@ -151,3 +153,29 @@
         });
     </script>
 {% endblock %} #}
+
+
+{% block javascripts %}
+	<script>
+        // Récupérer les éléments input
+        const dateDebutInput = document.getElementById('Datedebut');
+        const dateFinInput = document.getElementById('Datefin');
+
+        // Obtenir la date et l'heure actuelles
+        const now = new Date();
+        
+        // Ajuster pour le fuseau horaire local
+        const offset = now.getTimezoneOffset(); // Décalage en minutes
+        const localTime = new Date(now.getTime() - offset * 60000);
+        
+        // Formater la date et l'heure au format requis pour datetime-local
+        const formattedDateTime = localTime.toISOString().slice(0, 16);
+        dateDebutInput.value = formattedDateTime;
+
+        // Calculer la date avec une semaine de décalage
+        const oneWeekLater = new Date(localTime);
+        oneWeekLater.setDate(localTime.getDate() + 7); // Ajouter 7 jours
+        const formattedDateTimeFin = oneWeekLater.toISOString().slice(0, 16);
+        dateFinInput.value = formattedDateTimeFin;
+    </script>
+{% endblock %}

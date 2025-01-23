@@ -3,6 +3,7 @@
 {% block title %}Résultat - {{ constant('WEBSITE_TITLE') }}{% endblock %}
 
 {% block content %}
+
 <main>
     <div class="container">
     <div class="row text-center mt-3 mb-3">
@@ -10,13 +11,34 @@
     </div>
 
     <form method="post" class="mb-4">
+    {% if creneauxCommuns is empty %}
+        {% if nombreUtilisateursSeclectionnes > nbrUtilisateursMin %}
+            <button type="submit" name="decrement" class="btn btn-secondary">Chercher avec un utilisateur en moins</button>
+        {% endif %}
+        <br> <br>
+        <div class="alert alert-warning" role="alert">
+            <h4><strong>Aucun créneau disponible n'a été trouvé avec {{nombreUtilisateursSeclectionnes}} utilisateurs. </strong></h4>
+            <p>Pour augmenter vos chances de trouver un créneau commun, vous pouvez :</p>
+            <ul>
+                <li>Cliquer sur le bouton <strong>"Chercher avec un utilisateur en moins"</strong> pour ajuster les participants.</li>
+                <li>Modifier les <strong>contacts ou groupes concernés</strong> afin d'affiner la recherche.</li>
+                <li>Augmenter la <strong>période de recherche</strong> pour élargir les disponibilités.</li>
+                <li>Rétrécir la <strong>durée prévue du rendez-vous</strong> pour faciliter la planification.</li>
+            </ul>
+            <p>Adaptez vos paramètres et relancez la recherche pour identifier un créneau libre.</p>
+        </div>
+    {% endif %}
+    </form>
+
+    {# <form method="post" class="mb-4">
     {% if ttlPersonnes != ttlPersonnesChoisies %}
         <button type="submit" name="increment" class="btn btn-primary">Chercher avec un utilisateur en plus</button>
     {% endif %}
     {% if ttlPersonnesChoisies > 2 %}
         <button type="submit" name="decrement" class="btn btn-secondary">Chercher avec un utilisateur en moins</button>
     {% endif %}
-    </form>
+    </form> #}
+    
 
     {% for date, creneaux in creneauxCommuns %}
         <h2>Date : {{ date }}</h2>

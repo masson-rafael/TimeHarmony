@@ -226,8 +226,6 @@ class ControllerAssistant extends Controller
                 // echo "Durée totale en secondes remplir creneau : $chronoSeconds secondes." . "<br>" . "<br>";
             }
 
-            // var_dump($matrice);
-
             // Appel de la fonction
             $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné']);
             // var_dump($_SESSION['nbUserSelectionné']);
@@ -240,7 +238,8 @@ class ControllerAssistant extends Controller
             // Générer la vue avec les données structurées
             $tailleContacts = sizeof($tableauUtilisateur);
             $nombreUtilisateursSeclectionnes = $_SESSION['nbUserSelectionné'];
-            $this->genererVueCreneaux($datesCommunes, $tailleContacts, $nombreUtilisateursSeclectionnes);
+            $nbrUtilisateursMin = ceil($tailleContacts / 2);
+            $this->genererVueCreneaux($datesCommunes, $nbrUtilisateursMin,$nombreUtilisateursSeclectionnes );
         } else {
             $this->genererVueRecherche($messagesErreur);
         }
@@ -249,17 +248,17 @@ class ControllerAssistant extends Controller
     /**
      * Fonction qui permet de générer la vue qui contiendra les résultats de la recherche
      * @param array|null $creneaux les creneaux libres communs trouvés grace a la recherche
-     * @param int|null $ttlPersonnes le nombre total de personnes
-     * @param int|null $ttlPersonnesChoisies le nombre de personnes choisies
+     * @param int|null $nbrUtilisateursMin le nombre minimum de personnes concernés par la recherche
+     * @param int|null $nombreUtilisateursSelectionnes le nombre de personnes selectionnés par la recherche
      * @return void
      */
-    public function genererVueCreneaux(?array $creneaux, ?int $ttlPersonnes, ?int $ttlPersonnesChoisies): void
+    public function genererVueCreneaux(?array $creneaux, ?int $nbrUtilisateursMin, ?int $nombreUtilisateursSeclectionnes): void
     {
         $template = $this->getTwig()->load('resultat.html.twig');
         echo $template->render([
             'creneauxCommuns' => $creneaux,
-            'ttlPersonnes' => $ttlPersonnes,
-            'ttlPersonnesChoisies' => $ttlPersonnesChoisies
+            'nbrUtilisateursMin' => $nbrUtilisateursMin,
+            'nombreUtilisateursSeclectionnes' => $nombreUtilisateursSeclectionnes
         ]);
     }
 
