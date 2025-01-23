@@ -2866,6 +2866,9 @@ textarea.form-control-lg {
   --bs-btn-disabled-bg: #64a19d;
   --bs-btn-disabled-border-color: #64a19d;
 }
+.btn-primary:hover {
+  font-weight: bold; 
+}
 
 .btn-secondary {
   --bs-btn-color: #000;
@@ -3807,8 +3810,8 @@ textarea.form-control-lg {
 .navbar {
   --bs-navbar-padding-x: 0;
   --bs-navbar-padding-y: 0.5rem;
-  --bs-navbar-color: rgba(0, 0, 0, 0.55);
-  --bs-navbar-hover-color: rgba(0, 0, 0, 0.7);
+  --bs-navbar-color: rgb(255, 255, 255);
+  --bs-navbar-hover-color: rgb(5, 5, 5);
   --bs-navbar-disabled-color: rgba(0, 0, 0, 0.3);
   --bs-navbar-active-color: rgba(0, 0, 0, 0.9);
   --bs-navbar-brand-padding-y: 0.3125rem;
@@ -3832,6 +3835,7 @@ textarea.form-control-lg {
   justify-content: space-between;
   padding: var(--bs-navbar-padding-y) var(--bs-navbar-padding-x);
 }
+
 .navbar > .container,
 .navbar > .container-fluid,
 .navbar > .container-sm,
@@ -3852,6 +3856,7 @@ textarea.form-control-lg {
   color: var(--bs-navbar-brand-color);
   text-decoration: none;
   white-space: nowrap;
+
 }
 .navbar-brand:hover, .navbar-brand:focus {
   color: var(--bs-navbar-brand-hover-color);
@@ -3869,6 +3874,9 @@ textarea.form-control-lg {
   padding-left: 0;
   margin-bottom: 0;
   list-style: none;
+}
+.navbar-hover{
+  font-weight: bold;
 }
 .navbar-nav .show > .nav-link,
 .navbar-nav .nav-link.active {
