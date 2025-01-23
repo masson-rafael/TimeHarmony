@@ -88,23 +88,18 @@ class Bd{
             mkdir($backupDir, 0777, true); // Créer le dossier avec les permissions appropriées
         }
 
+        $backupFile = $backupDir . '/backup_' . DB_NAME . '_' . $date->format('Y-m-d_H-i-s') . '.sql'; // Construire le nom du fichier de sauvegarde
+
         if(DB_HOST == "localhost") {
             $path_mysqldump = "C:/wamp64/bin/mysql/mysql8.3.0/bin/mysqldump";
+            $commande = $path_mysqldump . " -u " . DB_USER . " --databases " . DB_NAME . " --routines --events --triggers > " . $backupFile;
         } else {
             $path_mysqldump = "DB_MYSQLDUMP_PATH";
+            $commande = $path_mysqldump . " -u " . DB_USER . " -p " . DB_PASS . " --databases " . DB_NAME . " --routines --events --triggers > " . $backupFile;
         }
     
-        $backupFile = $backupDir . '/backup_' . DB_NAME . '_' . $date->format('Y-m-d_H-i-s') . '.sql'; // Construire le nom du fichier de sauvegarde
-        $commande = $path_mysqldump . " -u " . DB_USER . " -p " . DB_PASS . " --databases " . DB_NAME . " --routines --events --triggers > " . $backupFile;
-        var_dump($commande);
         $output = null;
         $returnVar = null;
         exec($commande, $output, $returnVar);
-
-        if ($returnVar === 0) {
-            echo "La base de données a été exportée avec succès dans le fichier : $output";
-        } else {
-            echo "Erreur lors de l'exportation de la base de données. Code d'erreur : $returnVar";
-        }
     }
 }
