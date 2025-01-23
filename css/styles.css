@@ -3715,7 +3715,7 @@ textarea.form-control-lg {
   }
 }
 .nav-link:hover, .nav-link:focus {
-  color: var(--bs-nav-link-hover-color);
+  color: #000;
 }
 .nav-link.disabled {
   color: var(--bs-nav-link-disabled-color);
@@ -3862,6 +3862,7 @@ textarea.form-control-lg {
   color: var(--bs-navbar-brand-hover-color);
 }
 
+
 .navbar-nav {
   --bs-nav-link-padding-x: 0;
   --bs-nav-link-padding-y: 0.5rem;
@@ -3874,6 +3875,9 @@ textarea.form-control-lg {
   padding-left: 0;
   margin-bottom: 0;
   list-style: none;
+}
+.nav-link{
+  color: #ffffff;
 }
 .navbar-hover{
   font-weight: bold;
