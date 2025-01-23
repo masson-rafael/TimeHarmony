@@ -23,7 +23,6 @@ class ControllerBd extends Controller
     }
 
     public function sauvegarder(): void {
-        echo "Fonction sauvegarder appellee";
         $db = Bd::getInstance();
         $db->backup();
     }
