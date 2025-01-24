@@ -7,71 +7,78 @@ let email = formulaire[2];
 let mdp = formulaire[3];
 let mdpConfirme = formulaire[4];
 
+// Chargement des valeurs sauvegardées
 nom.value = localStorage.getItem('nom');
 prenom.value = localStorage.getItem('prenom');
 email.value = localStorage.getItem('email');
 
-mdp.addEventListener('input', verifierCorrespondance);
-mdpConfirme.addEventListener('input', verifierCorrespondance);
-mdp.addEventListener('input', () => verifierPattern(mdp));
-mdpConfirme.addEventListener('input', () => verifierPattern(mdpConfirme));
+btn.disabled = true;
 
-nom.addEventListener('input', verifierPresence);
-prenom.addEventListener('input', verifierPresence);
-email.addEventListener('input', verifierPresence);
+// Ajout des écouteurs d'événements pour tous les champs
+nom.addEventListener('input', verifierTousLesChamps);
+prenom.addEventListener('input', verifierTousLesChamps);
+email.addEventListener('input', verifierTousLesChamps);
+mdp.addEventListener('input', verifierTousLesChamps);
+mdpConfirme.addEventListener('input', verifierTousLesChamps);
 
 btn.addEventListener('click', sauvegarderVariables);
 
-btn.disabled = true;
+// Vérification de la validité des champs
+function verifierTousLesChamps() {
+    const nomCorrect = verifierPresence(nom);
+    const prenomCorrect = verifierPresence(prenom);
+    const emailCorrect = verifierPatternMail(email);
+    const mdpCorrect = verifierPattern(mdp);
+    const mdpCorrespondance = verifierCorrespondance();
+
+    // Activation ou désactivation du bouton
+    btn.disabled = !(nomCorrect && prenomCorrect && emailCorrect && mdpCorrect && mdpCorrespondance);
+}
+
+function verifierPatternMail(champEmail) {
+    const motifEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!motifEmail.test(champEmail.value)) {
+        champEmail.style.borderColor = 'red';
+        return false;
+    }
+    champEmail.style.borderColor = '';
+    return true;
+}
+
+function verifierPattern(champMotDePasse) {
+    const motifTaille = /^[a-zA-Z\d\W]{8,25}$/;
+    const motifMinuscule = /[a-z]/;
+    const motifMajuscule = /[A-Z]/;
+    const motifChiffre = /\d/;
+    const motifSpecial = /\W/;
+
+    const valide =
+        motifTaille.test(champMotDePasse.value) &&
+        motifMinuscule.test(champMotDePasse.value) &&
+        motifMajuscule.test(champMotDePasse.value) &&
+        motifChiffre.test(champMotDePasse.value) &&
+        motifSpecial.test(champMotDePasse.value);
+
+    champMotDePasse.style.borderColor = valide ? '' : 'red';
+    return valide;
+}
 
 function verifierCorrespondance() {
-    if (mdp.value !== mdpConfirme.value) {
-        // mdpConfirme.setCustomValidity('Les mots de passe ne correspondent pas');
-        mdpConfirme.style.borderColor = 'red'; // Change la couleur du bord en rouge
-        btn.disabled = true;
-        // mdpConfirme.reportValidity();
-    } else {
-        // mdpConfirme.setCustomValidity('');
-        mdpConfirme.style.borderColor = ''; // Réinitialise la couleur par défaut
-        btn.disabled = false;
+    if (mdp.value !== mdpConfirme.value || mdp.value === '') {
+        mdpConfirme.style.borderColor = 'red';
+        return false;
     }
+    mdpConfirme.style.borderColor = '';
+    return true;
 }
 
-function verifierPattern(motDePasse) {
-    const motifTaille = /^[a-zA-Z\d\W]{8,25}$/; // Vérifie que la longueur est entre 8 et 25 caractères.
-    const motifMinuscule = /[a-z]/; // Vérifie la présence d'au moins une lettre minuscule.
-    const motifMajuscule = /[A-Z]/; // Vérifie la présence d'au moins une lettre majuscule.
-    const motifChiffre = /\d/; // Vérifie la présence d'au moins un chiffre.
-    const motifSpecial = /\W/; // Vérifie la présence d'au moins un caractère spécial (non alphanumérique).
-    
-    btn.disabled = true; // Le bouton est désactivé par défaut.
-    motDePasse.style.borderColor = 'red'; // Bordure rouge par défaut.
-    
-    if (!motifTaille.test(motDePasse.value)) {
-        console.log("Le mot de passe doit contenir entre 8 et 25 caractères.");
-    } if (!motifMinuscule.test(motDePasse.value)) {
-        console.log("Le mot de passe doit contenir au moins une lettre minuscule.");
-    } if (!motifMajuscule.test(motDePasse.value)) {
-        console.log("Le mot de passe doit contenir au moins une lettre majuscule.");
-    } if (!motifChiffre.test(motDePasse.value)) {
-        console.log("Le mot de passe doit contenir au moins un chiffre.");
-    } if (!motifSpecial.test(motDePasse.value)) {
-        console.log("Le mot de passe doit contenir au moins un caractère spécial.");
-    } 
-    if (motifTaille.test(motDePasse.value) && motifMinuscule.test(motDePasse.value) && motifMajuscule.test(motDePasse.value) && motifChiffre.test(motDePasse.value) && motifSpecial.test(motDePasse.value))
-    {
-        motDePasse.style.borderColor = ''; // Bordure par défaut (pas d'erreur).
-        btn.disabled = false; // Active le bouton.
-        console.log("Mot de passe valide.");
+function verifierPresence(champ) {
+    if (champ.value === '') {
+        champ.style.borderColor = 'red';
+        return false;
     }
-}
-
-function verifierPresence() {
-    if (nom.value === '' || prenom.value === '' || email.value === '') {
-        btn.disabled = true;
-    } else {
-        btn.disabled = false;
-    }
+    champ.style.borderColor = '';
+    return true;
 }
 
 function sauvegarderVariables() {
