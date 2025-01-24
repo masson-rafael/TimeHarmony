@@ -7,6 +7,12 @@ let email = formulaire[2];
 let mdp = formulaire[3];
 let mdpConfirme = formulaire[4];
 
+let nomError = document.getElementById('nomError');
+let prenomError = document.getElementById('prenomError');
+let emailError = document.getElementById('emailError');
+let mdpError = document.getElementById('passwordError');
+let mdpConfirmeError = document.getElementById('passwordConfirmeError');
+
 // Préparation des champs au chargement du formulaire
 preparationChamps();
 
@@ -19,12 +25,6 @@ mdpConfirme.addEventListener('input', verifierTousLesChamps);
 btn.addEventListener('click', sauvegarderVariables);
 
 function preparationChamps() {
-    nom.style.borderColor = 'red';
-    prenom.style.borderColor = 'red';
-    email.style.borderColor = 'red';
-    mdp.style.borderColor = 'red';
-    mdpConfirme.style.borderColor = 'red';
-
     // Chargement des valeurs sauvegardées
     nom.value = localStorage.getItem('nom');
     prenom.value = localStorage.getItem('prenom');
@@ -32,23 +32,37 @@ function preparationChamps() {
 
     // Focus sur le premier champ vide
     if (nom.value === '') {
+        nomError.textContent = 'Veuillez saisir votre nom.';
+        nom.style.borderColor = 'red';
+        mdpVides();
         nom.focus();
     } else if (prenom.value === '') {
+        prenomError.textContent = 'Veuillez saisir votre prénom.';
+        prenom.style.borderColor = 'red';
+        mdpVides();
         prenom.focus();
     } else if (email.value === '') {
+        emailError.textContent = 'Veuillez saisir votre adresse email.';
+        email.style.borderColor = 'red';
+        mdpVides();
         email.focus();
     } else {
+        mdpVides();
         mdp.focus();
     }
+}
 
-    btn.disabled = true;
-    verifierTousLesChamps();
+function mdpVides() {
+    mdpError.textContent = 'Veuillez saisir votre mot de passe.';
+    mdpConfirmeError.textContent = 'Veuillez confirmer votre mot de passe.';
+    mdp.style.borderColor = 'red';
+    mdpConfirme.style.borderColor = 'red';
 }
 
 // Vérification de la validité des champs
 function verifierTousLesChamps() {
-    const nomCorrect = verifierPresence(nom);
-    const prenomCorrect = verifierPresence(prenom);
+    const nomCorrect = verifierPresence(nom, nomError);
+    const prenomCorrect = verifierPresence(prenom, prenomError);
     const emailCorrect = verifierPatternMail(email);
     const mdpCorrect = verifierPattern(mdp);
     const mdpCorrespondance = verifierCorrespondance();
@@ -62,7 +76,7 @@ function verifierPatternMail(email) {
     const motifEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!motifEmail.test(email.value)) {
         email.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
-        console.log("Adresse email invalide.");
+        emailError.textContent = 'Adresse email invalide.';
         return false;
     }
     email.style.borderColor = ''; // Bordure par défaut (succès)
@@ -77,18 +91,21 @@ function verifierPattern(motDePasse) {
     const motifChiffre = /\d/;
     const motifSpecial = /\W/;
     motDePasse.style.borderColor = 'red';
+    var erreursMdp = [];
 
     if (!motifTaille.test(motDePasse.value)) {
-        console.log("Le mot de passe doit contenir entre 8 et 25 caractères.");
+        erreursMdp.push('Le mot de passe doit contenir entre 8 et 25 caractères.');
     } if (!motifMinuscule.test(motDePasse.value)) {
-        console.log("Le mot de passe doit contenir au moins une lettre minuscule.");
+        erreursMdp.push('Le mot de passe doit contenir au moins une lettre minuscule.');
     } if (!motifMajuscule.test(motDePasse.value)) {
-        console.log("Le mot de passe doit contenir au moins une lettre majuscule.");
+        erreursMdp.push('Le mot de passe doit contenir au moins une lettre majuscule.');
     } if (!motifChiffre.test(motDePasse.value)) {
-        console.log("Le mot de passe doit contenir au moins un chiffre.");
+        erreursMdp.push('Le mot de passe doit contenir au moins un chiffre.');
     } if (!motifSpecial.test(motDePasse.value)) {
-        console.log("Le mot de passe doit contenir au moins un caractère spécial.");
-    } 
+        erreursMdp.push('Le mot de passe doit contenir au moins un caractère spécial.');
+    }
+    mdpError.innerHTML = erreursMdp.join('<br>');
+    mdpConfirmeError.innerHTML = erreursMdp.join('<br>');
 
     if (motifTaille.test(motDePasse.value) && motifMinuscule.test(motDePasse.value) && motifMajuscule.test(motDePasse.value) && motifChiffre.test(motDePasse.value) && motifSpecial.test(motDePasse.value))
     {
@@ -101,17 +118,19 @@ function verifierPattern(motDePasse) {
 function verifierCorrespondance() {
     if (mdp.value !== mdpConfirme.value || mdp.value === '') {
         mdpConfirme.style.borderColor = 'red';
-        console.log("Les mots de passe ne correspondent pas.");
+        mdpConfirmeError.textContent = 'Les mots de passe ne correspondent pas.';
         return false;
     }
     mdpConfirme.style.borderColor = '';
+    mdpConfirmeError.textContent = '';
     return true;
 }
 
 // Fonction de vérification de la présence des champs
-function verifierPresence(champ) {
+function verifierPresence(champ, error) {
     if (champ.value === '') {
         champ.style.borderColor = 'red';
+        error.textContent = 'Veuillez saisir votre ' + champ.name + '.';
         return false;
     }
     champ.style.borderColor = '';
