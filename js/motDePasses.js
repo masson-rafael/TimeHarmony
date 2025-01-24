@@ -38,19 +38,31 @@ function verifierCorrespondance() {
 }
 
 function verifierPattern(motDePasse) {
-    const motif = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$/;
-
-    if (motDePasse.value.length < 8 || motDePasse.value.length > 25 || !motif.test(motDePasse.value)) {
-        // motDePasse.setCustomValidity('Le mot de passe doit contenir entre 8 et 25 caractères et au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial');
-        motDePasse.style.borderColor = 'red';
-        btn.disabled = true;
-    } else {
-        // motDePasse.setCustomValidity('');
-        motDePasse.style.borderColor = '';
-        btn.disabled = false;
-        if(mdp.value !== mdpConfirme.value) {
-            btn.disabled = true;
-        }
+    const motifTaille = /^[a-zA-Z\d\W]{8,25}$/; // Vérifie que la longueur est entre 8 et 25 caractères.
+    const motifMinuscule = /[a-z]/; // Vérifie la présence d'au moins une lettre minuscule.
+    const motifMajuscule = /[A-Z]/; // Vérifie la présence d'au moins une lettre majuscule.
+    const motifChiffre = /\d/; // Vérifie la présence d'au moins un chiffre.
+    const motifSpecial = /\W/; // Vérifie la présence d'au moins un caractère spécial (non alphanumérique).
+    
+    btn.disabled = true; // Le bouton est désactivé par défaut.
+    motDePasse.style.borderColor = 'red'; // Bordure rouge par défaut.
+    
+    if (!motifTaille.test(motDePasse.value)) {
+        console.log("Le mot de passe doit contenir entre 8 et 25 caractères.");
+    } if (!motifMinuscule.test(motDePasse.value)) {
+        console.log("Le mot de passe doit contenir au moins une lettre minuscule.");
+    } if (!motifMajuscule.test(motDePasse.value)) {
+        console.log("Le mot de passe doit contenir au moins une lettre majuscule.");
+    } if (!motifChiffre.test(motDePasse.value)) {
+        console.log("Le mot de passe doit contenir au moins un chiffre.");
+    } if (!motifSpecial.test(motDePasse.value)) {
+        console.log("Le mot de passe doit contenir au moins un caractère spécial.");
+    } 
+    if (motifTaille.test(motDePasse.value) && motifMinuscule.test(motDePasse.value) && motifMajuscule.test(motDePasse.value) && motifChiffre.test(motDePasse.value) && motifSpecial.test(motDePasse.value))
+    {
+        motDePasse.style.borderColor = ''; // Bordure par défaut (pas d'erreur).
+        btn.disabled = false; // Active le bouton.
+        console.log("Mot de passe valide.");
     }
 }
 
