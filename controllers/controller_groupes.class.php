@@ -164,7 +164,14 @@ class ControllerGroupes extends Controller
     {
         $nomGroupe = $_POST['nom']; // Nom du groupe
         $description = $_POST['description']; // Description du groupe
-        $checkedUsers = $_POST['contacts']; // Tableau des utilisateurs cochés
+
+        if (isset($_POST['contacts']))
+        {
+            $checkedUsers = $_POST['contacts']; // Tableau des utilisateurs cochés
+        } else {
+            $checkedUsers = null;
+        }
+
         $id = $_GET['id']; // id du groupe
         $currentIdUser = $_SESSION['utilisateur']->getId(); // id de l'utilisateur actuel
 
@@ -172,9 +179,9 @@ class ControllerGroupes extends Controller
 
         $nomValide = utilitaire::validerNom($nomGroupe, $messages);
         $descriptionValide = utilitaire::validerDescription($description, $messages);
-        $checkedUsersValides = utilitaire::validerContacts($checkedUsers, $messages);
+        // pas besoin de vérifier les contacts
 
-        if ($nomValide && $descriptionValide && $checkedUsersValides) {
+        if ($nomValide && $descriptionValide) {
             $pdo = $this->getPdo();
             $manager = new GroupeDao($pdo);
             $managerUtilisateur = new UtilisateurDao($pdo);
@@ -183,14 +190,16 @@ class ControllerGroupes extends Controller
             $membres = $manager->getUsersFromGroup($id);
 
             // Convertir les ids des utilisateurs cochés en entier
-            foreach ($checkedUsers as $key => $value) {
-                $checkedUsers[$key] = (int)$value;
+            if (isset($checkedUsers)){
+                foreach ($checkedUsers as $key => $value) {
+                    $checkedUsers[$key] = (int)$value;
+                }
             }
-
+            
             // Parcourir les membres actuels du groupe
             foreach ($membres as $membre) {
                 // Supprimer les utilisateurs non cochés qui font partie du groupe à part l'utilisateur actuel
-                if (!in_array($membre['idUtilisateur'], $checkedUsers) && $membre['idUtilisateur'] != $currentIdUser) {
+                if ($membre['idUtilisateur'] != $currentIdUser && (!isset($checkedUsers) || (!in_array($membre['idUtilisateur'], $checkedUsers)))) {
                     $manager->supprimerMembreGroupe($id, $membre['idUtilisateur']);
 
                     // Récupérer le nom de l'utilisateur supprimé
@@ -201,18 +210,20 @@ class ControllerGroupes extends Controller
                     $messages[] = "Suppression de "  . $prenom . " " . $nom . " du groupe \"" . $nomGroupe . "\" ";
                 }
             }
-            
+
             // Ajouter les utilisateurs cochés qui ne font pas encore partie du groupe
-            foreach ($checkedUsers as $userId) {
-                if (!in_array($userId, array_column($membres, 'idUtilisateur'))) {
-                    $manager->ajouterMembreGroupe($id, $userId);
-
-                    // Récupérer le nom de l'utilisateur ajouté
-                    $addedUser = $managerUtilisateur->find($userId);
-                    $nom = $addedUser->getNom();
-                    $prenom = $addedUser->getPrenom();
-
-                    $messages[] = "Ajout de " . $prenom . " " . $nom . " au groupe \"" . $nomGroupe . "\" ";
+            if(isset($checkedUsers)){
+                foreach ($checkedUsers as $userId) {
+                    if (!in_array($userId, array_column($membres, 'idUtilisateur'))) {
+                        $manager->ajouterMembreGroupe($id, $userId);
+    
+                        // Récupérer le nom de l'utilisateur ajouté
+                        $addedUser = $managerUtilisateur->find($userId);
+                        $nom = $addedUser->getNom();
+                        $prenom = $addedUser->getPrenom();
+    
+                        $messages[] = "Ajout de " . $prenom . " " . $nom . " au groupe \"" . $nomGroupe . "\" ";
+                    }
                 }
             }
 
@@ -220,6 +231,7 @@ class ControllerGroupes extends Controller
             $manager->modifierGroupe($id, $nomGroupe, $_POST['description']);
         }
 
-        $this->lister($messages); // Retourne à la page de liste des groupes
+
+        $this->lister($messages); // Afficher la page de modification avec les messages
     }
 }
