@@ -128,11 +128,12 @@
 					<div class="card card_custom shadow-lg w-100" style="height: auto; padding: 1rem;">
 						<div class="card-body">
 							<h4 class="card-title text-center mb-4" style="font-size: 1.5rem;">Formulaire de Contact</h4>
-							<form action="index.php?controleur=informations&methode=envoyer" method="post">
+							<form id="formContact" action="index.php?controleur=informations&methode=envoyer" method="post">
 								<!-- Email Field -->
 								<div class="mb-3">
 									<label for="contactEmail" class="form-label">E-mail</label>
 									<input type="email" name="email" id="contactEmail" class="form-control form-control-lg" required maxlength="255" minlength="5" title="Entrez l'adresse e-mail sur laquelle vous receverez un retour" placeholder="Entrez votre e-mail">
+									<small id="emailError" class="text-danger"></small>
 								</div>
 								<!-- Dropdown Field -->
 								<div class="mb-3">
@@ -154,10 +155,11 @@
 								<div class="mb-3">
 									<label for="contactDescription" class="form-label">Description de la demande</label>
 									<textarea name="description" id="contactDescription" class="form-control form-control-lg" rows="6" required placeholder="Décrivez votre demande..." minlength="10" maxlength="2000" title="Décrivez votre demande de manière claire et précise"></textarea>
+									<small id="descriptionError" class="text-danger"></small>
 								</div>
 
 								<!-- Submit Button -->
-								<button type="submit" class="btn btn-primary w-100 py-2">Envoyer</button>
+								<button id="boutonEnvoiMessage" type="submit" class="btn btn-primary w-100 py-2">Envoyer</button>
 							</form>
 						</div>
 					</div>
@@ -309,5 +311,7 @@
     </div>
 	</div>
 </main>
-    
+    {% block javascripts %}
+		<script src="js/formulaireContact.js"></script>
+	{% endblock %}
 {% endblock %}
