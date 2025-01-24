@@ -24,6 +24,11 @@ class ControllerBd extends Controller
 
     public function sauvegarder(): void {
         $db = Bd::getInstance();
-        $db->backup();
+        $db->incrementalBackup();
+    }
+
+    public function restaurer(): void {
+        $db = Bd::getInstance();
+        $db->restoreDatabase();
     }
 }

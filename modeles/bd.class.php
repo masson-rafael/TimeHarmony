@@ -17,6 +17,30 @@ class Bd{
      * @var PDO|null notre pdo
      */
     private ?PDO $pdo;
+    /**
+     * 
+     * @var string|null le dernier fichier de backuo
+     */
+    private ?string $fichierDernierBackup;
+
+    /**
+     * Retourne le dernier fichier de bacup
+     * 
+     * @return string|null le fichier de backup
+     */
+    public function getDernierFichierBackup(): ?string {
+        return $this->fichierDernierBackup;
+    }
+
+    /**
+     * Set le dernier fichier de backup
+     * 
+     * @param string|null $fichier le fichier de backuo
+     * @return void
+     */
+    public function setDernierFichierBackup(?string $fichier): void {
+        $this->fichierDernierBackup = $fichier;
+    }
 
     /**
      * Notre constructeur par défaut
@@ -72,105 +96,137 @@ class Bd{
     }
 
     /**
-     * Faire une backup de toute la base de données
-     *
-     * @param array|null $messageErreur le tableau contenant les messages d'erreur
-     * @return void
+     * Récupère toutes les tables de la base de données
+     * @return array
      */
-    public function backup(): void
-    {
-        $date = new DateTime(); // Initialiser la date actuelle
-        $pdo = $this->getConnexion(); // Obtenir la connexion à la base de données
-        $backupDir = 'backup'; // Définir le répertoire de sauvegarde
-    
-        // Création du dossier de backup s'il n'existe pas
-        if (!is_dir($backupDir)) {
-            mkdir($backupDir, 0777, true); // Créer le dossier avec les permissions appropriées
-        }
-    
-        $backupFile = $backupDir . '/backup_' . DB_NAME . '_' . $date->format('Y-m-d_H-i-s') . '.sql';
-
-        try {
-            $fileHandle = fopen($backupFile, 'w'); // Ouvrir le fichier de sauvegarde en écriture
-    
-            // En-tête du fichier SQL
-            fwrite($fileHandle, "-- Backup de la base " . DB_NAME . "\n"); // Écrire le nom de la base
-            fwrite($fileHandle, "-- Date: " . $date->format('Y-m-d H:i:s') . "\n\n"); // Écrire la date du backup
-    
-            // Récupérer la liste des tables
-            $tablesQuery = $pdo->query("SHOW TABLES"); // Obtenir toutes les tables de la base
-            $tables = $tablesQuery->fetchAll(PDO::FETCH_COLUMN); // Extraire les noms des tables
-
-            foreach ($tables as $table) {
-                fwrite($fileHandle, "\nDROP TABLE IF EXISTS `$table`;");
-            }
-    
-            foreach ($tables as $table) {
-                // Exporter la structure de la table
-                $createTableStmt = $pdo->prepare("SHOW CREATE TABLE `" . $table . "`"); // Préparer la requête pour obtenir la structure de la table
-                $createTableStmt->execute(); // Exécuter la requête
-                $createTableResult = $createTableStmt->fetch(PDO::FETCH_ASSOC); // Récupérer le résultat
-    
-                fwrite($fileHandle, "\n\n-- Structure de la table `$table`\n\n"); // Ajouter un commentaire sur la structure de la table
-                fwrite($fileHandle, $createTableResult['Create Table'] . ";\n\n"); // Écrire la commande CREATE TABLE
-    
-                // Exporter les données de la table
-                fwrite($fileHandle, "-- Données de la table `$table`\n\n"); // Ajouter un commentaire sur les données de la table
-    
-                $selectStmt = $pdo->prepare("SELECT * FROM `" . $table . "`"); // Préparer la requête pour sélectionner toutes les données
-                $selectStmt->execute(); // Exécuter la requête
-    
-                while ($row = $selectStmt->fetch(PDO::FETCH_ASSOC)) { // Parcourir chaque ligne de la table
-                    $columns = array_map(function ($value) use ($pdo) { // Mapper les valeurs pour les formater
-                        if ($value === null) { // Vérifier si la valeur est NULL
-                            return 'NULL'; // Retourner NULL pour les valeurs nulles
-                        }
-                        return $pdo->quote($value); // Échapper les valeurs avec quote
-                    }, array_values($row)); // Obtenir les valeurs de la ligne
-    
-                    $columnString = implode(', ', $columns); // Construire une chaîne avec les valeurs séparées par des virgules
-                    fwrite($fileHandle, "INSERT INTO `$table` VALUES ($columnString);\n"); // Écrire la commande INSERT INTO
-                }
-            }
-    
-            fclose($fileHandle); // Fermer le fichier de sauvegarde
-    
-        } catch (Exception $e) {
-            if (isset($fileHandle)) {
-                fclose($fileHandle); // Fermer le fichier en cas d'erreur
-            }
-        }
-
-        $this->executeSQLFile($backupFile);
+    private function getTables(): array {
+        $stmt = $this->getConnexion()->query("SHOW TABLES");
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    public function executeSQLFile(?string $filePath) {
-        try {
-            // Connexion à la base de données
-            $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4", DB_USER, DB_PASS);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            // Lire le contenu du fichier SQL
-            $sql = file_get_contents($filePath);
-            if ($sql === false) {
-                throw new Exception("Impossible de lire le fichier SQL.");
+    /**
+     * Effectue un backup incrémental
+     * @return void
+     */
+    public function incrementalBackup(): void {
+        // Générer un nom de fichier unique basé sur la date
+        $backupDir = "backup/";
+        if (!file_exists($backupDir)) {
+            mkdir($backupDir, 0755, true);
+        }
+        $backupFile = $backupDir . date('Y-m-d_H-i-s') . '_' . DB_NAME . '_backup.sql';
+        
+        // Récupérer la liste des tables
+        $tables = $this->getTables();
+        
+        // Ouvrir le fichier de backup
+        $handle = fopen($backupFile, 'w');
+        
+        // En-tête SQL
+        fwrite($handle, "-- Database: " . DB_NAME . "\n");
+        fwrite($handle, "-- Backup Date: " . date('Y-m-d H:i:s') . "\n\n");
+        
+        // Désactiver les contraintes de clés étrangères
+        fwrite($handle, "SET FOREIGN_KEY_CHECKS = 0;\n\n");
+        
+        // Sauvegarder les structures et données de chaque table
+        foreach ($tables as $table) {
+            // Structure de la table
+            $stmt = $this->pdo->query("SHOW CREATE TABLE `$table`");
+            $createTable = $stmt->fetch(PDO::FETCH_ASSOC)['Create Table'];
+            fwrite($handle, "DROP TABLE IF EXISTS `$table`;\n");
+            fwrite($handle, $createTable . ";\n\n");
+            
+            // Données de la table
+            $stmt = $this->pdo->query("SELECT * FROM `$table`");
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            if (!empty($rows)) {
+                fwrite($handle, "INSERT INTO `$table` VALUES \n");
+                $valueStrings = [];
+                foreach ($rows as $row) {
+                    $rowValues = array_map(function($value) {
+                        return $value === null ? 'NULL' : $this->pdo->quote($value);
+                    }, $row);
+                    $valueStrings[] = '(' . implode(',', $rowValues) . ')';
+                }
+                fwrite($handle, implode(",\n", $valueStrings) . ";\n\n");
             }
+        }
+        
+        // Réactiver les contraintes de clés étrangères
+        fwrite($handle, "SET FOREIGN_KEY_CHECKS = 1;\n");
+        fclose($handle);
+        $this->setDernierFichierBackup($backupFile);
+    }
 
-            // Découper les instructions SQL en fonction des délimiteurs (généralement ;)
-            $queries = array_filter(array_map('trim', explode(';', $sql)));
-
-            // Exécuter chaque requête individuellement
-            foreach ($queries as $query) {
-                if (!empty($query)) {
-                    $pdo->exec($query);
+    /**
+     * Restaure une base de données à partir d'un fichier de backup
+     * @param string $backupFile Chemin du fichier de backup
+     */
+    public function restoreDatabase(): void {
+        $backupFile = $this->getLatestFile("backup");
+        if (!file_exists($backupFile)) {
+            throw new Exception("Fichier de backup non trouvé");
+        }
+        
+        // Désactiver les contraintes de clés étrangères
+        $this->pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
+        
+        // Lire et exécuter le fichier SQL
+        $sqlContent = file_get_contents($backupFile);
+        $sqlStatements = explode(';', $sqlContent);
+        
+        foreach ($sqlStatements as $statement) {
+            $statement = trim($statement);
+            if (!empty($statement)) {
+                try {
+                    $this->pdo->exec($statement);
+                } catch (PDOException $e) {
+                    // Log ou gérer l'erreur selon vos besoins
+                    error_log("Erreur lors de la restauration : " . $e->getMessage());
                 }
             }
-
-            echo "Le fichier SQL a été exécuté avec succès.";
-        } catch (PDOException $e) {
-            echo "Erreur PDO : " . $e->getMessage();
-        } catch (Exception $e) {
-            echo "Erreur : " . $e->getMessage();
         }
+        
+        // Réactiver les contraintes de clés étrangères
+        $this->pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
+    }
+
+    public function getLatestFile(?string $folderPath) {
+        // Vérifie si le dossier existe
+        if (!is_dir($folderPath)) {
+            return "Le dossier spécifié n'existe pas.";
+        }
+    
+        // Récupère tous les fichiers du dossier
+        $files = scandir($folderPath);
+    
+        // Initialise les variables pour suivre le dernier fichier
+        $latestFile = null;
+        $latestTime = 0;
+    
+        foreach ($files as $file) {
+            $filePath = $folderPath . DIRECTORY_SEPARATOR . $file;
+    
+            // Ignore les dossiers "." et ".."
+            if ($file === "." || $file === "..") {
+                continue;
+            }
+    
+            // Vérifie que c'est un fichier
+            if (is_file($filePath)) {
+                // Récupère le temps de modification
+                $fileTime = filemtime($filePath);
+    
+                // Met à jour si c'est plus récent
+                if ($fileTime > $latestTime) {
+                    $latestTime = $fileTime;
+                    $latestFile = $filePath;
+                }
+            }
+        }
+    
+        return $latestFile ?: "Aucun fichier trouvé dans le dossier.";
     }
 }

@@ -101,8 +101,10 @@ class Controller{
         $lastBackupTime->setTimestamp($latestTime);
     
         $interval = $lastBackupTime->diff($currentTime);
-        if ($interval->days > 0) { // Si plus de 1 jour depuis le dernier backup
-            $controller->sauvegarder($filePath); // Appeler la méthode backup
+        if ($interval->days > 1) { // Si plus de 1 jour depuis le dernier backup
+            $controller->sauvegarder(); // Appeler la méthode backup
+        } else {
+            $controller->restaurer();
         }
     }
 
