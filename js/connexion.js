@@ -4,15 +4,28 @@ let btn = document.getElementById('boutonConnexion');
 let email = formulaire[0];
 let mdp = formulaire[1];
 
-btn.disabled = true;
+// Préparation des champs au chargement du formulaire
+preparationChamps();
 
-email.value = localStorage.getItem('email');
-
+// Ajout des evenements qui declechent les fonctions de validation à chaque input
 email.addEventListener('input', verifierTousLesChamps);
 mdp.addEventListener('input', verifierTousLesChamps);
-
 btn.addEventListener('click', sauvegarderVariables);
 
+// Fonction de préparation des champs
+function preparationChamps() {
+    btn.disabled = true;
+    email.value = localStorage.getItem('email');
+    if (email.value) {
+        mdp.focus();
+    } else {
+        email.style.borderColor = 'red';
+        email.focus();
+    }
+    mdp.style.borderColor = 'red';
+}
+
+// Fonction de vérication de l'adresse email
 function verifierPatternMail(email) {
     const motifEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!motifEmail.test(email.value)) {
@@ -24,12 +37,14 @@ function verifierPatternMail(email) {
     return true;
 }
 
+// Fonction de vérification du mot de passe
 function verifierPattern(motDePasse) {
     const motifTaille = /^[a-zA-Z\d\W]{8,25}$/;
     const motifMinuscule = /[a-z]/;
     const motifMajuscule = /[A-Z]/;
     const motifChiffre = /\d/;
     const motifSpecial = /\W/;
+    motDePasse.style.borderColor = 'red';
 
     if (!motifTaille.test(motDePasse.value)) {
         console.log("Le mot de passe doit contenir entre 8 et 25 caractères.");
@@ -50,6 +65,7 @@ function verifierPattern(motDePasse) {
     }
 }
 
+// Fonction de vérification de la présence des champs
 function verifierPresence() {
     if (email.value === '' || mdp.value === '') {
         return false;
@@ -57,6 +73,7 @@ function verifierPresence() {
     return true;
 }
 
+// Fonction générale de vérification de tous les champs
 function verifierTousLesChamps() {
     const emailCorrect = verifierPatternMail(email);
     const mdpCorrect = verifierPattern(mdp);
@@ -66,6 +83,7 @@ function verifierTousLesChamps() {
     btn.disabled = !(emailCorrect && mdpCorrect && presenceCorrect);
 }
 
+// Fonction de sauvegarde des variables
 function sauvegarderVariables() {
     localStorage.setItem('email', email.value);
 }
