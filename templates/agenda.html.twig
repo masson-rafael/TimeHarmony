@@ -129,34 +129,35 @@
 			<div class="row justify-content-center mt-5 h-75">
 				<div class="col-md-6">
 					<h4 class="text-center mb-4">Ajouter un agenda</h4>
-					<form action="index.php?controleur=agenda&methode=ajouterAgenda" method="post" required>
+					<form id="formAjouteAgenda" action="index.php?controleur=agenda&methode=ajouterAgenda" method="post" required>
 						<div class="mb-3">
 							<label for="nom" class="form-label">Nom *</label>
 							<input type="text" name="nom" class="form-control" id="nom" required placeholder="Entrez le nom de votre agenda" maxlength="50" title="Entrez le nom de votre agenda pour pouvoir le différencier des autres">
-						</div>
+                            <small id="nomError" class="text-danger"></small>
+                        </div>
 						<div class="mb-3">
 							<label for="url" class="form-label">URL *</label>
 							<input type="url" name="url" class="form-control" id="url" required placeholder="Entrez une URL valide" title="Entrez l'URL valide de votre agenda Google.">
-						</div>
-						<div class="mb-3">
-							<div class="mb-3">
-								<label for="couleur" class="form-label">Couleur *</label>
-								<select name="couleur" class="form-select" id="couleur" required>
-									<option value="#e66465" style="background-color: #e66465; color: white;">#e66465</option>
-									<option value="#4CAF50" style="background-color: #4CAF50; color: white;">#4CAF50</option>
-									<option value="#2196F3" style="background-color: #2196F3; color: white;">#2196F3</option>
-									<option value="#FF5722" style="background-color: #FF5722; color: white;">#FF5722</option>
-									<option value="#9C27B0" style="background-color: #9C27B0; color: white;">#9C27B0</option>
-									<option value="#FFC107" style="background-color: #FFC107; color: black;">#FFC107</option>
-								</select>
-								<small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
-							</div>
-						</div>
+                            <small id="urlError" class="text-danger"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="couleur" class="form-label">Couleur *</label>
+                            <select name="couleur" class="form-select" id="couleur" required>
+                                <option value="#e66465" style="background-color: #e66465; color: white;">#e66465</option>
+                                <option value="#4CAF50" style="background-color: #4CAF50; color: white;">#4CAF50</option>
+                                <option value="#2196F3" style="background-color: #2196F3; color: white;">#2196F3</option>
+                                <option value="#FF5722" style="background-color: #FF5722; color: white;">#FF5722</option>
+                                <option value="#9C27B0" style="background-color: #9C27B0; color: white;">#9C27B0</option>
+                                <option value="#FFC107" style="background-color: #FFC107; color: black;">#FFC107</option>
+                            </select>
+                            <small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
+                            <small id="couleurError" class="text-danger"></small>
+                        </div>
                         <div class="text-center pt-5">
                             <a class="px-5 btn btn-secondary" href="index.php?controleur=agenda&methode=lister" role="button">Revenir à mes agendas</a>
                         </div>
                         <div class="mb-3 text-center pt-3">
-                            <button type="submit" class="btn btn-primary ">Ajouter un agenda</button>
+                            <button id="boutonAjoutAgenda" type="submit" class="btn btn-primary ">Ajouter un agenda</button>
                         </div>
 					</form>
 				</div>
@@ -178,6 +179,7 @@
 
 {% endblock %}
 {% block javascripts %}
+    <script src="js/formulaireAjoutAgenda.js"></script>
     {{ parent() }}
     <script>
         $(document).ready(function() {
