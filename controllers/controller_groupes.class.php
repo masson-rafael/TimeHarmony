@@ -55,7 +55,7 @@ class ControllerGroupes extends Controller
         $pdo = $this->getPdo();
         $manager = new GroupeDao($pdo);
         $tableauGroupes = $manager->supprimerGroupe($id);
-        $tableauMessages[] = "Le groupe a bien été supprimé";
+        $tableauMessages[] = "Le groupe a été supprimé avec succès !";
         $this->lister($tableauMessages, false);
     }
 
