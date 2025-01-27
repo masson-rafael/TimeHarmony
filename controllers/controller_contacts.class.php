@@ -109,7 +109,7 @@ class ControllerContacts extends Controller
      * Fonction permettant d'afficher le twig correspondant à la page des notifications
      * @return void
      */
-    public function afficherPageNotifications(?array $tableauMessage = null): void {
+    public function afficherPageNotifications(?array $tableauMessage = null, ?bool $contientErreurs = false): void {
         /**
          * Step 1 : Appel de la fonction qui trouve ET RENVOIE les contacts que j'ai envoyé
          * Step 2 : Appel de la fonction qui trouve ET RENVOIE les demandes de contact d'autres utilisateurs
@@ -122,7 +122,8 @@ class ControllerContacts extends Controller
         echo $template->render(array(
             'demandesEnvoyees' => $mesDemandes,
             'demandesRecues' => $demandesRecues,
-            'message' => $tableauMessage
+            'message' => $tableauMessage,
+            'contientErreurs' => $contientErreurs
         ));
     }
 
@@ -162,7 +163,7 @@ class ControllerContacts extends Controller
         $manager = new UtilisateurDao($pdo);
         $tabDemandesPourMoi = $manager->supprimerDemandeEnvoyee($_SESSION['utilisateur']->getId(), $idReceveur);
         $tableauMessages[] = "Demande supprimée avec succès !";
-        $this->afficherPageNotifications($tableauMessages);
+        $this->afficherPageNotifications($tableauMessages, false);
     }
 
     /**
@@ -180,7 +181,7 @@ class ControllerContacts extends Controller
         $_SESSION['utilisateur'] = $utilisateur;
         $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
         $tableauMessages[] = "Demande refusée avec succès !";
-        $this->afficherPageNotifications($tableauMessages);
+        $this->afficherPageNotifications($tableauMessages, false);
     }
 
     /**
@@ -198,6 +199,6 @@ class ControllerContacts extends Controller
         $_SESSION['utilisateur'] = $utilisateur;
         $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
         $tableauMessages[] = "Demande acceptée avec succès !";
-        $this->afficherPageNotifications($tableauMessages);
+        $this->afficherPageNotifications($tableauMessages, false);
     }
 }
