@@ -27,6 +27,7 @@ function preparationChamps() {
     }
     mdp.style.borderColor = 'red';
     mdpError.textContent = 'Veuillez saisir votre mot de passe.';
+    verifierTousLesChamps();
 }
 
 // Fonction de vérication de l'adresse email

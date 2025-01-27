@@ -3,6 +3,8 @@ let btn = document.getElementById('boutonEnvoiMessage');
 
 let email = formulaire[0];
 let emailError = document.getElementById('emailError');
+let sujet = formulaire[1];
+let sujetError = document.getElementById('sujetError');
 let message = formulaire[2];
 let messageError = document.getElementById('descriptionError');
 
@@ -12,6 +14,7 @@ preparationChamps();
 // Ajout des evenements qui declechent les fonctions de validation à chaque input
 email.addEventListener('input', verifierTousLesChamps);
 message.addEventListener('input', verifierTousLesChamps);
+sujet.addEventListener('change', verifierTousLesChamps);
 btn.addEventListener('click', sauvegarderVariables);
 
 // Fonction de préparation des champs
@@ -27,6 +30,7 @@ function preparationChamps() {
     }
     message.style.borderColor = 'red';
     messageError.textContent = 'Veuillez saisir un sujet de contact.';
+    verifierTousLesChamps();
 }
 
 // Fonction de vérication de l'adresse email
@@ -79,10 +83,22 @@ function verifierPresence() {
     return true;
 }
 
+function verifierValeur(sujet) {
+    console.log(sujet.value);
+    if (sujet.value === 'Choississez un motif' || sujet.value === '') {
+        sujet.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
+        sujetError.textContent = 'Veuillez saisir un sujet de contact.';
+        return false;
+    }
+    sujet.style.borderColor = ''; // Bordure par defaut
+    sujetError.textContent = '';
+}
+
 // Fonction générale de vérification de tous les champs
 function verifierTousLesChamps() {
     const emailCorrect = verifierPatternMail(email);
     const messageCorrect = verifierPattern(message);
+    const sujetCorrect = verifierValeur(sujet);
     const presenceCorrect = verifierPresence();
 
     // Activer ou désactiver le bouton en fonction des validations

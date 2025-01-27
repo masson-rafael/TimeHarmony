@@ -50,6 +50,8 @@ function preparationChamps() {
         mdpVides();
         mdp.focus();
     }
+    btn.disabled = true;
+    verifierTousLesChamps();
 }
 
 function mdpVides() {

@@ -32,6 +32,12 @@ function verifierPatternNom(nom) {
         return false;
     }
 
+    if (nom.value.length > 50) {
+        nom.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
+        nomError.textContent = 'Le nom ne doit pas dépasser 50 caractères.';
+        return false;
+    }
+
     if (!motifnom.test(nom.value)) {
         nom.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
         nomError.textContent = 'Le nom ne correspond pas au format attendu.';
@@ -49,9 +55,9 @@ function verifierPatternDescription(description) {
     if(description.value === '') {
         descriptionError.textContent = 'Veuillez saisir une description.';
         return false;
-    } if(description.value.length > 100) {
+    } if(description.value.length > 200) {
         description.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
-        descriptionError.textContent = 'La description ne doit pas dépasser 100 caractères.';
+        descriptionError.textContent = 'La description ne doit pas dépasser 200 caractères.';
         return false;
     } if (description.value.length < 10) {
         description.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
