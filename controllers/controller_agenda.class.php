@@ -68,9 +68,11 @@ class ControllerAgenda extends Controller
 
     /**
      * Fonction permettant de lister les agendas
+     * @param array|null $tabMessages Tableau des messages
+     * @param bool|null $contientErreurs true si le tableau contient des erreurs, false sinon
      * @return void
      */
-    public function lister(?array $tabMessages = null, ?bool $contientErreurs): void {
+    public function lister(?array $tabMessages = null, ?bool $contientErreurs = false): void {
         $manager = new AgendaDao($this->getPdo());
         $id = $_SESSION['utilisateur']->getId();
         $agendas = $manager->getAgendasUtilisateur($id);

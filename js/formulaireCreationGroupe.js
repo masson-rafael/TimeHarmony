@@ -11,7 +11,16 @@ let contactsError = document.getElementById('contactsError');
 // Ajout des evenements qui declechent les fonctions de validation à chaque input
 nom.addEventListener('input', verifierTousLesChampsCreation);
 description.addEventListener('input', verifierTousLesChampsCreation);
-contacts.addEventListener('change', verifierTousLesChampsCreation);
+
+// Sélectionne toutes les cases à cocher de la table
+document.querySelectorAll('table input[type="checkbox"]').forEach(function(checkbox) {
+    // Ajoute un événement "click" à chaque case à cocher
+    checkbox.addEventListener('click', function() {
+        verifierTousLesChampsCreation(); // Appelle la fonction
+        console.log(checkbox.value); // Affiche la valeur associée à la case
+    });
+});
+
 
 // Préparation des champs au chargement du formulaire
 preparationChampsCreation();
@@ -73,6 +82,7 @@ function verifierPatternDescription(description) {
 
 function verifierPatternContacts() {
     // Sélectionne toutes les cases à cocher avec la classe 'form-check-input'
+    console.log('contacts appellee');
     const checkboxes = document.querySelectorAll('.form-check-input');
     let checkedCount = 0;
 

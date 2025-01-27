@@ -25,9 +25,10 @@ class ControllerGroupes extends Controller
     /**
      * Fonction qui permet de lister les groupes dont l'utilisateur connecté est le chef
      * @param array|null $erreurs tableau des erreurs éventuelles
+     * @param bool|null $contientErreurs true si le tableau contient des erreurs, false sinon
      * @return void
      */
-    public function lister(?array $erreurs = []): void
+    public function lister(?array $erreurs = null, ?bool $contientErreurs = false): void
     {
         $pdo = $this->getPdo();
         $manager = new GroupeDao($pdo);
@@ -38,7 +39,8 @@ class ControllerGroupes extends Controller
             array(
                 'groupes' => $tableauGroupes == null ? null : $tableauGroupes['groupe'],
                 'message' => $erreurs,
-                'nombrePersonnes' => $tableauGroupes == null ? null : $tableauGroupes['nombrePersonnes']
+                'nombrePersonnes' => $tableauGroupes == null ? null : $tableauGroupes['nombrePersonnes'],
+                'contientErreurs' => $contientErreurs
             )
         );
     }
@@ -54,7 +56,7 @@ class ControllerGroupes extends Controller
         $manager = new GroupeDao($pdo);
         $tableauGroupes = $manager->supprimerGroupe($id);
         $tableauMessages[] = "Le groupe a bien été supprimé";
-        $this->lister($tableauMessages);
+        $this->lister($tableauMessages, false);
     }
 
     /**
@@ -130,11 +132,11 @@ class ControllerGroupes extends Controller
             // Etape 2 : ajouter membres
             $this->ajouterMembres($groupe->getId(), $_POST['contacts']);
 
-            $tableauErreurs[] = "Le groupe a bien été créé";
-            $this->lister($tableauErreurs);
+            $tableauErreurs[] = "Le groupe a été créé avec succès !";
+            $this->lister($tableauErreurs, false);
         } else {
-            $tableauErreurs[] = "Le groupe existe déjà";
-            $this->lister($tableauErreurs);
+            $tableauErreurs[] = "Le groupe existe déjà !";
+            $this->lister($tableauErreurs, true);
         }
     }
 
@@ -228,10 +230,11 @@ class ControllerGroupes extends Controller
             }
 
             // Ajouter ou modifier les utilisateurs dans le groupe
+            $messages[] = "Groupe modifié avec succès !";
             $manager->modifierGroupe($id, $nomGroupe, $_POST['description']);
+            $this->lister($messages, false); // Afficher la page de modification avec les messages
+        } else {
+            $this->lister($messages, true); // Afficher la page de modification avec les messages
         }
-
-
-        $this->lister($messages); // Afficher la page de modification avec les messages
     }
 }
