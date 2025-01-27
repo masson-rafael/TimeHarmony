@@ -36,9 +36,9 @@
                         <img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photo de profil" class="rounded-circle" style="width: 50px; height: 50px;">
                     </td>
                     <td>
-                        <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ utilisateur.getId }}">
-                        <i class="fa-solid fa-pencil"></i></a>
                         {% if utilisateur.getId != utilisateurCourant.getId %}
+                            <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ utilisateur.getId }}">
+                            <i class="fa-solid fa-pencil"></i></a>
                             <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleSuppression{{ utilisateur.getId }}">
                             <i class="fa-solid fa-trash"></i></a>
                         {% endif %}
