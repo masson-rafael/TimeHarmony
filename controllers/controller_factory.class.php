@@ -15,7 +15,7 @@ class ControllerFactory
      * @param \Twig\Environment $twig 
      * @return void
      */
-    public static function getController($controleur, \Twig\Loader\FilesystemLoader $loader, \Twig\Environment $twig) :object
+    public static function getController($controleur, \Twig\Loader\FilesystemLoader $loader, \Twig\Environment $twig)
     {
         $controllerName="Controller".ucfirst($controleur);
         if (!class_exists($controllerName)) {
