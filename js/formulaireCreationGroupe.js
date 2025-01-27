@@ -8,18 +8,19 @@ let descriptionError = document.getElementById('descriptionError');
 let contacts = formulaire[2];
 let contactsError = document.getElementById('contactsError');
 
-// Préparation des champs au chargement du formulaire
-preparationChamps();
-
 // Ajout des evenements qui declechent les fonctions de validation à chaque input
 nom.addEventListener('input', verifierTousLesChamps);
 description.addEventListener('input', verifierTousLesChamps);
 contacts.addEventListener('change', verifierTousLesChamps);
 
+// Préparation des champs au chargement du formulaire
+preparationChamps();
+
 // Fonction de préparation des champs
 function preparationChamps() {
     btn.disabled = true;
     nom.focus();
+    verifierTousLesChamps();
 }
 
 // Fonction de vérication de l'adresse nom

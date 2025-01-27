@@ -8,18 +8,19 @@ let urlError = document.getElementById('urlError');
 let couleur = formulaire[2];
 let couleurError = document.getElementById('couleurError');
 
-// Préparation des champs au chargement du formulaire
-preparationChamps();
-
 // Ajout des evenements qui declechent les fonctions de validation à chaque input
 nom.addEventListener('input', verifierTousLesChamps);
 url.addEventListener('input', verifierTousLesChamps);
 couleur.addEventListener('change', verifierTousLesChamps);
 
+// Préparation des champs au chargement du formulaire
+preparationChamps();
+
 // Fonction de préparation des champs
 function preparationChamps() {
     btn.disabled = true;
     nom.focus();
+    verifierTousLesChamps();
 }
 
 // Fonction de vérication de l'adresse nom
