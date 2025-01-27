@@ -31,7 +31,6 @@ function preparationDates(dateActuelle, date, jourEnPlus) {
     date.value = annee + '-' + mois + '-' + jour;
 }
 
-
 // Sauvegarde de la duree uniquement
 function sauvegarderVariables() {
     sessionStorage.setItem('duree', duree.value);
@@ -46,6 +45,12 @@ function verifierDate(champ, error, secondeDate = null) {
     dateActuelle.value = annee + '-' + mois + '-' + jour;
 
     let correct = true;
+
+    if(champ.value === '') {
+        champ.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
+        error.textContent = 'Veuillez saisir une date';
+        return false;
+    }
 
     const motifdateDebut = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
     if (!motifdateDebut.test(champ.value)) {
@@ -76,6 +81,12 @@ function verifierDuree(champ, error) {
     const motifDuree = /^[1-9][0-9]*$/;
     const motifRespectTime = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
     let correct = true;
+
+    if(champ.value === '') {
+        champ.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
+        error.textContent = 'Veuillez saisir une durée minimale';
+        return false;
+    }
 
     if (champ.value < '00:05') {
         champ.style.borderColor = 'red'; // Bordure rouge en cas d'erreur

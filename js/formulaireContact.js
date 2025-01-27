@@ -32,10 +32,16 @@ function preparationChamps() {
 // Fonction de vérication de l'adresse email
 function verifierPatternMail(email) {
     const motifEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if(email.value === '') {
+        email.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
+        emailError.textContent = 'Veuillez saisir votre adresse email.';
+        return false;
+    }
+
     if (!motifEmail.test(email.value)) {
         email.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
         emailError.textContent = 'Adresse email invalide.';
-        console.log("Adresse email invalide.");
         return false;
     }
     email.style.borderColor = ''; // Bordure par défaut (succès)
@@ -47,6 +53,11 @@ function verifierPatternMail(email) {
 function verifierPattern(message) {
     const motifTaille = /^[a-zA-Z\d\W]{10,2000}$/;
     message.style.borderColor = 'red';
+
+    if(message.value === '') {
+        messageError.textContent = 'Veuillez saisir un message.';
+        return false;
+    }
 
     if (!motifTaille.test(message.value)) {
         messageError.textContent = 'Le message doit contenir entre 10 et 2000 caractères.';

@@ -74,6 +74,13 @@ function verifierTousLesChamps() {
 // Fonction de vérication de l'adresse email
 function verifierPatternMail(email) {
     const motifEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if(email.value === '') {
+        email.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
+        emailError.textContent = 'Veuillez saisir votre adresse email.';
+        return false;
+    }
+
     if (!motifEmail.test(email.value)) {
         email.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
         emailError.textContent = 'Adresse email invalide.';
@@ -92,6 +99,11 @@ function verifierPattern(motDePasse) {
     const motifSpecial = /\W/;
     motDePasse.style.borderColor = 'red';
     var erreursMdp = [];
+
+    if(motDePasse.value === '') {
+        mdpError.textContent = 'Veuillez saisir votre mot de passe.';
+        return false;
+    }
 
     if (!motifTaille.test(motDePasse.value)) {
         erreursMdp.push('Le mot de passe doit contenir entre 8 et 25 caractères.');

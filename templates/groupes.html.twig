@@ -148,6 +148,7 @@
 							<div class="mb-3">
 								<label for="description" class="form-label">Choisir ses contacts</label>
 								{% if contacts %}
+								<div class="card p-4 shadow-sm">
 									<table class="table table-bordered table-hover">
 										<thead>
 											<tr class="table-primary">
@@ -166,6 +167,7 @@
 											{% endfor %}
 										</tbody>
 									</table>
+								</div>
 								{% else %}
 									<div class="alert alert-info text-center" role="alert">Aucun contact trouvé. Ajoutez-en un ci-dessous.</div>
 									<div class="text-center">

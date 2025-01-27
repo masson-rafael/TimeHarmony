@@ -16,8 +16,7 @@ function verifierPatternNomPrenom(champ, error) {
     const motifnom = /^[a-zA-ZÀ-ÿ0-9- ]+$/;
     if (!motifnom.test(champ.value)) {
         champ.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
-        error.textContent = 'Le nom ne respecte pas le format attendu';
-        console.log("Le nom ne respecte pas le format attendu");
+        error.textContent = 'Le ' + champ.name + ' ne respecte pas le format attendu';
         return false;
     }
     champ.style.borderColor = ''; // Bordure par défaut (succès)
