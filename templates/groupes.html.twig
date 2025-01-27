@@ -193,9 +193,9 @@
 	</main>
 {% endblock %}
 {% block javascripts %}
+	{{ parent() }}
 	<script src="js/formulaireCreationGroupe.js"></script>
 	<script src="js/formulaireModificationGroupe.js"></script>
-	{{ parent() }}
 	<script>
 		$(document).ready(function() {
 			$('#myTable').DataTable({

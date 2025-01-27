@@ -172,9 +172,9 @@
 
 {% endblock %}
 {% block javascripts %}
+    {{ parent() }}
     <script src="js/formulaireCreationAgenda.js"></script>
     <script src="js/formulaireModificationAgenda.js"></script>
-    {{ parent() }}
     <script>
         $(document).ready(function() {
             $('#myTable').DataTable({
