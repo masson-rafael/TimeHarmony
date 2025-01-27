@@ -73,20 +73,18 @@ class GroupeDao
      */
     public function find(?int $id): ?Groupe
     {
-        $resultat = null;
+        $groupe = null;
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "groupe WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
 
-        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-        $tableau = $pdoStatement->fetch();
-        $groupe = $this->hydrate($tableau);
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
 
-        if ($groupe) {
-            $resultat = $groupe;
+        if ($result) {
+            $groupe = $this->hydrate($result);
         }
 
-        return $resultat;
+        return $groupe;
     }
 
     /**
