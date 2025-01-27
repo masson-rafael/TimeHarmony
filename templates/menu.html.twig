@@ -34,16 +34,17 @@
         </div>
         <!-- Affichage des messages -->
         {% if message %}
-            <div class="bg-success d-flex flex-column position-absolute me-5 end-0 toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
-                <div class="toast-header">
-                    <strong class="me-auto">Information</strong>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    {% for messages in message %}
-                        {{ messages }}
-                        <br>
-                    {% endfor %}
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
+                <div id="toastAjoutPanier" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {% for messages in message %}
+                                {{ messages }}
+                                <br>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
                 </div>
             </div>
         {% endif %}
