@@ -10,6 +10,7 @@ let couleurAgendaError = document.getElementById('couleurAgendaError');
 
 // Verif des champs car normalement tout est rempli
 verifierTousLesChamps();
+nomAgenda.focus();
 
 // Ajout des evenements qui declechent les fonctions de validation à chaque input
 nomAgenda.addEventListener('input', verifierTousLesChamps);
