@@ -8,16 +8,33 @@ let dateFinError = document.getElementById('dateFinError');
 let duree = document.getElementById('duree');
 let dureeError = document.getElementById('dureeError');
 
+let contacts = document.getElementById('contacts');
+let contactsError = document.getElementById('contactsError');
+let groupesContact = document.getElementById('groupes');
+let groupesContactError = document.getElementById('groupesError');
+
+// Fonction qui met un message "d'erreur" dans les champs groupesContact / contats
+preparationVariables();
+
 // Ajout des evenements qui declechent les fonctions de validation à chaque input
 dateDebut.addEventListener('change', verifierTousLesChamps);
 dateFin.addEventListener('change', verifierTousLesChamps);
 duree.addEventListener('change', verifierTousLesChamps);
+contacts.addEventListener('change', verifierTousLesChamps);
+groupesContact.addEventListener('change', verifierTousLesChamps);
 btn.addEventListener('click', sauvegarderVariables);
 
 const date = new Date();
 preparationDates(date, dateDebut, 0); // Remplissage du formulaire par valeur de base (jour actuel)
 preparationDates(date, dateFin, 7);
 verifierTousLesChamps();
+
+function preparationVariables() {
+    btn.disabled = true;
+    dateDebut.focus();
+    contactsError.textContent = 'Veuillez sélectionner un contact ou un groupe.';
+    groupesContactError.textContent = 'Veuillez sélectionner un groupe ou un contact.';
+}
 
 function preparationDates(dateActuelle, date, jourEnPlus) {
     // Création d'une nouvelle date en ajoutant le nombre de jours
@@ -114,14 +131,47 @@ function verifierPresence() {
     return true;
 }
 
+function verifierPatternContacts() {
+    // Sélectionne toutes les cases à cocher avec la classe 'form-check-input'
+    const checkboxes = document.querySelectorAll('.form-check-input');
+    let checkedCount = 0;
+
+    // Compte le nombre de cases cochées
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            checkedCount++;
+        }
+    });
+
+    // Si aucune case n'est cochée, affiche un message d'erreur
+    if (checkedCount === 0) {
+        const checkboxes = document.querySelectorAll('.form-check-input');
+        checkboxes.forEach(checkbox => {
+            contacts.style.color = 'red'; // Bordure rouge en cas d'erreur
+        });
+        contactsError.textContent = 'Au moins un contact ou groupe doit être sélectionné.';
+        groupesContactError.textContent = 'Au moins un groupe ou contact doit être sélectionné.';
+        return false;
+    }
+
+    // Si au moins une case est cochée, réinitialise l'erreur
+    contacts.style.borderColor = ''; // Bordure par défaut
+    contactsError.textContent = '';
+    groupesContact.style.borderColor = ''; // Bordure par défaut
+    groupesContactError.textContent = '';
+    return true;
+}
+
 // Fonction générale de vérification de tous les champs
 function verifierTousLesChamps() {
     console.log('Verification des champs');
     const dateDebutCorrect = verifierDate(dateDebut, dateDebutError, dateFin);
     const dateFinCorrect = verifierDate(dateFin, dateFinError, dateFin);
     const dureeCorrect = verifierDuree(duree, dureeError);
+    const contactCorrect = verifierPatternContacts();
+    const groupesContactCorrect = verifierPatternContacts();
     const presenceCorrect = verifierPresence();
 
     // Activer ou désactiver le bouton en fonction des validations
-    btn.disabled = !(dateDebutCorrect && dateFinCorrect && presenceCorrect && dureeCorrect);
+    btn.disabled = !(dateDebutCorrect && dateFinCorrect && presenceCorrect && dureeCorrect && contactCorrect && groupesContactCorrect);
 }
