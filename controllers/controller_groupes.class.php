@@ -36,6 +36,7 @@ class ControllerGroupes extends Controller
         $template = $this->getTwig()->load('groupes.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
         echo $template->render(
             array(
+                'menu' => "groupes",
                 'groupes' => $tableauGroupes == null ? null : $tableauGroupes['groupe'],
                 'message' => $erreurs,
                 'nombrePersonnes' => $tableauGroupes == null ? null : $tableauGroupes['nombrePersonnes']
@@ -76,6 +77,7 @@ class ControllerGroupes extends Controller
         }, $membres);
 
         echo $template->render(array(
+            'menu' => "groupes",
             'modification' => true,
             'groupeCourant' => $groupeCourant,
             'contacts' => $contacts,
@@ -103,7 +105,7 @@ class ControllerGroupes extends Controller
     {
         $contacts = $this->getListeContacts();
         $template = $this->getTwig()->load('groupes.html.twig');
-        echo $template->render(array('creation' => true, 'contacts' => $contacts));
+        echo $template->render(array('menu' => "groupes", 'creation' => true, 'contacts' => $contacts));
     }
 
     /**
@@ -112,28 +114,33 @@ class ControllerGroupes extends Controller
      */
     public function creer(): void
     {
+        $nom = htmlspecialchars($_POST['nom'],ENT_NOQUOTES);
+        $description = htmlspecialchars($_POST['description'],ENT_NOQUOTES);
+
         $tableauErreurs = [];
         $tableauContacts = $_POST['contacts']; //2, 3, 4, 5 -> id des utilisateurs + verif classe
-        $nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
-        $descriptionValide = utilitaire::validerDescription($_POST['description'], $tableauErreurs);
+        $nomValide = utilitaire::validerNom($nom, $tableauErreurs);
+        $descriptionValide = utilitaire::validerDescription($description, $tableauErreurs);
 
         $manager = new GroupeDao($this->getPdo());
-        $groupeExiste = $manager->groupeExiste($_POST['nom'], $_POST['description']);
+        $groupeExiste = $manager->groupeExiste($nom, $description);
 
-        if ($nomValide && $descriptionValide && !$groupeExiste) {
+        if ($groupeExiste) {
+            $tableauErreurs[] = "Le groupe existe déjà";
+            $this->lister($tableauErreurs);
+        } elseif ($nomValide && $descriptionValide && !$groupeExiste) {
             // Etape 1 : créer groupe
             $manager = new GroupeDao($this->getPdo());
-            $manager->creerGroupe($_SESSION['utilisateur']->getId(), $_POST['nom'], $_POST['description']);
+            $manager->creerGroupe($_SESSION['utilisateur']->getId(), $nom, $description);
             $manager = new GroupeDao($this->getPdo());
-            $groupe = $manager->getGroupe($_SESSION['utilisateur']->getId(), $_POST['nom'], $_POST['description']);
+            $groupe = $manager->getGroupe($_SESSION['utilisateur']->getId(), $nom, $description);
 
             // Etape 2 : ajouter membres
-            $this->ajouterMembres($groupe->getId(), $_POST['contacts']);
+            $this->ajouterMembres($groupe->getId(), $tableauContacts);
 
             $tableauErreurs[] = "Le groupe a bien été créé";
             $this->lister($tableauErreurs);
         } else {
-            $tableauErreurs[] = "Le groupe existe déjà";
             $this->lister($tableauErreurs);
         }
     }
@@ -149,9 +156,9 @@ class ControllerGroupes extends Controller
         $manager = new GroupeDao($this->getPdo());
         $manager->ajouterMembreGroupe($idGroupe, $_SESSION['utilisateur']->getId());
 
-        if ($contacts) {   // Condition si estvide
+        if ($contacts) {   // Condition si est vide
             foreach ($contacts as $contact) {
-                $manager->ajouterMembreGroupe($idGroupe, $contact);
+                $manager->demanderAjoutMembreGroupe($idGroupe, $contact);
             }
         }
     }
