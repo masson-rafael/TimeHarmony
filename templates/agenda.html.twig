@@ -49,20 +49,23 @@
                                     <h1 class="modal-title fs-5" id="exampleModalLabel">Modification de l'agenda {{ agenda.nom }}</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form action="index.php?controleur=agenda&methode=modifierAgenda&id={{ agenda.id }}" method="POST" enctype="multipart/form-data">
+                                <form id="formModifierAgenda" action="index.php?controleur=agenda&methode=modifierAgenda&id={{ agenda.id }}" method="POST" enctype="multipart/form-data">
                                     <div class="modal-body">
                                         <div class="container mt-2">
                                             <div class="form-group">
                                                 <label for="nom">Nom</label>
                                                 <input type="text" class="form-control" id="nom" name="nom" value="{{ agenda.nom }}" required>
+                                                <small id="nomAgendaError" class="text-danger"></small>
                                             </div>
                                             <div class="form-group">
                                                 <label for="url">URL</label>
                                                 <input type="text" class="form-control" id="url" name="url" value="{{ agenda.url }}" required>
+                                                <small id="urlAgendaError" class="text-danger"></small>
                                             </div>
                                             <div class="mb-3">
                                                 <div class="mb-3">
-                                                    <label for="couleur" class="form-label">Couleur *</label>
+                                                    <label for="couleur" class="form-label">Couleur *</label><br>
+                                                    <small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
                                                     <select name="couleur" class="form-select" id="couleur" required>
                                                         <option selected value="{{agenda.couleur}}">{{agenda.couleur}}</option>
                                                         <option value="#e66465" style="background-color: #e66465; color: white;">#e66465</option>
@@ -72,13 +75,13 @@
                                                         <option value="#9C27B0" style="background-color: #9C27B0; color: white;">#9C27B0</option>
                                                         <option value="#FFC107" style="background-color: #FFC107; color: black;">#FFC107</option>
                                                     </select>
-                                                    <small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
+                                                    <small id="couleurAgendaError" class="text-danger"></small>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary" name="update_article">Mettre à jour</button>
+                                        <button id="boutonModifierAgenda" type="submit" class="btn btn-primary" name="update_article">Mettre à jour</button>
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                                     </div>
                                 </form>
@@ -141,7 +144,8 @@
                             <small id="urlError" class="text-danger"></small>
                         </div>
                         <div class="mb-3">
-                            <label for="couleur" class="form-label">Couleur *</label>
+                            <label for="couleur" class="form-label">Couleur *</label><br>
+                            <small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
                             <select name="couleur" class="form-select" id="couleur" required>
                                 <option value="#e66465" style="background-color: #e66465; color: white;">#e66465</option>
                                 <option value="#4CAF50" style="background-color: #4CAF50; color: white;">#4CAF50</option>
@@ -150,7 +154,6 @@
                                 <option value="#9C27B0" style="background-color: #9C27B0; color: white;">#9C27B0</option>
                                 <option value="#FFC107" style="background-color: #FFC107; color: black;">#FFC107</option>
                             </select>
-                            <small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
                             <small id="couleurError" class="text-danger"></small>
                         </div>
                         <div class="text-center pt-5">
@@ -180,6 +183,7 @@
 {% endblock %}
 {% block javascripts %}
     <script src="js/formulaireAjoutAgenda.js"></script>
+    <script src="js/formulaireModificationAgenda.js"></script>
     {{ parent() }}
     <script>
         $(document).ready(function() {
