@@ -36,15 +36,15 @@ class ControllerUtilisateur extends Controller
         $tableauErreurs = [];
 
         $emailValide = utilitaire::validerEmail(htmlspecialchars($_POST['email']), $tableauErreurs);
-        $nomValide = utilitaire::validerNom(htmlspecialchars($_POST['nom']), $tableauErreurs);
-        $prenomValide = utilitaire::validerPrenom(htmlspecialchars($_POST['prenom']), $tableauErreurs);
-        $mdpValide = utilitaire::validerMotDePasseInscription(htmlspecialchars($_POST['pwd']), $tableauErreurs, $_POST['pwdConfirme']);
+        $nomValide = utilitaire::validerNom(htmlspecialchars($_POST['nom'],ENT_NOQUOTES), $tableauErreurs);
+        $prenomValide = utilitaire::validerPrenom(htmlspecialchars($_POST['prenom'],ENT_NOQUOTES), $tableauErreurs);
+        $mdpValide = utilitaire::validerMotDePasseInscription(htmlspecialchars($_POST['pwd'],ENT_NOQUOTES), $tableauErreurs, $_POST['pwdConfirme']);
 
         if ($emailValide && $nomValide && $prenomValide && $mdpValide) {
             $email = htmlspecialchars($_POST['email']);
-            $nom = htmlspecialchars($_POST['nom']);
-            $prenom = htmlspecialchars($_POST['prenom']);
-            $mdp = htmlspecialchars($_POST['pwd']);
+            $nom = htmlspecialchars($_POST['nom'],ENT_NOQUOTES);
+            $prenom = htmlspecialchars($_POST['prenom'],ENT_NOQUOTES);
+            $mdp = htmlspecialchars($_POST['pwd'],ENT_NOQUOTES);
 
             $manager = new UtilisateurDao($pdo); //Lien avec PDO
             /**
@@ -91,7 +91,7 @@ class ControllerUtilisateur extends Controller
         
         // Validation des entrées
         $emailValide = utilitaire::validerEmail(htmlspecialchars($_POST['email']), $tableauErreurs);
-        $passwdValide = utilitaire::validerMotDePasseInscription(htmlspecialchars($_POST['pwd']), $tableauErreurs);
+        $passwdValide = utilitaire::validerMotDePasseInscription(htmlspecialchars($_POST['pwd'],ENT_NOQUOTES), $tableauErreurs);
 
         $manager = new UtilisateurDao($pdo);
         $compteUtilisateurCorrespondant = $manager->getObjetUtilisateur(htmlspecialchars($_POST['email']));
@@ -107,7 +107,7 @@ class ControllerUtilisateur extends Controller
                 $compteUtilisateurCorrespondant->reactiverCompte();
 
                 $email = htmlspecialchars($_POST['email']);
-                $pwd = htmlspecialchars($_POST['pwd']);
+                $pwd = htmlspecialchars($_POST['pwd'],ENT_NOQUOTES);
                 
                 // On recupere un tuple avec un booleen et le mdp hache
                 $motDePasse = $manager->connexionReussie($email);

@@ -529,10 +529,10 @@ class utilitaire
         $valide = utilitaire::validerType($description, $messagesErreurs, "description d'un groupe");
 
         // 3. Longueur de la chaine
-        $valide = utilitaire::validerTaille($description, 0, 255, $messagesErreurs, "description d'un groupe");
+        $valide = utilitaire::validerTaille($description, 10, 200, $messagesErreurs, "description d'un groupe");
 
         // 4. Format des données
-        $valide = utilitaire::validerPreg($description, "/^[a-zA-ZÀ-ÿ0-9- ',.]+$/", $messagesErreurs, "description d'un groupe");
+        $valide = utilitaire::validerPreg($description, "/^[a-zA-ZÀ-ÿ0-9- `',.]+$/", $messagesErreurs, "description d'un groupe");
 
         return $valide;
     }

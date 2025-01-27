@@ -144,7 +144,7 @@
 								<input type="text" name="description" class="form-control" id="description" required placeholder="Entrez une description valide">
 							</div>
 							<div class="mb-3">
-								<label for="description" class="form-label">Choisir ses contacts</label>
+								<label for="description" class="form-label">Ajoutez vos contacts à votre groupe</label>
 								{% if contacts %}
 									<table class="table table-bordered table-hover">
 										<thead>
@@ -175,7 +175,7 @@
 								<a class="px-5 btn btn-secondary" href="index.php?controleur=groupes&methode=lister" role="button">Revenir à mes groupes</a>
 							</div>
 							<div class="mb-3 text-center pt-3">
-								<button type="submit" class="btn btn-primary">Ajouter un groupe</button>
+								<button type="submit" class="btn btn-primary">Créer le groupe</button>
 							</div>
 						</form>
 					</div>
@@ -186,7 +186,7 @@
 {% endblock %}
 {% block javascripts %}
 	{{ parent() }}
-	 <script>
+	<script>
 			        $(document).ready(function() {
 			            $('#myTable').DataTable({
 			                language: {
