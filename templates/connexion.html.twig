@@ -19,14 +19,26 @@
 							<form id="formConnexion" action="index.php?controleur=utilisateur&methode=connexion" method="post">
 								<div class="mb-3">
 									<label for="exampleInputEmail1" class="form-label">E-mail *</label>
-									<input type="email" name="email" id="exampleInputEmail1" class="form-control form-control-lg" required maxlength="255" minlength="5" title="Entrez l'adresse email du compte que vous souhaitez utiliser" placeholder="Entrez votre e-mail">
+									<input type="email" name="email" id="exampleInputEmail1" class="form-control form-control-lg"
+										required maxlength="255" minlength="5"
+										title="Entrez l'adresse email du compte que vous souhaitez utiliser"
+										placeholder="Entrez votre e-mail">
+									<small id="emailError" class="text-danger"></small>
 								</div>
 								<div class="mb-3">
 									<label for="exampleInputPassword1" class="form-label">Mot de passe *</label>
-									<input type="password" name="pwd" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Entrez votre mot de passe" required maxlength="25" minlength="8" title="Le mot de passe doit contenir au moins : une lettre minuscule, une majuscule, un chiffre et un caractère spécial, et être compris entre 8 et 25 caractères." pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$">
+									<input type="password" name="pwd" class="form-control form-control-lg" id="exampleInputPassword1"
+										placeholder="Entrez votre mot de passe" required maxlength="25" minlength="8"
+										title="Le mot de passe doit contenir au moins : une lettre minuscule, une majuscule, un chiffre et un caractère spécial, et être compris entre 8 et 25 caractères."
+										pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$">
+									<small id="passwordError" class="text-danger"></small>
 								</div>
-								<a class="d-block mb-3 text-center" href="index.php?controleur=utilisateur&methode=premiereInscription">Pas encore de compte ? S'inscrire</a>
-								<a class="d-block mb-3 text-center" href="index.php?controleur=utilisateur&methode=demanderReinitialisationMail">Mot de passe oublié ? Le réinitialiser</a>
+								<a class="d-block mb-3 text-center" href="index.php?controleur=utilisateur&methode=premiereInscription">
+									Pas encore de compte ? S'inscrire
+								</a>
+								<a class="d-block mb-3 text-center" href="index.php?controleur=utilisateur&methode=demanderReinitialisationMail">
+									Mot de passe oublié ? Le réinitialiser
+								</a>
 								<button id="boutonConnexion" type="submit" class="btn btn-primary w-100 py-2">Se connecter</button>
 							</form>
 						</div>
@@ -51,6 +63,6 @@
 		</div>
 	</main>
     {% block javascripts %}
-		<script src="js/connexion.js"></script>
+		<script src="js/formulaireConnexion.js"></script>
 	{% endblock %}
 {% endblock %}

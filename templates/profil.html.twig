@@ -20,14 +20,16 @@
 
 						<!-- Formulaire -->
 						<div class="w-75">
-							<form method="POST" action="index.php?controleur=utilisateur&methode=modifier&id={{ utilisateurGlobal.getId }}&type='util'" enctype="multipart/form-data">
+							<form method="POST" id="formProfil" action="index.php?controleur=utilisateur&methode=modifier&id={{ utilisateurGlobal.getId }}&type='util'" enctype="multipart/form-data">
 								<div class="mb-3">
 									<label for="nom" class="form-label" style="color: #2c3e50;">Nom *</label>
 									<input type="text" class="form-control shadow-sm" id="nom" name="nom" value="{{ utilisateurGlobal.getNom }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="50" title="Le nom de votre compte" required>
+									<small id="nomError" class="text-danger"></small>
 								</div>
 								<div class="mb-3">
 									<label for="prenom" class="form-label" style="color: #2c3e50;">Prénom *</label>
 									<input type="text" class="form-control shadow-sm" id="prenom" name="prenom" value="{{ utilisateurGlobal.getPrenom }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="50" title="Le prénom de votre compte" required>
+									<small id="prenomError" class="text-danger"></small>
 								</div>
 								<div class="mb-3">
 									<label for="email" class="form-label" style="color: #2c3e50;">E-mail *</label>
@@ -39,7 +41,7 @@
 									<input type="file" class="form-control shadow-sm" id="photo" name="photo" style="border: 1px solid #ddd;" accept=".jpg, .png" title="La photo de profil de votre compte">
 								</div>
 								<div class="d-flex justify-content-between">
-									<button type="submit" class="btn btn-primary px-4 shadow-sm" style="background-color: #3498db; border: none;">Modifier mon profil</button>
+									<button  id="boutonModification" type="submit" class="btn btn-primary px-4 shadow-sm" style="background-color: #3498db; border: none;">Modifier mon profil</button>
 									<a class="btn btn-secondary" href="index.php?controleur=utilisateur&methode=demanderReinitialisationMail" role="button" >Réinitialiser mon mot de passe</a>
 								</div>
 							</form>
@@ -85,5 +87,7 @@
 		</div>
 	</div>
 </main>
-
+	{% block javascripts %}
+		<script src="js/formulaireModificationProfil.js"></script>
 	{% endblock %}
+{% endblock %}
