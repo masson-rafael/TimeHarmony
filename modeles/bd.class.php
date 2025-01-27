@@ -108,7 +108,7 @@ class Bd{
      * Effectue un backup incrémental
      * @return void
      */
-    public function incrementalBackup(): void {
+    public function backupTotale(): void {
         // Générer un nom de fichier unique basé sur la date
         $backupDir = "backup/";
         if (!file_exists($backupDir)) {

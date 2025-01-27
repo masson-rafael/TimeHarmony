@@ -38,11 +38,9 @@
 									<td>{{ nombrePersonnes[loop.index0] }}</td>
 									<td>
 										<a role="button" href="index.php?controleur=groupes&methode=afficherPageModification&id={{ groupe.id }}">
-											<i class="fa-solid fa-pencil"></i>
-										</a>
+										<i class="fa-solid fa-pencil"></i></a>
 										<a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleSuppression{{ groupe.id }}">
-											<i class="fa-solid fa-trash"></i>
-										</a>
+										<i class="fa-solid fa-trash"></i></a>
 									</td>
 								</tr>
 								<div class="modal fade" id="fenetreModaleSuppression{{ groupe.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -89,19 +87,22 @@
 				</div>
 				<div
 					class="d-flex align-items-center">
-					<!-- Formulaire -->
+					<!-- Formulaire Modification -->
 					<div class="w-100">
-						<form method="POST" action="index.php?controleur=groupes&methode=modifier&id={{ groupeCourant.id }}">
+						<form id="formModificationGroupe" method="POST" action="index.php?controleur=groupes&methode=modifier&id={{ groupeCourant.id }}">
 							<div class="mb-3">
 								<label for="nom" class="form-label" style="color: #2c3e50;">Nom *</label>
 								<input type="text" class="form-control shadow-sm" id="nom" name="nom" value="{{ groupeCourant.nom }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="50" required>
+								<small id="nomGroupeError" class="text-danger"></small>
 							</div>
 							<div class="mb-3">
-								<label for="description" class="form-label" style="color: #2c3e50;">Description *</label>
+								<label for="description" maxlength="101" class="form-label" style="color: #2c3e50;">Description *</label>
 								<input type="text" class="form-control shadow-sm" id="description" name="description" value="{{ groupeCourant.description }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="255" required>
+								<small id="descriptionGroupeError" class="text-danger"></small>
 							</div>
 							<div class="mb-3">
 								<label for="contacts[]" class="form-label" style="color: #2c3e50;">Membres *</label>
+								<div class="card p-4 shadow-sm">
 								<table class="table table-bordered table-hover">
 									<thead>
 										<tr class="table-primary">
@@ -123,9 +124,11 @@
 										{% endfor %}
 									</tbody>
 								</table>
+								<small id="contactsGroupeError" class="text-danger"></small>
+								</div>
 							</div>
 							<div class="text-center mt-4">
-								<button type="submit" class="btn btn-primary px-4 shadow-sm" style="background-color: #3498db; border: none;">Modifier mon groupe</button>
+								<button id="boutonModificationGroupe" type="submit" class="btn btn-primary px-4 shadow-sm" style="background-color: #3498db; border: none;">Modifier mon groupe</button>
 							</div>
 						</form>
 					</div>
@@ -134,18 +137,21 @@
 				<div class="row justify-content-center mt-5 h-75">
 					<div class="col-md-6">
 						<h4 class="text-center mb-4">Créer un groupe</h4>
-						<form action="index.php?controleur=groupes&methode=creer" method="post" required>
+						<form id="formCreationGroupe" action="index.php?controleur=groupes&methode=creer" method="post" required>
 							<div class="mb-3">
 								<label for="nom" class="form-label">Nom *</label>
 								<input type="text" name="nom" class="form-control" id="nom" required placeholder="Entrez le nom de votre groupe" maxlength="50">
+								<small id="nomError" class="text-danger"></small>
 							</div>
 							<div class="mb-3">
 								<label for="description" class="form-label">Description *</label>
-								<input type="text" name="description" class="form-control" id="description" required placeholder="Entrez une description valide">
+								<textarea type="text" name="description" class="form-control" maxlength="101" id="description" required placeholder="Entrez une description valide"></textarea>
+								<small id="descriptionError" class="text-danger"></small>
 							</div>
 							<div class="mb-3">
 								<label for="description" class="form-label">Choisir ses contacts</label>
 								{% if contacts %}
+								<div class="card p-4 shadow-sm">
 									<table class="table table-bordered table-hover">
 										<thead>
 											<tr class="table-primary">
@@ -164,18 +170,20 @@
 											{% endfor %}
 										</tbody>
 									</table>
+								</div>
 								{% else %}
 									<div class="alert alert-info text-center" role="alert">Aucun contact trouvé. Ajoutez-en un ci-dessous.</div>
 									<div class="text-center">
 										<a class="px-5 btn btn-secondary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter des contacts</a>
 									</div>
 								{% endif %}
+								<small id="contactsError" class="text-danger"></small>
 							</div>
 							<div class="text-center pt-5">
 								<a class="px-5 btn btn-secondary" href="index.php?controleur=groupes&methode=lister" role="button">Revenir à mes groupes</a>
 							</div>
 							<div class="mb-3 text-center pt-3">
-								<button type="submit" class="btn btn-primary">Ajouter un groupe</button>
+								<button id="boutonCreationGroupe" type="submit" class="btn btn-primary">Ajouter un groupe</button>
 							</div>
 						</form>
 					</div>
@@ -185,18 +193,20 @@
 	</main>
 {% endblock %}
 {% block javascripts %}
+	<script src="js/formulaireCreationGroupe.js"></script>
+	<script src="js/formulaireModificationGroupe.js"></script>
 	{{ parent() }}
-	 <script>
-			        $(document).ready(function() {
-			            $('#myTable').DataTable({
-			                language: {
-			                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
-			                },
-			                responsive: true, // Important pour les petits écrans
-			                autoWidth: false, // Évite les problèmes de calcul automatique de largeur
-			                pageLength: 10,
-			                ordering: true
-			            });
-			        });
-			    </script>
+	<script>
+		$(document).ready(function() {
+			$('#myTable').DataTable({
+				language: {
+					url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
+				},
+				responsive: true, // Important pour les petits écrans
+				autoWidth: false, // Évite les problèmes de calcul automatique de largeur
+				pageLength: 10,
+				ordering: true
+			});
+		});
+	</script>
 {% endblock %}

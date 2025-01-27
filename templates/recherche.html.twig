@@ -19,7 +19,7 @@
 							<div class="card p-4 shadow-sm">
 								<h5 class="fw-bold text-center mb-3">Choisir ses contacts :</h5>
 								{% if contacts|length > 0 %}
-									<table class="table table-bordered table-hover">
+									<table id="contacts" class="table table-bordered table-hover">
 										<thead>
 											<tr class="table-primary">
 												<th scope="col">#</th>
@@ -40,6 +40,7 @@
 											{% endfor %}
 										</tbody>
 									</table>
+									<small id="contactsError" class="text-danger"></small>
 								{% else %}
 									<div class="row justify-content-center mt-4 h-25">
 										<div class="col-md-8">
@@ -60,7 +61,7 @@
 							<div class="card p-4 shadow-sm">
 								<h5 class="fw-bold text-center mb-3">Choisir des groupes :</h5>
 								{% if groupes|length > 0 %}
-									<table class="table table-bordered table-hover">
+									<table id="groupes" class="table table-bordered table-hover">
 										<thead>
 											<tr class="table-primary">
 												<th scope="col">#</th>
@@ -78,6 +79,7 @@
 											{% endfor %}
 										</tbody>
 									</table>
+									<small id="groupesError" class="text-danger"></small>
 								{% else %}
 									<div class="row justify-content-center mt-4 h-25">
 										<div class="col-md-8">
@@ -99,26 +101,28 @@
 								<h5 class="fw-bold text-center mb-3">Période de recherche :</h5>
 								<div class="mb-3">
 									<label for="Datedebut" class="form-label">Début *</label>
-									<input name="debut" type="date" class="form-control" id="Datedebut" required title="Entrez la date de début de votre recherche">
+									<input name="debut" type="date" class="form-control" id="dateDebut" required title="Entrez la date de début de votre recherche">
+									<small id="dateDebutError" class="text-danger"></small>
 								</div>
 
 								<div class="mb-3">
 									<label for="Datefin" class="form-label">Fin *</label>
-									<input name="fin" type="date" class="form-control" id="Datefin" required title="Entrez la date de fin de votre recherche">
+									<input name="fin" type="date" class="form-control" id="dateFin" required title="Entrez la date de fin de votre recherche">
+									<small id="dateFinError" class="text-danger"></small>
 								</div>
 
 								<div class="mb-3">
 									<label for="dureeMin" class="form-label">Durée exacte du rendez-vous *</label>
-									<input name="dureeMin" type="time" class="form-control" value="00:05" min="00:05" required title="Entrez la durée minimale du créneau à rechercher">
+									<input id="duree" name="dureeMin" type="time" class="form-control" value="01:00" min="00:05" required title="Entrez la durée minimale du créneau à rechercher">
+									<small id="dureeError" class="text-danger"></small>
 								</div>
 							</div>
 						</div>
 					</div>
 
-
 					<!-- Section Bouton -->
 					<div class="text-center mb-4">
-						<button type="submit" class="btn btn-primary shadow-lg hover-shadow">Rechercher des créneaux de rendez-vous</button>
+						<button id="boutonLancerRecherche" type="submit" class="btn btn-primary shadow-lg hover-shadow">Rechercher des créneaux de rendez-vous</button>
 					</div>
 				</form>
 			</div>
@@ -142,6 +146,7 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="js/recherche.js"></script>
+	<script src="js/formulaireRecherche.js"></script>
     <script>
         const membres = {{ membres|json_encode|raw }}; // Récupérer les membres des groupes
         {# 
