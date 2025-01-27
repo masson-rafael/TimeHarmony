@@ -32,18 +32,22 @@
                 </a>
             </div>
         </div>
+        <!-- Affichage des messages -->
         {% if message %}
-        <div class="row justify-content-center align-items-center">
-            <div class="alert alert-success alert-dismissible fade show mt-4 w-50" role="alert">
-                {% for messages in message %}
-                    {{messages}}
-                    <br>
-                {% endfor %}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="bg-success d-flex flex-column position-absolute me-5 end-0 toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+                <div class="toast-header">
+                    <strong class="me-auto">Information</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {% for messages in message %}
+                        {{ messages }}
+                        <br>
+                    {% endfor %}
+                </div>
             </div>
-        </div>
         {% endif %}
 	</div>
-	</main>
+</main>
 
 {% endblock %}
