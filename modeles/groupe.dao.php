@@ -236,7 +236,7 @@ class GroupeDao
      * @param int|null $idContact id de la personne que l'on ajoute au groupe
      * @return void
      */
-    public function DemanderAjoutMembreGroupe(?int $id, ?int $idContact): void
+    public function demanderAjoutMembreGroupe(?int $id, ?int $idContact): void
     {
         $sql = "INSERT INTO " . PREFIXE_TABLE . "ajouter (idGroupe, idUtilisateur) VALUES (:idGroupe, :idUtilisateur)";
         $pdoStatement = $this->pdo->prepare($sql);

@@ -405,9 +405,11 @@ class UtilisateurDao
      * @param int|null $id id de l'utilisateur dont on veut les demandes recues
      */
     public function getDemandesGroupeRecues(?int $id): ?array {
-        $sql = "SELECT U.*
+        $sql = "SELECT G.id, G.nom AS nomGr, G.description, U2.nom, U2.prenom
         FROM " . PREFIXE_TABLE . "utilisateur U
         JOIN " . PREFIXE_TABLE . "ajouter A ON A.idUtilisateur = U.id
+        JOIN " . PREFIXE_TABLE . "groupe G ON G.id = A.idGroupe
+        JOIN " . PREFIXE_TABLE . "utilisateur U2 ON U2.id = G.idChef
         WHERE A.idUtilisateur = :id";
 
         $stmt = $this->pdo->prepare($sql);
@@ -424,7 +426,7 @@ class UtilisateurDao
      * @param int|null $idReceveur ID de l'utilisateur ayant reçu la demande.
      * @return void
      */
-    public function supprimerDemandeEnvoyee(?int $idEnvoyeur, ?int $idReceveur): void {
+    public function supprimerDemandeContactEnvoyee(?int $idEnvoyeur, ?int $idReceveur): void {
         $sql = "DELETE FROM ".PREFIXE_TABLE."demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2= :id2";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id1' => $idEnvoyeur, 'id2' => $idReceveur));
@@ -437,7 +439,7 @@ class UtilisateurDao
      * @param int|null $idDemandeur ID de l'utilisateur ayant envoyé la demande.
      * @return void
      */
-    public function refuserDemande(?int $idReceveur, ?int $idDemandeur): void {	
+    public function refuserDemandeContact(?int $idReceveur, ?int $idDemandeur): void {	
         $sql = "DELETE FROM ".PREFIXE_TABLE."demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2= :id2";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id1' => $idDemandeur, 'id2' => $idReceveur));
@@ -450,7 +452,7 @@ class UtilisateurDao
      * @param int|null $idDemandeur ID de l'utilisateur ayant envoyé la demande.
      * @return void
      */
-    public function accepterDemande(?int $idReceveur, ?int $idDemandeur): void {	
+    public function accepterDemandeContact(?int $idReceveur, ?int $idDemandeur): void {	
         /**
          * Etape 1 : Ajout dans la table contacter la relation ($idReceveur, $idDemandeur)
          * Etape 2 : Ajout dans la table contacter la relation ($idDemandeur, $idReceveur)
@@ -467,6 +469,36 @@ class UtilisateurDao
         $sql = "DELETE FROM ".PREFIXE_TABLE."demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2= :id2";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('id1' => $idDemandeur, 'id2' => $idReceveur));
+    }
+
+    /**
+     * Refuse une demande de groupe reçue par un utilisateur.
+     *
+     * @param int|null $idGroupe ID du groupe ayant envoyé la demande.
+     * @param int|null $idUtilisateur ID de l'utilisateur ayant recu la demande.
+     * @return void
+     */
+    public function refuserDemandeGroupe(?int $idGroupe, ?int $idUtilisateur): void {	
+        $sql = "DELETE FROM ".PREFIXE_TABLE."ajouter WHERE idGroupe = :idGrp AND idUtilisateur= :idUtil";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('idGrp' => $idGroupe, 'idUtil' => $idUtilisateur));
+    }
+
+    /**
+     * Accepte une demande de groupe reçue par un utilisateur.
+     *
+     * @param int|null $idGroupe ID du groupe ayant envoyé la demande.
+     * @param int|null $idUtilisateur ID de l'utilisateur ayant recu la demande.
+     * @return void
+     */
+    public function accepterDemandeGroupe(?int $idGroupe, ?int $idUtilisateur): void {	
+        $sql = "INSERT INTO ".PREFIXE_TABLE."composer (idGroupe, idUtilisateur) VALUES (:idGrp, :idUtil)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('idGrp' => $idGroupe, 'idUtil' => $idUtilisateur));
+
+        $sql = "DELETE FROM ".PREFIXE_TABLE."ajouter WHERE idGroupe = :idGrp AND idUtilisateur= :idUtil";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('idGrp' => $idGroupe, 'idUtil' => $idUtilisateur));
     }
 
     /**
@@ -550,6 +582,21 @@ class UtilisateurDao
      */
     public function getNombreDemandesDeContact(?int $id): ?int {
         $sql = "SELECT COUNT(idUtilisateur2) AS nombreDemandes FROM " . PREFIXE_TABLE . "demander WHERE idUtilisateur2 = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("id" => $id));
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        $result = $result['nombreDemandes'];
+        return $result;
+    }
+
+    /**
+     * Fonction qui retourne le nombre de demandes de groupe en cours d'un utilisateur
+     * 
+     * @param int|null $id id de l'utilisateur dont on veut chercher les demandes
+     * @return int|null le nombre de demandes
+     */
+    public function getNombreDemandesDeGroupe(?int $id): ?int {
+        $sql = "SELECT COUNT(idUtilisateur) AS nombreDemandes FROM " . PREFIXE_TABLE . "ajouter WHERE idUtilisateur = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
         $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);

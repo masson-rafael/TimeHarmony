@@ -313,11 +313,11 @@ class ControllerUtilisateur extends Controller
      * Fonction qui supprime la demande de contact dans la BD
      * @return void
      */
-    public function supprimerDemandeEmise(): void {
+    public function supprimerDemandeContactEmise(): void {
         $idReceveur = $_GET['id'];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
-        $tabDemandesPourMoi = $manager->supprimerDemandeEnvoyee($_SESSION['utilisateur']->getId(), $idReceveur);
+        $tabDemandesPourMoi = $manager->supprimerDemandeContactEnvoyee($_SESSION['utilisateur']->getId(), $idReceveur);
         $tableauMessages[] = "Demande supprimée avec succès !";
         $this->afficherPageNotifications($tableauMessages);
     }
@@ -326,11 +326,11 @@ class ControllerUtilisateur extends Controller
      * Fonction qui refuse la demande de contact dans la BD
      * @return void
      */
-    public function refuserDemandeRecue(): void {
+    public function refuserDemandeContactRecue(): void {
         $idReceveur = $_GET['id'];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
-        $tabDemandesPourMoi = $manager->refuserDemande($_SESSION['utilisateur']->getId(), $idReceveur);
+        $tabDemandesPourMoi = $manager->refuserDemandeContact($_SESSION['utilisateur']->getId(), $idReceveur);
         $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
         $utilisateur->getDemandes();
         $manager->miseAJourUtilisateur($utilisateur);
@@ -344,11 +344,47 @@ class ControllerUtilisateur extends Controller
      * Fonction qui accepte la demande de contact dans la BD
      * @return void
      */
-    public function accepterDemandeRecue(): void {
+    public function accepterDemandeContactRecue(): void {
         $idReceveur = $_GET['id'];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
-        $tabDemandesPourMoi = $manager->accepterDemande($_SESSION['utilisateur']->getId(), $idReceveur);
+        $tabDemandesPourMoi = $manager->accepterDemandeContact($idReceveur, $_SESSION['utilisateur']->getId());
+        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur->getDemandes();
+        $manager->miseAJourUtilisateur($utilisateur);
+        $_SESSION['utilisateur'] = $utilisateur;
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+        $tableauMessages[] = "Demande acceptée avec succès !";
+        $this->afficherPageNotifications($tableauMessages);
+    }
+
+    /**
+     * Fonction qui refuse la demande d'ajout au groupe dans la BD
+     * @return void
+     */
+    public function refuserDemandeGroupeRecue(): void {
+        $idGroupe = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->refuserDemandeGroupe($idGroupe, $_SESSION['utilisateur']->getId());
+        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur->getDemandes();
+        $manager->miseAJourUtilisateur($utilisateur);
+        $_SESSION['utilisateur'] = $utilisateur;
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+        $tableauMessages[] = "Demande refusée avec succès !";
+        $this->afficherPageNotifications($tableauMessages);
+    }
+
+    /**
+     * Fonction qui accepte la demande d'ajout au groupe dans la BD
+     * @return void
+     */
+    public function accepterDemandeGroupeRecue(): void {
+        $idGroupe = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->accepterDemandeGroupe($idGroupe, $_SESSION['utilisateur']->getId());
         $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
         $utilisateur->getDemandes();
         $manager->miseAJourUtilisateur($utilisateur);

@@ -43,7 +43,7 @@
 												{{demande.nom}}</h1>
 											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 										</div>
-										<form action="index.php?controleur=contacts&methode=supprimerDemandeEmise&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
+										<form action="index.php?controleur=utilisateur&methode=supprimerDemandeContactEmise&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
 											<div class="modal-body">
 												<label>Êtes-vous sûr de vouloir supprimer la demande concernant le contact
 													{{demande.prenom}}
@@ -106,7 +106,7 @@
 											{{demande.nom}}</h1>
 										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
-									<form action="index.php?controleur=contacts&methode=accepterDemandeRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
+									<form action="index.php?controleur=utilisateur&methode=accepterDemandeContactRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
 										<div class="modal-body">
 											<label>Êtes-vous sûr de vouloir accepter la demande de contact de 
 												{{demande.prenom}}
@@ -130,7 +130,7 @@
 											{{demande.nom}}</h1>
 										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
-									<form action="index.php?controleur=contacts&methode=refuserDemandeRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
+									<form action="index.php?controleur=utilisateur&methode=refuserDemandeContactRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
 										<div class="modal-body">
 											<label>Êtes-vous sûr de vouloir refuser la demande de contact de 
 												{{demande.prenom}}
@@ -175,18 +175,18 @@
 			<table id="myTable2" class="table table-striped mw-75">
 				<thead>
 					<tr>
-						<th>Image de profil</th>
-						<th>Prenom</th>
-						<th>Nom</th>
+						<th>Nom du Groupe</th>
+						<th>Description</th>
+						<th>Chef</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody>
 					{% for demande in demandesGroupeRecues %}
 						<tr>
-							<td><img src="image/photo_user/{{ demande.photoDeProfil }}" alt="photoDeProfil"  class="rounded-circle" style="width: 50px; height: 50px;"></td>
-							<td>{{ demande.prenom }}</td>
-							<td>{{ demande.nom }}</td>
+							<td>{{ demande.nomGr }}</td>
+							<td>{{ demande.description }}</td>
+							<td>{{ demande.nom }} {{ demande.prenom }}</td>
 							<td>
 								<a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleRecueAccepte{{demande.id}}" aria-expanded="false">
 								<i class="fa-solid fa-check"></i></a>
@@ -198,17 +198,12 @@
 							<div class="modal-dialog modal-lg">
 								<div class="modal-content">
 									<div class="modal-header">
-										<h1 class="modal-title fs-5" id="exampleModalLabel">Accepter la demande de 
-											{{demande.prenom}}
-											{{demande.nom}}</h1>
+										<h1 class="modal-title fs-5" id="exampleModalLabel">Accepter la demande d'ajout au groupe {{demande.nomGr}}</h1>
 										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
-									<form action="index.php?controleur=contacts&methode=accepterDemandeRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
+									<form action="index.php?controleur=utilisateur&methode=accepterDemandeGroupeRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
 										<div class="modal-body">
-											<label>Êtes-vous sûr de vouloir accepter la demande de contact de 
-												{{demande.prenom}}
-												{{demande.nom}}
-												?</label>
+											<label>Êtes-vous sûr de vouloir accepter la demande d'ajout au groupe {{demande.nomGr}}	?</label>
 										</div>
 										<div class="modal-footer">
 											<button type="submit" class="btn btn-primary" name="update_article">Accepter</button>
@@ -222,17 +217,12 @@
 							<div class="modal-dialog modal-lg">
 								<div class="modal-content">
 									<div class="modal-header">
-										<h1 class="modal-title fs-5" id="exampleModalLabel">Refuser la demande de 
-											{{demande.prenom}}
-											{{demande.nom}}</h1>
+										<h1 class="modal-title fs-5" id="exampleModalLabel">Refuser la demande d'ajout au groupe {{demande.nomGr}}</h1>
 										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
-									<form action="index.php?controleur=contacts&methode=refuserDemandeRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
+									<form action="index.php?controleur=utilisateur&methode=refuserDemandeGroupeRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
 										<div class="modal-body">
-											<label>Êtes-vous sûr de vouloir refuser la demande de contact de 
-												{{demande.prenom}}
-												{{demande.nom}}
-												?</label>
+											<label>Êtes-vous sûr de vouloir refuser la demande d'ajout au groupe {{demande.nomGr}} ?</label>
 										</div>
 										<div class="modal-footer">
 											<button type="submit" class="btn btn-primary" name="update_article">Refuser</button>
