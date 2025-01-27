@@ -214,14 +214,14 @@
 
             <script>  
             document.addEventListener('DOMContentLoaded', function () {
-                var toastElement = document.getElementById('toastAjoutPanier');
+                var toastElement = document.getElementById('toast');
                 var toast = new bootstrap.Toast(toastElement);
                 toast.show();
 
                 // Cacher le toast après 10 secondes
                 setTimeout(function () {
                     toast.hide();
-                }, 10000);
+                }, 5000);
             });     
             </script>
         {% endblock %}
