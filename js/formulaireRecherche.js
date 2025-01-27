@@ -146,16 +146,18 @@ function verifierPatternContacts() {
     // Si aucune case n'est cochée, affiche un message d'erreur
     if (checkedCount === 0) {
         const checkboxes = document.querySelectorAll('.form-check-input');
-        checkboxes.forEach(checkbox => {
-            contacts.style.color = 'red'; // Bordure rouge en cas d'erreur
-        });
+        // checkboxes.forEach(checkbox => {
+        //     contacts.style.color = 'red'; // Bordure rouge en cas d'erreur
+        // });
         contactsError.textContent = 'Au moins un contact ou groupe doit être sélectionné.';
         groupesContactError.textContent = 'Au moins un groupe ou contact doit être sélectionné.';
         return false;
     }
 
     // Si au moins une case est cochée, réinitialise l'erreur
-    contacts.style.borderColor = ''; // Bordure par défaut
+    // checkboxes.forEach(checkbox => {
+    //     contacts.style.color = ''; // Bordure rouge en cas d'erreur
+    // });
     contactsError.textContent = '';
     groupesContact.style.borderColor = ''; // Bordure par défaut
     groupesContactError.textContent = '';
