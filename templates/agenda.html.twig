@@ -154,7 +154,7 @@
         <!-- Affichage des messages -->
         {% if message %}
             <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
-                <div id="toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div id="toast" class="toast align-items-center text-white bg-{% if contientErreurs %}danger{% else %}success{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="d-flex">
                         <div class="toast-body">
                             {% for messages in message %}
