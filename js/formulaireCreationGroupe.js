@@ -9,18 +9,18 @@ let contacts = formulaire[2];
 let contactsError = document.getElementById('contactsError');
 
 // Ajout des evenements qui declechent les fonctions de validation à chaque input
-nom.addEventListener('input', verifierTousLesChamps);
-description.addEventListener('input', verifierTousLesChamps);
-contacts.addEventListener('change', verifierTousLesChamps);
+nom.addEventListener('input', verifierTousLesChampsCreation);
+description.addEventListener('input', verifierTousLesChampsCreation);
+contacts.addEventListener('change', verifierTousLesChampsCreation);
 
 // Préparation des champs au chargement du formulaire
-preparationChamps();
+preparationChampsCreation();
 
 // Fonction de préparation des champs
-function preparationChamps() {
+function preparationChampsCreation() {
     btn.disabled = true;
     nom.focus();
-    verifierTousLesChamps();
+    verifierTousLesChampsCreation();
 }
 
 // Fonction de vérication de l'adresse nom
@@ -83,6 +83,8 @@ function verifierPatternContacts() {
         }
     });
 
+    console.log(checkedCount);
+
     // Si aucune case n'est cochée, affiche un message d'erreur
     if (checkedCount === 0) {
         const checkboxes = document.querySelectorAll('.form-check-input');
@@ -101,7 +103,7 @@ function verifierPatternContacts() {
 
 
 // Fonction de vérification de la présence des champs
-function verifierPresence() {
+function verifierPresenceCreation() {
     if (nom.value === '' || description.value === '' || contacts.value === '') {
         return false;
     }
@@ -109,11 +111,11 @@ function verifierPresence() {
 }
 
 // Fonction générale de vérification de tous les champs
-function verifierTousLesChamps() {
+function verifierTousLesChampsCreation() {
     const nomCorrect = verifierPatternNom(nom);
     const descriptionCorrect = verifierPatternDescription(description);
     const contactsCorrect = verifierPatternContacts(contacts);
-    const presenceCorrect = verifierPresence();
+    const presenceCorrect = verifierPresenceCreation();
 
     // Activer ou désactiver le bouton en fonction des validations
     btn.disabled = !(nomCorrect && descriptionCorrect && presenceCorrect && contactsCorrect);
