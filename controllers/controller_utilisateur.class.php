@@ -280,6 +280,84 @@ class ControllerUtilisateur extends Controller
         );
     }
 
+    
+    /**
+     * Fonction permettant d'afficher le twig correspondant à la page des notifications
+     * @return void
+     */
+    public function afficherPageNotifications(?array $tableauMessage = null): void {
+        /**
+         * Step 1 : Appel de la fonction qui trouve ET RENVOIE les contacts que j'ai envoyé
+         * Step 2 : Appel de la fonction qui trouve ET RENVOIE les demandes de contact d'autres utilisateurs
+         * Step 3 : Appel de la fonction qui trouve et renvoie les demandes d'ajout au groupe
+         * Step 4 : Affichage du twig
+         */
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $demandesContactEnvoyees = $manager->getDemandesContactEnvoyees($_SESSION['utilisateur']->getId());
+        $demandesContactRecues = $manager->getDemandesContactRecues($_SESSION['utilisateur']->getId());
+
+        $demandesGroupeRecues = $manager->getDemandesGroupeRecues($_SESSION['utilisateur']->getId());
+
+        $template = $this->getTwig()->load('notifications.html.twig');
+        echo $template->render(array(
+            'demandesContactEnvoyees' => $demandesContactEnvoyees,
+            'demandesContactRecues' => $demandesContactRecues,
+            'demandesGroupeRecues' => $demandesGroupeRecues,
+            'message' => $tableauMessage
+        ));
+    }
+
+    
+    /**
+     * Fonction qui supprime la demande de contact dans la BD
+     * @return void
+     */
+    public function supprimerDemandeEmise(): void {
+        $idReceveur = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->supprimerDemandeEnvoyee($_SESSION['utilisateur']->getId(), $idReceveur);
+        $tableauMessages[] = "Demande supprimée avec succès !";
+        $this->afficherPageNotifications($tableauMessages);
+    }
+
+    /**
+     * Fonction qui refuse la demande de contact dans la BD
+     * @return void
+     */
+    public function refuserDemandeRecue(): void {
+        $idReceveur = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->refuserDemande($_SESSION['utilisateur']->getId(), $idReceveur);
+        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur->getDemandes();
+        $manager->miseAJourUtilisateur($utilisateur);
+        $_SESSION['utilisateur'] = $utilisateur;
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+        $tableauMessages[] = "Demande refusée avec succès !";
+        $this->afficherPageNotifications($tableauMessages);
+    }
+
+    /**
+     * Fonction qui accepte la demande de contact dans la BD
+     * @return void
+     */
+    public function accepterDemandeRecue(): void {
+        $idReceveur = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->accepterDemande($_SESSION['utilisateur']->getId(), $idReceveur);
+        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur->getDemandes();
+        $manager->miseAJourUtilisateur($utilisateur);
+        $_SESSION['utilisateur'] = $utilisateur;
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+        $tableauMessages[] = "Demande acceptée avec succès !";
+        $this->afficherPageNotifications($tableauMessages);
+    }
+
     /**
      * Listage de tous les utilisateurs
      * Redirection vers la page d'administration

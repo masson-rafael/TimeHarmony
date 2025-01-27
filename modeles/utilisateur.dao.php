@@ -370,7 +370,7 @@ class UtilisateurDao
      * @param int|null $id id de l'utilisateur dont on veut les demandes envoyées
      * @return array|null Liste des demandes ou null si aucune demande n'existe
      */
-    public function getDemandesEnvoyees(?int $id): ?array {
+    public function getDemandesContactEnvoyees(?int $id): ?array {
         $sql = "SELECT U.*
                 FROM " . PREFIXE_TABLE . "utilisateur U
                 JOIN " . PREFIXE_TABLE . "demander D ON D.idUtilisateur2 = U.id
@@ -387,7 +387,7 @@ class UtilisateurDao
      * Fonction permettant de renvoyer les demandes recues par l'utilisateur dont l'id est donné en parametre
      * @param int|null $id id de l'utilisateur dont on veut les demandes recues
      */
-    public function getDemandesRecues(?int $id): ?array {
+    public function getDemandesContactRecues(?int $id): ?array {
         $sql = "SELECT U.*
         FROM " . PREFIXE_TABLE . "utilisateur U
         JOIN " . PREFIXE_TABLE . "demander D ON D.idUtilisateur1 = U.id
@@ -395,6 +395,23 @@ class UtilisateurDao
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(array('idDemandeur' => $id));
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ?: null;
+    }
+
+    /**
+     * Fonction permettant de renvoyer les demandes recues par l'utilisateur dont l'id est donné en parametre
+     * @param int|null $id id de l'utilisateur dont on veut les demandes recues
+     */
+    public function getDemandesGroupeRecues(?int $id): ?array {
+        $sql = "SELECT U.*
+        FROM " . PREFIXE_TABLE . "utilisateur U
+        JOIN " . PREFIXE_TABLE . "ajouter A ON A.idUtilisateur = U.id
+        WHERE A.idUtilisateur = :id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array('id' => $id));
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $result ?: null;
