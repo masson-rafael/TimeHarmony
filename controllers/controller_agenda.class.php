@@ -54,23 +54,25 @@ class ControllerAgenda extends Controller
 
                 // Retourner un message de succès
                 $tableauErreurs[] = "Ajout réussi !";
-                $this->lister($tableauErreurs);
+                $this->lister($tableauErreurs, false);
             } else {
                 // Si l'agenda existe déjà, afficher un message d'erreur
                 $tableauErreurs[] = "Agenda avec cette URL existe déjà !";
-                $this->lister($tableauErreurs);
+                $this->lister($tableauErreurs, true);
             }
         } else {
             // Si le formulaire n'est pas correctement rempli, afficher la vue générique
-            $this->lister($tableauErreurs);
+            $this->lister($tableauErreurs, true);
         }
     }
 
     /**
      * Fonction permettant de lister les agendas
+     * @param array|null $tabMessages Tableau des messages
+     * @param bool|null $contientErreurs true si le tableau contient des erreurs, false sinon
      * @return void
      */
-    public function lister(?array $tabMessages = null): void {
+    public function lister(?array $tabMessages = null, ?bool $contientErreurs = false): void {
         $manager = new AgendaDao($this->getPdo());
         $id = $_SESSION['utilisateur']->getId();
         $agendas = $manager->getAgendasUtilisateur($id);
@@ -82,6 +84,7 @@ class ControllerAgenda extends Controller
             'agendas' => $agendas,
             'ajout' => false,
             'message' => $tabMessages,
+            'contientErreurs' => $contientErreurs,
         ));
     }
 
@@ -151,14 +154,14 @@ class ControllerAgenda extends Controller
                 $manager->modifierAgenda($id, $_POST['url'], $_POST['couleur'], $_POST['nom']);
                 // Retourner un message de succès
                 $tableauErreurs[] = "Modification réussie !";
-                $this->lister($tableauErreurs);
+                $this->lister($tableauErreurs, false);
             } else {
                 $tableauErreurs[] = "Agenda avec cette URL existe déjà !";
-                $this->lister($tableauErreurs); 
+                $this->lister($tableauErreurs, true); 
             }
         } else {
             // Si le formulaire n'est pas correctement rempli, afficher la vue générique
-            $this->lister($tableauErreurs);
+            $this->lister($tableauErreurs, true);
         }
     }
 
@@ -172,6 +175,6 @@ class ControllerAgenda extends Controller
         $manager = new AgendaDao($this->getPdo());
         $manager->supprimerAgenda($id);
         $messages[] = "Suppression réussie !";
-        $this->lister($messages);
+        $this->lister($messages, false);
     }
 }

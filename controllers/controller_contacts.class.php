@@ -38,16 +38,19 @@ class ControllerContacts extends Controller
     /**
      * Procedure appellee a l'affichage de la page qui affiche tout les contacts de l'utilisateur
      *
+     * @param array|null $tableauMessages tableau des messages à afficher
+     * @param bool|null $contientErreurs true si le tableau contient des erreurs, false sinon
      * @return void
      */
-    function lister(?array $tableauMessages = null): void {
+    function lister(?array $tableauMessages = null, ?bool $contientErreurs = false): void {
         $contacts = $this->recupererContacts($_SESSION['utilisateur']->getId());
         //Génération de la vue
         $template = $this->getTwig()->load('contacts.html.twig');
         echo $template->render(array(
             'menu' => 'contacts',
             'contacts' => $contacts,
-            'message' => $tableauMessages
+            'message' => $tableauMessages,
+            'contientErreurs' => $contientErreurs
         ));
     }
 
@@ -62,9 +65,10 @@ class ControllerContacts extends Controller
         $id2 = $_GET['id'];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
+        $userSupprime = $manager->find($id2);
         $manager->supprimerContact($id1,$id2);
-        $tableauMessages[] = "Contact supprimé avec succès !";
-        $this->lister($tableauMessages);
+        $tableauMessages[] = "Contact " . $userSupprime->getNom() . " " . $userSupprime->getPrenom() . " supprimé avec succès !";
+        $this->lister($tableauMessages, false);
     }
 
     /**
@@ -97,7 +101,8 @@ class ControllerContacts extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $manager->ajouterDemandeContact($id1,$id2);
-        $tableauMessages[] = "Contact ajouté avec succès !";
-        $this->lister($tableauMessages);
+        $utilisateurDemandeEnContact = $manager->find($id2);
+        $tableauMessages[] = "Contact " . $utilisateurDemandeEnContact->getNom() . " " . $utilisateurDemandeEnContact->getPrenom() . " ajouté avec succès !";
+        $this->lister($tableauMessages, false);
     }
 }

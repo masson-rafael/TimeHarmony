@@ -9,18 +9,27 @@ let contacts = formulaire[2];
 let contactsError = document.getElementById('contactsError');
 
 // Ajout des evenements qui declechent les fonctions de validation à chaque input
-nom.addEventListener('input', verifierTousLesChamps);
-description.addEventListener('input', verifierTousLesChamps);
-contacts.addEventListener('change', verifierTousLesChamps);
+nom.addEventListener('input', verifierTousLesChampsCreation);
+description.addEventListener('input', verifierTousLesChampsCreation);
+
+// Sélectionne toutes les cases à cocher de la table
+document.querySelectorAll('table input[type="checkbox"]').forEach(function(checkbox) {
+    // Ajoute un événement "click" à chaque case à cocher
+    checkbox.addEventListener('click', function() {
+        verifierTousLesChampsCreation(); // Appelle la fonction
+        console.log(checkbox.value); // Affiche la valeur associée à la case
+    });
+});
+
 
 // Préparation des champs au chargement du formulaire
-preparationChamps();
+preparationChampsCreation();
 
 // Fonction de préparation des champs
-function preparationChamps() {
+function preparationChampsCreation() {
     btn.disabled = true;
     nom.focus();
-    verifierTousLesChamps();
+    verifierTousLesChampsCreation();
 }
 
 // Fonction de vérication de l'adresse nom
@@ -73,6 +82,7 @@ function verifierPatternDescription(description) {
 
 function verifierPatternContacts() {
     // Sélectionne toutes les cases à cocher avec la classe 'form-check-input'
+    console.log('contacts appellee');
     const checkboxes = document.querySelectorAll('.form-check-input');
     let checkedCount = 0;
 
@@ -82,6 +92,8 @@ function verifierPatternContacts() {
             checkedCount++;
         }
     });
+
+    console.log(checkedCount);
 
     // Si aucune case n'est cochée, affiche un message d'erreur
     if (checkedCount === 0) {
@@ -101,7 +113,7 @@ function verifierPatternContacts() {
 
 
 // Fonction de vérification de la présence des champs
-function verifierPresence() {
+function verifierPresenceCreation() {
     if (nom.value === '' || description.value === '' || contacts.value === '') {
         return false;
     }
@@ -109,11 +121,11 @@ function verifierPresence() {
 }
 
 // Fonction générale de vérification de tous les champs
-function verifierTousLesChamps() {
+function verifierTousLesChampsCreation() {
     const nomCorrect = verifierPatternNom(nom);
     const descriptionCorrect = verifierPatternDescription(description);
     const contactsCorrect = verifierPatternContacts(contacts);
-    const presenceCorrect = verifierPresence();
+    const presenceCorrect = verifierPresenceCreation();
 
     // Activer ou désactiver le bouton en fonction des validations
     btn.disabled = !(nomCorrect && descriptionCorrect && presenceCorrect && contactsCorrect);
