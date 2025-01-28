@@ -98,8 +98,8 @@ class ControllerUtilisateur extends Controller
 
         if($compteUtilisateurCorrespondant == null) {
             // Échec de validation des entrées
-            $tableauErreurs[] = "Aucun compte avec cette adresse mail n'existe";
-            $this->genererVueConnexion($tableauErreurs, null);
+            $tableauErreurs[] = "Aucun compte avec cette adresse mail n'existe. Essayez de créer un compte";
+            $this->genererVueConnexion($tableauErreurs, null, true);
         } else {
             $compteActif = $compteUtilisateurCorrespondant->getStatutCompte() != "desactive";
             if ($emailValide && $passwdValide && $compteActif) {
@@ -127,19 +127,19 @@ class ControllerUtilisateur extends Controller
                         $tableauErreurs[] = "Mot de passe incorrect. Essayez de réinitialisez votre mot de passe";
                         $compteUtilisateurCorrespondant->gererEchecConnexion();
                         $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
-                        $this->genererVueConnexion($tableauErreurs, null);
+                        $this->genererVueConnexion($tableauErreurs, null, true);
                     }
                 } else {
                     // Compte inactif
                     $tableauErreurs[] = "Votre compte est bloqué. Temps restant avec deblocage : " . 
                         (string) abs($compteUtilisateurCorrespondant->tempsRestantAvantReactivationCompte()) . " secondes.";
                     $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
-                    $this->genererVueConnexion($tableauErreurs, null);
+                    $this->genererVueConnexion($tableauErreurs, null, true);
                 }
             } else {
                 // Échec de validation des entrées
                 $tableauErreurs[] = "Le compte n'a pas été activé";
-                $this->genererVueConnexion($tableauErreurs, null);
+                $this->genererVueConnexion($tableauErreurs, null, true);
             }
         }
     }
@@ -247,7 +247,7 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
     // Dans votre contrôleur ou gestionnaire de connexion
-    public function genererVueConnexion(?array $message, ?Utilisateur $utilisateur): void
+    public function genererVueConnexion(?array $message, ?Utilisateur $utilisateur, ?bool $contientErreurs): void
     {
         if ($utilisateur !== null) {
             // Stockage en session et définition de la variable globale
@@ -258,7 +258,8 @@ class ControllerUtilisateur extends Controller
 
         $template = $this->getTwig()->load('connexion.html.twig');
         echo $template->render([
-            'message' => $message
+            'message' => $message,
+            'contientErreurs' => $contientErreurs
         ]);
     }
 
@@ -511,6 +512,7 @@ class ControllerUtilisateur extends Controller
             $utilisateur = $manager->getObjetUtilisateur($_POST['email']);
             $token = $utilisateur->genererTokenReinitialisation();
             $manager->miseAJourUtilisateur($utilisateur);
+            $template = $this->getTwig()->load('connexion.html.twig');
 
             // En-têtes du mail
             $headers = "From: no-reply@timeharmony.com\r\n";
@@ -544,7 +546,6 @@ class ControllerUtilisateur extends Controller
                 $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé à $destinataire.";
             }
 
-            $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(array('message' => $messageErreur));
         }
     }
@@ -625,7 +626,7 @@ class ControllerUtilisateur extends Controller
             $this->getTwig()->addGlobal('utilisateurGlobal', null);
             unset($_SESSION['utilisateur']);
             $tableauErreurs[] = "Votre mot de passe a été réinitialisé avec succès ! Reconnectez-vous !";
-            $this->genererVueConnexion($tableauErreurs, null);
+            $this->genererVueConnexion($tableauErreurs, null, false);
         } else {
             $template = $this->getTwig()->load('reinitialisationMdp.html.twig');
             echo $template->render(
@@ -633,7 +634,8 @@ class ControllerUtilisateur extends Controller
                     'reinitialise' => false,
                     'message' => $tableauErreurs,
                     'email' => $_GET['email'],
-                    'token' => $_GET['token']
+                    'token' => $_GET['token'],
+                    'contientErreurs' => true,
                 )
             );
         }
@@ -665,6 +667,7 @@ class ControllerUtilisateur extends Controller
                 array(
                     'message' => $tableauMessages,
                     'email' => $emailUtilisateur,
+                    'contientErreurs' => false,
                 )
             );
         } else {
@@ -673,6 +676,7 @@ class ControllerUtilisateur extends Controller
             echo $template->render(
                 array(
                     'message' => $tableauMessages,
+                    'contientErreurs' => true,
                 )
             );
         }
@@ -721,11 +725,27 @@ class ControllerUtilisateur extends Controller
         // On met un @ car sur localhost, pas de serveur de mail
         if (@mail($destinataire, $sujet, $message, $headers)) {
             $messageErreur[] = "L'e-mail de confirmation de création de compte a été envoyé avec succès à $destinataire.";
+            $this->genererVueMenu($messageErreur, false);
         } else {
             $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé à $destinataire.";
+            $this->genererVueMenu($messageErreur, true);
         }
+    }
 
-        $template = $this->getTwig()->load('connexion.html.twig');
-        echo $template->render(array('message' => $messageErreur));
+    /**
+     * Fonction qui génère la vue du menu
+     * 
+     * @param array|null $tabErreurs tableau des erreurs
+     * @param bool|null $contientErreurs true si le tableau contient des erreurs, false sinon
+     * @return void
+     */
+    public function genererVueMenu(?array $tabErreurs, ?bool $contientErreurs = false): void {
+        $template = $this->getTwig()->load('menu.html.twig');
+        echo $template->render(
+            array(
+                'message' => $tabErreurs,
+                'contientErreurs' => $contientErreurs
+            )
+        );
     }
 }

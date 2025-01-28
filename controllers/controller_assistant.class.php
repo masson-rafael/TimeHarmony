@@ -32,7 +32,7 @@ class ControllerAssistant extends Controller
      * Fonction qui permet de générer la vue qui contiendra les paramètres de la recherche
      * @return void
      */
-    public function genererVueRecherche(?array $tabMessages = null): void
+    public function genererVueRecherche(?array $tabMessages = null, ?bool $contientErreurs = false): void
     {
 
         // vide la variable de session nbUserSelectionné
@@ -67,6 +67,7 @@ class ControllerAssistant extends Controller
             'groupes' => $groupes,
             'message' => $tabMessages,
             'membres' => $membres,
+            'contientErreurs' => $contientErreurs
         ));
     }
 
@@ -224,7 +225,7 @@ class ControllerAssistant extends Controller
             $nombreUtilisateursSeclectionnes = $_SESSION['nbUserSelectionné'];
             $this->genererVueCreneaux($datesCommunes, $tailleContacts, $nombreUtilisateursSeclectionnes);
         } else {
-            $this->genererVueRecherche($messagesErreur);
+            $this->genererVueRecherche($messagesErreur, true);
         }
     }
 
