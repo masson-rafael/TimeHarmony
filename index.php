@@ -21,8 +21,6 @@ try  {
 
     //Gestion de la page d'accueil par défaut
     if ($controllerName == '' && $methode ==''){
-        //$controllerName='index';
-        //$methode='lister';
         $template = $twig->load('index.html.twig');
         echo $template->render(array());
     }

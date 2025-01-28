@@ -80,6 +80,7 @@ class ControllerAgenda extends Controller
 
         //Affichage de la page
         echo $template->render(array(
+            'menu' => "agenda",
             'agendas' => $agendas,
             'ajout' => false,
             'message' => $tabMessages,
@@ -108,6 +109,7 @@ class ControllerAgenda extends Controller
         $template = $this->getTwig()->load('agenda.html.twig');
         echo $template->render(
             array(
+                'menu' => "agenda",
                 'message' => $erreurs,
                 'ajout' => false,
             )
@@ -123,6 +125,7 @@ class ControllerAgenda extends Controller
         $template = $this->getTwig()->load('agenda.html.twig');
         echo $template->render(
             array(
+                'menu' => "agenda",
                 'ajout' => true,
             )
         );

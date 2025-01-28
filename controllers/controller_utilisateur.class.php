@@ -36,15 +36,15 @@ class ControllerUtilisateur extends Controller
         $tableauErreurs = [];
 
         $emailValide = utilitaire::validerEmail(htmlspecialchars($_POST['email']), $tableauErreurs);
-        $nomValide = utilitaire::validerNom(htmlspecialchars($_POST['nom']), $tableauErreurs);
-        $prenomValide = utilitaire::validerPrenom(htmlspecialchars($_POST['prenom']), $tableauErreurs);
-        $mdpValide = utilitaire::validerMotDePasseInscription(htmlspecialchars($_POST['pwd']), $tableauErreurs, $_POST['pwdConfirme']);
+        $nomValide = utilitaire::validerNom(htmlspecialchars($_POST['nom'],ENT_NOQUOTES), $tableauErreurs);
+        $prenomValide = utilitaire::validerPrenom(htmlspecialchars($_POST['prenom'],ENT_NOQUOTES), $tableauErreurs);
+        $mdpValide = utilitaire::validerMotDePasseInscription(htmlspecialchars($_POST['pwd'],ENT_NOQUOTES), $tableauErreurs, $_POST['pwdConfirme']);
 
         if ($emailValide && $nomValide && $prenomValide && $mdpValide) {
             $email = htmlspecialchars($_POST['email']);
-            $nom = htmlspecialchars($_POST['nom']);
-            $prenom = htmlspecialchars($_POST['prenom']);
-            $mdp = htmlspecialchars($_POST['pwd']);
+            $nom = htmlspecialchars($_POST['nom'],ENT_NOQUOTES);
+            $prenom = htmlspecialchars($_POST['prenom'],ENT_NOQUOTES);
+            $mdp = htmlspecialchars($_POST['pwd'],ENT_NOQUOTES);
 
             $manager = new UtilisateurDao($pdo); //Lien avec PDO
             /**
@@ -91,7 +91,7 @@ class ControllerUtilisateur extends Controller
         
         // Validation des entrées
         $emailValide = utilitaire::validerEmail(htmlspecialchars($_POST['email']), $tableauErreurs);
-        $passwdValide = utilitaire::validerMotDePasseInscription(htmlspecialchars($_POST['pwd']), $tableauErreurs);
+        $passwdValide = utilitaire::validerMotDePasseInscription(htmlspecialchars($_POST['pwd'],ENT_NOQUOTES), $tableauErreurs);
 
         $manager = new UtilisateurDao($pdo);
         $compteUtilisateurCorrespondant = $manager->getObjetUtilisateur(htmlspecialchars($_POST['email']));
@@ -107,7 +107,7 @@ class ControllerUtilisateur extends Controller
                 $compteUtilisateurCorrespondant->reactiverCompte();
 
                 $email = htmlspecialchars($_POST['email']);
-                $pwd = htmlspecialchars($_POST['pwd']);
+                $pwd = htmlspecialchars($_POST['pwd'],ENT_NOQUOTES);
                 
                 // On recupere un tuple avec un booleen et le mdp hache
                 $motDePasse = $manager->connexionReussie($email);
@@ -279,6 +279,126 @@ class ControllerUtilisateur extends Controller
                 'res' => $utilisateurs,
             )
         );
+    }
+
+    
+    /**
+     * Fonction permettant d'afficher le twig correspondant à la page des notifications
+     * @return void
+     */
+    public function afficherPageNotifications(?array $tableauMessage = null, ?bool $contientErreurs = false): void {
+        /**
+         * Step 1 : Appel de la fonction qui trouve ET RENVOIE les contacts que j'ai envoyé
+         * Step 2 : Appel de la fonction qui trouve ET RENVOIE les demandes de contact d'autres utilisateurs
+         * Step 3 : Appel de la fonction qui trouve et renvoie les demandes d'ajout au groupe
+         * Step 4 : Affichage du twig
+         */
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $demandesContactEnvoyees = $manager->getDemandesContactEnvoyees($_SESSION['utilisateur']->getId());
+        $demandesContactRecues = $manager->getDemandesContactRecues($_SESSION['utilisateur']->getId());
+
+        $demandesGroupeRecues = $manager->getDemandesGroupeRecues($_SESSION['utilisateur']->getId());
+
+        $template = $this->getTwig()->load('notifications.html.twig');
+        echo $template->render(array(
+            'demandesContactEnvoyees' => $demandesContactEnvoyees,
+            'demandesContactRecues' => $demandesContactRecues,
+            'demandesGroupeRecues' => $demandesGroupeRecues,
+            'message' => $tableauMessage,
+            'contientErreurs' => $contientErreurs
+        ));
+    }
+
+    
+    /**
+     * Fonction qui supprime la demande de contact dans la BD
+     * @return void
+     */
+    public function supprimerDemandeContactEmise(): void {
+        $idReceveur = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
+        $tabDemandesPourMoi = $manager->supprimerDemandeContactEnvoyee($_SESSION['utilisateur']->getId(), $idReceveur);
+        $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " supprimée avec succès !";
+        $this->afficherPageNotifications($tableauMessages, false);
+    }
+
+    /**
+     * Fonction qui refuse la demande de contact dans la BD
+     * @return void
+     */
+    public function refuserDemandeContactRecue(): void {
+        $idReceveur = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->refuserDemandeContact($_SESSION['utilisateur']->getId(), $idReceveur);
+        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur->getDemandes();
+        $manager->miseAJourUtilisateur($utilisateur);
+        $_SESSION['utilisateur'] = $utilisateur;
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+        $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " refusée avec succès !";
+        $this->afficherPageNotifications($tableauMessages, false);
+    }
+
+    /**
+     * Fonction qui accepte la demande de contact dans la BD
+     * @return void
+     */
+    public function accepterDemandeContactRecue(): void {
+        $idReceveur = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->accepterDemandeContact($idReceveur, $_SESSION['utilisateur']->getId());
+        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur->getDemandes();
+        $manager->miseAJourUtilisateur($utilisateur);
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
+        $_SESSION['utilisateur'] = $utilisateur;
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+        $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " acceptée avec succès !";
+        $this->afficherPageNotifications($tableauMessages, false);
+    }
+
+    /**
+     * Fonction qui refuse la demande d'ajout au groupe dans la BD
+     * @return void
+     */
+    public function refuserDemandeGroupeRecue(): void {
+        $idGroupe = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->refuserDemandeGroupe($idGroupe, $_SESSION['utilisateur']->getId());
+        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur->getDemandes();
+        $manager->miseAJourUtilisateur($utilisateur);
+        $_SESSION['utilisateur'] = $utilisateur;
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+        $tableauMessages[] = "Demande de groupe de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " refusée avec succès !";
+        $this->afficherPageNotifications($tableauMessages, false);
+    }
+
+    /**
+     * Fonction qui accepte la demande d'ajout au groupe dans la BD
+     * @return void
+     */
+    public function accepterDemandeGroupeRecue(): void {
+        $idGroupe = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->accepterDemandeGroupe($idGroupe, $_SESSION['utilisateur']->getId());
+        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur->getDemandes();
+        $manager->miseAJourUtilisateur($utilisateur);
+        $_SESSION['utilisateur'] = $utilisateur;
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
+        $tableauMessages[] = "Demande de groupe de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " acceptée avec succès !";
+        $this->afficherPageNotifications($tableauMessages, false);
     }
 
     /**

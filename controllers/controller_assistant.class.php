@@ -63,6 +63,7 @@ class ControllerAssistant extends Controller
         //Génération de la vue
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
+            'menu' => "recherche",
             'contacts' => $contacts,
             'groupes' => $groupes,
             'message' => $tabMessages,
@@ -240,6 +241,7 @@ class ControllerAssistant extends Controller
     {
         $template = $this->getTwig()->load('resultat.html.twig');
         echo $template->render([
+            'menu' => "recherche",
             'creneauxCommuns' => $creneaux,
             'ttlPersonnes' => $ttlPersonnes,
             'ttlPersonnesChoisies' => $ttlPersonnesChoisies

@@ -129,7 +129,9 @@
                 {% endfor %}
             </tbody>
         </table>
-        <!-- Affichage des messages -->
+        <div class="mb-3 text-center pt-3">
+            <a class="px-5 btn btn-secondary" href="index.php?controleur=bd&methode=restaurer&userId={{utilisateurCourant.getId}}" role="button">Restaurer la base de données</a>
+        </div>
         {% if message %}
             <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
                 <div id="toast" class="toast align-items-center text-white bg-{% if contientErreurs %}danger{% else %}success{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
