@@ -376,7 +376,7 @@ class ControllerUtilisateur extends Controller
         $utilisateur->getDemandes();
         $manager->miseAJourUtilisateur($utilisateur);
         $_SESSION['utilisateur'] = $utilisateur;
-        $utilisateurEnvoieDemande = $manager->find($idReceveur);
+        $utilisateurEnvoieDemande = $manager->findUserFromGroupId($idGroupe);
         $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
         $tableauMessages[] = "Demande de groupe de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " refusée avec succès !";
         $this->afficherPageNotifications($tableauMessages, false);
@@ -396,7 +396,7 @@ class ControllerUtilisateur extends Controller
         $manager->miseAJourUtilisateur($utilisateur);
         $_SESSION['utilisateur'] = $utilisateur;
         $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
-        $utilisateurEnvoieDemande = $manager->find($idReceveur);
+        $utilisateurEnvoieDemande = $manager->findUserFromGroupId($idGroupe);
         $tableauMessages[] = "Demande de groupe de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " acceptée avec succès !";
         $this->afficherPageNotifications($tableauMessages, false);
     }

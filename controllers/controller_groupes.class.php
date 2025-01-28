@@ -145,6 +145,7 @@ class ControllerGroupes extends Controller
         } else {
             $tableauErreurs[] = "Le groupe existe déjà !";
             $this->lister($tableauErreurs, true);
+        }
     }
 
     /**

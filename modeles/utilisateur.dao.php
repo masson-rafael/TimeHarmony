@@ -603,6 +603,17 @@ class UtilisateurDao
         $result = $result['nombreDemandes'];
         return $result;
     }
+
+    public function findUserFromGroupId(?int $idGroupe): Utilisateur {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur U
+        JOIN " . PREFIXE_TABLE . "composer C ON U.id = C.idUtilisateur
+        WHERE C.idGroupe = :idGroupe";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array("idGroupe" => $idGroupe));
+        $utilisateurs = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+        $utilisateurs = $this->hydrate($utilisateurs[0]);
+        return $utilisateurs;
+    }
 }
 
 
