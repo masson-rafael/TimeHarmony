@@ -482,8 +482,39 @@ class utilitaire
         // 4. Format des données : vérifier le format de l'heure
         $valide = utilitaire::validerPreg($heure, "/^(2[0-3]|[01]\d):[0-5]\d$/", $messagesErreurs, "duree minimale");
 
+        // 5. Plage des valeurs
+        $dureeMinSeconds = strtotime($heure);
+
+        $valide = $dureeMinSeconds > 5 * 60;
+        if (!$valide) {
+            $messagesErreurs[] = "La durée minimale doit être supérieure à 5 minutes";
+        }
+
         return $valide;
     }
+
+    // /**
+    //  * Fonction qui permet de valider la durée minimale de recherche
+    //  * 
+    //  * @param string|null $dureeMin la durée minimale
+    //  * @param array $tableauErreurs le tableau des erreurs
+    //  * @return bool si le champ est correct ou non
+    //  */
+    // public static function validerDureeMin(?string $dureeMin, array &$messagesErreurs): bool
+    // {
+    //     $valide = true;
+
+    //     // 5. Plage des valeurs
+    //     $dureeMinSeconds = strtotime($dureeMin);
+
+    //     $valide = $dureeMinSeconds > 5 * 60;
+    //     if (!$valide) {
+    //         $messagesErreurs[] = "La durée minimale doit être supérieure à 5 minutes";
+    //     }
+
+    //     // Vérification que la durée est supérieure ou égale à 5 minutes
+    //     return $valide;
+    // }
 
     /**
      * Fonction qui valide la couleur d'un agenda lors de sa création
@@ -623,29 +654,6 @@ class utilitaire
             $messagesErreurs[] = "La date de début doit être inférieure à la date de fin";
         }
 
-        return $valide;
-    }
-
-    /**
-     * Fonction qui permet de valider la durée minimale de recherche
-     * 
-     * @param string|null $dureeMin la durée minimale
-     * @param array $tableauErreurs le tableau des erreurs
-     * @return bool si le champ est correct ou non
-     */
-    public static function validerDureeMin(?string $dureeMin, array &$messagesErreurs): bool
-    {
-        $valide = true;
-
-        // 5. Plage des valeurs
-        $dureeMinSeconds = strtotime($dureeMin);
-
-        $valide = $dureeMinSeconds > 5 * 60;
-        if (!$valide) {
-            $messagesErreurs[] = "La durée minimale doit être supérieure à 5 minutes";
-        }
-
-        // Vérification que la durée est supérieure ou égale à 5 minutes
         return $valide;
     }
 

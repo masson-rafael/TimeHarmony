@@ -218,21 +218,30 @@ class Assistant
      * Fonction pour récupérer les créneaux communs en fonction d'un nombre d'utilisateur
      *
      * @param array|null $matrice 
-     * @param string|null $nb_utilisateurs_exact concernés par la recherche
+     * @param int|null $nb_utilisateurs_exact concernés par la recherche
+     * @param string|null $debutHoraire : début de la plage horaire
+     * @param string|null $finHoraire : fin de la plage horaire
      * @return array
      */
-    function getCreneauxCommunsExact(array $matrice, int $nb_utilisateurs_exact): array
+    function getCreneauxCommunsExact(array $matrice, int $nb_utilisateurs_exact, string $debutHoraire, string $finHoraire): array
     {
         $resultat = [];
 
         foreach ($matrice as $date => $creneaux) {
             foreach ($creneaux as $plage => $users) {
-                // Compter le nombre d'utilisateurs disponibles dans ce créneau
-                $count_disponibles = count(array_filter($users, fn($dispo) => $dispo === 1));
+                // Extraire l'heure de début et de fin de la plage horaire
+                [$heureDebut, $heureFin] = explode('- ', $plage);
 
-                // Vérifier si le nombre d'utilisateurs correspond exactement au critère
-                if ($count_disponibles === $nb_utilisateurs_exact) {
-                    $resultat[$date][$plage] = $users;
+                // Vérifier si la plage horaire est dans l'intervalle souhaité
+                if ($heureDebut >= $debutHoraire && $heureFin <= $finHoraire && $heureDebut <= $heureFin ) {
+
+                    // Compter le nombre d'utilisateurs disponibles dans ce créneau
+                    $count_disponibles = count(array_filter($users, fn($dispo) => $dispo === 1));
+
+                    // Vérifier si le nombre d'utilisateurs correspond exactement au critère
+                    if ($count_disponibles === $nb_utilisateurs_exact) {
+                        $resultat[$date][$plage] = $users;
+                    }
                 }
             }
         }

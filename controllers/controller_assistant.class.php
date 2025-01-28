@@ -68,23 +68,28 @@ class ControllerAssistant extends Controller
 
         $pdo = $this->getPdo();
 
-        if (isset($_SESSION['debut']) && isset($_SESSION['fin']) && isset($_SESSION['dureeMin']) && isset($_SESSION['contacts'])) {
+        if (isset($_SESSION['debut']) && isset($_SESSION['fin']) && isset($_SESSION['dureeMin']) && isset($_SESSION['contacts']) && isset($_SESSION['debutHoraire']) && isset($_SESSION['finHoraire'])) {
             $_POST['debut'] = $_SESSION['debut'];
             $_POST['fin'] = $_SESSION['fin'];
             $_POST['dureeMin'] = $_SESSION['dureeMin'];
             $_POST['contacts'] = $_SESSION['contacts'];
+            $_SESSION['debutHoraire'] = $_POST['debutHoraire'];
+            $_SESSION['finHoraire'] = $_POST['finHoraire'];
         }
 
         $valideDuree = Utilitaire::validerDuree($_POST['debut'], $_POST['fin'], $messagesErreur);
-        $dureeMinValide = Utilitaire::validerDureeMin($_POST['dureeMin'], $messagesErreur);
-        @$contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur); // @ Car dans le futur, on pourra seulement sélectionner des groupes et pas uniquement contacts
+        $dureeMinValide = Utilitaire::validerDureeMinimale($_POST['dureeMin'], $messagesErreur);
+        $contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur);
+
 
         if ($valideDuree && $dureeMinValide && $contactsValide) {
-            if (!isset($_SESSION['debut']) || !isset($_SESSION['fin']) || !isset($_SESSION['dureeMin']) || !isset($_SESSION['contacts'])) {
+            if (!isset($_SESSION['debut']) || !isset($_SESSION['fin']) || !isset($_SESSION['dureeMin']) || !isset($_SESSION['contacts']) || !isset($_SESSION['debutHoraire']) || !isset($_SESSION['finHoraire'])) {
                 $_SESSION['debut'] = $_POST['debut'];
                 $_SESSION['fin'] = $_POST['fin'];
                 $_SESSION['dureeMin'] = $_POST['dureeMin'];
                 $_SESSION['contacts'] = $_POST['contacts'];
+                $_SESSION['debutHoraire'] = $_POST['debutHoraire'];
+                $_SESSION['finHoraire'] = $_POST['finHoraire'];
             }
 
             // $chronoStartGen = new DateTime();
@@ -92,11 +97,13 @@ class ControllerAssistant extends Controller
             $managerCreneau->supprimerCreneauxLibres();
 
             extract($_POST, EXTR_OVERWRITE);
-            if (isset($_POST['debut']) && isset($_POST['fin']) && isset($_POST['dureeMin']) && isset($_POST['contacts'])) {
+            if (isset($_POST['debut']) && isset($_POST['fin']) && isset($_POST['dureeMin']) && isset($_POST['contacts']) && isset($_POST['debutHoraire']) && isset($_POST['finHoraire'])) {
                 $_SESSION['dureeMin'] = $_POST['dureeMin'];
                 $_SESSION['contacts'] = $_POST['contacts'];
                 $_SESSION['debut'] = $_POST['debut'];
                 $_SESSION['fin'] = $_POST['fin'];
+                $_SESSION['debutHoraire'] = $_POST['debutHoraire'];
+                $_SESSION['finHoraire'] = $_POST['finHoraire'];
                 // $_SESSION['nbUserSelectionné'] = sizeof($_POST['contacts']);
             }
 
@@ -104,6 +111,8 @@ class ControllerAssistant extends Controller
             $contacts = $_SESSION['contacts'];
             $debut = $_SESSION['debut'];
             $fin = $_SESSION['fin'];
+            $debutHoraire = $_SESSION['debutHoraire'];
+            $finHoraire = $_SESSION['finHoraire'];
 
             $managerUtilisateur = new UtilisateurDAO($pdo);
             $tableauUtilisateur = [];
@@ -112,8 +121,6 @@ class ControllerAssistant extends Controller
                 $tableauUtilisateur[] = $managerUtilisateur->find($idUtilisateurCourant);
             }
             $tableauUtilisateur[] = $_SESSION['utilisateur'];
-            
-            // $_SESSION['contacts'] = 
 
             // var_dump($tableauUtilisateur);
 
@@ -130,9 +137,6 @@ class ControllerAssistant extends Controller
                     $verif = false;
                     foreach ($tableauUtilisateur as $utilisateur) {
                         if ($idUtilisateurGroupe === $utilisateur->getId()) {
-
-                            // echo $utilisateur->getId() . '<br>';
-                            // echo $idUtilisateurGroupe . '<br> ok <br>';
                             $verif = true;
                         }
                     }
@@ -227,7 +231,7 @@ class ControllerAssistant extends Controller
             }
 
             // Appel de la fonction
-            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné']);
+            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'],$debutHoraire,$finHoraire);
             // var_dump($_SESSION['nbUserSelectionné']);
             // $chronoEndGen = new DateTime();
             // $chronoInterval = $chronoStartGen->diff($chronoEndGen);
