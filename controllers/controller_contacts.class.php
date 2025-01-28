@@ -101,7 +101,8 @@ class ControllerContacts extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $manager->ajouterDemandeContact($id1,$id2);
-        $tableauMessages[] = "Contact ajouté avec succès !";
+        $utilisateurDemandeEnContact = $manager->find($id2);
+        $tableauMessages[] = "Contact " . $utilisateurDemandeEnContact->getNom() . " " . $utilisateurDemandeEnContact->getPrenom() . " ajouté avec succès !";
         $this->lister($tableauMessages, false);
     }
 
@@ -161,8 +162,9 @@ class ControllerContacts extends Controller
         $idReceveur = $_GET['id'];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
         $tabDemandesPourMoi = $manager->supprimerDemandeEnvoyee($_SESSION['utilisateur']->getId(), $idReceveur);
-        $tableauMessages[] = "Demande supprimée avec succès !";
+        $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " supprimée avec succès !";
         $this->afficherPageNotifications($tableauMessages, false);
     }
 
@@ -176,11 +178,13 @@ class ControllerContacts extends Controller
         $manager = new UtilisateurDao($pdo);
         $tabDemandesPourMoi = $manager->refuserDemande($_SESSION['utilisateur']->getId(), $idReceveur);
         $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        
         $utilisateur->getDemandes();
         $manager->miseAJourUtilisateur($utilisateur);
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
         $_SESSION['utilisateur'] = $utilisateur;
         $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
-        $tableauMessages[] = "Demande refusée avec succès !";
+        $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " refusée avec succès !";
         $this->afficherPageNotifications($tableauMessages, false);
     }
 
@@ -195,10 +199,11 @@ class ControllerContacts extends Controller
         $tabDemandesPourMoi = $manager->accepterDemande($_SESSION['utilisateur']->getId(), $idReceveur);
         $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
         $utilisateur->getDemandes();
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
         $manager->miseAJourUtilisateur($utilisateur);
         $_SESSION['utilisateur'] = $utilisateur;
         $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
-        $tableauMessages[] = "Demande acceptée avec succès !";
+        $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " acceptée avec succès !";
         $this->afficherPageNotifications($tableauMessages, false);
     }
 }
