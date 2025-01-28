@@ -285,7 +285,7 @@ class ControllerUtilisateur extends Controller
      * Fonction permettant d'afficher le twig correspondant à la page des notifications
      * @return void
      */
-    public function afficherPageNotifications(?array $tableauMessage = null): void {
+    public function afficherPageNotifications(?array $tableauMessage = null, ?bool $contientErreurs = false): void {
         /**
          * Step 1 : Appel de la fonction qui trouve ET RENVOIE les contacts que j'ai envoyé
          * Step 2 : Appel de la fonction qui trouve ET RENVOIE les demandes de contact d'autres utilisateurs
@@ -304,7 +304,8 @@ class ControllerUtilisateur extends Controller
             'demandesContactEnvoyees' => $demandesContactEnvoyees,
             'demandesContactRecues' => $demandesContactRecues,
             'demandesGroupeRecues' => $demandesGroupeRecues,
-            'message' => $tableauMessage
+            'message' => $tableauMessage,
+            'contientErreurs' => $contientErreurs
         ));
     }
 
@@ -317,9 +318,10 @@ class ControllerUtilisateur extends Controller
         $idReceveur = $_GET['id'];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
         $tabDemandesPourMoi = $manager->supprimerDemandeContactEnvoyee($_SESSION['utilisateur']->getId(), $idReceveur);
-        $tableauMessages[] = "Demande supprimée avec succès !";
-        $this->afficherPageNotifications($tableauMessages);
+        $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " supprimée avec succès !";
+        $this->afficherPageNotifications($tableauMessages, false);
     }
 
     /**
@@ -335,9 +337,10 @@ class ControllerUtilisateur extends Controller
         $utilisateur->getDemandes();
         $manager->miseAJourUtilisateur($utilisateur);
         $_SESSION['utilisateur'] = $utilisateur;
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
         $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
-        $tableauMessages[] = "Demande refusée avec succès !";
-        $this->afficherPageNotifications($tableauMessages);
+        $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " refusée avec succès !";
+        $this->afficherPageNotifications($tableauMessages, false);
     }
 
     /**
@@ -352,10 +355,11 @@ class ControllerUtilisateur extends Controller
         $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
         $utilisateur->getDemandes();
         $manager->miseAJourUtilisateur($utilisateur);
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
         $_SESSION['utilisateur'] = $utilisateur;
         $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
-        $tableauMessages[] = "Demande acceptée avec succès !";
-        $this->afficherPageNotifications($tableauMessages);
+        $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " acceptée avec succès !";
+        $this->afficherPageNotifications($tableauMessages, false);
     }
 
     /**
@@ -371,9 +375,10 @@ class ControllerUtilisateur extends Controller
         $utilisateur->getDemandes();
         $manager->miseAJourUtilisateur($utilisateur);
         $_SESSION['utilisateur'] = $utilisateur;
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
         $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
-        $tableauMessages[] = "Demande refusée avec succès !";
-        $this->afficherPageNotifications($tableauMessages);
+        $tableauMessages[] = "Demande de groupe de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " refusée avec succès !";
+        $this->afficherPageNotifications($tableauMessages, false);
     }
 
     /**
@@ -390,8 +395,9 @@ class ControllerUtilisateur extends Controller
         $manager->miseAJourUtilisateur($utilisateur);
         $_SESSION['utilisateur'] = $utilisateur;
         $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
-        $tableauMessages[] = "Demande acceptée avec succès !";
-        $this->afficherPageNotifications($tableauMessages);
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
+        $tableauMessages[] = "Demande de groupe de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " acceptée avec succès !";
+        $this->afficherPageNotifications($tableauMessages, false);
     }
 
     /**
