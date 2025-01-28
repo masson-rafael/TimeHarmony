@@ -285,9 +285,10 @@ class ControllerUtilisateur extends Controller
      * Redirection vers la page d'administration
      * 
      * @param array|null $tableauDErreurs tableau des erreurs
+     * @param bool|null $contientErreurs true si le tableau contient des erreurs, false sinon
      * @return void
      */
-    public function lister(?array $tableauDErreurs = null)
+    public function lister(?array $tableauDErreurs = null, ?bool $contientErreurs = false)
     {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
@@ -300,6 +301,7 @@ class ControllerUtilisateur extends Controller
                     'listeUtilisateurs' => $utilisateurs,
                     'message' => $tableauDErreurs,
                     'utilisateurCourant' => $utilisateurCourant,
+                    'contientErreurs' => $contientErreurs
                 )
             );
         }
@@ -322,12 +324,14 @@ class ControllerUtilisateur extends Controller
 
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
+        $utilisateurSupprime = $manager->find($id);
+        $message[] = "L'utilisateur " . $utilisateurSupprime->getNom() . " " . $utilisateurSupprime->getPrenom() . " a été supprimé avec succès !";
         $manager->supprimerUtilisateur($id);
         if($id == $_SESSION['utilisateur']->getId()) {
             $this->deconnecter();
             $this->genererVueVide('index');
         } else {
-            $this->lister();
+            $this->lister($message, false);
         }
     }
 
@@ -335,7 +339,6 @@ class ControllerUtilisateur extends Controller
      * Fonction appellee par le bouton de mise a jour d'un utilisateur (panel admin)
      *
      * @return void
-     * @todo Modifier utilisateur ne fonctionne plus. Why ? 
      */
     public function modifier()
     {
@@ -380,8 +383,11 @@ class ControllerUtilisateur extends Controller
             $utilisateurTemporaire = $manager->find($id);
             $_SESSION['utilisateur'] = $utilisateurTemporaire;
             $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurTemporaire);
+            $messageErreurs[] = "L'utilisateur " . $utilisateurTemporaire->getNom() . " " . $utilisateurTemporaire->getPrenom() . " a été modifié avec succès !";
+            $this->afficherProfil($messageErreurs, false);
+        } else {
+            $this->afficherProfil($messageErreurs, true);
         }
-        $this->afficherProfil($messageErreurs);
     }
 
     /**
@@ -439,19 +445,26 @@ class ControllerUtilisateur extends Controller
                 $this->deconnecter();
                 $this->genererVueVide('index');
             }
+
+            $messageErreurs[] = "L'utilisateur " . $utilisateurTemporaire->getNom() . " " . $utilisateurTemporaire->getPrenom() . " a été modifié avec succès !";
+            $this->lister($messageErreurs, false);
+        } else {
+            $this->lister($messageErreurs, true);
         }
-        if(isset($_SESSION['utilisateur'])) {
-            $_SESSION['utilisateur']->getEstAdmin() == false ? $this->afficherProfil() : $this->lister($messageErreurs);
-        }
+        // if(isset($_SESSION['utilisateur'])) {
+        //     $_SESSION['utilisateur']->getEstAdmin() == false ? $this->afficherProfil($messageErreurs, false) : $this->lister($messageErreurs, false);
+        // }
     }
 
 
     /**
      * Affiche le profil de l'utilisateur connecté (page profil)
      *
+     * @param array|null $messagesErreur tableau des erreurs
+     * @param bool|null $contientErreurs true si le tableau contient des erreurs, false sinon
      * @return void
      */
-    public function afficherProfil(?array $messagesErreur = null): void
+    public function afficherProfil(?array $messagesErreur = null, ?bool $contientErreurs = false): void
     {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
@@ -461,6 +474,7 @@ class ControllerUtilisateur extends Controller
             array(
                 'utilisateur' => $utilisateur,
                 'message' => $messagesErreur,
+                'contientErreurs' => $contientErreurs
             )
         );
     }
