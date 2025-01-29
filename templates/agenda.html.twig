@@ -10,7 +10,7 @@
 		<div class="container">
         {% if ajout == false %}
             <div class="row text-center mt-3 mb-3">
-                <h1>Vos Agendas</h1>
+                <h1>Mes Agendas</h1>
             </div>
 			<!-- Liste des agendas -->
 			{% if agendas|length > 0 %}
@@ -74,7 +74,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button id="boutonModifierAgenda" type="submit" class="btn btn-primary" name="update_article">Mettre à jour</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                                     </div>
                                 </form>
                             </div>
@@ -95,7 +95,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="submit" class="btn btn-danger">Supprimer</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                                     </div>
                                 </form>
                             </div>
@@ -123,6 +123,7 @@
 			<!-- Formulaire d'ajout d'agenda -->
 			<div class="row justify-content-center mt-5 h-75">
 				<div class="col-md-6">
+                    <a class="" href="index.php?controleur=agenda&methode=lister" role="button"><img src="image/retour.png" style="width: 35px;" alt="retour"></a>
 					<h4 class="text-center mb-4">Ajouter un agenda</h4>
 					<form id="formAjouteAgenda" action="index.php?controleur=agenda&methode=ajouterAgenda" method="post" required>
 						<div class="mb-3">
@@ -142,7 +143,6 @@
                             <small id="couleurError" class="text-danger"></small>
                         </div>
                         <div class="text-center pt-5">
-                            <a class="px-5 btn btn-secondary" href="index.php?controleur=agenda&methode=lister" role="button">Revenir à mes agendas</a>
                         </div>
                         <div class="mb-3 text-center pt-3">
                             <button id="boutonAjoutAgenda" type="submit" class="btn btn-primary ">Ajouter un agenda</button>

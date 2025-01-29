@@ -10,7 +10,7 @@
 		<div class="container">
 			{% if modification == false and creation == false %}
 				<div class="row text-center mt-3 mb-3">
-					<h1>Vos Groupes</h1>
+					<h1>Mes Groupes</h1>
 				</div>
 				{% if groupes|length > 0 %}
 					<table id="myTable" class="table table-striped">
@@ -119,7 +119,7 @@
 								</div>
 							</div>
 							<div class="text-center mt-4">
-								<button id="boutonModificationGroupe" type="submit" class="btn btn-primary px-4 shadow-sm" style="background-color: #3498db; border: none;">Modifier mon groupe</button>
+								<button id="boutonModificationGroupe" type="submit" class="btn btn-primary px-4 shadow-sm" >Modifier mon groupe</button>
 							</div>
 						</form>
 					</div>
@@ -127,6 +127,7 @@
 			{% elseif creation %}
 				<div class="row justify-content-center mt-5 h-75">
 					<div class="col-md-6">
+					 <a class="" href="index.php?controleur=groupes&methode=lister" role="button"><img src="image/retour.png" style="width: 35px;" alt="retour"></a>
 						<h4 class="text-center mb-4">Créer un groupe</h4>
 						<form id="formCreationGroupe" action="index.php?controleur=groupes&methode=creer" method="post" required>
 							<div class="mb-3">
@@ -171,7 +172,6 @@
 								<small id="contactsError" class="text-danger"></small>
 							</div>
 							<div class="text-center pt-5">
-								<a class="px-5 btn btn-secondary" href="index.php?controleur=groupes&methode=lister" role="button">Revenir à mes groupes</a>
 							</div>
 							<div class="mb-3 text-center pt-3">
 								<button id="boutonCreationGroupe" type="submit" class="btn btn-primary">Créer le groupe</button>

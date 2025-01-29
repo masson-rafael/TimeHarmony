@@ -1,82 +1,80 @@
 {% extends 'base_template.html.twig' %}
 
-{% block title %}Contacts -
-	{{ constant('WEBSITE_TITLE')}}
-{% endblock %}
-
+{% block title %}Contacts - {{ constant('WEBSITE_TITLE') }}{% endblock %}
 
 {% block content %}
-	<main>
-		<div class="container-fluid">
-			{% if contacts is not null %}
-				<div class="row text-center mt-3 mb-3">
-					<h1>Vos contacts</h1>
-				</div>
-				{% if contacts|length > 0 %}
-					<div class="container-lg">
-						<table id="myTable" class="table table-striped">
-							<thead>
-								<tr>
-									<th>Image de profil</th>
-									<th>Prenom</th>
-									<th>Nom</th>
-									<th>Email</th>
-									<th>Supprimer</th>
-								</tr>
-							</thead>
-							<tbody>
-								{% for utilisateur in contacts %}
-									<tr>
-										<td><img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil" class="rounded-circle" style="width: 50px; height: 50px;"></td>
-										<td>{{ utilisateur.getPrenom }}</td>
-										<td>{{ utilisateur.getNom }}</td>
-										<td>{{ utilisateur.getEmail }}</td>
-										<td>
-											<a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModale{{utilisateur.getId}}" aria-expanded="false">
-												<i class="fa-solid fa-trash"></i>
-											</a>
-										</td>
-									</tr>
-									<div class="modal fade" id="fenetreModale{{utilisateur.getId}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-										<div class="modal-dialog modal-lg">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h1 class="modal-title fs-5" id="exampleModalLabel">Suppression du contact
-														{{utilisateur.getPrenom}}
-														{{utilisateur.getNom}}</h1>
-													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-												</div>
-												<form action="index.php?controleur=contacts&methode=supprimer&id={{ utilisateur.getId }}" method="POST" enctype="multipart/form-data">
-													<div class="modal-body">
-														<label>Êtes-vous sûr de vouloir supprimer le contact
-															{{utilisateur.getPrenom}}
-															{{utilisateur.getNom}}
-															?</label>
-													</div>
-													<div class="modal-footer">
-														<button type="submit" class="btn btn-primary" name="update_article">Supprimer</button>
-														<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-													</div>
-												</form>
-											</div>
-										</div>
-									</div>
-								{% endfor %}
-							</tbody>
-						</table>
-					</div>
-				{% else %}
-					<div class="row justify-content-center mt-4 h-25">
-						<div class="col-md-8">
-							<div class="alert alert-info text-center" role="alert">
-								Aucun contact trouvé. Ajoutez-en un ci-dessous.
-							</div>
-						</div>
-					</div>
-				{% endif %}
-				<div class="text-center">
-					<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
-				</div>
+<main>
+    <div class="container-fluid">
+        {% if contacts is not null %}
+        <div class="row text-center mt-3 mb-3">
+            <h1>Mes contacts</h1>
+        </div>
+        {% if contacts|length > 0 %}
+        <div class="container-lg table-responsive">
+            <table id="myTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for utilisateur in contacts %}
+                    <tr>
+                        <td>
+                            <img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil"
+                                class="rounded-circle img-fluid" style="max-width: 50px;">
+                        </td>
+                        <td>{{ utilisateur.getPrenom }}</td>
+                        <td>{{ utilisateur.getNom }}</td>
+                        <td>{{ utilisateur.getEmail }}</td>
+                        <td>
+                            <a role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ utilisateur.getId }}" aria-expanded="false">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <div class="modal fade" id="fenetreModale{{ utilisateur.getId }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Suppression du contact {{ utilisateur.getPrenom }} {{ utilisateur.getNom }}</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="index.php?controleur=contacts&methode=supprimer&id={{ utilisateur.getId }}" method="POST" enctype="multipart/form-data">
+                                    <div class="modal-body">
+                                        <label>Êtes-vous sûr de vouloir supprimer le contact
+                                            {{utilisateur.getPrenom}}
+                                            {{utilisateur.getNom}}
+                                            ?</label>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary" name="update_article">Supprimer</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="row justify-content-center mt-4 h-25">
+            <div class="col-md-8">
+                <div class="alert alert-info text-center" role="alert">
+                    Aucun contact trouvé. Ajoutez-en un ci-dessous.
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="text-center">
+            <a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
+        </div>
 			{% else %}
 				<div class="row text-center mt-3 mb-3">
 					<h1>Ajouter un contact</h1>
@@ -152,9 +150,74 @@
 				</div>
 			{% endif %}
 		</div>
-	</main>
+        <div class="table-responsive">
+            <table id="myTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Ajouter</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for utilisateur in utilisateurs %}
+                    <tr>
+                        <td>
+                            <img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil"
+                                class="rounded-circle img-fluid" style="max-width: 50px;">
+                        </td>
+                        <td>{{ utilisateur.getPrenom }}</td>
+                        <td>{{ utilisateur.getNom }}</td>
+                        <td>{{ utilisateur.getEmail }}</td>
+                        <td>
+                            <a role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ utilisateur.getId }}" aria-expanded="false">
+                                <i class="fa-solid fa-plus"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <div class="modal fade" id="fenetreModale{{ utilisateur.getId }}" tabindex="-1"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ajout du contact
+                                        {{ utilisateur.getPrenom }} {{ utilisateur.getNom }}
+                                    </h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="index.php?controleur=contacts&methode=ajouter&id={{ utilisateur.getId }}" method="POST" enctype="multipart/form-data">
+                                    <div class="modal-body">
+                                        <label>Êtes-vous sûr de vouloir envoyer une demande de contact à
+                                            {{ utilisateur.getPrenom }} {{ utilisateur.getNom }} ?</label>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary" name="update_article">Ajouter</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if message %}
+        <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
+            {% for messages in message %}
+            {{ messages }}<br>
+            {% endfor %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+        <div class="text-center">
+        </div>
+        {% endif %}
+    </div>
+</main>
 {% endblock %}
-
 
 {% block javascripts %}
 	{{ parent() }}
