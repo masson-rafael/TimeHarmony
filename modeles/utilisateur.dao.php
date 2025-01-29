@@ -468,7 +468,7 @@ class UtilisateurDao
 
         $sql = "DELETE FROM ".PREFIXE_TABLE."demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2= :id2";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(array('id1' => $idDemandeur, 'id2' => $idReceveur));
+        $stmt->execute(array('id1' => $idReceveur, 'id2' => $idDemandeur));
     }
 
     /**
