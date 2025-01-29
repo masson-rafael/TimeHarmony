@@ -1,4 +1,5 @@
 <?php
+
 use ICal\ICal;
 
 
@@ -31,7 +32,7 @@ class ControllerAssistant extends Controller
      * Fonction qui permet de générer la vue qui contiendra les paramètres de la recherche
      * @return void
      */
-    public function genererVueRecherche(?array $tabMessages = null): void
+    public function genererVueRecherche(?array $tabMessages = null, ?bool $contientErreurs = false): void
     {
 
         // vide la variable de session nbUserSelectionné
@@ -48,12 +49,31 @@ class ControllerAssistant extends Controller
         $contacts = $utilisateur->getContact($utilisateur->getId());
         $groupes = $utilisateur->getGroupe($utilisateur->getId());
 
+        // Récupérer les ids des membres des groupes
+        $membres = [];
+        $pdo = $this->getPdo();
+        $manager = new GroupeDao($pdo);
+
+        // Récupérer les membres de chaque groupe
+        foreach ($groupes as $groupe) {
+            $membresGroupe = $manager->getUsersFromGroup($groupe->getId());
+
+            // Stocker les IDs des membres dans un tableau
+            $membres[$groupe->getId()] = [];
+            foreach ($membresGroupe as $membre) {
+                $membres[$groupe->getId()][] = $membre['idUtilisateur'];
+            }
+        }
+
         //Génération de la vue
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
+            'menu' => "recherche",
             'contacts' => $contacts,
             'groupes' => $groupes,
-            'message' => $tabMessages
+            'message' => $tabMessages,
+            'membres' => $membres,
+            'contientErreurs' => $contientErreurs
         ));
     }
 
@@ -180,6 +200,7 @@ class ControllerAssistant extends Controller
 
             // Initialisation de la matrice
             $matrice = $assistantRecherche->initMatrice($tableauUtilisateur, $dates, $dureeMin);
+
             // $chronoEnd = new DateTime();
             // $chronoInterval = $chronoStart->diff($chronoEnd);
             // $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
@@ -229,11 +250,11 @@ class ControllerAssistant extends Controller
 
             // Appel de la fonction
             $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'],$debutHoraire,$finHoraire,$debut,$fin);
-        //     // $chronoEndGen = new DateTime();
-        //     // $chronoInterval = $chronoStartGen->diff($chronoEndGen);
-        //     // $chronoSeconds = $chronoEndGen->getTimestamp() - $chronoStartGen->getTimestamp();
-        //     // echo "Durée totale algo : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
-        //     // echo "Durée totale en secondes totale algo : $chronoSeconds secondes." . "<br>" . "<br>";
+            // $chronoEndGen = new DateTime();
+            // $chronoInterval = $chronoStartGen->diff($chronoEndGen);
+            // $chronoSeconds = $chronoEndGen->getTimestamp() - $chronoStartGen->getTimestamp();
+            // echo "Durée totale algo : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
+            // echo "Durée totale en secondes totale algo : $chronoSeconds secondes." . "<br>" . "<br>";
 
             // Générer la vue avec les données structurées
             $tailleContacts = sizeof($tableauUtilisateur);
@@ -241,7 +262,7 @@ class ControllerAssistant extends Controller
             $nbrUtilisateursMin = ceil($tailleContacts / 2);
             $this->genererVueCreneaux($datesCommunes, $nbrUtilisateursMin,$nombreUtilisateursSeclectionnes );
         } else {
-            $this->genererVueRecherche($messagesErreur);
+            $this->genererVueRecherche($messagesErreur, true);
         }
     }
 
@@ -256,6 +277,7 @@ class ControllerAssistant extends Controller
     {
         $template = $this->getTwig()->load('resultat.html.twig');
         echo $template->render([
+            'menu' => "recherche",
             'creneauxCommuns' => $creneaux,
             'nbrUtilisateursMin' => $nbrUtilisateursMin,
             'nombreUtilisateursSeclectionnes' => $nombreUtilisateursSeclectionnes
@@ -272,4 +294,3 @@ class ControllerAssistant extends Controller
         echo $template->render(array());
     }
 }
-

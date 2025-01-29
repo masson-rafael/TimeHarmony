@@ -25,9 +25,10 @@ class ControllerGroupes extends Controller
     /**
      * Fonction qui permet de lister les groupes dont l'utilisateur connecté est le chef
      * @param array|null $erreurs tableau des erreurs éventuelles
+     * @param bool|null $contientErreurs true si le tableau contient des erreurs, false sinon
      * @return void
      */
-    public function lister(?array $erreurs = []): void
+    public function lister(?array $erreurs = null, ?bool $contientErreurs = false): void
     {
         $pdo = $this->getPdo();
         $manager = new GroupeDao($pdo);
@@ -36,9 +37,11 @@ class ControllerGroupes extends Controller
         $template = $this->getTwig()->load('groupes.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
         echo $template->render(
             array(
+                'menu' => "groupes",
                 'groupes' => $tableauGroupes == null ? null : $tableauGroupes['groupe'],
                 'message' => $erreurs,
-                'nombrePersonnes' => $tableauGroupes == null ? null : $tableauGroupes['nombrePersonnes']
+                'nombrePersonnes' => $tableauGroupes == null ? null : $tableauGroupes['nombrePersonnes'],
+                'contientErreurs' => $contientErreurs
             )
         );
     }
@@ -53,8 +56,8 @@ class ControllerGroupes extends Controller
         $pdo = $this->getPdo();
         $manager = new GroupeDao($pdo);
         $tableauGroupes = $manager->supprimerGroupe($id);
-        $tableauMessages[] = "Le groupe a bien été supprimé";
-        $this->lister($tableauMessages);
+        $tableauMessages[] = "Le groupe a été supprimé avec succès !";
+        $this->lister($tableauMessages, false);
     }
 
     /**
@@ -76,6 +79,7 @@ class ControllerGroupes extends Controller
         }, $membres);
 
         echo $template->render(array(
+            'menu' => "groupes",
             'modification' => true,
             'groupeCourant' => $groupeCourant,
             'contacts' => $contacts,
@@ -103,7 +107,7 @@ class ControllerGroupes extends Controller
     {
         $contacts = $this->getListeContacts();
         $template = $this->getTwig()->load('groupes.html.twig');
-        echo $template->render(array('creation' => true, 'contacts' => $contacts));
+        echo $template->render(array('menu' => "groupes", 'creation' => true, 'contacts' => $contacts));
     }
 
     /**
@@ -112,29 +116,35 @@ class ControllerGroupes extends Controller
      */
     public function creer(): void
     {
+        $nom = htmlspecialchars($_POST['nom'],ENT_NOQUOTES);
+        $description = htmlspecialchars($_POST['description'],ENT_NOQUOTES);
+
         $tableauErreurs = [];
         $tableauContacts = $_POST['contacts']; //2, 3, 4, 5 -> id des utilisateurs + verif classe
-        $nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
-        $descriptionValide = utilitaire::validerDescription($_POST['description'], $tableauErreurs);
+        $nomValide = utilitaire::validerNom($nom, $tableauErreurs);
+        $descriptionValide = utilitaire::validerDescription($description, $tableauErreurs);
 
         $manager = new GroupeDao($this->getPdo());
-        $groupeExiste = $manager->groupeExiste($_POST['nom'], $_POST['description']);
+        $groupeExiste = $manager->groupeExiste($nom, $description);
 
-        if ($nomValide && $descriptionValide && !$groupeExiste) {
-            // Etape 1 : créer groupe
-            $manager = new GroupeDao($this->getPdo());
-            $manager->creerGroupe($_SESSION['utilisateur']->getId(), $_POST['nom'], $_POST['description']);
-            $manager = new GroupeDao($this->getPdo());
-            $groupe = $manager->getGroupe($_SESSION['utilisateur']->getId(), $_POST['nom'], $_POST['description']);
-
-            // Etape 2 : ajouter membres
-            $this->ajouterMembres($groupe->getId(), $_POST['contacts']);
-
-            $tableauErreurs[] = "Le groupe a bien été créé";
-            $this->lister($tableauErreurs);
-        } else {
+        if ($groupeExiste) {
             $tableauErreurs[] = "Le groupe existe déjà";
             $this->lister($tableauErreurs);
+        } elseif ($nomValide && $descriptionValide && !$groupeExiste) {
+            // Etape 1 : créer groupe
+            $manager = new GroupeDao($this->getPdo());
+            $manager->creerGroupe($_SESSION['utilisateur']->getId(), $nom, $description);
+            $manager = new GroupeDao($this->getPdo());
+            $groupe = $manager->getGroupe($_SESSION['utilisateur']->getId(), $nom, $description);
+
+            // Etape 2 : ajouter membres
+            $this->ajouterMembres($groupe->getId(), $tableauContacts);
+
+            $tableauErreurs[] = "Le groupe a été créé avec succès !";
+            $this->lister($tableauErreurs, false);
+        } else {
+            $tableauErreurs[] = "Le groupe existe déjà !";
+            $this->lister($tableauErreurs, true);
         }
     }
 
@@ -149,9 +159,9 @@ class ControllerGroupes extends Controller
         $manager = new GroupeDao($this->getPdo());
         $manager->ajouterMembreGroupe($idGroupe, $_SESSION['utilisateur']->getId());
 
-        if ($contacts) {   // Condition si estvide
+        if ($contacts) {   // Condition si est vide
             foreach ($contacts as $contact) {
-                $manager->ajouterMembreGroupe($idGroupe, $contact);
+                $manager->demanderAjoutMembreGroupe($idGroupe, $contact);
             }
         }
     }
@@ -164,7 +174,14 @@ class ControllerGroupes extends Controller
     {
         $nomGroupe = $_POST['nom']; // Nom du groupe
         $description = $_POST['description']; // Description du groupe
-        $checkedUsers = $_POST['contacts']; // Tableau des utilisateurs cochés
+
+        if (isset($_POST['contacts']))
+        {
+            $checkedUsers = $_POST['contacts']; // Tableau des utilisateurs cochés
+        } else {
+            $checkedUsers = null;
+        }
+
         $id = $_GET['id']; // id du groupe
         $currentIdUser = $_SESSION['utilisateur']->getId(); // id de l'utilisateur actuel
 
@@ -172,9 +189,9 @@ class ControllerGroupes extends Controller
 
         $nomValide = utilitaire::validerNom($nomGroupe, $messages);
         $descriptionValide = utilitaire::validerDescription($description, $messages);
-        $checkedUsersValides = utilitaire::validerContacts($checkedUsers, $messages);
+        // pas besoin de vérifier les contacts
 
-        if ($nomValide && $descriptionValide && $checkedUsersValides) {
+        if ($nomValide && $descriptionValide) {
             $pdo = $this->getPdo();
             $manager = new GroupeDao($pdo);
             $managerUtilisateur = new UtilisateurDao($pdo);
@@ -183,14 +200,16 @@ class ControllerGroupes extends Controller
             $membres = $manager->getUsersFromGroup($id);
 
             // Convertir les ids des utilisateurs cochés en entier
-            foreach ($checkedUsers as $key => $value) {
-                $checkedUsers[$key] = (int)$value;
+            if (isset($checkedUsers)){
+                foreach ($checkedUsers as $key => $value) {
+                    $checkedUsers[$key] = (int)$value;
+                }
             }
-
+            
             // Parcourir les membres actuels du groupe
             foreach ($membres as $membre) {
                 // Supprimer les utilisateurs non cochés qui font partie du groupe à part l'utilisateur actuel
-                if (!in_array($membre['idUtilisateur'], $checkedUsers) && $membre['idUtilisateur'] != $currentIdUser) {
+                if ($membre['idUtilisateur'] != $currentIdUser && (!isset($checkedUsers) || (!in_array($membre['idUtilisateur'], $checkedUsers)))) {
                     $manager->supprimerMembreGroupe($id, $membre['idUtilisateur']);
 
                     // Récupérer le nom de l'utilisateur supprimé
@@ -201,25 +220,29 @@ class ControllerGroupes extends Controller
                     $messages[] = "Suppression de "  . $prenom . " " . $nom . " du groupe \"" . $nomGroupe . "\" ";
                 }
             }
-            
+
             // Ajouter les utilisateurs cochés qui ne font pas encore partie du groupe
-            foreach ($checkedUsers as $userId) {
-                if (!in_array($userId, array_column($membres, 'idUtilisateur'))) {
-                    $manager->ajouterMembreGroupe($id, $userId);
-
-                    // Récupérer le nom de l'utilisateur ajouté
-                    $addedUser = $managerUtilisateur->find($userId);
-                    $nom = $addedUser->getNom();
-                    $prenom = $addedUser->getPrenom();
-
-                    $messages[] = "Ajout de " . $prenom . " " . $nom . " au groupe \"" . $nomGroupe . "\" ";
+            if(isset($checkedUsers)){
+                foreach ($checkedUsers as $userId) {
+                    if (!in_array($userId, array_column($membres, 'idUtilisateur'))) {
+                        $manager->ajouterMembreGroupe($id, $userId);
+    
+                        // Récupérer le nom de l'utilisateur ajouté
+                        $addedUser = $managerUtilisateur->find($userId);
+                        $nom = $addedUser->getNom();
+                        $prenom = $addedUser->getPrenom();
+    
+                        $messages[] = "Ajout de " . $prenom . " " . $nom . " au groupe \"" . $nomGroupe . "\" ";
+                    }
                 }
             }
 
             // Ajouter ou modifier les utilisateurs dans le groupe
+            $messages[] = "Groupe modifié avec succès !";
             $manager->modifierGroupe($id, $nomGroupe, $_POST['description']);
+            $this->lister($messages, false); // Afficher la page de modification avec les messages
+        } else {
+            $this->lister($messages, true); // Afficher la page de modification avec les messages
         }
-
-        $this->lister($messages); // Retourne à la page de liste des groupes
     }
 }

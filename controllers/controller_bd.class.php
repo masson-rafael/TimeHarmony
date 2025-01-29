@@ -24,17 +24,34 @@ class ControllerBd extends Controller
 
     public function sauvegarder(): void {
         $db = Bd::getInstance();
-        $db->backup($tableauDErreurs);
-        $pdo = $this->getPdo();
-        $manager = new UtilisateurDao($pdo);
+        $db->backupTotale();
+    }
+
+    public function restaurer(): void {
+        $idUtilisateur = $_GET['userId'];
+        $manager = new UtilisateurDAO($this->getPdo());
+        $utilisateur = $manager->find($idUtilisateur);
         $utilisateurs = $manager->findAll();
-        $template = $this->getTwig()->load('administration.html.twig');
-        echo $template->render(
-            array(
-                'listeUtilisateurs' => $utilisateurs,
-                'message' => $tableauDErreurs,
-                'utilisateurCourant' => $_SESSION['utilisateur'],
-            )
-        );
+        $tableau = array();
+
+        if($utilisateur->getEstAdmin() === true) {
+            $db = Bd::getInstance();
+            $db->restoreDatabase();
+            $tableau[] = 'Restauration effectuée avec succès !';
+
+            // Retour à la page d'administration
+            $template = $this->getTwig()->load('administration.html.twig');
+            echo $template->render(
+                array(
+                    'message' => $tableau,
+                    'utilisateurCourant' => $_SESSION['utilisateur'],
+                    'listeUtilisateurs' => $utilisateurs
+                )
+            );
+        } else {
+            // Retour à la page d'administration
+            $template = $this->getTwig()->load('menu.html.twig');
+            echo $template->render(array());
+        }
     }
 }

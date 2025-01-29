@@ -20,14 +20,16 @@
 
 						<!-- Formulaire -->
 						<div class="w-75">
-							<form method="POST" action="index.php?controleur=utilisateur&methode=modifier&id={{ utilisateurGlobal.getId }}&type='util'" enctype="multipart/form-data">
+							<form method="POST" id="formProfil" action="index.php?controleur=utilisateur&methode=modifier&id={{ utilisateurGlobal.getId }}&type='util'" enctype="multipart/form-data">
 								<div class="mb-3">
 									<label for="nom" class="form-label" style="color: #2c3e50;">Nom *</label>
 									<input type="text" class="form-control shadow-sm" id="nom" name="nom" value="{{ utilisateurGlobal.getNom }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="50" title="Le nom de votre compte" required>
+									<small id="nomError" class="text-danger"></small>
 								</div>
 								<div class="mb-3">
 									<label for="prenom" class="form-label" style="color: #2c3e50;">Prénom *</label>
 									<input type="text" class="form-control shadow-sm" id="prenom" name="prenom" value="{{ utilisateurGlobal.getPrenom }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="50" title="Le prénom de votre compte" required>
+									<small id="prenomError" class="text-danger"></small>
 								</div>
 								<div class="mb-3">
 									<label for="email" class="form-label" style="color: #2c3e50;">E-mail *</label>
@@ -39,8 +41,8 @@
 									<input type="file" class="form-control shadow-sm" id="photo" name="photo" style="border: 1px solid #ddd;" accept=".jpg, .png" title="La photo de profil de votre compte">
 								</div>
 								<div class="d-flex justify-content-between">
-									<button type="submit" class="btn btn-primary px-4 shadow-sm" style="background-color: #3498db; border: none;">Modifier mon profil</button>
-									<a class="btn btn-secondary" href="index.php?controleur=utilisateur&methode=demanderReinitialisationMail" role="button">Réinitialiser mon mot de passe</a>
+									<button id="boutonModification" type="submit" class="btn btn-primary px-4 shadow-sm" >Modifier mon profil</button>
+									<a class="btn btn-secondary" href="index.php?controleur=utilisateur&methode=demanderReinitialisationMail" role="button" >Réinitialiser mon mot de passe</a>
 								</div>
 							</form>
 							<!-- Bouton supprimer -->
@@ -50,16 +52,23 @@
 						</div>
 					</div>
 				</div>
-				{% if message %}
-					<div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
-						{% for messages in message %}
-							{{messages}}
-							<br>
-						{% endfor %}
-						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-					</div>
-				{% endif %}
 			</div>
+			<!-- Affichage des messages -->
+			{% if message %}
+				<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
+					<div id="toast" class="toast align-items-center text-white bg-{% if contientErreurs %}danger{% else %}success{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+						<div class="d-flex">
+							<div class="toast-body">
+								{% for messages in message %}
+									{{ messages }}
+									<br>
+								{% endfor %}
+							</div>
+							<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+						</div>
+					</div>
+				</div>
+			{% endif %}
 		<!-- Fenêtre modale -->
 		<div class="modal fade position-absolute" id="fenetreModale" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-md">
@@ -85,5 +94,8 @@
 		</div>
 	</div>
 </main>
-
+	{% block javascripts %}
+		{{ parent() }}
+		<script src="js/formulaireModificationProfil.js"></script>
 	{% endblock %}
+{% endblock %}
