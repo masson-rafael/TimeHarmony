@@ -412,8 +412,7 @@ class utilitaire
     {
         $valide = true;
         // 1. Champs obligatoires : vérifier la présence du champ (pas obligatoire mais sert d'indication)
-        if (!isset($photo)) {
-            $messagesErreurs[] = "Aucune photo renseignée";
+        if ($photo['name'] == '') {
             $valide = false;
         } else {
             // 2. Type de données : vérifier que le nom est une chaine de caractères
@@ -431,7 +430,7 @@ class utilitaire
             // 4. Format des données : vérifier le format de la photo
             if ($photo['error'] != UPLOAD_ERR_OK) {
                 $valide = false;
-                $messagesErreurs[] = "Aucune photo renseignée";
+                $messagesErreurs[] = "Erreur lors du chargement de la photo";
             }
         }
         return $valide;
