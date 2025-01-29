@@ -592,4 +592,26 @@ class Utilisateur {
     public function estTokenValide(?string $token): bool {
         return $this->getTokenReinitialisation() === $token && $this->getDateExpirationToken() > time();
     }
+
+    /**
+     * Fonction qui permet de supprimer les anciennes photos de l'utilisateur 
+     * pour éviter une surcharge de la taille du projet
+     *
+     * @return void
+     */
+    public function suppreimerAnciennesPhotos(): void {
+        $dossier = 'image/photo_user';
+
+        // Parcours tous les fichiers du dossier
+        $fichiers = scandir($dossier);
+        $pregMatch = '/^profil_'.$this->getId().'_/';
+        foreach ($fichiers as $fichier) {
+            $cheminFichier = $dossier . '/' . $fichier;
+
+            // Vérifie si c'est un fichier et s'il commence par "profil_"
+            if (is_file($cheminFichier) && preg_match($pregMatch, $fichier)) {
+                unlink($cheminFichier);
+            }
+        }
+    }
 }
