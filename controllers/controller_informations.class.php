@@ -72,12 +72,13 @@ class ControllerInformations extends Controller {
      * Le mail contiendra le sujet de la demande ainsi qu'une description remplie par le demandeur.
      * @return void
      */
-    public function envoyer() {
+    public function envoyer(): void {
         $tableauErreurs = [];
+        $utilisateurEstConnecte = isset($_SESSION['utilisateur']);
 
         // Validation des champs envoyés par le formulaire
         $valideMail = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
-        $valideDescription = utilitaire::validerDescription($_POST['description'], $tableauErreurs);
+        $valideDescription = utilitaire::validerDescriptionFormContact($_POST['description'], $tableauErreurs);
         $valideSujet = utilitaire::validerSujet($_POST['motif'], $tableauErreurs);
         $template = $this->getTwig()->load('menu.html.twig');
 
@@ -108,23 +109,48 @@ class ControllerInformations extends Controller {
             // Envoyer l'email
             if (mail($emailPrincipal, $sujet, $description, $headers)) {
                 $tableauErreurs[] = "Email envoyé avec succès à no-reply@timeharmony.com avec les administrateurs en copie.";
-                $this->afficherMenu($tableauErreurs, false);
+                $utilisateurEstConnecte == true ? $this->afficherMenu($tableauErreurs, false) : $this->afficherFormulaireContact($tableauErreurs, false);
             } else {
                 $tableauErreurs[] =  "Échec de l'envoi de l'email.";
-                $this->afficherMenu($tableauErreurs, true);
+                $utilisateurEstConnecte == true ? $this->afficherMenu($tableauErreurs, true) : $this->afficherFormulaireContact($tableauErreurs, true);
             }
         } else {
-            $tableauErreurs[] =  "Formulaire invalide : " . implode(", ", $tableauErreurs);
-            $this->afficherMenu($tableauErreurs, true);
+            $erreurs[] =  "Formulaire invalide : " . implode(", ", $tableauErreurs);
+            $utilisateurEstConnecte == true ? $this->afficherMenu($erreurs, true) : $this->afficherFormulaireContact($erreurs, true);
         }
     }
 
-    public function afficherMenu(?array $tableauErreurs = null, ?bool $contientErreur = false) {
+    /**
+     * Fonction qui permet d'afficher le menu
+     * 
+     * @param array|null $tableauErreurs le tableau contenant des erreurs ou non
+     * @param bool|null $contientErreur si le tableu a des messages d'erreur ou de succes
+     * @return void
+     */
+    public function afficherMenu(?array $tableauErreurs = null, ?bool $contientErreur = false):void {
         $template = $this->getTwig()->load('menu.html.twig');
         echo $template->render(
             array(
                 'message' => $tableauErreurs,
                 'contientErreur' => $contientErreur
+            )
+        );
+    }
+
+    /**
+     * Fonction qui permet d'afficher le formulaire de contact
+     * 
+     * @param array|null $tableauErreurs le tableau contenant des erreurs ou non
+     * @param bool|null $contientErreur si le tableu a des messages d'erreur ou de succes
+     * @return void
+     */
+    public function afficherFormulaireContact(?array $tableauErreurs = null, ?bool $contientErreur = false):void {
+        $template = $this->getTwig()->load('informations.html.twig');
+        echo $template->render(
+            array(
+                'message' => $tableauErreurs,
+                'contientErreur' => $contientErreur,
+                'contact' => true
             )
         );
     }

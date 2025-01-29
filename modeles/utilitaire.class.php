@@ -544,7 +544,7 @@ class utilitaire
     }
 
     /**
-     * Fonction qui valide la description d'une demande de contact de l'équipe TH
+     * Fonction qui valide la description d'un groupe
      * 
      * @param string|null $description la description du message
      * @param array $messagesErreurs le tableau qui contiendra les messages d'erreur
@@ -565,6 +565,32 @@ class utilitaire
 
         // 4. Format des données
         $valide = utilitaire::validerPreg($description, "/^[a-zA-ZÀ-ÿ0-9- `',.]+$/", $messagesErreurs, "description d'un groupe");
+
+        return $valide;
+    }
+
+    /**
+     * Fonction qui valide la description d'une demande de contact de l'équipe TH
+     * 
+     * @param string|null $description la description du message
+     * @param array $messagesErreurs le tableau qui contiendra les messages d'erreur
+     * @return bool si le champ est valide ou non
+     */
+    public static function validerDescriptionFormContact(?string $description, array &$messagesErreurs): bool
+    {
+        $valide = true;
+
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        $valide = utilitaire::validerPresence($description, $messagesErreurs, "description de la demande");
+
+        // 2. Type de données : vérifier que la description est une chaine de caractères
+        $valide = utilitaire::validerType($description, $messagesErreurs, "description de la demande");
+
+        // 3. Longueur de la chaine
+        $valide = utilitaire::validerTaille($description, 10, 200, $messagesErreurs, "description de la demande");
+
+        // 4. Format des données
+        $valide = utilitaire::validerPreg($description, "/^[a-zA-ZÀ-ÿ0-9 \"\'?,!ùéèàçÉÈÙ]+$/u", $messagesErreurs, "description de la demande");
 
         return $valide;
     }

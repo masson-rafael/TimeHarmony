@@ -61,8 +61,8 @@ class ControllerUtilisateur extends Controller
                 $manager->ajouterUtilisateur($nouvelUtilisateur);
                 $envoieMail = $this->envoyerMailActivationCompte($nouvelUtilisateur->getEmail());
                 if($envoieMail[1]) {
-                    $tableauErreurs[] = "Inscription réussie !";
-                    $this->genererVue($email, $utilisateurExiste, $tableauErreurs, false);
+                    $tableauErreurs[] = "Un mail d'activation de votre compte a été envoyé !";
+                    $this->genererVueConnexion($tableauErreurs, null, false);
                 } else {
                     $tableauErreurs[] = $envoieMail[0][0];
                     $user = $manager->getObjetUtilisateur($email);
@@ -861,7 +861,7 @@ class ControllerUtilisateur extends Controller
         // On met un @ car sur localhost, pas de serveur de mail
         if (@mail($destinataire, $sujet, $message, $headers)) {
             $messageErreur[] = "L'e-mail de confirmation de création de compte a été envoyé avec succès à $destinataire.";
-            $this->genererVueMenu($messageErreur, false);
+            $mailEnvoye = true;
         } else {
             $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé à $destinataire.";
             $mailEnvoye = false;
