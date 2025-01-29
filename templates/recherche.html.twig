@@ -179,11 +179,8 @@
             });      
         #}
     </script>
-{% endblock %} 
 
-
-{% block javascripts %}
-	<script>
+		<script>
         // Récupérer les éléments input
         const dateDebutInput = document.getElementById('Datedebut');
         const dateFinInput = document.getElementById('Datefin');
@@ -205,4 +202,4 @@
         const formattedDateTimeFin = oneWeekLater.toISOString().slice(0, 16);
         dateFinInput.value = formattedDateTimeFin;
     </script>
-{% endblock %}
+{% endblock %} 
