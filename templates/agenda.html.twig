@@ -4,7 +4,6 @@
 	{{ constant('WEBSITE_TITLE')}}
 {% endblock %}
 
-
 {% block content %}
 	<main>
 		<div class="container">
@@ -170,16 +169,5 @@
     <script src="js/formulaireCreationAgenda.js"></script>
     <script src="js/formulaireModificationAgenda.js"></script>
     {{ parent() }}
-    <script>
-        $(document).ready(function() {
-            $('#myTable').DataTable({
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
-                },
-                "pageLength": 10,
-                "ordering": true,
-                "responsive": true
-            });
-        });
-    </script>
+    <script src="js/datatable.js"></script>
 {% endblock %}

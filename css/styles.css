@@ -11221,3 +11221,33 @@ body {
 .footer {
   padding: 5rem 0;
 }
+
+#myTable {
+  width: 100% !important; /* Force la table à occuper toute la largeur */
+  white-space: nowrap; /* Évite les retours à la ligne */
+}
+
+#myTable_wrapper {
+  width: 100%;
+}
+
+#myTable th,
+#myTable td {
+  text-align: left;
+  vertical-align: middle;
+}
+
+@media (max-width: 768px) {
+  #myTable td {
+      font-size: 14px;
+  }
+}
+
+#myTable_wrapper .col-sm-12,
+#myTable_wrapper .col-md-6,
+#myTable_wrapper .col-md-5,
+#myTable_wrapper .col-md-7,
+#myTable_wrapper .paginate_button
+{
+    margin-bottom: 1rem !important;
+}
