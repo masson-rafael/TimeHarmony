@@ -7,7 +7,7 @@
  */
 use ICal\ICal;
 
-class utilitaire 
+class utilitaire
 {
 
     /**
@@ -180,15 +180,13 @@ class utilitaire
         if (!filter_var($urlAgenda, FILTER_VALIDATE_URL) && !utilitaire::validerPreg($urlAgenda, '/^https?:\/\/calendar\.google\.com\/calendar\/ical\/.+\/basic\.ics$/', $messagesErreurs, "URL agenda")) {
             $messagesErreurs[] = "L'URL de l'agenda n'est pas valide.";
             $valide = false;
-        }
-        else {
+        } else {
             // Vérification du type MIME du fichier
             $headers = get_headers($urlAgenda, 1);
             if (!isset($headers['Content-Type'])) {
                 $messagesErreurs[] = "Impossible de vérifier le type du fichier à partir de l'URL";
                 $valide = false;
-            }
-            elseif (strpos($headers['Content-Type'], 'text/calendar') === false) {
+            } elseif (strpos($headers['Content-Type'], 'text/calendar') === false) {
                 $messagesErreurs[] = "Le fichier obtenu à partir de l'URL n'est pas un agenda";
                 $valide = false;
             }
@@ -447,16 +445,15 @@ class utilitaire
     public static function validerDate(?string $date, array &$messagesErreurs): bool
     {
         $valide = true;
-        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        $valide = utilitaire::validerPresence($date, $messagesErreurs, "date");
 
-        // 2. Type de données : vérifier que le champ est une chaine de caractères
-        $valide = utilitaire::validerType($date, $messagesErreurs, "date");
+        // Extraire les parties de la date : année, mois, jour
+        list($year, $month, $day) = explode('-', $date);
 
-        // 3. Longueur de la chaine - non pertinent
-
-        // 4. Format des données : vérifier le format de la date
-        $valide = utilitaire::validerPreg($date, "/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/", $messagesErreurs, "date");
+        // Vérifier si la date est valide dans le calendrier
+        if (!checkdate((int) $month, (int) $day, (int) $year)) {
+            $messagesErreurs[] = "Une date n'est pas valide dans le calendrier";
+            $valide = false;
+        }
 
         return $valide;
     }
@@ -481,6 +478,42 @@ class utilitaire
 
         // 4. Format des données : vérifier le format de l'heure
         $valide = utilitaire::validerPreg($heure, "/^(2[0-3]|[01]\d):[0-5]\d$/", $messagesErreurs, "duree minimale");
+
+        // 5. Plage des valeurs
+        $dureeMinSeconds = strtotime($heure);
+
+        $valide = $dureeMinSeconds > 5 * 60;
+        if (!$valide) {
+            $messagesErreurs[] = "La durée minimale doit être supérieure à 5 minutes";
+        }
+
+        return $valide;
+    }
+
+    /**
+     * Fonction qui valide une heure dans le formulaire de recherche
+     *
+     * @param string|null $debutHoraire L'heure du début de la plage horaire
+     * @param string|null $finHoraire L'heure de fin de la plage horaire
+     * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
+     * @return bool Retourne vrai si l'heure est valide, faux sinon
+     */
+    public static function validerPlageHoraire(?string $debutHoraire, ?string $finHoraire, array &$messagesErreurs): bool
+    {
+        $valide = true;
+        // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
+        $valide = utilitaire::validerPresence($debutHoraire, $messagesErreurs, "début de la plage horaire");
+        $valide = utilitaire::validerPresence($finHoraire, $messagesErreurs, "fin de la plage horaire");
+
+        // 2. Type de données : vérifier que le champ est une chaine de caractères
+        $valide = utilitaire::validerType($debutHoraire, $messagesErreurs, "début de la plage horaire");
+        $valide = utilitaire::validerType($finHoraire, $messagesErreurs, "fin de la plage horaire");
+
+        // 3. Longueur de la chaine - non pertinent
+
+        // 4. Format des données : vérifier le format de l'heure
+        $valide = utilitaire::validerPreg($debutHoraire, "/^(2[0-3]|[01]\d):[0-5]\d$/", $messagesErreurs, "début de la plage horaire");
+        $valide = utilitaire::validerPreg($finHoraire, "/^(2[0-3]|[01]\d):[0-5]\d$/", $messagesErreurs, "fin de la plage horaire");
 
         return $valide;
     }
@@ -613,6 +646,12 @@ class utilitaire
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
         $valide = utilitaire::validerPresence($debut, $messagesErreurs, "debut du créneau");
         $valide = utilitaire::validerPresence($fin, $messagesErreurs, "fin du créneau");
+        $valide = utilitaire::validerType($debut, $messagesErreurs, "début de la recherche");
+        $valide = utilitaire::validerType($fin, $messagesErreurs, "fin de la recherche");
+        $valide = utilitaire::validerPreg($debut, "/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/", $messagesErreurs, "début de la recherche");
+        $valide = utilitaire::validerPreg($fin, "/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/", $messagesErreurs, "fin de la recherche");
+        $valide = utilitaire::validerDate($debut, $messagesErreurs);
+        $valide = utilitaire::validerDate($fin, $messagesErreurs);
 
         // 5. Plage des valeurs
         $dateDebut = new DateTime($debut);
@@ -627,45 +666,24 @@ class utilitaire
     }
 
     /**
-     * Fonction qui permet de valider la durée minimale de recherche
-     * 
-     * @param string|null $dureeMin la durée minimale
-     * @param array $tableauErreurs le tableau des erreurs
-     * @return bool si le champ est correct ou non
-     */
-    public static function validerDureeMin(?string $dureeMin, array &$messagesErreurs): bool
-    {
-        $valide = true;
-
-        // 5. Plage des valeurs
-        $dureeMinSeconds = strtotime($dureeMin);
-
-        $valide = $dureeMinSeconds > 5 * 60;
-        if (!$valide) {
-            $messagesErreurs[] = "La durée minimale doit être supérieure à 5 minutes";
-        }
-
-        // Vérification que la durée est supérieure ou égale à 5 minutes
-        return $valide;
-    }
-
-    /**
      * Fonction qui permet de valider les contacts de recherche
      * 
      * @param array|null $contacts le tableau des contacts de recherche
      * @param array $tableauErreurs le tableau des erreurs
      * @return bool si le champ est correct ou non
      */
-    public static function validerContacts(?array $contacts, array &$messagesErreurs): bool
+    public static function validerContacts(?array $contacts,array &$messagesErreurs): bool
     {
         $valide = true;
 
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
-        if (empty($contacts)) {
+        if (empty($contacts) && empty($groupes)) {
             $messagesErreurs[] = "Aucun contact renseigné";
             $valide = false;
         }
 
         return $valide;
     }
+
+
 }

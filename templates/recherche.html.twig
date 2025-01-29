@@ -40,7 +40,7 @@
 											{% endfor %}
 										</tbody>
 									</table>
-									<small id="contactsError" class="text-danger"></small>
+									<small id="contactsError" class="text-danger"></small> 
 								{% else %}
 									<div class="row justify-content-center mt-4 h-25">
 										<div class="col-md-8">
@@ -103,6 +103,7 @@
 									<label for="Datedebut" class="form-label">Début *</label>
 									<input name="debut" type="date" class="form-control" id="dateDebut" required title="Entrez la date de début de votre recherche">
 									<small id="dateDebutError" class="text-danger"></small>
+
 								</div>
 
 								<div class="mb-3">
@@ -114,11 +115,24 @@
 								<div class="mb-3">
 									<label for="dureeMin" class="form-label">Durée exacte du rendez-vous *</label>
 									<input id="duree" name="dureeMin" type="time" class="form-control" value="01:00" min="00:05" required title="Entrez la durée minimale du créneau à rechercher">
-									<small id="dureeError" class="text-danger"></small>
+                  <small id="dureeError" class="text-danger"></small>
+								</div>
+							</div>
+							<div class="card p-4 shadow-sm mt-3">
+								<h5 class="fw-bold text-center mb-3">Plage horaire :</h5>
+								<div class="mb-3">
+									<label for="Datedebut" class="form-label">Début *</label>
+									<input name="debutHoraire" type="time" class="form-control" id="Datedebut" value="08:00" required title="Entrez la date de début de la plage horaire">
+								</div>
+
+								<div class="mb-3">
+									<label for="Datefin" class="form-label">Fin *</label>
+									<input name="finHoraire" type="time" class="form-control" id="Datefin" value="18:00" required title="Entrez la date de fin de la plage horaire">
 								</div>
 							</div>
 						</div>
 					</div>
+
 
 					<!-- Section Bouton -->
 					<div class="text-center mb-4">
@@ -164,5 +178,31 @@
                 });
             });      
         #}
+    </script>
+{% endblock %} 
+
+
+{% block javascripts %}
+	<script>
+        // Récupérer les éléments input
+        const dateDebutInput = document.getElementById('Datedebut');
+        const dateFinInput = document.getElementById('Datefin');
+
+        // Obtenir la date et l'heure actuelles
+        const now = new Date();
+        
+        // Ajuster pour le fuseau horaire local
+        const offset = now.getTimezoneOffset(); // Décalage en minutes
+        const localTime = new Date(now.getTime() - offset * 60000);
+        
+        // Formater la date et l'heure au format requis pour datetime-local
+        const formattedDateTime = localTime.toISOString().slice(0, 16);
+        dateDebutInput.value = formattedDateTime;
+
+        // Calculer la date avec une semaine de décalage
+        const oneWeekLater = new Date(localTime);
+        oneWeekLater.setDate(localTime.getDate() + 7); // Ajouter 7 jours
+        const formattedDateTimeFin = oneWeekLater.toISOString().slice(0, 16);
+        dateFinInput.value = formattedDateTimeFin;
     </script>
 {% endblock %}
