@@ -1,17 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ constant('WEBSITE_LANGUAGE')}}">
 	<head>
-		<!-- Google tag (gtag.js) -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=G-J00NZ3CQ6M"></script>
-		<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-
-		gtag('config', 'G-J00NZ3CQ6M');
-		</script>
 		<script src="js/tarteaucitron/tarteaucitron.js"></script>
-
         <script type="text/javascript">
         tarteaucitron.init({
 			"privacyUrl": "", /* Privacy policy url */
@@ -43,10 +33,18 @@
 			"mandatory": true, /* Show a message about mandatory cookies */
 			"mandatoryCta": true, /* Show the disabled accept button when mandatory on */
 			//"customCloserId": "", /* Optional a11y: Custom element ID used to open the panel */
-			"googleConsentMode": true, /* Enable Google Consent Mode v2 for Google ads and GA4 */
+			"googleConsentMode": false, /* Enable Google Consent Mode v2 for Google ads and GA4 */
 			"partnersList": false /* Show the number of partners on the popup/middle banner */
         });
         </script>
+
+        <script type="text/javascript">
+        tarteaucitron.user.gtagUa = 'G-J00NZ3CQ6M';
+        // tarteaucitron.user.gtagCrossdomain = ['example.com', 'example2.com'];
+        tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */ };
+        (tarteaucitron.job = tarteaucitron.job || []).push('gtag');
+        </script>
+
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
@@ -190,14 +188,7 @@
         </div>
     </div>
 </footer>
-
-    <script type="text/javascript">
-    tarteaucitron.user.gtagUa = 'G-XXXXXXXXX';
-    // tarteaucitron.user.gtagCrossdomain = ['example.com', 'example2.com'];
-    tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */ };
-    (tarteaucitron.job = tarteaucitron.job || []).push('gtag');
-    </script>
-    </body>
+</body>
 
     {% block javascripts %}
         <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
