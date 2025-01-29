@@ -85,9 +85,12 @@
         </div>
         {% endif %}
         {% else %}
-        <div class="row text-center mt-3 mb-3">
-            <h1>Ajouter un contact</h1>
-        </div>
+		<div class="row text-center mt-3 mb-3" >
+    		<a class="text-start" style="margin: 10px;" st href="index.php?controleur=contacts&methode=lister" role="button">
+        	<img src="image/retour.png" style="width: 35px;" alt="retour">
+    		</a>
+    		<h1 style="margin: 0;">Ajouter un contact</h1>
+		</div>
         <div class="table-responsive">
             <table id="myTable" class="table table-striped">
                 <thead>
@@ -151,7 +154,6 @@
         </div>
         {% endif %}
         <div class="text-center">
-            <a class="px-5 btn btn-secondary" href="index.php?controleur=contacts&methode=lister" role="button">Revenir à vos Contacts</a>
         </div>
         {% endif %}
     </div>
