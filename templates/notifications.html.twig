@@ -7,12 +7,12 @@
     <div class="container">
         <div class="row">
             <div class="row text-center mt-3">
-				<strong><h1>Mes demandes</h1></strong>
+				<strong><h1>Mes demandes de contact</h1></strong>
 			</div>
             <div class="row text-center mt-5 mb-3 pt-5">
-				<h3>Vos demandes envoyées</h3>
+				<h3>Mes demandes envoyées</h3>
 			</div>
-			{% if demandesEnvoyees|length > 0 %}
+			{% if demandesContactEnvoyees|length > 0 %}
 				<table id="myTable1" class="table table-striped mw-75"> <!-- w-75 fonctionne mais pas mw-75 SUS -->
 					<thead>
 						<tr>
@@ -23,7 +23,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{% for demande in demandesEnvoyees %}
+						{% for demande in demandesContactEnvoyees %}
 							<tr>
 								<td><img src="image/photo_user/{{ demande.photoDeProfil }}" alt="photoDeProfil"  class="rounded-circle" style="width: 50px; height: 50px;"></td>
 								<td>{{ demande.prenom }}</td>
@@ -43,7 +43,7 @@
 												{{demande.nom}}</h1>
 											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 										</div>
-										<form action="index.php?controleur=contacts&methode=supprimerDemandeEmise&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
+										<form action="index.php?controleur=utilisateur&methode=supprimerDemandeContactEmise&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
 											<div class="modal-body">
 												<label>Êtes-vous sûr de vouloir supprimer la demande concernant le contact
 													{{demande.prenom}}
@@ -72,9 +72,9 @@
 			{% endif %}
 
 			<div class="row text-center mb-3 pt-5 mt-5">
-				<h3>Vos demandes reçues</h3>
+				<h3>Mes demandes reçues</h3>
 			</div>
-			{% if demandesRecues|length > 0 %}
+			{% if demandesContactRecues|length > 0 %}
 			<table id="myTable2" class="table table-striped mw-75">
 				<thead>
 					<tr>
@@ -85,7 +85,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{% for demande in demandesRecues %}
+					{% for demande in demandesContactRecues %}
 						<tr>
 							<td><img src="image/photo_user/{{ demande.photoDeProfil }}" alt="photoDeProfil"  class="rounded-circle" style="width: 50px; height: 50px;"></td>
 							<td>{{ demande.prenom }}</td>
@@ -106,7 +106,7 @@
 											{{demande.nom}}</h1>
 										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
-									<form action="index.php?controleur=contacts&methode=accepterDemandeRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
+									<form action="index.php?controleur=utilisateur&methode=accepterDemandeContactRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
 										<div class="modal-body">
 											<label>Êtes-vous sûr de vouloir accepter la demande de contact de 
 												{{demande.prenom}}
@@ -130,7 +130,7 @@
 											{{demande.nom}}</h1>
 										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
-									<form action="index.php?controleur=contacts&methode=refuserDemandeRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
+									<form action="index.php?controleur=utilisateur&methode=refuserDemandeContactRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
 										<div class="modal-body">
 											<label>Êtes-vous sûr de vouloir refuser la demande de contact de 
 												{{demande.prenom}}
@@ -157,22 +157,115 @@
 					</div>
 				</div>
 			{% endif %}
-			{% if message %}
-				<div class="row alert alert-success alert-dismissible fade show mt-4" role="alert">
-					{% for messages in message %}
-						{{messages}}
-						<br>
-					{% endfor %}
-					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-				</div>
-			{% endif %}
 			<div class="text-center pt-5">
 				<a class="px-5 btn btn-secondary" href="index.php?controleur=contacts&methode=lister" role="button">Afficher mes contacts</a>
 			</div>
 			<div class="text-center pt-3">
 				<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
 			</div>
+			<div class="row text-center mt-3">
+				<strong><h1>Mes demandes de groupe</h1></strong>
+			</div>
+			<div class="row text-center mb-3 pt-5 mt-5">
+				<h3>Mes demandes reçues</h3>
+			</div>
+			{% if demandesGroupeRecues|length > 0 %}
+			<table id="myTable2" class="table table-striped mw-75">
+				<thead>
+					<tr>
+						<th>Nom du Groupe</th>
+						<th>Description</th>
+						<th>Chef</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for demande in demandesGroupeRecues %}
+						<tr>
+							<td>{{ demande.nomGr }}</td>
+							<td>{{ demande.description }}</td>
+							<td>{{ demande.nom }} {{ demande.prenom }}</td>
+							<td>
+								<a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleRecueAccepte{{demande.id}}" aria-expanded="false">
+								<i class="fa-solid fa-check"></i></a>
+								<a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleRecueRefuse{{demande.id}}" aria-expanded="false">
+								<i class="fa-solid fa-trash"></i></a>
+							</td>
+						</tr>
+						<div class="modal fade" id="fenetreModaleRecueAccepte{{demande.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog modal-lg">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h1 class="modal-title fs-5" id="exampleModalLabel">Accepter la demande d'ajout au groupe {{demande.nomGr}}</h1>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<form action="index.php?controleur=utilisateur&methode=accepterDemandeGroupeRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
+										<div class="modal-body">
+											<label>Êtes-vous sûr de vouloir accepter la demande d'ajout au groupe {{demande.nomGr}}	?</label>
+										</div>
+										<div class="modal-footer">
+											<button type="submit" class="btn btn-primary" name="update_article">Accepter</button>
+											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div class="modal fade" id="fenetreModaleRecueRefuse{{demande.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog modal-lg">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h1 class="modal-title fs-5" id="exampleModalLabel">Refuser la demande d'ajout au groupe {{demande.nomGr}}</h1>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<form action="index.php?controleur=utilisateur&methode=refuserDemandeGroupeRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
+										<div class="modal-body">
+											<label>Êtes-vous sûr de vouloir refuser la demande d'ajout au groupe {{demande.nomGr}} ?</label>
+										</div>
+										<div class="modal-footer">
+											<button type="submit" class="btn btn-primary" name="update_article">Refuser</button>
+											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				</tbody>
+			</table>
+			{% else %}
+				<div class="row justify-content-center mt-4 h-25">
+					<div class="col-md-8">
+						<div class="alert alert-info text-center" role="alert">
+							Aucune demande en attente. Revenez plus tard !
+						</div>
+					</div>
+				</div>
+			{% endif %}
+
+			<div class="text-center pt-5">
+				<a class="px-5 btn btn-secondary" href="index.php?controleur=groupes&methode=lister" role="button">Afficher mes groupes</a>
+			</div>
+			<div class="text-center pt-3">
+				<a class="px-5 btn btn-primary" href="index.php?controleur=groupes&methode=ajouter" role="button">Créer un groupe</a>
+			</div>
         </div>
+		<!-- Affichage des messages -->
+		{% if message %}
+			<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
+				<div id="toast" class="toast align-items-center text-white bg-{% if contientErreurs %}danger{% else %}success{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+					<div class="d-flex">
+						<div class="toast-body">
+							{% for messages in message %}
+								{{ messages }}
+								<br>
+							{% endfor %}
+						</div>
+						<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+					</div>
+				</div>
+			</div>
+		{% endif %}
     </div>
 </main>
 {% endblock %}

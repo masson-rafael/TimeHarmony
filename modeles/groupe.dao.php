@@ -73,20 +73,18 @@ class GroupeDao
      */
     public function find(?int $id): ?Groupe
     {
-        $resultat = null;
+        $groupe = null;
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "groupe WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
 
-        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-        $tableau = $pdoStatement->fetch();
-        $groupe = $this->hydrate($tableau);
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
 
-        if ($groupe) {
-            $resultat = $groupe;
+        if ($result) {
+            $groupe = $this->hydrate($result);
         }
 
-        return $resultat;
+        return $groupe;
     }
 
     /**
@@ -217,7 +215,7 @@ class GroupeDao
     }
 
     /**
-     * Fonction permettant d'ajouter des utilisateurs à un groupe donné
+     * Fonction permettant d'ajouter un utilisateur pour un groupe donné
      * @param int|null $id id du groupe
      * @param int|null $idContact id de la personne que l'on ajoute au groupe
      * @return void
@@ -225,6 +223,22 @@ class GroupeDao
     public function ajouterMembreGroupe(?int $id, ?int $idContact): void
     {
         $sql = "INSERT INTO " . PREFIXE_TABLE . "composer (idGroupe, idUtilisateur) VALUES (:idGroupe, :idUtilisateur)";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array(
+            ":idGroupe" => $id,
+            ":idUtilisateur" => $idContact,
+        ));
+    }
+
+    /**
+     * Fonction permettant d'envoyer une demande d'ajout à un utilisateur pour un groupe donné
+     * @param int|null $id id du groupe
+     * @param int|null $idContact id de la personne que l'on ajoute au groupe
+     * @return void
+     */
+    public function demanderAjoutMembreGroupe(?int $id, ?int $idContact): void
+    {
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "ajouter (idGroupe, idUtilisateur) VALUES (:idGroupe, :idUtilisateur)";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array(
             ":idGroupe" => $id,

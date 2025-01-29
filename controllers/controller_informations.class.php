@@ -79,6 +79,7 @@ class ControllerInformations extends Controller {
         $valideMail = utilitaire::validerEmail($_POST['email'], $tableauErreurs);
         $valideDescription = utilitaire::validerDescription($_POST['description'], $tableauErreurs);
         $valideSujet = utilitaire::validerSujet($_POST['motif'], $tableauErreurs);
+        $template = $this->getTwig()->load('menu.html.twig');
 
         if ($valideMail && $valideDescription && $valideSujet) {
             $mailExpediteur = $_POST['email'];
@@ -107,18 +108,24 @@ class ControllerInformations extends Controller {
             // Envoyer l'email
             if (mail($emailPrincipal, $sujet, $description, $headers)) {
                 $tableauErreurs[] = "Email envoyé avec succès à no-reply@timeharmony.com avec les administrateurs en copie.";
+                $this->afficherMenu($tableauErreurs, false);
             } else {
                 $tableauErreurs[] =  "Échec de l'envoi de l'email.";
+                $this->afficherMenu($tableauErreurs, true);
             }
-
-            $template = $this->getTwig()->load('menu.html.twig');
-            echo $template->render(
-                array(
-                    'message' => $tableauErreurs,
-                )
-            );
         } else {
             $tableauErreurs[] =  "Formulaire invalide : " . implode(", ", $tableauErreurs);
+            $this->afficherMenu($tableauErreurs, true);
         }
+    }
+
+    public function afficherMenu(?array $tableauErreurs = null, ?bool $contientErreur = false) {
+        $template = $this->getTwig()->load('menu.html.twig');
+        echo $template->render(
+            array(
+                'message' => $tableauErreurs,
+                'contientErreur' => $contientErreur
+            )
+        );
     }
 }

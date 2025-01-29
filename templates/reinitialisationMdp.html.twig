@@ -24,14 +24,20 @@
                 </div>
             </div>
             {% if message %}
-                <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
-                    {% for messages in message %}
-                        {{messages}}
-                        <br>
-                    {% endfor %}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endif %}
+				<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
+					<div id="toast" class="toast align-items-center text-white bg-{% if contientErreurs %}danger{% else %}success{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+						<div class="d-flex">
+							<div class="toast-body">
+								{% for messages in message %}
+									{{ messages }}
+									<br>
+								{% endfor %}
+							</div>
+							<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+						</div>
+					</div>
+				</div>
+			{% endif %}
         </div>
     {% else %}
     <div class="row justify-content-center align-items-center h-100 pt-5">
@@ -77,12 +83,18 @@
             </div>
         </div>
         {% if message %}
-            <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
-                {% for messages in message %}
-                    {{messages}}
-                    <br>
-                {% endfor %}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
+                <div id="toast" class="toast align-items-center text-white bg-{% if contientErreurs %}danger{% else %}success{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {% for messages in message %}
+                                {{ messages }}
+                                <br>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
             </div>
         {% endif %}
 {% endif %}
