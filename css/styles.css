@@ -2958,9 +2958,7 @@ textarea.form-control-lg {
   --bs-btn-disabled-bg: #a16468;
   --bs-btn-disabled-border-color: #a16468;
 }
-.btn-danger:hover{
-  font-weight: bold; 
-}
+
 
 .btn-light {
   --bs-btn-color: #000;
