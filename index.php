@@ -1,9 +1,5 @@
 <?php
 
-/**
- * @todo vérifier "echo $template->render(array('etat' => 'connecte',));"
- */
-
 require_once 'include.php';
 
 try  {
@@ -29,12 +25,12 @@ try  {
     }
     else if ($methode == '' ){
         throw new Exception('La méthode n\'est pas définie');
+    } else {
+        $controller = ControllerFactory::getController($controllerName, $loader, $twig);
+        $controller->call($methode);
+        $controllerBackup = ControllerFactory::getController("bd", $loader, $twig);
+        $controller->declencherBackup($controllerBackup);
     }
-
-    $controller = ControllerFactory::getController($controllerName, $loader, $twig);
-    $controller->declencherBackup(ControllerFactory::getController("bd", $loader, $twig));
-    $controller->call($methode);
-    
 }catch (Exception $e) {
     die('Erreur : ' . $e->getMessage());
 }
