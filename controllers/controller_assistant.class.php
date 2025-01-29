@@ -80,9 +80,10 @@ class ControllerAssistant extends Controller
         $valideDuree = Utilitaire::validerDuree($_POST['debut'], $_POST['fin'], $messagesErreur);
         $dureeMinValide = Utilitaire::validerDureeMinimale($_POST['dureeMin'], $messagesErreur);
         $contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur);
+        $plageHoraireValide= Utilitaire::validerPlageHoraire($_POST['debutHoraire'],$_POST['finHoraire'], $messagesErreur);
 
 
-        if ($valideDuree && $dureeMinValide && $contactsValide) {
+        if ($valideDuree && $dureeMinValide && $contactsValide && $plageHoraireValide) {
             if (!isset($_SESSION['debut']) || !isset($_SESSION['fin']) || !isset($_SESSION['dureeMin']) || !isset($_SESSION['contacts']) || !isset($_SESSION['debutHoraire']) || !isset($_SESSION['finHoraire'])) {
                 $_SESSION['debut'] = $_POST['debut'];
                 $_SESSION['fin'] = $_POST['fin'];
@@ -122,16 +123,12 @@ class ControllerAssistant extends Controller
             }
             $tableauUtilisateur[] = $_SESSION['utilisateur'];
 
-            // var_dump($tableauUtilisateur);
-
             if (isset($_POST['groupes'])) {
                 $managerGroupe = new GroupeDao($pdo);
                 foreach ($groupes as $idGroupe) {
                     $tableauUtilisateurGroupe[] = $managerGroupe->getUsersFromGroup($idGroupe);
                 }
                 $idUtilisateurs = array_column($tableauUtilisateurGroupe[0], 'idUtilisateur');
-
-                // var_dump($idUtilisateurs);
 
                 foreach ($idUtilisateurs as $idUtilisateurGroupe) {
                     $verif = false;
@@ -147,10 +144,7 @@ class ControllerAssistant extends Controller
                 }
             }
 
-            // var_dump($_SESSION['contacts']);
             $tailleTabUser = count($tableauUtilisateur);
-
-            // var_dump($tableauUtilisateur);
 
             // Initialisez la session pour stocker la variable
             if (!isset($_SESSION['nbUserSelectionné'])) {
@@ -192,13 +186,10 @@ class ControllerAssistant extends Controller
             // echo "Durée initMatrine : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
             // echo "Durée totale en secondes initMatrice : $chronoSeconds secondes." . "<br>" . "<br>";
 
-            // var_dump($matrice);
             foreach ($assistantRecherche->getUtilisateurs() as $utilisateurCourant) {
                 $utilisateur = new Utilisateur($utilisateurCourant->getId(), $utilisateurCourant->getNom());
                 $agendas = $utilisateur->getAgendas();
                 $allEvents = [];
-
-                // var_dump($agendas);
 
                 // $chronoStart = new DateTime();
                 foreach ($agendas as $agenda) {
@@ -221,8 +212,14 @@ class ControllerAssistant extends Controller
                     $datetime_debut = new DateTime($dateDebut);  // Début du créneau
                     $dateFin = $creneau->getDateFin()->format('Y-m-d H:i:s');
                     $datetime_fin = new DateTime($dateFin);  // Début du créneau
+
+                    
+
                     $assistantRecherche->remplirCreneau($matrice, $datetime_debut, $datetime_fin, $utilisateurCourant);
                 }
+
+
+                
                 // $chronoEnd = new DateTime();
                 // $chronoInterval = $chronoStart->diff($chronoEnd);
                 // $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
@@ -231,13 +228,12 @@ class ControllerAssistant extends Controller
             }
 
             // Appel de la fonction
-            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'],$debutHoraire,$finHoraire);
-            // var_dump($_SESSION['nbUserSelectionné']);
-            // $chronoEndGen = new DateTime();
-            // $chronoInterval = $chronoStartGen->diff($chronoEndGen);
-            // $chronoSeconds = $chronoEndGen->getTimestamp() - $chronoStartGen->getTimestamp();
-            // echo "Durée totale algo : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
-            // echo "Durée totale en secondes totale algo : $chronoSeconds secondes." . "<br>" . "<br>";
+            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'],$debutHoraire,$finHoraire,$debut,$fin);
+        //     // $chronoEndGen = new DateTime();
+        //     // $chronoInterval = $chronoStartGen->diff($chronoEndGen);
+        //     // $chronoSeconds = $chronoEndGen->getTimestamp() - $chronoStartGen->getTimestamp();
+        //     // echo "Durée totale algo : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
+        //     // echo "Durée totale en secondes totale algo : $chronoSeconds secondes." . "<br>" . "<br>";
 
             // Générer la vue avec les données structurées
             $tailleContacts = sizeof($tableauUtilisateur);
