@@ -99,7 +99,7 @@ class ControllerAssistant extends Controller
 
         $valideDuree = Utilitaire::validerDuree($_POST['debut'], $_POST['fin'], $messagesErreur);
         $dureeMinValide = Utilitaire::validerDureeMinimale($_POST['dureeMin'], $messagesErreur);
-        $contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur);
+        @$contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur);
         $plageHoraireValide= Utilitaire::validerPlageHoraire($_POST['debutHoraire'],$_POST['finHoraire'], $messagesErreur);
 
 
