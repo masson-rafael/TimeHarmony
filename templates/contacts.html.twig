@@ -27,7 +27,7 @@
 								{% for utilisateur in contacts %}
 									<tr>
 										<td>
-											<img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil" class="rounded-circle img-fluid" style="max-width: 50px;">
+											<img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil" class="rounded-circle img-fluid" style="width: 50px; height: 50px;">
 										</td>
 										<td>{{ utilisateur.getPrenom }}</td>
 										<td>{{ utilisateur.getNom }}</td>
@@ -87,11 +87,11 @@
 				<table id="myTable" class="table table-striped">
 					<thead>
 						<tr>
-							<th>Image de profil</th>
+							<th></th>
 							<th>Prenom</th>
 							<th>Nom</th>
 							<th>Email</th>
-							<th>Ajouter</th>
+							<th></th>
 						</tr>
 					</thead>
 					<tbody>
