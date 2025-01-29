@@ -1,5 +1,6 @@
 <?php
 
+use LDAP\Result;
 use Twig\Profiler\Dumper\BaseDumper;
 
 require_once 'include.php';
@@ -8,7 +9,6 @@ require_once 'include.php';
  * @author Thibault Latxague
  * @brief Controller de la page des utilisateur
  * @version 0.1
- * @todo POURQUOI LA MESSAGE BOX NE FONCTIONNE PAS ?????? (a cause de l'insertion des scripts ? dans base_template) + detailler doxygen nav connexion inscription
  */
 
 class ControllerUtilisateur extends Controller
@@ -34,6 +34,7 @@ class ControllerUtilisateur extends Controller
     {
         $pdo = $this->getPdo();
         $tableauErreurs = [];
+        $mailEnvoye = true;
 
         $emailValide = utilitaire::validerEmail(htmlspecialchars($_POST['email']), $tableauErreurs);
         $nomValide = utilitaire::validerNom(htmlspecialchars($_POST['nom'],ENT_NOQUOTES), $tableauErreurs);
@@ -58,11 +59,20 @@ class ControllerUtilisateur extends Controller
                 // $tokenActivation = $nouvelUtilisateur->genererTokenActivationCompte();
                 // $nouvelUtilisateur->setCompteEstActif(false); // On peut supprimer car par défaut, la valeur est desactive
                 $manager->ajouterUtilisateur($nouvelUtilisateur);
-                $this->envoyerMailActivationCompte($nouvelUtilisateur->getEmail());
-                $tableauErreurs[] = "Inscription réussie !";
+                $envoieMail = $this->envoyerMailActivationCompte($nouvelUtilisateur->getEmail());
+                if($envoieMail[1]) {
+                    $tableauErreurs[] = "Inscription réussie !";
+                    $this->genererVue($email, $utilisateurExiste, $tableauErreurs, false);
+                } else {
+                    $tableauErreurs[] = $envoieMail[0][0];
+                    $user = $manager->getObjetUtilisateur($email);
+                    $manager->supprimerUtilisateur($user->getId());
+                    $this->genererVue($email, $utilisateurExiste, $tableauErreurs, true);
+                }
             } else {
                 // Si l'utilisateur existe deja
                 $tableauErreurs[] = "L'utilisateur existe déjà ! Connectez-vous !";
+                $this->genererVue($email, $utilisateurExiste, $tableauErreurs, true);
             }
         } else {
             $manager = new UtilisateurDao($pdo); //Lien avec PDO
@@ -71,10 +81,8 @@ class ControllerUtilisateur extends Controller
             if ($utilisateurExiste) {
                 $tableauErreurs[] = "L'utilisateur existe déjà ! Connectez-vous !";
             }
+            $this->genererVue($email, null, $tableauErreurs, true);
         }
-        // Affichage de la page avec les erreurs ou le message de succès. Utilisation du @ car si l'utilisateur n'a pas renseigné de mail, cette action génère une erreur
-        $email = htmlspecialchars($_POST['email']);
-        @$this->genererVue($email, null, $tableauErreurs);
     }
 
     /**
@@ -197,7 +205,7 @@ class ControllerUtilisateur extends Controller
      * @param string|null $message le message renvoyé par les fonctions (erreur détaillée ou reussite)
      * @return void
      */
-    public function genererVue(?string $mail, ?bool $existe, ?array $messages)
+    public function genererVue(?string $mail, ?bool $existe, ?array $messages, ?bool $contientErreurs = false)
     {
         //Génération de la vue
         $template = $this->getTwig()->load('inscription.html.twig');
@@ -206,6 +214,7 @@ class ControllerUtilisateur extends Controller
                 'mail' => $mail,
                 'existe' => $existe,
                 'message' => $messages,
+                'contientErreurs' => $contientErreurs
             )
         );
     }
@@ -482,6 +491,9 @@ class ControllerUtilisateur extends Controller
                 $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
                 $cheminPhoto = $dossierDestination . $nomFichier;
 
+                $user = $manager->find($id);
+                $user->supprimerAnciennesPhotos();
+
                 // Déplacer le fichier uploadé dans le répertoire cible
                 if (move_uploaded_file($_FILES['photo']['tmp_name'], $cheminPhoto)) {
                     // Mettre à jour le chemin de la photo dans la base de données
@@ -541,6 +553,9 @@ class ControllerUtilisateur extends Controller
                 $dossierDestination = 'image/photo_user/';
                 $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
                 $cheminPhoto = $dossierDestination . $nomFichier;
+
+                $user = $manager->find($id);
+                $user->supprimerAnciennesPhotos();
 
                 // Déplacer le fichier uploadé dans le répertoire cible
                 if (move_uploaded_file($_FILES['photo']['tmp_name'], $cheminPhoto)) {
@@ -805,10 +820,11 @@ class ControllerUtilisateur extends Controller
     /**
      * Fonction qui envoie un mail d'activation de compte à l'utilisateur
      * @param string|null $email de l'utilisateur
-     * @return void
+     * @return array
      */
-    public function envoyerMailActivationCompte(?string $email): void {
-        $tableauErreurs = [];
+    public function envoyerMailActivationCompte(?string $email): ?array {
+        $messageErreur = [];
+        $mailEnvoye = true;
 
         $manager = new UtilisateurDAO($this->getPdo());
         $utilisateur = $manager->getObjetUtilisateur($email);
@@ -848,8 +864,13 @@ class ControllerUtilisateur extends Controller
             $this->genererVueMenu($messageErreur, false);
         } else {
             $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé à $destinataire.";
-            $this->genererVueMenu($messageErreur, true);
+            $mailEnvoye = false;
         }
+
+        $result[0] = $messageErreur;
+        $result[1] = $mailEnvoye;
+
+        return $result;
     }
 
     /**
