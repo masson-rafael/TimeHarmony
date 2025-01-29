@@ -599,7 +599,7 @@ class Utilisateur {
      *
      * @return void
      */
-    public function suppreimerAnciennesPhotos(): void {
+    public function supprimerAnciennesPhotos(): void {
         $dossier = 'image/photo_user';
 
         // Parcours tous les fichiers du dossier

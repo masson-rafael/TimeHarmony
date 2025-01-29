@@ -492,7 +492,7 @@ class ControllerUtilisateur extends Controller
                 $cheminPhoto = $dossierDestination . $nomFichier;
 
                 $user = $manager->find($id);
-                $user->suppreimerAnciennesPhotos();
+                $user->supprimerAnciennesPhotos();
 
                 // Déplacer le fichier uploadé dans le répertoire cible
                 if (move_uploaded_file($_FILES['photo']['tmp_name'], $cheminPhoto)) {
@@ -555,7 +555,7 @@ class ControllerUtilisateur extends Controller
                 $cheminPhoto = $dossierDestination . $nomFichier;
 
                 $user = $manager->find($id);
-                $user->suppreimerAnciennesPhotos();
+                $user->supprimerAnciennesPhotos();
 
                 // Déplacer le fichier uploadé dans le répertoire cible
                 if (move_uploaded_file($_FILES['photo']['tmp_name'], $cheminPhoto)) {
