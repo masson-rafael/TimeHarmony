@@ -554,6 +554,9 @@ class ControllerUtilisateur extends Controller
                 $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
                 $cheminPhoto = $dossierDestination . $nomFichier;
 
+                $user = $manager->find($id);
+                $user->suppreimerAnciennesPhotos();
+
                 // Déplacer le fichier uploadé dans le répertoire cible
                 if (move_uploaded_file($_FILES['photo']['tmp_name'], $cheminPhoto)) {
                     // Mettre à jour le chemin de la photo dans la base de données
