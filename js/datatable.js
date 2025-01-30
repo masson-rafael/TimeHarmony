@@ -6,7 +6,7 @@ $(document).ready(function() {
         "pageLength": 10,
         "ordering": true,
         "responsive": true,
-        "autoWidth": true,
+        "autoWidth": false,
         "scrollX": true, // Permet d'activer le scroll horizontal
     });
 });
