@@ -137,10 +137,11 @@
                         <div class="mb-3">
                             <label for="couleur" class="form-label">Couleur *</label><br>
                             <small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
-                            <input type="color" name="couleur" class="form-control" id="couleur" value="{{ agenda.couleur }}" required>
+                            <input type="color" name="couleur" class="form-control form-control-color border rounded p-0 mt-3 mx-auto shadow-sm w-50" 
+                                    id="couleur" value="{{ agenda.couleur }}" style="cursor: pointer; width: 60px; height: 40px;" required>
                             <small id="couleurError" class="text-danger"></small>
                         </div>
-                        <div class="text-center pt-5">
+                        <div class="text-center pt-3">
                             <a class="px-5 btn btn-secondary" href="index.php?controleur=agenda&methode=lister" role="button">Revenir à mes agendas</a>
                         </div>
                         <div class="mb-3 text-center pt-3">
