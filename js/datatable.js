@@ -8,8 +8,5 @@ $(document).ready(function() {
         "responsive": true,
         "autoWidth": true,
         "scrollX": true, // Permet d'activer le scroll horizontal
-        "columnDefs": [
-            { "orderable": false, "targets": -1 } // Empêche le tri sur la colonne Actions
-        ]
     });
 });

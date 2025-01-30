@@ -11222,32 +11222,43 @@ body {
   padding: 5rem 0;
 }
 
-#myTable {
-  width: 100% !important; /* Force la table à occuper toute la largeur */
+.dataTables_scroll {
+  width: 100% !important;
+  overflow-x: auto;
+  width: auto;
   white-space: nowrap; /* Évite les retours à la ligne */
+  margin: 0 auto;
 }
 
-#myTable_wrapper {
-  width: 100%;
+.dataTables_wrapper {
+  width: 100% !important;
+  margin: 0 auto;
+  display: block;
+  padding: 0 10px; 
 }
 
-#myTable th,
-#myTable td {
+.myTable_wrapper th,
+.myTable_wrapper td
+{
   text-align: left;
   vertical-align: middle;
 }
 
-@media (max-width: 768px) {
-  #myTable td {
-      font-size: 14px;
-  }
-}
-
-#myTable_wrapper .col-sm-12,
-#myTable_wrapper .col-md-6,
-#myTable_wrapper .col-md-5,
-#myTable_wrapper .col-md-7,
-#myTable_wrapper .paginate_button
+.dataTables_length,
+.dataTables_filter,
+.dataTables_info,
+.dataTables_paginate,
+.paginate_button
 {
     margin-bottom: 1rem !important;
+}
+
+@media (max-width: 767px) {
+  #boutonModification {
+      margin-bottom: 1.5rem !important;
+  }
+  .myTable_wrapper td
+  {
+      font-size: 14px;
+  }
 }
