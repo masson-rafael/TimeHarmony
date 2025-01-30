@@ -857,7 +857,10 @@ class ControllerUtilisateur extends Controller
 
         foreach ($utilisateurs as $utilisateur) {
             $dateDerniereConnexion = $utilisateur->getDateDerniereConnexion();
-            $manager->supprimerUtilisateur($utilisateur->getId());
+            $interval = $dateDerniereConnexion->diff(new DateTime());
+            if($interval->years >= 10) {
+                $manager->supprimerUtilisateur($utilisateur->getId());
+            }
         }
     }
 }
