@@ -525,14 +525,16 @@ class ControllerUtilisateur extends Controller
 
     public function modifierUtilisateur() {
         $id = $_GET['id'];
+        $type = $_GET['type'];
 
         // Ajout des @ car notre fonction est utilisée par user classique et admin
         $messageErreurs = [];
+        $messageErreursAdmin = [];
         $nomValide = utilitaire::validerNom($_POST['nom'], $messageErreurs);
         $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
-        @$roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
-        @$emailValide = utilitaire::validerEmail($_POST['email'], $messageErreurs);
-        @$statutValide = utilitaire::validerStatut($_POST['statut'], $messageErreurs);
+        @$roleValide = utilitaire::validerRole($_POST['role'], $messageErreursAdmin);
+        @$emailValide = utilitaire::validerEmail($_POST['email'], $messageErreursAdmin);
+        @$statutValide = utilitaire::validerStatut($_POST['statut'], $messageErreursAdmin);
         @$photoValide = utilitaire::validerPhoto($_FILES['photo'], $messageErreurs);
 
         if($nomValide && $prenomValide) {
@@ -559,26 +561,31 @@ class ControllerUtilisateur extends Controller
                 }
             }
 
-            $role = $_POST['role'] == 'Admin' ? 1 : 0;
             // Mise à jour du chemin de l'image
             $nomFichier = empty($nomFichier) ? $utilisateurConcerne->getPhotoDeProfil() : $nomFichier;
             
             if ($roleValide && $emailValide && $statutValide) {
+                $role = $_POST['role'] == 'Admin' ? 1 : 0;
                 $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $_POST['email'], $role, $nomFichier, strtolower($_POST['statut']));
             } else {
+                $role = $utilisateurConcerne->getEstAdmin();
                 $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $utilisateurConcerne->getEmail(), $role, $nomFichier); 
             }
 
             $utilisateurConcerne = $manager->find($id);
-            if ($utilisateurConcerne->getId() == $_SESSION['utilisateur']->getId() && strtolower($_POST['statut']) == 'actif') {
+            if ($utilisateurConcerne->getId() == $_SESSION['utilisateur']->getId() && $utilisateurConcerne->getStatutCompte() == 'actif') {
                 $_SESSION['utilisateur'] = $utilisateurConcerne;
                 $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurConcerne);
                 $messageErreurs[] = "L'utilisateur " . $utilisateurConcerne->getNom() . " " . $utilisateurConcerne->getPrenom() . " a été modifié avec succès !";
                 $this->afficherProfil($messageErreurs, false);
             } else {
                 $messageErreurs[] = "L'utilisateur " . $utilisateurConcerne->getNom() . " " . $utilisateurConcerne->getPrenom() . " a été modifié avec succès !";
+                $messageErreurs = array_merge($messageErreurs, $messageErreursAdmin);
                 $this->lister($messageErreurs, false);
             }
+        } else {
+            $messageErreurs = array_merge($messageErreurs, $messageErreursAdmin);
+            $this->lister($messageErreurs, true);
         }
     }
 
