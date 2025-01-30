@@ -19,8 +19,8 @@
                     <th>Prenom</th>
                     <th>Rôle</th>
                     <th>Statut</th>
-                    <th>Photo de profil</th>
-                    <th>Actions</th>
+                    <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -168,18 +168,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
-        $(document).ready(function() {
-            $('#myTable').DataTable({
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
-                },
-                responsive: true, // Important pour les petits écrans
-                autoWidth: false, // Évite les problèmes de calcul automatique de largeur
-                pageLength: 10,
-                ordering: true,
-                destroy: true,
-            });
-        });
-    </script>
+    <script src="js/datatable.js"></script>
 {% endblock %}
