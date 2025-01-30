@@ -27,7 +27,6 @@ class ControllerAssistant extends Controller
         parent::__construct($twig, $loader);
     }
 
-
     /**
      * Fonction qui permet de générer la vue qui contiendra les paramètres de la recherche
      * @return void
@@ -247,6 +246,7 @@ class ControllerAssistant extends Controller
             
             // Appel de la fonction
             $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'], $debutHoraire, $finHoraire, $debut, $fin);
+            // var_dump($matrice);
             // exit;
             // $chronoEndGen = new DateTime();
             // $chronoInterval = $chronoStartGen->diff($chronoEndGen);
@@ -258,8 +258,32 @@ class ControllerAssistant extends Controller
             $tailleContacts = sizeof($tableauUtilisateur);
             $nombreUtilisateursSeclectionnes = $_SESSION['nbUserSelectionné'];
             $nbrUtilisateursMin = ceil($tailleContacts / 2);
+
+            // //Convertion date américaine en française
+            // foreach ($datesCommunes as $date => $plagesHoraires) {
+            //     // Transformer la date en format français
+            //     $dateFr = DateTime::createFromFormat('Y-m-d', $date)->format('d/m/Y');
             
-            $this->genererVueCreneaux($datesCommunes, $nbrUtilisateursMin, $nombreUtilisateursSeclectionnes);
+            //     // Copier les plages horaires sous la nouvelle clé formatée
+            //     $datesCommunesFrancaise[$dateFr] = $plagesHoraires;
+            // }
+
+            foreach ($datesCommunes as $dateFr => $plagesHoraires) {
+    // Transformer "30/01/2025" en objet DateTime
+    $dateObj = DateTime::createFromFormat('Y-m-d', $dateFr);
+    
+    // Vérifier si la conversion a réussi
+    if ($dateObj !== false) {
+        // Stocker la date sous forme d'objet DateTime avec format 'Y-m-d'
+        $datesCommunesFrancaise[$dateObj->format('d-m-Y')] = $plagesHoraires;
+    } else {
+        // Gérer l'erreur si la date ne peut pas être parsée
+        echo "Erreur : la date '$dateFr' n'est pas valide.\n";
+    }
+}
+            
+            // var_dump($datesCommunesFrancaise);
+            $this->genererVueCreneaux($datesCommunesFrancaise, $nbrUtilisateursMin, $nombreUtilisateursSeclectionnes);
         } else {
             $this->genererVueRecherche($messagesErreur, true);
 

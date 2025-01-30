@@ -23,10 +23,15 @@ preparationVariables();
 
 // Ajout des evenements qui declechent les fonctions de validation à chaque input
 dateDebut.addEventListener('change', verifierTousLesChamps);
+dateDebut.addEventListener('input', verifierTousLesChamps);
 dateFin.addEventListener('change', verifierTousLesChamps);
+dateFin.addEventListener('input', verifierTousLesChamps);
 duree.addEventListener('change', verifierTousLesChamps);
+duree.addEventListener('input', verifierTousLesChamps);
 debutPlageH.addEventListener('change', verifierTousLesChamps);
+debutPlageH.addEventListener('input', verifierTousLesChamps);
 finPlageH.addEventListener('change', verifierTousLesChamps);
+finPlageH.addEventListener('input', verifierTousLesChamps);
 contacts.addEventListener('change', verifierTousLesChamps);
 groupesContact.addEventListener('change', verifierTousLesChamps);
 btn.addEventListener('click', sauvegarderVariables);
@@ -79,7 +84,7 @@ function verifierDate(champ, error, secondeDate = null) {
     const motifdateDebut = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):([0-5]\d)$/;
     if (!motifdateDebut.test(champ.value)) {
         champ.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
-        error.textContent = 'La date ne respecte pas le format attendu (AAAA-MM-JJ HH:MM)';
+        error.textContent = 'La date ne respecte pas le format attendu (AAAA-MM-JJ hh:mm)';
         correct = false;
     }
     if (secondeDate !== null && champ.value > secondeDate.value) {
