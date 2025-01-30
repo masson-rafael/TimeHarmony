@@ -7,7 +7,7 @@ define('DB_USER', ''); // identifiant de votre base de données
 define('DB_PASS', ''); // mot de passe de votre base de données
 
 // Préfixe des tables de la base de données (facultatif si vous n'en avez pas besoin)
-define('PREFIXE_TABLE', 'timeharmony_');
+define('PREFIXE_TABLE', '');
 
 // Constante de la partie vue
 define('WEBSITE_TITLE', 'TimeHarmony');
