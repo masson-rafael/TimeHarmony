@@ -154,17 +154,10 @@
 				</div>
 			{% endif %}
 		</div>
-	</div>
-</main>{% endblock %}{% block javascripts %}
-{{ parent() }}<script>
-	$(document).ready(function () {
-$('#myTable').DataTable({
-language: {
-url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
-},
-"pageLength": 10,
-"ordering": true,
-"responsive": true
-});
-});
-</script>{% endblock %}
+</main>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="js/datatable.js"></script>
+{% endblock %}

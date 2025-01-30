@@ -129,7 +129,7 @@
 					<div class="col-md-6">
 					 <a class="" href="index.php?controleur=groupes&methode=lister" role="button"><img src="image/retour.png" style="width: 35px;" alt="retour"></a>
 						<h4 class="text-center mb-4">Créer un groupe</h4>
-						<form id="formCreationGroupe" action="index.php?controleur=groupes&methode=creer" method="post" required>
+						<form id="formCreationGroupe" class="justify-content-center align-items-center" action="index.php?controleur=groupes&methode=creer" method="post" required>
 							<div class="mb-3">
 								<label for="nom" class="form-label">Nom *</label>
 								<input type="text" name="nom" class="form-control" id="nom" required placeholder="Entrez le nom de votre groupe" maxlength="50">
@@ -143,7 +143,7 @@
 							<div class="mb-3">
 								<label for="description" class="form-label">Ajoutez vos contacts à votre groupe</label>
 								{% if contacts %}
-								<div class="card p-4 shadow-sm">
+								<div class="card p-4 shadow-sm mb-0">
 									<table class="table table-bordered table-hover">
 										<thead>
 											<tr class="table-primary">
@@ -202,17 +202,5 @@
 	{{ parent() }}
 	<script src="js/formulaireCreationGroupe.js"></script>
 	<script src="js/formulaireModificationGroupe.js"></script>
-	<script>
-		$(document).ready(function() {
-			$('#myTable').DataTable({
-				language: {
-					url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
-				},
-				responsive: true, // Important pour les petits écrans
-				autoWidth: false, // Évite les problèmes de calcul automatique de largeur
-				pageLength: 10,
-				ordering: true
-			});
-		});
-	</script>
+	<script src="js/datatable.js"></script>
 {% endblock %}
