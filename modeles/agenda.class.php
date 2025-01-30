@@ -174,9 +174,10 @@ class Agenda
      */
     public function recuperationEvenementsAgenda(?string $urlIcs, ?string $debut, ?string $fin, $allEvents): ?array
     {
+        $newFin = date('Y-m-d', strtotime($fin . ' +1 day'));
         // Charger les événements du calendrier à partir de l'URL
         $calendrier = new ICal($urlIcs);
-        $evenements = $calendrier->eventsFromRange($debut, $fin);
+        $evenements = $calendrier->eventsFromRange($debut, $newFin);
 
         // Ajouter les événements à un tableau global
         $allEvents = array_merge($allEvents, $evenements);
@@ -221,6 +222,7 @@ class Agenda
         $fuseauHoraire = new DateTimeZone($timeZone);
         $debutCourant = new DateTime($debut, $fuseauHoraire);
         $finCourant = new DateTime($fin, $fuseauHoraire);
+        $finCourant = $finCourant->modify('+1 day');
 
         foreach ($evenements as $evenement) {
             // convertir les heures d'événements en fuseau horaire local

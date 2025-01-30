@@ -101,13 +101,14 @@
 								<h5 class="fw-bold text-center mb-3">Période de recherche :</h5>
 								<div class="mb-3">
 									<label for="Datedebut" class="form-label">Début *</label>
-									<input name="debut" type="date" class="form-control" id="dateDebut" required title="Entrez la date de début de votre recherche">
+									<input name="debut" type="datetime-local" class="form-control" id="dateDebut" required title="Entrez la date de début de votre recherche">
 									<small id="dateDebutError" class="text-danger"></small>
+
 								</div>
 
 								<div class="mb-3">
 									<label for="Datefin" class="form-label">Fin *</label>
-									<input name="fin" type="date" class="form-control" id="dateFin" required title="Entrez la date de fin de votre recherche">
+									<input name="fin" type="datetime-local" class="form-control" id="dateFin" required title="Entrez la date de fin de votre recherche">
 									<small id="dateFinError" class="text-danger"></small>
 								</div>
 
@@ -117,8 +118,23 @@
 									<small id="dureeError" class="text-danger"></small>
 								</div>
 							</div>
+							<div class="card p-4 shadow-sm mt-3">
+								<h5 class="fw-bold text-center mb-3">Plage horaire :</h5>
+								<div class="mb-3">
+									<label for="debutPlageH" class="form-label">Début *</label><br>
+									<input name="debutPlageH" type="time" class="form-control" id="debutPlageH" value="08:00" required title="Entrez la date de début de la plage horaire">
+									<small id="debutPlageHError" class="text-danger"></small>
+								</div>
+
+								<div class="mb-3">
+									<label for="finPlageH" class="form-label">Fin *</label>
+									<input name="finPlageH" type="time" class="form-control" id="finPlageH" value="18:00" required title="Entrez la date de fin de la plage horaire">
+									<small id="finPlageHError" class="text-danger"></small>
+								</div>
+							</div>
 						</div>
 					</div>
+
 
 					<!-- Section Bouton -->
 					<div class="text-center mb-4">
@@ -127,13 +143,17 @@
 				</form>
 			</div>
 			{% if message %}
-				<div class="row text-center mb-4 justify-content-center">
-					<div class="text-center alert alert-success justify-content-center alert-dismissible fade show mt-4 w-50" role="alert">
-						{% for messages in message %}
-							{{messages}}
-							<br>
-						{% endfor %}
-						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
+					<div id="toast" class="toast align-items-center text-white bg-{% if contientErreurs %}danger{% else %}success{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+						<div class="d-flex">
+							<div class="toast-body">
+								{% for messages in message %}
+									{{ messages }}
+									<br>
+								{% endfor %}
+							</div>
+							<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+						</div>
 					</div>
 				</div>
 			{% endif %}
@@ -141,24 +161,58 @@
 	</main>
 
 {% endblock %}
-    
+
 
 {% block javascripts %}
-    {{ parent() }}
-    <script src="js/recherche.js"></script>
+	{{ parent() }}
+	<script src="js/recherche.js"></script>
 	<script src="js/formulaireRecherche.js"></script>
-    <script>
-        const membres = {{ membres|json_encode|raw }}; // Récupérer les membres des groupes
-        {# 
-        $(document).ready(function() {
-            $('#myTable').DataTable({
-                language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'},
-                "pageLength": 10,
-                "ordering": true,
-                "responsive": true
-                });
-            });      
-        #}
-    </script>
+	<script>
+		const membres = {{ membres|json_encode|raw }};
+{ // Récupérer les membres des groupes
+#
+$(document).ready(function () {
+$('#myTable').DataTable({
+language: {
+url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
+},
+"pageLength": 10,
+"ordering": true,
+"responsive": true
+});
+});
+#
+}
+	</script>
+
+	<script>
+    // Récupérer les éléments input
+    const dateDebutInput = document.getElementById('dateDebut');
+    const dateFinInput = document.getElementById('dateFin');
+
+    // Obtenir la date et l'heure actuelles
+    const now = new Date();
+
+    // Ajuster pour le fuseau horaire local
+    const offset = now.getTimezoneOffset(); // Décalage en minutes
+    const localTime = new Date(now.getTime() - offset * 60000);
+
+    // Arrondir la date de début à l'heure supérieure
+    localTime.setMinutes(Math.ceil(localTime.getMinutes() / 60) * 60);  // Arrondir les minutes à l'heure suivante
+    localTime.setSeconds(0); // Mettre les secondes à 0
+
+    // Formater la date et l'heure au format requis pour datetime-local (YYYY-MM-DDTHH:MM)
+    const formattedDateTime = localTime.toISOString().slice(0, 16); // Garder "YYYY-MM-DDTHH:MM"
+    dateDebutInput.value = formattedDateTime;
+
+    // Calculer la date avec une semaine de décalage
+    const oneWeekLater = new Date(localTime);
+    oneWeekLater.setDate(localTime.getDate() + 7); // Ajouter 7 jours
+
+    // Formater la date de fin (fin avec une semaine de décalage)
+    const formattedDateTimeFin = oneWeekLater.toISOString().slice(0, 16); // Garder "YYYY-MM-DDTHH:MM"
+    dateFinInput.value = formattedDateTimeFin;
+</script>
+
+
 {% endblock %}

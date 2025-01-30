@@ -1,5 +1,6 @@
 <?php
 
+use LDAP\Result;
 use Twig\Profiler\Dumper\BaseDumper;
 
 require_once 'include.php';
@@ -8,7 +9,6 @@ require_once 'include.php';
  * @author Thibault Latxague
  * @brief Controller de la page des utilisateur
  * @version 0.1
- * @todo POURQUOI LA MESSAGE BOX NE FONCTIONNE PAS ?????? (a cause de l'insertion des scripts ? dans base_template) + detailler doxygen nav connexion inscription
  */
 
 class ControllerUtilisateur extends Controller
@@ -34,17 +34,18 @@ class ControllerUtilisateur extends Controller
     {
         $pdo = $this->getPdo();
         $tableauErreurs = [];
+        $mailEnvoye = true;
 
         $emailValide = utilitaire::validerEmail(htmlspecialchars($_POST['email']), $tableauErreurs);
-        $nomValide = utilitaire::validerNom(htmlspecialchars($_POST['nom']), $tableauErreurs);
-        $prenomValide = utilitaire::validerPrenom(htmlspecialchars($_POST['prenom']), $tableauErreurs);
-        $mdpValide = utilitaire::validerMotDePasseInscription(htmlspecialchars($_POST['pwd']), $tableauErreurs, $_POST['pwdConfirme']);
+        $nomValide = utilitaire::validerNom(htmlspecialchars($_POST['nom'],ENT_NOQUOTES), $tableauErreurs);
+        $prenomValide = utilitaire::validerPrenom(htmlspecialchars($_POST['prenom'],ENT_NOQUOTES), $tableauErreurs);
+        $mdpValide = utilitaire::validerMotDePasseInscription(htmlspecialchars($_POST['pwd'],ENT_NOQUOTES), $tableauErreurs, $_POST['pwdConfirme']);
 
         if ($emailValide && $nomValide && $prenomValide && $mdpValide) {
             $email = htmlspecialchars($_POST['email']);
-            $nom = htmlspecialchars($_POST['nom']);
-            $prenom = htmlspecialchars($_POST['prenom']);
-            $mdp = htmlspecialchars($_POST['pwd']);
+            $nom = htmlspecialchars($_POST['nom'],ENT_NOQUOTES);
+            $prenom = htmlspecialchars($_POST['prenom'],ENT_NOQUOTES);
+            $mdp = htmlspecialchars($_POST['pwd'],ENT_NOQUOTES);
 
             $manager = new UtilisateurDao($pdo); //Lien avec PDO
             /**
@@ -58,11 +59,20 @@ class ControllerUtilisateur extends Controller
                 // $tokenActivation = $nouvelUtilisateur->genererTokenActivationCompte();
                 // $nouvelUtilisateur->setCompteEstActif(false); // On peut supprimer car par défaut, la valeur est desactive
                 $manager->ajouterUtilisateur($nouvelUtilisateur);
-                $this->envoyerMailActivationCompte($nouvelUtilisateur->getEmail());
-                $tableauErreurs[] = "Inscription réussie !";
+                $envoieMail = $this->envoyerMailActivationCompte($nouvelUtilisateur->getEmail());
+                if($envoieMail[1]) {
+                    $tableauErreurs[] = "Un mail d'activation de votre compte a été envoyé !";
+                    $this->genererVueConnexion($tableauErreurs, null, false);
+                } else {
+                    $tableauErreurs[] = $envoieMail[0][0];
+                    $user = $manager->getObjetUtilisateur($email);
+                    $manager->supprimerUtilisateur($user->getId());
+                    $this->genererVue($email, $utilisateurExiste, $tableauErreurs, true);
+                }
             } else {
                 // Si l'utilisateur existe deja
                 $tableauErreurs[] = "L'utilisateur existe déjà ! Connectez-vous !";
+                $this->genererVue($email, $utilisateurExiste, $tableauErreurs, true);
             }
         } else {
             $manager = new UtilisateurDao($pdo); //Lien avec PDO
@@ -71,10 +81,8 @@ class ControllerUtilisateur extends Controller
             if ($utilisateurExiste) {
                 $tableauErreurs[] = "L'utilisateur existe déjà ! Connectez-vous !";
             }
+            $this->genererVue($email, null, $tableauErreurs, true);
         }
-        // Affichage de la page avec les erreurs ou le message de succès. Utilisation du @ car si l'utilisateur n'a pas renseigné de mail, cette action génère une erreur
-        $email = htmlspecialchars($_POST['email']);
-        @$this->genererVue($email, null, $tableauErreurs);
     }
 
     /**
@@ -91,15 +99,15 @@ class ControllerUtilisateur extends Controller
         
         // Validation des entrées
         $emailValide = utilitaire::validerEmail(htmlspecialchars($_POST['email']), $tableauErreurs);
-        $passwdValide = utilitaire::validerMotDePasseInscription(htmlspecialchars($_POST['pwd']), $tableauErreurs);
+        $passwdValide = utilitaire::validerMotDePasseInscription(htmlspecialchars($_POST['pwd'],ENT_NOQUOTES), $tableauErreurs);
 
         $manager = new UtilisateurDao($pdo);
         $compteUtilisateurCorrespondant = $manager->getObjetUtilisateur(htmlspecialchars($_POST['email']));
 
         if($compteUtilisateurCorrespondant == null) {
             // Échec de validation des entrées
-            $tableauErreurs[] = "Aucun compte avec cette adresse mail n'existe";
-            $this->genererVueConnexion($tableauErreurs, null);
+            $tableauErreurs[] = "Aucun compte avec cette adresse mail n'existe. Essayez de créer un compte";
+            $this->genererVueConnexion($tableauErreurs, null, true);
         } else {
             $compteActif = $compteUtilisateurCorrespondant->getStatutCompte() != "desactive";
             if ($emailValide && $passwdValide && $compteActif) {
@@ -107,7 +115,7 @@ class ControllerUtilisateur extends Controller
                 $compteUtilisateurCorrespondant->reactiverCompte();
 
                 $email = htmlspecialchars($_POST['email']);
-                $pwd = htmlspecialchars($_POST['pwd']);
+                $pwd = htmlspecialchars($_POST['pwd'],ENT_NOQUOTES);
                 
                 // On recupere un tuple avec un booleen et le mdp hache
                 $motDePasse = $manager->connexionReussie($email);
@@ -127,19 +135,19 @@ class ControllerUtilisateur extends Controller
                         $tableauErreurs[] = "Mot de passe incorrect. Essayez de réinitialisez votre mot de passe";
                         $compteUtilisateurCorrespondant->gererEchecConnexion();
                         $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
-                        $this->genererVueConnexion($tableauErreurs, null);
+                        $this->genererVueConnexion($tableauErreurs, null, true);
                     }
                 } else {
                     // Compte inactif
                     $tableauErreurs[] = "Votre compte est bloqué. Temps restant avec deblocage : " . 
                         (string) abs($compteUtilisateurCorrespondant->tempsRestantAvantReactivationCompte()) . " secondes.";
                     $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
-                    $this->genererVueConnexion($tableauErreurs, null);
+                    $this->genererVueConnexion($tableauErreurs, null, true);
                 }
             } else {
                 // Échec de validation des entrées
                 $tableauErreurs[] = "Le compte n'a pas été activé";
-                $this->genererVueConnexion($tableauErreurs, null);
+                $this->genererVueConnexion($tableauErreurs, null, true);
             }
         }
     }
@@ -197,7 +205,7 @@ class ControllerUtilisateur extends Controller
      * @param string|null $message le message renvoyé par les fonctions (erreur détaillée ou reussite)
      * @return void
      */
-    public function genererVue(?string $mail, ?bool $existe, ?array $messages)
+    public function genererVue(?string $mail, ?bool $existe, ?array $messages, ?bool $contientErreurs = false)
     {
         //Génération de la vue
         $template = $this->getTwig()->load('inscription.html.twig');
@@ -206,6 +214,7 @@ class ControllerUtilisateur extends Controller
                 'mail' => $mail,
                 'existe' => $existe,
                 'message' => $messages,
+                'contientErreurs' => $contientErreurs
             )
         );
     }
@@ -247,7 +256,7 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
     // Dans votre contrôleur ou gestionnaire de connexion
-    public function genererVueConnexion(?array $message, ?Utilisateur $utilisateur): void
+    public function genererVueConnexion(?array $message, ?Utilisateur $utilisateur, ?bool $contientErreurs): void
     {
         if ($utilisateur !== null) {
             // Stockage en session et définition de la variable globale
@@ -258,7 +267,8 @@ class ControllerUtilisateur extends Controller
 
         $template = $this->getTwig()->load('connexion.html.twig');
         echo $template->render([
-            'message' => $message
+            'message' => $message,
+            'contientErreurs' => $contientErreurs
         ]);
     }
 
@@ -280,14 +290,135 @@ class ControllerUtilisateur extends Controller
         );
     }
 
+    
+    /**
+     * Fonction permettant d'afficher le twig correspondant à la page des notifications
+     * @return void
+     */
+    public function afficherPageNotifications(?array $tableauMessage = null, ?bool $contientErreurs = false): void {
+        /**
+         * Step 1 : Appel de la fonction qui trouve ET RENVOIE les contacts que j'ai envoyé
+         * Step 2 : Appel de la fonction qui trouve ET RENVOIE les demandes de contact d'autres utilisateurs
+         * Step 3 : Appel de la fonction qui trouve et renvoie les demandes d'ajout au groupe
+         * Step 4 : Affichage du twig
+         */
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $demandesContactEnvoyees = $manager->getDemandesContactEnvoyees($_SESSION['utilisateur']->getId());
+        $demandesContactRecues = $manager->getDemandesContactRecues($_SESSION['utilisateur']->getId());
+
+        $demandesGroupeRecues = $manager->getDemandesGroupeRecues($_SESSION['utilisateur']->getId());
+
+        $template = $this->getTwig()->load('notifications.html.twig');
+        echo $template->render(array(
+            'demandesContactEnvoyees' => $demandesContactEnvoyees,
+            'demandesContactRecues' => $demandesContactRecues,
+            'demandesGroupeRecues' => $demandesGroupeRecues,
+            'message' => $tableauMessage,
+            'contientErreurs' => $contientErreurs
+        ));
+    }
+
+    
+    /**
+     * Fonction qui supprime la demande de contact dans la BD
+     * @return void
+     */
+    public function supprimerDemandeContactEmise(): void {
+        $idReceveur = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
+        $tabDemandesPourMoi = $manager->supprimerDemandeContactEnvoyee($_SESSION['utilisateur']->getId(), $idReceveur);
+        $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " supprimée avec succès !";
+        $this->afficherPageNotifications($tableauMessages, false);
+    }
+
+    /**
+     * Fonction qui refuse la demande de contact dans la BD
+     * @return void
+     */
+    public function refuserDemandeContactRecue(): void {
+        $idReceveur = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->refuserDemandeContact($_SESSION['utilisateur']->getId(), $idReceveur);
+        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur->getDemandes();
+        $manager->miseAJourUtilisateur($utilisateur);
+        $_SESSION['utilisateur'] = $utilisateur;
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+        $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " refusée avec succès !";
+        $this->afficherPageNotifications($tableauMessages, false);
+    }
+
+    /**
+     * Fonction qui accepte la demande de contact dans la BD
+     * @return void
+     */
+    public function accepterDemandeContactRecue(): void {
+        $idReceveur = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->accepterDemandeContact($idReceveur, $_SESSION['utilisateur']->getId());
+        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur->getDemandes();
+        $manager->miseAJourUtilisateur($utilisateur);
+        $utilisateurEnvoieDemande = $manager->find($idReceveur);
+        $_SESSION['utilisateur'] = $utilisateur;
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+        $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " acceptée avec succès !";
+        $this->afficherPageNotifications($tableauMessages, false);
+    }
+
+    /**
+     * Fonction qui refuse la demande d'ajout au groupe dans la BD
+     * @return void
+     */
+    public function refuserDemandeGroupeRecue(): void {
+        $idGroupe = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->refuserDemandeGroupe($idGroupe, $_SESSION['utilisateur']->getId());
+        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur->getDemandes();
+        $manager->miseAJourUtilisateur($utilisateur);
+        $_SESSION['utilisateur'] = $utilisateur;
+        $utilisateurEnvoieDemande = $manager->findUserFromGroupId($idGroupe);
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+        $tableauMessages[] = "Demande de groupe de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " refusée avec succès !";
+        $this->afficherPageNotifications($tableauMessages, false);
+    }
+
+    /**
+     * Fonction qui accepte la demande d'ajout au groupe dans la BD
+     * @return void
+     */
+    public function accepterDemandeGroupeRecue(): void {
+        $idGroupe = $_GET['id'];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $tabDemandesPourMoi = $manager->accepterDemandeGroupe($idGroupe, $_SESSION['utilisateur']->getId());
+        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur->getDemandes();
+        $manager->miseAJourUtilisateur($utilisateur);
+        $_SESSION['utilisateur'] = $utilisateur;
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+        $utilisateurEnvoieDemande = $manager->findUserFromGroupId($idGroupe);
+        $tableauMessages[] = "Demande de groupe de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " acceptée avec succès !";
+        $this->afficherPageNotifications($tableauMessages, false);
+    }
+
     /**
      * Listage de tous les utilisateurs
      * Redirection vers la page d'administration
      * 
      * @param array|null $tableauDErreurs tableau des erreurs
+     * @param bool|null $contientErreurs true si le tableau contient des erreurs, false sinon
      * @return void
      */
-    public function lister(?array $tableauDErreurs = null)
+    public function lister(?array $tableauDErreurs = null, ?bool $contientErreurs = false)
     {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
@@ -300,6 +431,7 @@ class ControllerUtilisateur extends Controller
                     'listeUtilisateurs' => $utilisateurs,
                     'message' => $tableauDErreurs,
                     'utilisateurCourant' => $utilisateurCourant,
+                    'contientErreurs' => $contientErreurs
                 )
             );
         }
@@ -322,12 +454,14 @@ class ControllerUtilisateur extends Controller
 
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
+        $utilisateurSupprime = $manager->find($id);
+        $message[] = "L'utilisateur " . $utilisateurSupprime->getNom() . " " . $utilisateurSupprime->getPrenom() . " a été supprimé avec succès !";
         $manager->supprimerUtilisateur($id);
         if($id == $_SESSION['utilisateur']->getId()) {
             $this->deconnecter();
             $this->genererVueVide('index');
         } else {
-            $this->lister();
+            $this->lister($message, false);
         }
     }
 
@@ -335,7 +469,6 @@ class ControllerUtilisateur extends Controller
      * Fonction appellee par le bouton de mise a jour d'un utilisateur (panel admin)
      *
      * @return void
-     * @todo Modifier utilisateur ne fonctionne plus. Why ? 
      */
     public function modifier()
     {
@@ -357,6 +490,9 @@ class ControllerUtilisateur extends Controller
                 $dossierDestination = 'image/photo_user/';
                 $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
                 $cheminPhoto = $dossierDestination . $nomFichier;
+
+                $user = $manager->find($id);
+                $user->supprimerAnciennesPhotos();
 
                 // Déplacer le fichier uploadé dans le répertoire cible
                 if (move_uploaded_file($_FILES['photo']['tmp_name'], $cheminPhoto)) {
@@ -380,8 +516,11 @@ class ControllerUtilisateur extends Controller
             $utilisateurTemporaire = $manager->find($id);
             $_SESSION['utilisateur'] = $utilisateurTemporaire;
             $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurTemporaire);
+            $messageErreurs[] = "L'utilisateur " . $utilisateurTemporaire->getNom() . " " . $utilisateurTemporaire->getPrenom() . " a été modifié avec succès !";
+            $this->afficherProfil($messageErreurs, false);
+        } else {
+            $this->afficherProfil($messageErreurs, true);
         }
-        $this->afficherProfil($messageErreurs);
     }
 
     /**
@@ -415,6 +554,9 @@ class ControllerUtilisateur extends Controller
                 $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
                 $cheminPhoto = $dossierDestination . $nomFichier;
 
+                $user = $manager->find($id);
+                $user->supprimerAnciennesPhotos();
+
                 // Déplacer le fichier uploadé dans le répertoire cible
                 if (move_uploaded_file($_FILES['photo']['tmp_name'], $cheminPhoto)) {
                     // Mettre à jour le chemin de la photo dans la base de données
@@ -439,19 +581,26 @@ class ControllerUtilisateur extends Controller
                 $this->deconnecter();
                 $this->genererVueVide('index');
             }
+
+            $messageErreurs[] = "L'utilisateur " . $utilisateurTemporaire->getNom() . " " . $utilisateurTemporaire->getPrenom() . " a été modifié avec succès !";
+            $this->lister($messageErreurs, false);
+        } else {
+            $this->lister($messageErreurs, true);
         }
-        if(isset($_SESSION['utilisateur'])) {
-            $_SESSION['utilisateur']->getEstAdmin() == false ? $this->afficherProfil() : $this->lister($messageErreurs);
-        }
+        // if(isset($_SESSION['utilisateur'])) {
+        //     $_SESSION['utilisateur']->getEstAdmin() == false ? $this->afficherProfil($messageErreurs, false) : $this->lister($messageErreurs, false);
+        // }
     }
 
 
     /**
      * Affiche le profil de l'utilisateur connecté (page profil)
      *
+     * @param array|null $messagesErreur tableau des erreurs
+     * @param bool|null $contientErreurs true si le tableau contient des erreurs, false sinon
      * @return void
      */
-    public function afficherProfil(?array $messagesErreur = null): void
+    public function afficherProfil(?array $messagesErreur = null, ?bool $contientErreurs = false): void
     {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
@@ -461,6 +610,7 @@ class ControllerUtilisateur extends Controller
             array(
                 'utilisateur' => $utilisateur,
                 'message' => $messagesErreur,
+                'contientErreurs' => $contientErreurs
             )
         );
     }
@@ -497,6 +647,7 @@ class ControllerUtilisateur extends Controller
             $utilisateur = $manager->getObjetUtilisateur($_POST['email']);
             $token = $utilisateur->genererTokenReinitialisation();
             $manager->miseAJourUtilisateur($utilisateur);
+            $template = $this->getTwig()->load('connexion.html.twig');
 
             // En-têtes du mail
             $headers = "From: no-reply@timeharmony.com\r\n";
@@ -530,7 +681,6 @@ class ControllerUtilisateur extends Controller
                 $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé à $destinataire.";
             }
 
-            $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(array('message' => $messageErreur));
         }
     }
@@ -611,7 +761,7 @@ class ControllerUtilisateur extends Controller
             $this->getTwig()->addGlobal('utilisateurGlobal', null);
             unset($_SESSION['utilisateur']);
             $tableauErreurs[] = "Votre mot de passe a été réinitialisé avec succès ! Reconnectez-vous !";
-            $this->genererVueConnexion($tableauErreurs, null);
+            $this->genererVueConnexion($tableauErreurs, null, false);
         } else {
             $template = $this->getTwig()->load('reinitialisationMdp.html.twig');
             echo $template->render(
@@ -619,7 +769,8 @@ class ControllerUtilisateur extends Controller
                     'reinitialise' => false,
                     'message' => $tableauErreurs,
                     'email' => $_GET['email'],
-                    'token' => $_GET['token']
+                    'token' => $_GET['token'],
+                    'contientErreurs' => true,
                 )
             );
         }
@@ -651,6 +802,7 @@ class ControllerUtilisateur extends Controller
                 array(
                     'message' => $tableauMessages,
                     'email' => $emailUtilisateur,
+                    'contientErreurs' => false,
                 )
             );
         } else {
@@ -659,6 +811,7 @@ class ControllerUtilisateur extends Controller
             echo $template->render(
                 array(
                     'message' => $tableauMessages,
+                    'contientErreurs' => true,
                 )
             );
         }
@@ -667,10 +820,11 @@ class ControllerUtilisateur extends Controller
     /**
      * Fonction qui envoie un mail d'activation de compte à l'utilisateur
      * @param string|null $email de l'utilisateur
-     * @return void
+     * @return array
      */
-    public function envoyerMailActivationCompte(?string $email): void {
-        $tableauErreurs = [];
+    public function envoyerMailActivationCompte(?string $email): ?array {
+        $messageErreur = [];
+        $mailEnvoye = true;
 
         $manager = new UtilisateurDAO($this->getPdo());
         $utilisateur = $manager->getObjetUtilisateur($email);
@@ -707,11 +861,32 @@ class ControllerUtilisateur extends Controller
         // On met un @ car sur localhost, pas de serveur de mail
         if (@mail($destinataire, $sujet, $message, $headers)) {
             $messageErreur[] = "L'e-mail de confirmation de création de compte a été envoyé avec succès à $destinataire.";
+            $mailEnvoye = true;
         } else {
             $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé à $destinataire.";
+            $mailEnvoye = false;
         }
 
-        $template = $this->getTwig()->load('connexion.html.twig');
-        echo $template->render(array('message' => $messageErreur));
+        $result[0] = $messageErreur;
+        $result[1] = $mailEnvoye;
+
+        return $result;
+    }
+
+    /**
+     * Fonction qui génère la vue du menu
+     * 
+     * @param array|null $tabErreurs tableau des erreurs
+     * @param bool|null $contientErreurs true si le tableau contient des erreurs, false sinon
+     * @return void
+     */
+    public function genererVueMenu(?array $tabErreurs, ?bool $contientErreurs = false): void {
+        $template = $this->getTwig()->load('menu.html.twig');
+        echo $template->render(
+            array(
+                'message' => $tabErreurs,
+                'contientErreurs' => $contientErreurs
+            )
+        );
     }
 }

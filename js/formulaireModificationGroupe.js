@@ -15,7 +15,15 @@ nomGroupe.focus();
 // Ajout des evenements qui declechent les fonctions de validation à chaque input
 nomGroupe.addEventListener('input', verifierTousLesChamps);
 descriptionGroupe.addEventListener('input', verifierTousLesChamps);
-contactsGroupe.addEventListener('change', verifierTousLesChamps);
+
+// Sélectionne toutes les cases à cocher de la table
+document.querySelectorAll('table input[type="checkbox"]').forEach(function(checkbox) {
+    // Ajoute un événement "click" à chaque case à cocher
+    checkbox.addEventListener('click', function() {
+        verifierTousLesChamps(); // Appelle la fonction
+        console.log(checkbox.value); // Affiche la valeur associée à la case
+    });
+});
 
 // Fonction de vérication de l'adresse nomGroupe
 function verifierPatternNomGroupe(nomGroupe) {

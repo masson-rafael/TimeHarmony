@@ -89,6 +89,7 @@ function verifierPatternMail(email) {
         return false;
     }
     email.style.borderColor = ''; // Bordure par défaut (succès)
+    emailError.textContent = '';
     return true;
 }
 

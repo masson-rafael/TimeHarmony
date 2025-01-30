@@ -9,7 +9,7 @@
 		<div class="container">
         {% if ajout == false %}
             <div class="row text-center mt-3 mb-3">
-                <h1>Vos Agendas</h1>
+                <h1>Mes Agendas</h1>
             </div>
 			<!-- Liste des agendas -->
 			{% if agendas|length > 0 %}
@@ -20,7 +20,7 @@
                         <th>Nom</th>
                         <th>URL</th>
                         <th>Couleur</th>
-                        <th>Actions</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,7 +73,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button id="boutonModifierAgenda" type="submit" class="btn btn-primary" name="update_article">Mettre à jour</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                                     </div>
                                 </form>
                             </div>
@@ -94,7 +94,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="submit" class="btn btn-danger">Supprimer</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                                     </div>
                                 </form>
                             </div>
@@ -122,6 +122,7 @@
 			<!-- Formulaire d'ajout d'agenda -->
 			<div class="row justify-content-center mt-5 h-75">
 				<div class="col-md-6">
+                    <a class="" href="index.php?controleur=agenda&methode=lister" role="button"><img src="image/retour.png" style="width: 35px;" alt="retour"></a>
 					<h4 class="text-center mb-4">Ajouter un agenda</h4>
 					<form id="formAjouteAgenda" action="index.php?controleur=agenda&methode=ajouterAgenda" method="post" required>
 						<div class="mb-3">
@@ -151,24 +152,30 @@
 				</div>
 			</div>
             {% endif %}
-			<!-- Affichage des messages -->
-            {% if message %}
-                <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
-                    {% for messages in message %}
-                        {{messages}}
-                        <br>
-                    {% endfor %}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <!-- Affichage des messages -->
+        {% if message %}
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
+                <div id="toast" class="toast align-items-center text-white bg-{% if contientErreurs %}danger{% else %}success{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {% for messages in message %}
+                                {{ messages }}
+                                <br>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
                 </div>
-            {% endif %}
+            </div>
+        {% endif %}
 		</div>
     </div>
 	</main>
 
 {% endblock %}
 {% block javascripts %}
+    {{ parent() }}
     <script src="js/formulaireCreationAgenda.js"></script>
     <script src="js/formulaireModificationAgenda.js"></script>
-    {{ parent() }}
     <script src="js/datatable.js"></script>
 {% endblock %}
