@@ -441,21 +441,42 @@ class utilitaire
      * @param array $messagesErreurs Les messages d'erreurs que l'on pourra renvoyer si erreur détectée
      * @return bool Retourne vrai si la date est valide, faux sinon
      */
+    // public static function validerDate(?string $date, array &$messagesErreurs): bool
+    // {
+    //     $valide = true;
+
+    //     // Extraire les parties de la date : année, mois, jour
+    //     list($year, $month, $day) = explode('-', $date);
+
+    //     // Vérifier si la date est valide dans le calendrier
+    //     if (!checkdate((int) $month, (int) $day, (int) $year)) {
+    //         $messagesErreurs[] = "Une date n'est pas valide dans le calendrier";
+    //         $valide = false;
+    //     }
+
+    //     return $valide;
+    // }
+
     public static function validerDate(?string $date, array &$messagesErreurs): bool
-    {
-        $valide = true;
+{
+    $valide = true;
 
-        // Extraire les parties de la date : année, mois, jour
-        list($year, $month, $day) = explode('-', $date);
+    // Extraire les parties de la date : année, mois, jour
+    list($datetime) = explode('T', $date);
+    list($year, $month, $day) = explode('-', $datetime);
 
-        // Vérifier si la date est valide dans le calendrier
-        if (!checkdate((int) $month, (int) $day, (int) $year)) {
-            $messagesErreurs[] = "Une date n'est pas valide dans le calendrier";
-            $valide = false;
-        }
-
-        return $valide;
+    // Vérifier si la date est valide dans le calendrier
+    if (!checkdate((int) $month, (int) $day, (int) $year)) {
+        $messagesErreurs[] = "La date n'est pas valide dans le calendrier.";
+        $valide = false;
     }
+
+    return $valide;
+}
+
+
+
+
 
     /**
      * Fonction qui valide une heure dans le formulaire de recherche
@@ -673,11 +694,10 @@ class utilitaire
         $valide = utilitaire::validerPresence($fin, $messagesErreurs, "fin du créneau");
         $valide = utilitaire::validerType($debut, $messagesErreurs, "début de la recherche");
         $valide = utilitaire::validerType($fin, $messagesErreurs, "fin de la recherche");
-        $valide = utilitaire::validerPreg($debut, "/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/", $messagesErreurs, "début de la recherche");
-        $valide = utilitaire::validerPreg($fin, "/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/", $messagesErreurs, "fin de la recherche");
+        $valide = utilitaire::validerPreg($debut, "/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):([0-5]\d)$/", $messagesErreurs, "début de la recherche");
+        $valide = utilitaire::validerPreg($fin, "/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):([0-5]\d)$/", $messagesErreurs, "fin de la recherche");
         $valide = utilitaire::validerDate($debut, $messagesErreurs);
         $valide = utilitaire::validerDate($fin, $messagesErreurs);
-
         // 5. Plage des valeurs
         $dateDebut = new DateTime($debut);
         $dateFin = new DateTime($fin);
