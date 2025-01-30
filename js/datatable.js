@@ -1,7 +1,7 @@
 $(document).ready(function() {
     $('.table').DataTable({
         language: {
-            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
+            url: 'https://cdn.datatables.net/plug-ins/2.2.1/i18n/fr-FR.json'
         },
         "pageLength": 10,
         "ordering": true,
