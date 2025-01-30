@@ -523,6 +523,65 @@ class ControllerUtilisateur extends Controller
         }
     }
 
+    public function modifierUtilisateur() {
+        $id = $_GET['id'];
+
+        // Ajout des @ car notre fonction est utilisée par user classique et admin
+        $messageErreurs = [];
+        $nomValide = utilitaire::validerNom($_POST['nom'], $messageErreurs);
+        $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
+        @$roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
+        @$emailValide = utilitaire::validerEmail($_POST['email'], $messageErreurs);
+        @$statutValide = utilitaire::validerStatut($_POST['statut'], $messageErreurs);
+        @$photoValide = utilitaire::validerPhoto($_FILES['photo'], $messageErreurs);
+
+        if($nomValide && $prenomValide) {
+            $pdo = $this->getPdo();
+            $manager = new UtilisateurDao($pdo);
+            
+            // Gestion de l'upload de la photo de profil
+            $utilisateurConcerne = $manager->find($id);
+            $cheminPhoto = $utilisateurConcerne->getPhotoDeProfil(); // Récupérer l'ancien chemin
+
+            if ($photoValide) {
+                $dossierDestination = 'image/photo_user/';
+                $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
+                $cheminPhoto = $dossierDestination . $nomFichier;
+
+                $user = $manager->find($id);
+                $user->supprimerAnciennesPhotos();
+
+                // Déplacer le fichier uploadé dans le répertoire cible
+                if (move_uploaded_file($_FILES['photo']['tmp_name'], $cheminPhoto)) {
+                    // Mettre à jour le chemin de la photo dans la base de données
+                    $manager->modifierPhotoProfil($id, $nomFichier);
+                    $utilisateurConcerne->setPhotoDeProfil($nomFichier);
+                }
+            }
+
+            $role = $_POST['role'] == 'Admin' ? 1 : 0;
+            // Mise à jour du chemin de l'image
+            $nomFichier = empty($nomFichier) ? $utilisateurConcerne->getPhotoDeProfil() : $nomFichier;
+            
+            if ($roleValide && $emailValide && $statutValide) {
+                $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $_POST['email'], $role, $nomFichier, strtolower($_POST['statut']));
+            } else {
+                $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $utilisateurConcerne->getEmail(), $role, $nomFichier); 
+            }
+
+            $utilisateurConcerne = $manager->find($id);
+            if ($utilisateurConcerne->getId() == $_SESSION['utilisateur']->getId() && strtolower($_POST['statut']) == 'actif') {
+                $_SESSION['utilisateur'] = $utilisateurConcerne;
+                $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurConcerne);
+                $messageErreurs[] = "L'utilisateur " . $utilisateurConcerne->getNom() . " " . $utilisateurConcerne->getPrenom() . " a été modifié avec succès !";
+                $this->afficherProfil($messageErreurs, false);
+            } else {
+                $messageErreurs[] = "L'utilisateur " . $utilisateurConcerne->getNom() . " " . $utilisateurConcerne->getPrenom() . " a été modifié avec succès !";
+                $this->lister($messageErreurs, false);
+            }
+        }
+    }
+
     /**
      * Fonction appellee par le bouton de mise a jour d'un utilisateur (panel admin)
      *
