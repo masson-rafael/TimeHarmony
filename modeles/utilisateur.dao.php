@@ -589,21 +589,6 @@ class UtilisateurDao
         return $result;
     }
 
-    /**
-     * Fonction qui retourne le nombre de demandes de groupe en cours d'un utilisateur
-     * 
-     * @param int|null $id id de l'utilisateur dont on veut chercher les demandes
-     * @return int|null le nombre de demandes
-     */
-    public function getNombreDemandesDeGroupe(?int $id): ?int {
-        $sql = "SELECT COUNT(idUtilisateur) AS nombreDemandes FROM " . PREFIXE_TABLE . "ajouter WHERE idUtilisateur = :id";
-        $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(array("id" => $id));
-        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
-        $result = $result['nombreDemandes'];
-        return $result;
-    }
-
     public function findUserFromGroupId(?int $idGroupe): Utilisateur {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur U
         JOIN " . PREFIXE_TABLE . "composer C ON U.id = C.idUtilisateur
