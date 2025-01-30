@@ -307,13 +307,10 @@ class ControllerUtilisateur extends Controller
         $demandesContactEnvoyees = $manager->getDemandesContactEnvoyees($_SESSION['utilisateur']->getId());
         $demandesContactRecues = $manager->getDemandesContactRecues($_SESSION['utilisateur']->getId());
 
-        $demandesGroupeRecues = $manager->getDemandesGroupeRecues($_SESSION['utilisateur']->getId());
-
         $template = $this->getTwig()->load('notifications.html.twig');
         echo $template->render(array(
             'demandesContactEnvoyees' => $demandesContactEnvoyees,
             'demandesContactRecues' => $demandesContactRecues,
-            'demandesGroupeRecues' => $demandesGroupeRecues,
             'message' => $tableauMessage,
             'contientErreurs' => $contientErreurs
         ));
@@ -369,44 +366,6 @@ class ControllerUtilisateur extends Controller
         $_SESSION['utilisateur'] = $utilisateur;
         $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
         $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " acceptée avec succès !";
-        $this->afficherPageNotifications($tableauMessages, false);
-    }
-
-    /**
-     * Fonction qui refuse la demande d'ajout au groupe dans la BD
-     * @return void
-     */
-    public function refuserDemandeGroupeRecue(): void {
-        $idGroupe = $_GET['id'];
-        $pdo = $this->getPdo();
-        $manager = new UtilisateurDao($pdo);
-        $tabDemandesPourMoi = $manager->refuserDemandeGroupe($idGroupe, $_SESSION['utilisateur']->getId());
-        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
-        $utilisateur->getDemandes();
-        $manager->miseAJourUtilisateur($utilisateur);
-        $_SESSION['utilisateur'] = $utilisateur;
-        $utilisateurEnvoieDemande = $manager->findUserFromGroupId($idGroupe);
-        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
-        $tableauMessages[] = "Demande de groupe de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " refusée avec succès !";
-        $this->afficherPageNotifications($tableauMessages, false);
-    }
-
-    /**
-     * Fonction qui accepte la demande d'ajout au groupe dans la BD
-     * @return void
-     */
-    public function accepterDemandeGroupeRecue(): void {
-        $idGroupe = $_GET['id'];
-        $pdo = $this->getPdo();
-        $manager = new UtilisateurDao($pdo);
-        $tabDemandesPourMoi = $manager->accepterDemandeGroupe($idGroupe, $_SESSION['utilisateur']->getId());
-        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
-        $utilisateur->getDemandes();
-        $manager->miseAJourUtilisateur($utilisateur);
-        $_SESSION['utilisateur'] = $utilisateur;
-        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
-        $utilisateurEnvoieDemande = $manager->findUserFromGroupId($idGroupe);
-        $tableauMessages[] = "Demande de groupe de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " acceptée avec succès !";
         $this->afficherPageNotifications($tableauMessages, false);
     }
 

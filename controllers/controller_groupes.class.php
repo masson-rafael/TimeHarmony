@@ -161,7 +161,7 @@ class ControllerGroupes extends Controller
 
         if ($contacts) {   // Condition si est vide
             foreach ($contacts as $contact) {
-                $manager->demanderAjoutMembreGroupe($idGroupe, $contact);
+                $manager->ajouterMembreGroupe($idGroupe, $contact);
             }
         }
     }

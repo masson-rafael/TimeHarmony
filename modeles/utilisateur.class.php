@@ -492,7 +492,6 @@ class Utilisateur {
         
         $managerUtilisateur = new UtilisateurDAO($pdo);
         $nombreDemandes = $managerUtilisateur->getNombreDemandesDeContact($this->getId());
-        $nombreDemandes += $managerUtilisateur->getNombreDemandesDeGroupe($this->getId());
         $this->setNombreDemandesEnCours($nombreDemandes);
         return $nombreDemandes;
     }
