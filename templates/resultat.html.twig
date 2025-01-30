@@ -49,11 +49,11 @@
             <div class="row">
                 {% for plage, disponibilites in creneaux %}
                     <div class="col-md-6">
-                        <div class="creneau-item border rounded p-3 mb-3">
-                            <p><strong>Plage horaire :</strong> {{ plage }}</p>
-                            <p><strong>Début :</strong> {{ plage|split(' - ')[0] }}</p>
-                            <p><strong>Fin :</strong> {{ plage|split(' - ')[1] }}</p>
-                            <p><strong>Personnes disponibles :</strong> 
+                        <div class="creneau-item border rounded p-3 mb-1">
+                            <strong>Plage horaire :</strong> {{ plage }}<br>
+                            {# <p><strong>Début :</strong> {{ plage|split(' - ')[0] }}</p>
+                            <p><strong>Fin :</strong> {{ plage|split(' - ')[1] }}</p> #}
+                            <strong>Personnes disponibles :</strong> 
                             {% set personnes_dispo = [] %}
                             {% for personne, dispo in disponibilites %}
                                 {% if dispo == 1 %}
@@ -61,7 +61,6 @@
                                 {% endif %}
                             {% endfor %}
                             {{ personnes_dispo|join(', ') }}
-                            </p>
                         </div>
                     </div>
                     {% if loop.index is divisible by(2) %}
