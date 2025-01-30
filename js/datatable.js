@@ -35,6 +35,13 @@ $(document).ready(function() {
                 { targets: [3], orderable: false }]
         }
 
+        if ($table.hasClass('groupe2')) {
+            options.columnDefs = [
+                // Désactivation du tri sur les colonnes actions
+                { targets: [0], orderable: false }]
+            options.order = [[1, 'asc']]
+        }
+
         $table.DataTable(options);
     });
 });
