@@ -491,7 +491,8 @@ class UtilisateurDao
             token = :token,
             dateExpirationToken = :dateExpiraiton,
             tokenActivationCompte = :tokenActivationCompte,
-            dateExpirationTokenActivationCompte = :dateExpirationTokenActivationCompte
+            dateExpirationTokenActivationCompte = :dateExpirationTokenActivationCompte,
+            dateDerniereConnexion = :dateDerniereConnexion
             WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
 
@@ -505,6 +506,10 @@ class UtilisateurDao
 
         if(!is_null($utilisateur->getDateExpirationTokenActivationCompte())) {
             $dateTokenActivationCompte = $utilisateur->getDateExpirationTokenActivationCompte()->format('Y-m-d H:i:s');
+        }
+
+        if(!is_null($utilisateur->getDateDerniereConnexion())) {
+            $dateDerniereConnexion = $utilisateur->getDateDerniereConnexion()->format('Y-m-d H:i:s');
         }
 
         $pdoStatement->execute(array(
@@ -521,6 +526,7 @@ class UtilisateurDao
             "dateExpiraiton" => $dateToken,
             "tokenActivationCompte" => $utilisateur->getTokenActivationCompte(),
             "dateExpirationTokenActivationCompte" => $dateTokenActivationCompte,
+            "dateDerniereConnexion" => $dateDerniereConnexion,
             "id" => $utilisateur->getId()
         ));
     }

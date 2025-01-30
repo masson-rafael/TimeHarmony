@@ -128,6 +128,7 @@ class ControllerUtilisateur extends Controller
                         $tableauErreurs[] = "Connexion réussie !";
                         $compteUtilisateurCorrespondant->reinitialiserTentativesConnexion();
                         $compteUtilisateurCorrespondant->reactiverCompte();
+                        $compteUtilisateurCorrespondant->setDateDerniereConnexion(new DateTime());
                         $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
                         $this->genererVueConnecte($utilisateur, $tableauErreurs);
                     } else {
@@ -847,5 +848,16 @@ class ControllerUtilisateur extends Controller
                 'contientErreurs' => $contientErreurs
             )
         );
+    }
+
+    public function nettoyerUtilisateur(): void {
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $utilisateurs = $manager->findAll();
+
+        foreach ($utilisateurs as $utilisateur) {
+            $dateDerniereConnexion = $utilisateur->getDateDerniereConnexion();
+            $manager->supprimerUtilisateur($utilisateur->getId());
+        }
     }
 }

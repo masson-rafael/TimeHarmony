@@ -81,6 +81,11 @@ class Utilisateur {
      * @var int|null le nombre de demandes reçues
      */
     private int|null $nombreDemandesEnCours;
+    /**
+     * 
+     * @var DateTime|null la date de la dernière connexion
+     */
+    private DateTime|null $dateDerniereConnexion;
 
     /**
      * Constructeur par défaut
@@ -276,6 +281,15 @@ class Utilisateur {
     }
 
     /**
+     * Get la date de la dernière connexion
+     *
+     * @return DateTime|null La date de la dernière connexion
+     */
+    public function getDateDerniereConnexion(): ?DateTime {
+        return $this->dateDerniereConnexion;
+    }
+
+    /**
      * Set l'id de l'utilisateur
      *
      * @param integer $id de l'utilisateur
@@ -424,6 +438,16 @@ class Utilisateur {
     public function setNombreDemandesEnCours(?int $nombreDemandesEnCours): self {
         $this->nombreDemandesEnCours = $nombreDemandesEnCours;
         return $this;
+    }
+
+    /**
+     * Set la date de la dernière connexion
+     *
+     * @param DateTime|null $dateDerniereConnexion La date de la dernière connexion
+     * @return void
+     */
+    public function setDateDerniereConnexion(?DateTime $dateDerniereConnexion): void {
+        $this->dateDerniereConnexion = $dateDerniereConnexion;
     }
 
     /**
