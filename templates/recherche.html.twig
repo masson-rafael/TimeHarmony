@@ -170,10 +170,13 @@
 
 {% block javascripts %}
 	{{ parent() }}
+	<script>
+	const membres = {{ membres|json_encode|raw }};
+	</script>
 	<script src="js/recherche.js"></script>
 	<script src="js/formulaireRecherche.js"></script>
 	<script>
-		const membres = {{ membres|json_encode|raw }};
+		
 { // Récupérer les membres des groupes
 #
 $(document).ready(function () {
