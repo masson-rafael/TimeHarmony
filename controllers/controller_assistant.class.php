@@ -167,13 +167,12 @@ class ControllerAssistant extends Controller
                     $user = $manager->find($contact);
                     var_dump($user);
                     $contactsPrioritaires[] = strtolower($user->getNom());
-                }            
+                }
+                $aDesPriorites = true;
             }
 
             if(empty($contactsPrioritaires)) {
-                foreach($tableauUtilisateur as $utilisateur) {
-                    $contactsPrioritaires[] = strtolower($utilisateur->getNom());
-                }
+                $aDesPriorites = false;
             }
 
             if (isset($_POST['groupes'])) {
@@ -277,7 +276,7 @@ class ControllerAssistant extends Controller
             }
             
             // Appel de la fonction
-            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'], $debutHoraire, $finHoraire, $debut, $fin, $contactsPrioritaires);
+            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'], $debutHoraire, $finHoraire, $debut, $fin, $contactsPrioritaires, $aDesPriorites);
             // var_dump($matrice);
             // exit;
             // $chronoEndGen = new DateTime();
