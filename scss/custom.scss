@@ -2,6 +2,10 @@
 
 @import "../node_modules/bootstrap/scss/variables";
 @import "../node_modules/bootstrap/scss/variables-dark";
+
+$body-bg: #F5F5DC;
+$body-color: #111;
+
 $theme-colors: (
     "primary": #64a19d,
     "secondary": #eeeeee,
@@ -12,7 +16,6 @@ $theme-colors: (
     "black": #000,
     "white": #fff,
 );
-
 
 @import "../node_modules/bootstrap/scss/maps";
 @import "../node_modules/bootstrap/scss/mixins";
