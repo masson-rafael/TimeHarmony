@@ -18,6 +18,7 @@
 						<div class="col-md-4 mb-4">
 							<div class="card p-4 shadow-sm">
 								<h5 class="fw-bold text-center mb-3">Choisir ses contacts :</h5>
+								<p class="text-muted">Ajoutez les personnes avec qui vous souhaitez trouver un créneau commun.</p>
 								{% if contacts|length > 0 %}
 									<table id="contacts" class="table table-bordered table-hover">
 										<thead>
@@ -44,9 +45,7 @@
 								{% else %}
 									<div class="row justify-content-center mt-4 h-25">
 										<div class="col-md-8">
-											<div class="alert alert-info text-center" role="alert">
-												Aucun contact trouvé. Ajoutez-en un ci-dessous.
-											</div>
+											<div class="alert alert-info text-center" role="alert">Aucun contact trouvé. Ajoutez-en un ci-dessous.</div>
 										</div>
 									</div>
 									<div class="text-center">
@@ -60,6 +59,7 @@
 						<div class="col-md-4 mb-4">
 							<div class="card p-4 shadow-sm">
 								<h5 class="fw-bold text-center mb-3">Choisir des groupes :</h5>
+								<p class="text-muted">Sélectionnez un groupe pour rechercher un créneau avec plusieurs contacts à la fois.</p>
 								{% if groupes|length > 0 %}
 									<table id="groupes" class="table table-bordered table-hover">
 										<thead>
@@ -99,6 +99,7 @@
 						<div class="col-md-4 mb-4">
 							<div class="card p-4 shadow-sm">
 								<h5 class="fw-bold text-center mb-3">Période de recherche :</h5>
+								<p class="text-muted">Définissez la période pendant laquelle vous souhaitez rechercher un créneau.</p>
 								<div class="mb-3">
 									<label for="Datedebut" class="form-label">Début *</label>
 									<input name="debut" type="datetime-local" class="form-control" id="dateDebut" required title="Entrez la date de début de votre recherche">
@@ -106,7 +107,7 @@
 
 								</div>
 
-								<div class="mb-3">
+								<div class="mb-4">
 									<label for="Datefin" class="form-label">Fin *</label>
 									<input name="fin" type="datetime-local" class="form-control" id="dateFin" required title="Entrez la date de fin de votre recherche">
 									<small id="dateFinError" class="text-danger"></small>
@@ -114,12 +115,15 @@
 
 								<div class="mb-3">
 									<label for="dureeMin" class="form-label">Durée exacte du rendez-vous *</label>
+									<p class="text-muted">Spécifiez la durée exacte du créneau à trouver.</p>
 									<input id="duree" name="dureeMin" type="time" class="form-control" value="01:00" min="00:05" required title="Entrez la durée minimale du créneau à rechercher">
 									<small id="dureeError" class="text-danger"></small>
 								</div>
+								<p class="text">* Champ obligatoire</p>
 							</div>
 							<div class="card p-4 shadow-sm mt-3">
 								<h5 class="fw-bold text-center mb-3">Plage horaire :</h5>
+								<p class="text-muted">Définissez les heures entre lesquelles les créneaux doivent être recherchés.</p>
 								<div class="mb-3">
 									<label for="debutPlageH" class="form-label">Début *</label><br>
 									<input name="debutPlageH" type="time" class="form-control" id="debutPlageH" value="08:00" required title="Entrez la date de début de la plage horaire">
@@ -128,9 +132,10 @@
 
 								<div class="mb-3">
 									<label for="finPlageH" class="form-label">Fin *</label>
-									<input name="finPlageH" type="time" class="form-control" id="finPlageH" value="18:00" required title="Entrez la date de fin de la plage horaire">
+									<input name="finPlageH" type="text" class="form-control" id="finPlageH" value="18:00" required title="Entrez la date de fin de la plage horaire">
 									<small id="finPlageHError" class="text-danger"></small>
 								</div>
+								<p class="text">* Champ obligatoire</p>
 							</div>
 						</div>
 					</div>
@@ -186,33 +191,35 @@ url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
 	</script>
 
 	<script>
-    // Récupérer les éléments input
-    const dateDebutInput = document.getElementById('dateDebut');
-    const dateFinInput = document.getElementById('dateFin');
+		// Récupérer les éléments input
+const dateDebutInput = document.getElementById('dateDebut');
+const dateFinInput = document.getElementById('dateFin');
 
-    // Obtenir la date et l'heure actuelles
-    const now = new Date();
+// Obtenir la date et l'heure actuelles
+const now = new Date();
 
-    // Ajuster pour le fuseau horaire local
-    const offset = now.getTimezoneOffset(); // Décalage en minutes
-    const localTime = new Date(now.getTime() - offset * 60000);
+// Ajuster pour le fuseau horaire local
+const offset = now.getTimezoneOffset(); // Décalage en minutes
+const localTime = new Date(now.getTime() - offset * 60000);
 
-    // Arrondir la date de début à l'heure supérieure
-    localTime.setMinutes(Math.ceil(localTime.getMinutes() / 60) * 60);  // Arrondir les minutes à l'heure suivante
-    localTime.setSeconds(0); // Mettre les secondes à 0
+// Arrondir la date de début à l'heure supérieure
+localTime.setMinutes(Math.ceil(localTime.getMinutes() / 60) * 60); // Arrondir les minutes à l'heure suivante
+localTime.setSeconds(0);
+// Mettre les secondes à 0
 
-    // Formater la date et l'heure au format requis pour datetime-local (YYYY-MM-DDTHH:MM)
-    const formattedDateTime = localTime.toISOString().slice(0, 16); // Garder "YYYY-MM-DDTHH:MM"
-    dateDebutInput.value = formattedDateTime;
+// Formater la date et l'heure au format requis pour datetime-local (YYYY-MM-DDTHH:MM)
+const formattedDateTime = localTime.toISOString().slice(0, 16); // Garder "YYYY-MM-DDTHH:MM"
+dateDebutInput.value = formattedDateTime;
 
-    // Calculer la date avec une semaine de décalage
-    const oneWeekLater = new Date(localTime);
-    oneWeekLater.setDate(localTime.getDate() + 7); // Ajouter 7 jours
+// Calculer la date avec une semaine de décalage
+const oneWeekLater = new Date(localTime);
+oneWeekLater.setDate(localTime.getDate() + 7);
+// Ajouter 7 jours
 
-    // Formater la date de fin (fin avec une semaine de décalage)
-    const formattedDateTimeFin = oneWeekLater.toISOString().slice(0, 16); // Garder "YYYY-MM-DDTHH:MM"
-    dateFinInput.value = formattedDateTimeFin;
-</script>
+// Formater la date de fin (fin avec une semaine de décalage)
+const formattedDateTimeFin = oneWeekLater.toISOString().slice(0, 16); // Garder "YYYY-MM-DDTHH:MM"
+dateFinInput.value = formattedDateTimeFin;
+	</script>
 
 
 {% endblock %}

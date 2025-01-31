@@ -106,6 +106,10 @@ class Controller{
         } 
     }
 
+    public function nettoyageUtilisateur(?ControllerUtilisateur $controller): void {
+        $controller->nettoyerUtilisateur(); // Appeler la méthode nettoyerUtilisateur
+    }
+
     /**
      * Get la valeur du pdo
      *
