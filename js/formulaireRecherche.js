@@ -8,6 +8,11 @@ let dateFinError = document.getElementById('dateFinError');
 let duree = document.getElementById('duree');
 let dureeError = document.getElementById('dureeError');
 
+let debutPlageH = document.getElementById('debutPlageH');
+let debutPlageHError = document.getElementById('debutPlageHError');
+let finPlageH = document.getElementById('finPlageH');
+let finPlageHError = document.getElementById('finPlageHError');
+
 let contacts = document.getElementById('contacts');
 let contactsError = document.getElementById('contactsError');
 let groupesContact = document.getElementById('groupes');
@@ -17,9 +22,16 @@ let groupesContactError = document.getElementById('groupesError');
 preparationVariables();
 
 // Ajout des evenements qui declechent les fonctions de validation à chaque input
-dateDebut.addEventListener('change', verifierTousLesChamps);
-dateFin.addEventListener('change', verifierTousLesChamps);
+//dateDebut.addEventListener('change', verifierTousLesChamps);
+//dateDebut.addEventListener('input', verifierTousLesChamps);
+//dateFin.addEventListener('change', verifierTousLesChamps);
+//dateFin.addEventListener('input', verifierTousLesChamps);
 duree.addEventListener('change', verifierTousLesChamps);
+duree.addEventListener('input', verifierTousLesChamps);
+debutPlageH.addEventListener('change', verifierTousLesChamps);
+debutPlageH.addEventListener('input', verifierTousLesChamps);
+finPlageH.addEventListener('change', verifierTousLesChamps);
+finPlageH.addEventListener('input', verifierTousLesChamps);
 contacts.addEventListener('change', verifierTousLesChamps);
 groupesContact.addEventListener('change', verifierTousLesChamps);
 btn.addEventListener('click', sauvegarderVariables);
@@ -65,14 +77,14 @@ function verifierDate(champ, error, secondeDate = null) {
 
     if(champ.value === '') {
         champ.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
-        error.textContent = 'Veuillez saisir une date';
+        error.textContent = 'Veuillez saisir une date valide';
         return false;
     }
 
-    const motifdateDebut = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+    const motifdateDebut = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):([0-5]\d)$/;
     if (!motifdateDebut.test(champ.value)) {
         champ.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
-        error.textContent = 'La date ne respecte pas le format attendu (AAAA-MM-JJ)';
+        error.textContent = 'La date ne respecte pas le format attendu (AAAA-MM-JJ hh:mm)';
         correct = false;
     }
     if (secondeDate !== null && champ.value > secondeDate.value) {
@@ -110,6 +122,30 @@ function verifierDuree(champ, error) {
         error.textContent = 'La durée doit être supérieure à 5 minutes';
         correct = false;
     } if (!motifRespectTime.test(champ.value)) {
+        champ.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
+        error.textContent = 'La durée doit être au format HH:MM';
+        correct = false;
+    }    
+    
+    if (correct === true) {
+        champ.style.borderColor = ''; // Bordure par défaut (succès)
+        error.textContent = '';
+        return true;
+    }
+    return false;
+}
+
+function verifierPlageHoraire(champ, error) {
+    const motifRespectTime = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+    let correct = true;
+
+    if(champ.value === '') {
+        champ.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
+        error.textContent = 'Veuillez saisir une plage horaire';
+        return false;
+    }
+
+    if (!motifRespectTime.test(champ.value)) {
         champ.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
         error.textContent = 'La durée doit être au format HH:MM';
         correct = false;
@@ -167,13 +203,16 @@ function verifierPatternContacts() {
 // Fonction générale de vérification de tous les champs
 function verifierTousLesChamps() {
     console.log('Verification des champs');
-    const dateDebutCorrect = verifierDate(dateDebut, dateDebutError, dateFin);
-    const dateFinCorrect = verifierDate(dateFin, dateFinError, dateFin);
-    const dureeCorrect = verifierDuree(duree, dureeError);
+    const dateDebutCorrect = true;//verifierDate(dateDebut, dateDebutError, dateFin);
+    const dateFinCorrect = true;//VerifierDate(dateFin, dateFinError, dateFin);
+    const dureeCorrect = true;//verifierDuree(duree, dureeError);
     const contactCorrect = verifierPatternContacts();
     const groupesContactCorrect = verifierPatternContacts();
     const presenceCorrect = verifierPresence();
+    const debutPlageCorrect = verifierPlageHoraire(debutPlageH, debutPlageHError);
+    const finPlageCorrect = verifierPlageHoraire(finPlageH, finPlageHError);
 
     // Activer ou désactiver le bouton en fonction des validations
-    btn.disabled = !(dateDebutCorrect && dateFinCorrect && presenceCorrect && dureeCorrect && contactCorrect && groupesContactCorrect);
+    btn.disabled = !(dateDebutCorrect && dateFinCorrect && presenceCorrect && dureeCorrect && contactCorrect && groupesContactCorrect && debutPlageCorrect && finPlageCorrect);
+
 }

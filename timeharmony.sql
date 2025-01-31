@@ -29,7 +29,6 @@ SET time_zone = "+00:00";
 --
 
 DROP TABLE IF EXISTS `timeharmony_trouver`;
-DROP TABLE IF EXISTS `timeharmony_ajouter`;
 DROP TABLE IF EXISTS `timeharmony_composer`;
 DROP TABLE IF EXISTS `timeharmony_demander`;
 DROP TABLE IF EXISTS `timeharmony_contacter`;
@@ -113,6 +112,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_utilisateur` (
     `estAdmin` boolean DEFAULT false NOT NULL,
     `tokenActivationCompte` varchar(100) DEFAULT NULL,
     `dateExpirationTokenActivationCompte` DATETIME DEFAULT NULL,
+    `dateDerniereConnexion` DATETIME DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -150,16 +150,16 @@ CREATE TABLE IF NOT EXISTS `timeharmony_groupe` (
     `id` int NOT NULL AUTO_INCREMENT,
     `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
     `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-    `idChef` int NOT NULL,
+    `idProprietaire` int NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`idChef`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE
+    FOREIGN KEY (`idProprietaire`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Chargement des données de la table 'groupe'
 --
 
-INSERT INTO `timeharmony_groupe` (`nom`, `description`, `idChef`) VALUES
+INSERT INTO `timeharmony_groupe` (`nom`, `description`, `idProprietaire`) VALUES
  ('Réunion avec Monsieur Etcheverry', 'Groupe de l\'équipe TimeHarmony avec notre tuteur, Monsieur Etcheverry', 1),
  ('Equipe TimeHarmony', 'Groupe de l\'équipe TimeHarmony', 2),
  ('Groupe Test 1', 'Groupe de l\'équipe TimeHarmony test 1', 1),
@@ -344,31 +344,6 @@ INSERT INTO `timeharmony_composer` (`idGroupe`, `idUtilisateur`) VALUES
 
 --
 -- Déchargement des données de la table 'composer'
---
-
--- --------------------------------------------------------
-
---
--- Structure de la table 'ajouter'
---
-
-CREATE TABLE IF NOT EXISTS `timeharmony_ajouter` (
-    `idGroupe` int NOT NULL,
-    `idUtilisateur` int NOT NULL,
-    PRIMARY KEY (`idGroupe`,`idUtilisateur`),
-    FOREIGN KEY (`idGroupe`) REFERENCES `timeharmony_groupe` (`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`idUtilisateur`) REFERENCES `timeharmony_utilisateur` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Chargement des données de la table 'ajouter'
---
-
-INSERT INTO `timeharmony_ajouter` (`idGroupe`, `idUtilisateur`) VALUES
- (1, 6), (2, 6);
-
---
--- Déchargement des données de la table 'ajouter'
 --
 
 -- --------------------------------------------------------

@@ -7,20 +7,19 @@
 {% block content %}
 
 	<main>
-		<div class="container">
-			<div class="row w-100 h-100 mt-4 justify-content-center ">
-				<div class="col-md-8 p-4 rounded shadow" style="background-color: #f9f9f9;">
+		<div class="container-fluid px-4">
+			<div class="row mt-4 justify-content-center">
+				<div class="col-12 col-md-8 p-4 rounded shadow" style="background-color: #f9f9f9;">
 					<h3 class="text-center mb-4" style="color: #2c3e50; font-weight: bold;">Mon Profil</h3>
-					<div
-						class="d-flex align-items-center">
+					<div class="d-flex flex-column flex-lg-row align-items-center">
 						<!-- Image cercle -->
-						<div class="me-4 w-25 d-flex align-items-center justify-content-center">
+						<div class="me-4 w-100 w-md-25 d-flex align-items-center justify-content-center mb-3 mb-md-0">
 							<img src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" alt="Photo de profil" class="rounded-circle shadow-lg" style="width: 120px; height: 120px; border: 4px solid #3498db;">
 						</div>
 
 						<!-- Formulaire -->
 						<div class="w-75">
-							<form method="POST" id="formProfil" action="index.php?controleur=utilisateur&methode=modifier&id={{ utilisateurGlobal.getId }}&type='util'" enctype="multipart/form-data">
+							<form method="POST" id="formProfil" class="justify-content-center align-items-center" action="index.php?controleur=utilisateur&methode=modifierUtilisateur&id={{ utilisateurGlobal.getId }}&type='utilisateur'" enctype="multipart/form-data">
 								<div class="mb-3">
 									<label for="nom" class="form-label" style="color: #2c3e50;">Nom *</label>
 									<input type="text" class="form-control shadow-sm" id="nom" name="nom" value="{{ utilisateurGlobal.getNom }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="50" title="Le nom de votre compte" required>
@@ -40,9 +39,9 @@
 									<label for="photo" class="form-label" style="color: #2c3e50;">Changer la photo de profil</label>
 									<input type="file" class="form-control shadow-sm" id="photo" name="photo" style="border: 1px solid #ddd;" accept=".jpg, .png" title="La photo de profil de votre compte">
 								</div>
-								<div class="d-flex justify-content-between">
-									<button id="boutonModification" type="submit" class="btn btn-primary px-4 shadow-sm" >Modifier mon profil</button>
-									<a class="btn btn-secondary" href="index.php?controleur=utilisateur&methode=demanderReinitialisationMail" role="button" >Réinitialiser mon mot de passe</a>
+								<div class="d-flex flex-column flex-md-row justify-content-center align-items-center">
+									<button id="boutonModification" type="submit" class="btn btn-primary shadow-sm me-3" style="background-color: #3498db; border: none;">Modifier mon profil</button>
+									<button class="btn btn-secondary" href="index.php?controleur=utilisateur&methode=demanderReinitialisationMail" role="button">Réinitialiser mon mot de passe</button>
 								</div>
 							</form>
 							<!-- Bouton supprimer -->
@@ -69,6 +68,7 @@
 					</div>
 				</div>
 			{% endif %}
+      
 		<!-- Fenêtre modale -->
 		<div class="modal fade position-absolute" id="fenetreModale" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-md">
@@ -84,7 +84,7 @@
 								Vous êtes sur le point de supprimer votre compte. Cette action est irréversible.
 							</p>
 						</div>
-						<div class="modal-footer d-flex justify-content-center">
+						<div class="modal-footer d-flex flex-column flex-md-row justify-content-center">
 							<button type="submit" class="btn btn-danger px-4" style="background-color: #e74c3c; border: none;">Supprimer</button>
 							<button type="button" class="btn btn-secondary px-4" style="background-color: #95a5a6; border: none;" data-bs-dismiss="modal">Annuler</button>
 						</div>
@@ -94,8 +94,8 @@
 		</div>
 	</div>
 </main>
-	{% block javascripts %}
-		{{ parent() }}
-		<script src="js/formulaireModificationProfil.js"></script>
-	{% endblock %}
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	<script src="js/formulaireModificationProfil.js"></script>
 {% endblock %}

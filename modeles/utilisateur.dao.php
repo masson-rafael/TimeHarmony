@@ -401,25 +401,6 @@ class UtilisateurDao
     }
 
     /**
-     * Fonction permettant de renvoyer les demandes recues par l'utilisateur dont l'id est donné en parametre
-     * @param int|null $id id de l'utilisateur dont on veut les demandes recues
-     */
-    public function getDemandesGroupeRecues(?int $id): ?array {
-        $sql = "SELECT G.id, G.nom AS nomGr, G.description, U2.nom, U2.prenom
-        FROM " . PREFIXE_TABLE . "utilisateur U
-        JOIN " . PREFIXE_TABLE . "ajouter A ON A.idUtilisateur = U.id
-        JOIN " . PREFIXE_TABLE . "groupe G ON G.id = A.idGroupe
-        JOIN " . PREFIXE_TABLE . "utilisateur U2 ON U2.id = G.idChef
-        WHERE A.idUtilisateur = :id";
-
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(array('id' => $id));
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return $result ?: null;
-    }
-
-    /**
      * Supprime une demande envoyée par un utilisateur à un autre utilisateur.
      *
      * @param int|null $idEnvoyeur ID de l'utilisateur ayant envoyé la demande.
@@ -472,36 +453,6 @@ class UtilisateurDao
     }
 
     /**
-     * Refuse une demande de groupe reçue par un utilisateur.
-     *
-     * @param int|null $idGroupe ID du groupe ayant envoyé la demande.
-     * @param int|null $idUtilisateur ID de l'utilisateur ayant recu la demande.
-     * @return void
-     */
-    public function refuserDemandeGroupe(?int $idGroupe, ?int $idUtilisateur): void {	
-        $sql = "DELETE FROM ".PREFIXE_TABLE."ajouter WHERE idGroupe = :idGrp AND idUtilisateur= :idUtil";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(array('idGrp' => $idGroupe, 'idUtil' => $idUtilisateur));
-    }
-
-    /**
-     * Accepte une demande de groupe reçue par un utilisateur.
-     *
-     * @param int|null $idGroupe ID du groupe ayant envoyé la demande.
-     * @param int|null $idUtilisateur ID de l'utilisateur ayant recu la demande.
-     * @return void
-     */
-    public function accepterDemandeGroupe(?int $idGroupe, ?int $idUtilisateur): void {	
-        $sql = "INSERT INTO ".PREFIXE_TABLE."composer (idGroupe, idUtilisateur) VALUES (:idGrp, :idUtil)";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(array('idGrp' => $idGroupe, 'idUtil' => $idUtilisateur));
-
-        $sql = "DELETE FROM ".PREFIXE_TABLE."ajouter WHERE idGroupe = :idGrp AND idUtilisateur= :idUtil";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(array('idGrp' => $idGroupe, 'idUtil' => $idUtilisateur));
-    }
-
-    /**
      * Fonction permettant de récupérer un objet utilisateur dont l'email correspond à celui passé en paramètre
      * @param string|null $email email de l'utilisateur
      * @return Utilisateur objet utilisateur
@@ -540,7 +491,8 @@ class UtilisateurDao
             token = :token,
             dateExpirationToken = :dateExpiraiton,
             tokenActivationCompte = :tokenActivationCompte,
-            dateExpirationTokenActivationCompte = :dateExpirationTokenActivationCompte
+            dateExpirationTokenActivationCompte = :dateExpirationTokenActivationCompte,
+            dateDerniereConnexion = :dateDerniereConnexion
             WHERE id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
 
@@ -554,6 +506,10 @@ class UtilisateurDao
 
         if(!is_null($utilisateur->getDateExpirationTokenActivationCompte())) {
             $dateTokenActivationCompte = $utilisateur->getDateExpirationTokenActivationCompte()->format('Y-m-d H:i:s');
+        }
+
+        if(!is_null($utilisateur->getDateDerniereConnexion())) {
+            $dateDerniereConnexion = $utilisateur->getDateDerniereConnexion()->format('Y-m-d H:i:s');
         }
 
         $pdoStatement->execute(array(
@@ -570,6 +526,7 @@ class UtilisateurDao
             "dateExpiraiton" => $dateToken,
             "tokenActivationCompte" => $utilisateur->getTokenActivationCompte(),
             "dateExpirationTokenActivationCompte" => $dateTokenActivationCompte,
+            "dateDerniereConnexion" => $dateDerniereConnexion,
             "id" => $utilisateur->getId()
         ));
     }
@@ -582,21 +539,6 @@ class UtilisateurDao
      */
     public function getNombreDemandesDeContact(?int $id): ?int {
         $sql = "SELECT COUNT(idUtilisateur2) AS nombreDemandes FROM " . PREFIXE_TABLE . "demander WHERE idUtilisateur2 = :id";
-        $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(array("id" => $id));
-        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
-        $result = $result['nombreDemandes'];
-        return $result;
-    }
-
-    /**
-     * Fonction qui retourne le nombre de demandes de groupe en cours d'un utilisateur
-     * 
-     * @param int|null $id id de l'utilisateur dont on veut chercher les demandes
-     * @return int|null le nombre de demandes
-     */
-    public function getNombreDemandesDeGroupe(?int $id): ?int {
-        $sql = "SELECT COUNT(idUtilisateur) AS nombreDemandes FROM " . PREFIXE_TABLE . "ajouter WHERE idUtilisateur = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
         $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);

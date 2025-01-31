@@ -13,7 +13,7 @@
 				</div>
 				{% if contacts|length > 0 %}
 					<div class="container-lg table-responsive">
-						<table id="myTable" class="table table-striped">
+						<table id="myTable" class="table contact table-striped">
 							<thead>
 								<tr>
 									<th></th>
@@ -27,7 +27,9 @@
 								{% for utilisateur in contacts %}
 									<tr>
 										<td>
-											<img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil" class="rounded-circle img-fluid" style="max-width: 50px;">
+											<div class="d-flex justify-content-center align-items-center" style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; background-color: #fff;">
+												<img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil" style="width: 100%; height: 100%; object-fit: cover;">
+											</div>
 										</td>
 										<td>{{ utilisateur.getPrenom }}</td>
 										<td>{{ utilisateur.getNom }}</td>
@@ -84,20 +86,24 @@
     			<h1 class="flex-grow-1 text-center m-0">Ajouter un contact</h1>
 			</div>
 
-				<table id="myTable" class="table table-striped">
+				<table id="myTable" class="table contact table-striped">
 					<thead>
 						<tr>
-							<th>Image de profil</th>
+							<th></th>
 							<th>Prenom</th>
 							<th>Nom</th>
 							<th>Email</th>
-							<th>Ajouter</th>
+							<th></th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for utilisateur in utilisateurs %}
 							<tr>
-								<td><img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil" class="rounded-circle" style="width: 50px; height: 50px;"></td>
+								<td>
+									<div class="d-flex justify-content-center align-items-center" style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; background-color: #fff;">
+										<img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil" style="width: 100%; height: 100%; object-fit: cover;">
+									</div>
+								</td>
 								<td>{{ utilisateur.getPrenom }}</td>
 								<td>{{ utilisateur.getNom }}</td>
 								<td>{{ utilisateur.getEmail }}</td>
@@ -154,17 +160,10 @@
 				</div>
 			{% endif %}
 		</div>
-	</div>
-</main>{% endblock %}{% block javascripts %}
-{{ parent() }}<script>
-	$(document).ready(function () {
-$('#myTable').DataTable({
-language: {
-url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
-},
-"pageLength": 10,
-"ordering": true,
-"responsive": true
-});
-});
-</script>{% endblock %}
+</main>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="js/datatable.js"></script>
+{% endblock %}

@@ -27,7 +27,6 @@ class ControllerAssistant extends Controller
         parent::__construct($twig, $loader);
     }
 
-
     /**
      * Fonction qui permet de générer la vue qui contiendra les paramètres de la recherche
      * @return void
@@ -43,6 +42,8 @@ class ControllerAssistant extends Controller
         unset($_SESSION['groupes']);
         unset($_POST['increment']);
         unset($_POST['decrement']);
+        unset($_POST['debutPlageH']);
+        unset($_POST['finPlageH']);
 
         $utilisateur = $_SESSION['utilisateur'];
 
@@ -87,53 +88,66 @@ class ControllerAssistant extends Controller
         $messagesErreur = [];
 
         $pdo = $this->getPdo();
-
+    
         if (isset($_SESSION['debut']) && isset($_SESSION['fin']) && isset($_SESSION['dureeMin']) && isset($_SESSION['contacts']) && isset($_SESSION['debutHoraire']) && isset($_SESSION['finHoraire'])) {
             $_POST['debut'] = $_SESSION['debut'];
             $_POST['fin'] = $_SESSION['fin'];
             $_POST['dureeMin'] = $_SESSION['dureeMin'];
             $_POST['contacts'] = $_SESSION['contacts'];
-            $_SESSION['debutHoraire'] = $_POST['debutHoraire'];
-            $_SESSION['finHoraire'] = $_POST['finHoraire'];
+            $_POST['debutPlageH'] = $_SESSION['debutPlageH'];
+            $_POST['finPlageH'] = $_SESSION['finPlageH'];
         }
+        // if(isset($_SESSION['contactsPrioritaires'])) {
+        //     $_POST['contactsPrioritaires'] = $_SESSION['contactsPrioritaires'];
+        // }
 
         $valideDuree = Utilitaire::validerDuree($_POST['debut'], $_POST['fin'], $messagesErreur);
         $dureeMinValide = Utilitaire::validerDureeMinimale($_POST['dureeMin'], $messagesErreur);
+        @$contactsPrioritairesValide = Utilitaire::validerContacts($_POST['contactsPrioritaires'], $messagesErreur);
         @$contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur);
-        $plageHoraireValide= Utilitaire::validerPlageHoraire($_POST['debutHoraire'],$_POST['finHoraire'], $messagesErreur);
-
+        $plageHoraireValide = Utilitaire::validerPlageHoraire($_POST['debutPlageH'], $_POST['finPlageH'], $messagesErreur);
 
         if ($valideDuree && $dureeMinValide && $contactsValide && $plageHoraireValide) {
-            if (!isset($_SESSION['debut']) || !isset($_SESSION['fin']) || !isset($_SESSION['dureeMin']) || !isset($_SESSION['contacts']) || !isset($_SESSION['debutHoraire']) || !isset($_SESSION['finHoraire'])) {
+            if (!isset($_SESSION['debut']) || !isset($_SESSION['fin']) || !isset($_SESSION['dureeMin']) || !isset($_SESSION['contacts']) || !isset($_SESSION['debutPlageH']) || !isset($_SESSION['finPlageH'])) {
                 $_SESSION['debut'] = $_POST['debut'];
                 $_SESSION['fin'] = $_POST['fin'];
                 $_SESSION['dureeMin'] = $_POST['dureeMin'];
                 $_SESSION['contacts'] = $_POST['contacts'];
-                $_SESSION['debutHoraire'] = $_POST['debutHoraire'];
-                $_SESSION['finHoraire'] = $_POST['finHoraire'];
+                $_SESSION['debutPlageH'] = $_POST['debutPlageH'];
+                $_SESSION['finPlageH'] = $_POST['finPlageH'];
             }
+
+            // if ($contactsPrioritairesValide) {
+            //     if (!isset($_SESSION['contactsPrioritaires'])) {
+            //         $_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
+            //     }
+            // }
 
             // $chronoStartGen = new DateTime();
             $managerCreneau = new CreneauLibreDao($pdo);
             $managerCreneau->supprimerCreneauxLibres();
 
             extract($_POST, EXTR_OVERWRITE);
-            if (isset($_POST['debut']) && isset($_POST['fin']) && isset($_POST['dureeMin']) && isset($_POST['contacts']) && isset($_POST['debutHoraire']) && isset($_POST['finHoraire'])) {
+            if (isset($_POST['debut']) && isset($_POST['fin']) && isset($_POST['dureeMin']) && isset($_POST['contacts']) && isset($_POST['debutPLageH']) && isset($_POST['finPlageH'])) {
                 $_SESSION['dureeMin'] = $_POST['dureeMin'];
                 $_SESSION['contacts'] = $_POST['contacts'];
                 $_SESSION['debut'] = $_POST['debut'];
                 $_SESSION['fin'] = $_POST['fin'];
-                $_SESSION['debutHoraire'] = $_POST['debutHoraire'];
-                $_SESSION['finHoraire'] = $_POST['finHoraire'];
+                $_SESSION['debutPlageH'] = $_POST['debutPlageH'];
+                $_SESSION['finPlageH'] = $_POST['finPlageH'];
                 // $_SESSION['nbUserSelectionné'] = sizeof($_POST['contacts']);
+                // $_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
             }
+
+            @$_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
 
             $dureeMin = $_SESSION['dureeMin'];
             $contacts = $_SESSION['contacts'];
+            $contactsPrio = $_SESSION['contactsPrioritaires'];
             $debut = $_SESSION['debut'];
             $fin = $_SESSION['fin'];
-            $debutHoraire = $_SESSION['debutHoraire'];
-            $finHoraire = $_SESSION['finHoraire'];
+            $debutHoraire = $_SESSION['debutPlageH'];
+            $finHoraire = $_SESSION['finPlageH'];
 
             $managerUtilisateur = new UtilisateurDAO($pdo);
             $tableauUtilisateur = [];
@@ -142,6 +156,20 @@ class ControllerAssistant extends Controller
                 $tableauUtilisateur[] = $managerUtilisateur->find($idUtilisateurCourant);
             }
             $tableauUtilisateur[] = $_SESSION['utilisateur'];
+
+            $contactsPrioritaires = [];
+            if(!empty($contactsPrio)) {
+                foreach ($contactsPrio as $contact) {
+                    $manager = new UtilisateurDAO($pdo);
+                    $user = $manager->find($contact);
+                    $contactsPrioritaires[] = strtolower($user->getNom());
+                }
+                $aDesPriorites = true;
+            }
+
+            if(empty($contactsPrioritaires)) {
+                $aDesPriorites = false;
+            }
 
             if (isset($_POST['groupes'])) {
                 $managerGroupe = new GroupeDao($pdo);
@@ -182,14 +210,14 @@ class ControllerAssistant extends Controller
                     $_SESSION['nbUserSelectionné']--;
                 }
             }
-
+            
             $assistantRecherche = new Assistant(new Datetime($debut), new Datetime($fin), $tableauUtilisateur);
-
+            
             // $chronoStart = new DateTime();
 
             // Génération des dates pour la période
             $dates = $assistantRecherche->genererDates($debut, $fin);
-
+            
             // $chronoEnd = new DateTime();
             // $chronoInterval = $chronoStart->diff($chronoEnd);
             // $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
@@ -200,7 +228,7 @@ class ControllerAssistant extends Controller
 
             // Initialisation de la matrice
             $matrice = $assistantRecherche->initMatrice($tableauUtilisateur, $dates, $dureeMin);
-
+            
             // $chronoEnd = new DateTime();
             // $chronoInterval = $chronoStart->diff($chronoEnd);
             // $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
@@ -215,7 +243,6 @@ class ControllerAssistant extends Controller
                 // $chronoStart = new DateTime();
                 foreach ($agendas as $agenda) {
                     $urlIcs = $agenda->getUrl();
-                    // var_dump($urlIcs);
                     $allEvents = $agenda->recuperationEvenementsAgenda($urlIcs, $debut, $fin, $allEvents);
                 }
                 // $chronoEnd = new DateTime();
@@ -233,23 +260,19 @@ class ControllerAssistant extends Controller
                     $datetime_debut = new DateTime($dateDebut);  // Début du créneau
                     $dateFin = $creneau->getDateFin()->format('Y-m-d H:i:s');
                     $datetime_fin = new DateTime($dateFin);  // Début du créneau
-
-                    
-
                     $assistantRecherche->remplirCreneau($matrice, $datetime_debut, $datetime_fin, $utilisateurCourant);
                 }
 
-
-                
                 // $chronoEnd = new DateTime();
                 // $chronoInterval = $chronoStart->diff($chronoEnd);
                 // $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
                 // echo "Durée remplir creneau : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
                 // echo "Durée totale en secondes remplir creneau : $chronoSeconds secondes." . "<br>" . "<br>";
             }
-
+            
             // Appel de la fonction
-            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'],$debutHoraire,$finHoraire,$debut,$fin);
+            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'], $debutHoraire, $finHoraire, $debut, $fin, $contactsPrioritaires, $aDesPriorites);
+            // exit;
             // $chronoEndGen = new DateTime();
             // $chronoInterval = $chronoStartGen->diff($chronoEndGen);
             // $chronoSeconds = $chronoEndGen->getTimestamp() - $chronoStartGen->getTimestamp();
@@ -260,12 +283,39 @@ class ControllerAssistant extends Controller
             $tailleContacts = sizeof($tableauUtilisateur);
             $nombreUtilisateursSeclectionnes = $_SESSION['nbUserSelectionné'];
             $nbrUtilisateursMin = ceil($tailleContacts / 2);
-            $this->genererVueCreneaux($datesCommunes, $nbrUtilisateursMin,$nombreUtilisateursSeclectionnes );
+
+            // //Convertion date américaine en française
+            // foreach ($datesCommunes as $date => $plagesHoraires) {
+            //     // Transformer la date en format français
+            //     $dateFr = DateTime::createFromFormat('Y-m-d', $date)->format('d/m/Y');
+            
+            //     // Copier les plages horaires sous la nouvelle clé formatée
+            //     $datesCommunesFrancaise[$dateFr] = $plagesHoraires;
+            // }
+
+            foreach ($datesCommunes as $dateFr => $plagesHoraires) {
+                // Transformer "30/01/2025" en objet DateTime
+                $dateObj = DateTime::createFromFormat('Y-m-d', $dateFr);
+                
+                // Vérifier si la conversion a réussi
+                if ($dateObj !== false) {
+                    // Stocker la date sous forme d'objet DateTime avec format 'Y-m-d'
+                    $datesCommunesFrancaise[$dateObj->format('d-m-Y')] = $plagesHoraires;
+                } else {
+                    // Gérer l'erreur si la date ne peut pas être parsée
+                    echo "Erreur : la date '$dateFr' n'est pas valide.\n";
+                }
+            }
+            
+            @$this->genererVueCreneaux($datesCommunesFrancaise, $nbrUtilisateursMin, $nombreUtilisateursSeclectionnes);
         } else {
             $this->genererVueRecherche($messagesErreur, true);
-        }
-    }
 
+        }
+    
+    }
+    
+    
     /**
      * Fonction qui permet de générer la vue qui contiendra les résultats de la recherche
      * @param array|null $creneaux les creneaux libres communs trouvés grace a la recherche

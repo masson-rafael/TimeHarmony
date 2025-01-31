@@ -61,8 +61,8 @@ class ControllerUtilisateur extends Controller
                 $manager->ajouterUtilisateur($nouvelUtilisateur);
                 $envoieMail = $this->envoyerMailActivationCompte($nouvelUtilisateur->getEmail());
                 if($envoieMail[1]) {
-                    $tableauErreurs[] = "Inscription réussie !";
-                    $this->genererVue($email, $utilisateurExiste, $tableauErreurs, false);
+                    $tableauErreurs[] = "Un mail d'activation de votre compte a été envoyé !";
+                    $this->genererVueConnexion($tableauErreurs, null, false);
                 } else {
                     $tableauErreurs[] = $envoieMail[0][0];
                     $user = $manager->getObjetUtilisateur($email);
@@ -128,6 +128,7 @@ class ControllerUtilisateur extends Controller
                         $tableauErreurs[] = "Connexion réussie !";
                         $compteUtilisateurCorrespondant->reinitialiserTentativesConnexion();
                         $compteUtilisateurCorrespondant->reactiverCompte();
+                        $compteUtilisateurCorrespondant->setDateDerniereConnexion(new DateTime());
                         $manager->miseAJourUtilisateur($compteUtilisateurCorrespondant);
                         $this->genererVueConnecte($utilisateur, $tableauErreurs);
                     } else {
@@ -307,13 +308,10 @@ class ControllerUtilisateur extends Controller
         $demandesContactEnvoyees = $manager->getDemandesContactEnvoyees($_SESSION['utilisateur']->getId());
         $demandesContactRecues = $manager->getDemandesContactRecues($_SESSION['utilisateur']->getId());
 
-        $demandesGroupeRecues = $manager->getDemandesGroupeRecues($_SESSION['utilisateur']->getId());
-
         $template = $this->getTwig()->load('notifications.html.twig');
         echo $template->render(array(
             'demandesContactEnvoyees' => $demandesContactEnvoyees,
             'demandesContactRecues' => $demandesContactRecues,
-            'demandesGroupeRecues' => $demandesGroupeRecues,
             'message' => $tableauMessage,
             'contientErreurs' => $contientErreurs
         ));
@@ -373,44 +371,6 @@ class ControllerUtilisateur extends Controller
     }
 
     /**
-     * Fonction qui refuse la demande d'ajout au groupe dans la BD
-     * @return void
-     */
-    public function refuserDemandeGroupeRecue(): void {
-        $idGroupe = $_GET['id'];
-        $pdo = $this->getPdo();
-        $manager = new UtilisateurDao($pdo);
-        $tabDemandesPourMoi = $manager->refuserDemandeGroupe($idGroupe, $_SESSION['utilisateur']->getId());
-        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
-        $utilisateur->getDemandes();
-        $manager->miseAJourUtilisateur($utilisateur);
-        $_SESSION['utilisateur'] = $utilisateur;
-        $utilisateurEnvoieDemande = $manager->findUserFromGroupId($idGroupe);
-        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
-        $tableauMessages[] = "Demande de groupe de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " refusée avec succès !";
-        $this->afficherPageNotifications($tableauMessages, false);
-    }
-
-    /**
-     * Fonction qui accepte la demande d'ajout au groupe dans la BD
-     * @return void
-     */
-    public function accepterDemandeGroupeRecue(): void {
-        $idGroupe = $_GET['id'];
-        $pdo = $this->getPdo();
-        $manager = new UtilisateurDao($pdo);
-        $tabDemandesPourMoi = $manager->accepterDemandeGroupe($idGroupe, $_SESSION['utilisateur']->getId());
-        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
-        $utilisateur->getDemandes();
-        $manager->miseAJourUtilisateur($utilisateur);
-        $_SESSION['utilisateur'] = $utilisateur;
-        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
-        $utilisateurEnvoieDemande = $manager->findUserFromGroupId($idGroupe);
-        $tableauMessages[] = "Demande de groupe de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " acceptée avec succès !";
-        $this->afficherPageNotifications($tableauMessages, false);
-    }
-
-    /**
      * Listage de tous les utilisateurs
      * Redirection vers la page d'administration
      * 
@@ -466,89 +426,31 @@ class ControllerUtilisateur extends Controller
     }
 
     /**
-     * Fonction appellee par le bouton de mise a jour d'un utilisateur (panel admin)
-     *
+     * Fonction appellee par la modification d'un utilisateur (profil ou panel admin)
      * @return void
      */
-    public function modifier()
-    {
-        $id = $_GET['id'];              // Pas de vérification d'id car transmis par le lien d'accès à la page
-        $type = $_GET['type'];          // Pas de vérification du type car transmis par le lien d'accès à la page
+    public function modifierUtilisateur(): void {
+        $id = $_GET['id'];
+        $type = $_GET['type'];
 
+        // Ajout des @ car notre fonction est utilisée par user classique et admin
         $messageErreurs = [];
+        $messageErreursAdmin = [];
         $nomValide = utilitaire::validerNom($_POST['nom'], $messageErreurs);
         $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
+        @$roleValide = utilitaire::validerRole($_POST['role'], $messageErreursAdmin);
+        @$emailValide = utilitaire::validerEmail($_POST['email'], $messageErreursAdmin);
+        @$statutValide = utilitaire::validerStatut($_POST['statut'], $messageErreursAdmin);
         @$photoValide = utilitaire::validerPhoto($_FILES['photo'], $messageErreurs);
 
-        if ($nomValide && $prenomValide) {//} && $roleValide) {
+        if($nomValide && $prenomValide) {
             $pdo = $this->getPdo();
             $manager = new UtilisateurDao($pdo);
-
-            // Gestion de l'upload de la photo de profil
-            $cheminPhoto = $_SESSION['utilisateur']->getPhotoDeProfil(); // Récupérer l'ancien chemin
-            if ($photoValide) {
-                $dossierDestination = 'image/photo_user/';
-                $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
-                $cheminPhoto = $dossierDestination . $nomFichier;
-
-                $user = $manager->find($id);
-                $user->supprimerAnciennesPhotos();
-
-                // Déplacer le fichier uploadé dans le répertoire cible
-                if (move_uploaded_file($_FILES['photo']['tmp_name'], $cheminPhoto)) {
-                    // Mettre à jour le chemin de la photo dans la base de données
-                    $manager->modifierPhotoProfil($id, $nomFichier);
-                    $_SESSION['utilisateur']->setPhotoDeProfil($nomFichier);
-                }
-            }
-
-            $role = $_POST['role'];
-            // Mise à jour du profil utilisateur
-            if ($role == '1' || $role == 'Admin') {
-                $role = true;
-            } else {
-                $role = false;
-            }
-
-            @$nomFichier == null ? $nomFichier = $_SESSION['utilisateur']->getPhotoDeProfil() : $nomFichier;
-            $email = $_SESSION['utilisateur']->getEmail();
-            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $email, $role, $nomFichier);
-            $utilisateurTemporaire = $manager->find($id);
-            $_SESSION['utilisateur'] = $utilisateurTemporaire;
-            $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurTemporaire);
-            $messageErreurs[] = "L'utilisateur " . $utilisateurTemporaire->getNom() . " " . $utilisateurTemporaire->getPrenom() . " a été modifié avec succès !";
-            $this->afficherProfil($messageErreurs, false);
-        } else {
-            $this->afficherProfil($messageErreurs, true);
-        }
-    }
-
-    /**
-     * Fonction appellee par le bouton de mise a jour d'un utilisateur (panel admin)
-     *
-     * @return void
-     * @todo
-     */
-    public function modifierAdmin()
-    {
-        $id = $_GET['id'];              // Pas de vérification d'id car transmis par le lien d'accès à la page
-        $type = $_GET['type'];          // Pas de vérification du type car transmis par le lien d'accès à la page
-
-        $messageErreurs = [];
-        $nomValide = utilitaire::validerNom($_POST['nom'], $messageErreurs);
-        $prenomValide = utilitaire::validerPrenom($_POST['prenom'], $messageErreurs);
-        $roleValide = utilitaire::validerRole($_POST['role'], $messageErreurs);
-        $emailValide = utilitaire::validerEmail($_POST['email'], $messageErreurs);
-        $statutValide = utilitaire::validerStatut($_POST['statut'], $messageErreurs);
-        @$photoValide = utilitaire::validerPhoto($_FILES['photo'], $messageErreurs);
-
-        if ($nomValide && $prenomValide && $roleValide && $emailValide && $statutValide) {
-            $pdo = $this->getPdo();
-            $manager = new UtilisateurDao($pdo);
-
+            
             // Gestion de l'upload de la photo de profil
             $utilisateurConcerne = $manager->find($id);
             $cheminPhoto = $utilisateurConcerne->getPhotoDeProfil(); // Récupérer l'ancien chemin
+
             if ($photoValide) {
                 $dossierDestination = 'image/photo_user/';
                 $nomFichier = 'profil_' . $id . '_' . basename($_FILES['photo']['name']);
@@ -565,33 +467,33 @@ class ControllerUtilisateur extends Controller
                 }
             }
 
-            $role = $_POST['role'] == 'Admin' ? 1 : 0;
-            
             // Mise à jour du chemin de l'image
             $nomFichier = empty($nomFichier) ? $utilisateurConcerne->getPhotoDeProfil() : $nomFichier;
             
-            // Mise à jour du profil utilisateur
-            $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $_POST['email'], $role, $nomFichier, strtolower($_POST['statut']));
-            $utilisateurTemporaire = $manager->find($id);
-            
-            if ($utilisateurTemporaire->getId() == $_SESSION['utilisateur']->getId() && strtolower($_POST['statut']) == 'actif') {
-                $_SESSION['utilisateur'] = $utilisateurTemporaire;
-                $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurTemporaire);
-            } elseif ($utilisateurTemporaire->getId() == $_SESSION['utilisateur']->getId()) {
-                $this->deconnecter();
-                $this->genererVueVide('index');
+            if ($roleValide && $emailValide && $statutValide) {
+                $role = $_POST['role'] == 'Admin' ? 1 : 0;
+                $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $_POST['email'], $role, $nomFichier, strtolower($_POST['statut']));
+            } else {
+                $role = $utilisateurConcerne->getEstAdmin();
+                $manager->modifierUtilisateur($id, $_POST['nom'], $_POST['prenom'], $utilisateurConcerne->getEmail(), $role, $nomFichier); 
             }
 
-            $messageErreurs[] = "L'utilisateur " . $utilisateurTemporaire->getNom() . " " . $utilisateurTemporaire->getPrenom() . " a été modifié avec succès !";
-            $this->lister($messageErreurs, false);
+            $utilisateurConcerne = $manager->find($id);
+            if ($utilisateurConcerne->getId() == $_SESSION['utilisateur']->getId() && $utilisateurConcerne->getStatutCompte() == 'actif') {
+                $_SESSION['utilisateur'] = $utilisateurConcerne;
+                $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurConcerne);
+                $messageErreurs[] = "L'utilisateur " . $utilisateurConcerne->getNom() . " " . $utilisateurConcerne->getPrenom() . " a été modifié avec succès !";
+                $this->afficherProfil($messageErreurs, false);
+            } else {
+                $messageErreurs[] = "L'utilisateur " . $utilisateurConcerne->getNom() . " " . $utilisateurConcerne->getPrenom() . " a été modifié avec succès !";
+                $messageErreurs = array_merge($messageErreurs, $messageErreursAdmin);
+                $this->lister($messageErreurs, false);
+            }
         } else {
+            $messageErreurs = array_merge($messageErreurs, $messageErreursAdmin);
             $this->lister($messageErreurs, true);
         }
-        // if(isset($_SESSION['utilisateur'])) {
-        //     $_SESSION['utilisateur']->getEstAdmin() == false ? $this->afficherProfil($messageErreurs, false) : $this->lister($messageErreurs, false);
-        // }
     }
-
 
     /**
      * Affiche le profil de l'utilisateur connecté (page profil)
@@ -861,7 +763,7 @@ class ControllerUtilisateur extends Controller
         // On met un @ car sur localhost, pas de serveur de mail
         if (@mail($destinataire, $sujet, $message, $headers)) {
             $messageErreur[] = "L'e-mail de confirmation de création de compte a été envoyé avec succès à $destinataire.";
-            $this->genererVueMenu($messageErreur, false);
+            $mailEnvoye = true;
         } else {
             $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé à $destinataire.";
             $mailEnvoye = false;
@@ -888,5 +790,19 @@ class ControllerUtilisateur extends Controller
                 'contientErreurs' => $contientErreurs
             )
         );
+    }
+
+    public function nettoyerUtilisateur(): void {
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $utilisateurs = $manager->findAll();
+
+        foreach ($utilisateurs as $utilisateur) {
+            $dateDerniereConnexion = $utilisateur->getDateDerniereConnexion();
+            $interval = $dateDerniereConnexion->diff(new DateTime());
+            if($interval->years >= 10) {
+                $manager->supprimerUtilisateur($utilisateur->getId());
+            }
+        }
     }
 }

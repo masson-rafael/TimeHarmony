@@ -81,11 +81,16 @@ class Utilisateur {
      * @var int|null le nombre de demandes reçues
      */
     private int|null $nombreDemandesEnCours;
+    /**
+     * 
+     * @var DateTime|null la date de la dernière connexion
+     */
+    private DateTime|null $dateDerniereConnexion;
 
     /**
      * Constructeur par défaut
      */
-    public function __construct(int $id = null, string $nom = null, string $prenom = null, string $email = null, string $motDePasse = null, string $photoDeProfil = null, bool $estAdmin = false) {
+    public function __construct(int $id = null, string $nom = null, string $prenom = null, string $email = null, string $motDePasse = null, string $photoDeProfil = null, bool $estAdmin = false, ?DateTime $dateDerniereConnexion = new DateTime()) {
         $this->id = $id;
         $this->nom = $nom;
         $this->prenom = $prenom;
@@ -94,6 +99,7 @@ class Utilisateur {
         $this->photoDeProfil = $photoDeProfil;
         $this->estAdmin = $estAdmin;
         $this->nombreDemandesEnCours = $this->getDemandes();
+        $this->dateDerniereConnexion = $dateDerniereConnexion;
     }
 
     /**
@@ -276,6 +282,15 @@ class Utilisateur {
     }
 
     /**
+     * Get la date de la dernière connexion
+     *
+     * @return DateTime|null La date de la dernière connexion
+     */
+    public function getDateDerniereConnexion(): ?DateTime {
+        return $this->dateDerniereConnexion;
+    }
+
+    /**
      * Set l'id de l'utilisateur
      *
      * @param integer $id de l'utilisateur
@@ -427,6 +442,16 @@ class Utilisateur {
     }
 
     /**
+     * Set la date de la dernière connexion
+     *
+     * @param DateTime|null $dateDerniereConnexion La date de la dernière connexion
+     * @return void
+     */
+    public function setDateDerniereConnexion(?DateTime $dateDerniereConnexion): void {
+        $this->dateDerniereConnexion = $dateDerniereConnexion;
+    }
+
+    /**
      * ToString permettant d'afficher les paramtres de l'utilisateur
      *
      * @return string chaine de caractères a afficher
@@ -492,7 +517,6 @@ class Utilisateur {
         
         $managerUtilisateur = new UtilisateurDAO($pdo);
         $nombreDemandes = $managerUtilisateur->getNombreDemandesDeContact($this->getId());
-        $nombreDemandes += $managerUtilisateur->getNombreDemandesDeGroupe($this->getId());
         $this->setNombreDemandesEnCours($nombreDemandes);
         return $nombreDemandes;
     }
