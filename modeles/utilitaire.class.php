@@ -1,13 +1,13 @@
 <?php
-
 /**
  * @author Thibault Latxague
  * @brief Classe de vérifcation et des champs de formulaire et d'autres fonctions
  * @version 0.4
  */
+
 use ICal\ICal;
 
-class utilitaire
+class Utilitaire
 {
 
     /**
