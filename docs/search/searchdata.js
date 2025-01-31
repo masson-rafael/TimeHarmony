@@ -1,11 +1,11 @@
 var indexSectionsWithContent =
 {
-  0: "$_abcdefghilmoprstuvw",
+  0: "$:_abcdefghilmnoprstuvw⌚💻📁📄🔧",
   1: "abcgu",
-  2: "abcgitu",
-  3: "_acdefghilmoprstuv",
+  2: "abcgirtu",
+  3: "_abcdefghilmnoprstuv",
   4: "$dempw",
-  5: "lt"
+  5: "lt⌚"
 };
 
 var indexSectionNames =
