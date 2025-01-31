@@ -1,11 +1,11 @@
 var indexSectionsWithContent =
 {
-  0: "$_abcdefghilmoprstuvw",
+  0: "$:_abcdefghilmnoprstuvwà⌚💻📁📄🔧",
   1: "abcgu",
-  2: "abcgitu",
-  3: "_acdefghilmoprstuv",
+  2: "abcgirtu",
+  3: "_abcdefghilmnoprstuv",
   4: "$dempw",
-  5: "lt"
+  5: "cdfltà⌚"
 };
 
 var indexSectionNames =
@@ -20,10 +20,10 @@ var indexSectionNames =
 
 var indexSectionLabels =
 {
-  0: "All",
-  1: "Data Structures",
-  2: "Files",
-  3: "Functions",
+  0: "Tout",
+  1: "Structures de données",
+  2: "Fichiers",
+  3: "Fonctions",
   4: "Variables",
   5: "Pages"
 };
