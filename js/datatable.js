@@ -42,6 +42,12 @@ $(document).ready(function() {
             options.order = [[1, 'asc']]
         }
 
+        if ($table.hasClass('agenda')) {
+            options.columnDefs = [
+                // Désactivation du tri sur les colonnes actions
+                { targets: [3], orderable: false }]
+        }
+
         $table.DataTable(options);
     });
 });
