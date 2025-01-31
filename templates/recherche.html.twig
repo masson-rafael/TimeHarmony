@@ -7,11 +7,11 @@
 {% block content %}
 	<main>
 		<div class="container-fluid">
-			<div class="row text-center mt-3 mb-3">
+			<div class="row text-center mt-3 mb-4">
 				<h1>Recherche d'un créneau</h1>
 			</div>
 
-			<div class="row pb-3">
+			<div class="row pb-4">
 				<nav class="d-flex justify-content-center" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item"><a href="index.php?controleur=assistant&methode=afficherPersonnesObligatoires">Personnes Obligatoires</a></li>
@@ -22,58 +22,63 @@
 				</nav>
 			</div>
 
-			<div class="column justify-content-center pb-5">
+			<div class="d-flex justify-content-center">
+				{% if page == 1 %}
 				<form action="index.php?controleur=assistant&methode=obtenir" method="post">
-					<div
-						class="row">
-						<!-- Section Collaborateurs -->
-						<div class="col-md-4 mb-4">
-							<div class="card p-4 shadow-sm">
-								<h5 class="fw-bold text-center mb-3">Choisir ses contacts :</h5>
-								<p class="text-muted">Ajoutez les personnes avec qui vous souhaitez trouver un créneau commun.</p>
-								{% if contacts|length > 0 %}
-									<table id="contacts" class="table table-bordered table-hover">
-										<thead>
-											<tr class="table-primary">
-												<th scope="col">Présence souhaitée</th>
-												<th scope="col">Présence obligatoire</th>
-												<th scope="col">Nom prénom</th>
+					<!-- Section Collaborateurs -->
+					<div class="justify-content-center row-md-4 mb-5">
+						<div class="card p-4 shadow-sm">
+							<h5 class="fw-bold text-center mb-3">Choisir ses contacts :</h5>
+							<p class="text-muted">Ajoutez les personnes avec qui vous souhaitez trouver un créneau commun.</p>
+							{% if contacts|length > 0 %}
+								<table id="contacts" class="table table-bordered table-hover">
+									<thead>
+										<tr class="table-primary">
+											<th scope="col">Présence souhaitée</th>
+											<th scope="col">Présence obligatoire</th>
+											<th scope="col">Nom prénom</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for contact in contacts %}
+											<tr>
+												<td>
+													<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
+												</td>
+												<td>
+													<input class="form-check-input" type="checkbox" name="contactsPrioritaires[]" value="{{ contact.getId }}">
+												</td>
+												<td>{{ contact.getPrenom }}
+													{{ contact.getNom }}</td>
+												{# <td>{{ contact.getNom }}</td> #}
 											</tr>
-										</thead>
-										<tbody>
-											{% for contact in contacts %}
-												<tr>
-													<td>
-														<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
-													</td>
-													<td>
-														<input class="form-check-input" type="checkbox" name="contactsPrioritaires[]" value="{{ contact.getId }}">
-													</td>
-													<td>{{ contact.getPrenom }}
-														{{ contact.getNom }}</td>
-													{# <td>{{ contact.getNom }}</td> #}
-												</tr>
-											{% endfor %}
-										</tbody>
-									</table>
-									<small id="contactsError" class="text-danger"></small>
-								{% else %}
-									<div class="row justify-content-center mt-4 h-25">
-										<div class="col-md-8">
-											<div class="alert alert-info text-center" role="alert">Aucun contact trouvé. Ajoutez-en un ci-dessous.</div>
-										</div>
+										{% endfor %}
+									</tbody>
+								</table>
+								<small id="contactsError" class="text-danger"></small>
+							{% else %}
+								<div class="row justify-content-center mt-4 h-25">
+									<div class="col-md-8">
+										<div class="alert alert-info text-center" role="alert">Aucun contact trouvé. Ajoutez-en un ci-dessous.</div>
 									</div>
-									<div class="text-center">
-										<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
-									</div>
-								{% endif %}
-							</div>
+								</div>
+								<div class="text-center">
+									<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
+								</div>
+							{% endif %}
 						</div>
+					</div>
+					<div class="text-center mb-4">
+						<button id="boutonFinPage1" type="submit" class="btn btn-primary shadow-lg hover-shadow">Passer à l'étape suivante</button>
+					</div>
+				</form>
 
+				{% elseif page == 2 %}
+					<form action="index.php?controleur=assistant&methode=obtenir" method="post">
 						<!-- Section Groupes -->
-						<div class="col-md-4 mb-4">
+						<div class="justify-content-center row-md-4 mb-5">
 							<div class="card p-4 shadow-sm">
-								<h5 class="fw-bold text-center mb-3">Choisir des groupes :</h5>
+								<h5 class="fw-bold text-center mb-4">Choisir des groupes :</h5>
 								<p class="text-muted">Sélectionnez un groupe pour rechercher un créneau avec plusieurs contacts à la fois.</p>
 								{% if groupes|length > 0 %}
 									<table id="groupes" class="table table-bordered table-hover">
@@ -109,58 +114,66 @@
 								{% endif %}
 							</div>
 						</div>
+						<div class="text-center mb-4">
+							<button id="boutonPage2" type="submit" class="btn btn-primary shadow-lg hover-shadow">Passer à l'étape suivante</button>
+						</div>
+					</form>
 
-						<!-- Section Période -->
-						<div class="col-md-4 mb-4">
-							<div class="card p-4 shadow-sm">
-								<h5 class="fw-bold text-center mb-3">Période de recherche :</h5>
-								<p class="text-muted">Définissez la période pendant laquelle vous souhaitez rechercher un créneau.</p>
-								<div class="mb-3">
-									<label for="Datedebut" class="form-label">Début *</label>
-									<input name="debut" type="datetime-local" class="form-control" id="dateDebut" required title="Entrez la date de début de votre recherche">
-									<small id="dateDebutError" class="text-danger"></small>
+				{% elseif page == 3 %}
+					<form action="index.php?controleur=assistant&methode=obtenir" method="post">
+						<div class="row">
+							<!-- Section Période -->
+							<div class="col-md-6 mb-4">
+								<div class="card p-4 shadow-sm">
+									<h5 class="fw-bold text-center mb-3">Période de recherche :</h5>
+									<p class="text-muted">Définissez la période pendant laquelle vous souhaitez rechercher un créneau.</p>
+									<div class="mb-3">
+										<label for="Datedebut" class="form-label">Début *</label>
+										<input name="debut" type="datetime-local" class="form-control" id="dateDebut" required title="Entrez la date de début de votre recherche">
+										<small id="dateDebutError" class="text-danger"></small>
 
+									</div>
+
+									<div class="mb-4">
+										<label for="Datefin" class="form-label">Fin *</label>
+										<input name="fin" type="datetime-local" class="form-control" id="dateFin" required title="Entrez la date de fin de votre recherche">
+										<small id="dateFinError" class="text-danger"></small>
+									</div>
+
+									<div class="mb-3">
+										<label for="dureeMin" class="form-label">Durée exacte du rendez-vous *</label>
+										<p class="text-muted">Spécifiez la durée exacte du créneau à trouver.</p>
+										<input id="duree" name="dureeMin" type="time" class="form-control" value="01:00" min="00:05" required title="Entrez la durée minimale du créneau à rechercher">
+										<small id="dureeError" class="text-danger"></small>
+									</div>
+									<p class="text">* Champ obligatoire</p>
 								</div>
-
-								<div class="mb-4">
-									<label for="Datefin" class="form-label">Fin *</label>
-									<input name="fin" type="datetime-local" class="form-control" id="dateFin" required title="Entrez la date de fin de votre recherche">
-									<small id="dateFinError" class="text-danger"></small>
-								</div>
-
-								<div class="mb-3">
-									<label for="dureeMin" class="form-label">Durée exacte du rendez-vous *</label>
-									<p class="text-muted">Spécifiez la durée exacte du créneau à trouver.</p>
-									<input id="duree" name="dureeMin" type="time" class="form-control" value="01:00" min="00:05" required title="Entrez la durée minimale du créneau à rechercher">
-									<small id="dureeError" class="text-danger"></small>
-								</div>
-								<p class="text">* Champ obligatoire</p>
 							</div>
-							<div class="card p-4 shadow-sm mt-3">
-								<h5 class="fw-bold text-center mb-3">Plage horaire :</h5>
-								<p class="text-muted">Définissez les heures entre lesquelles les créneaux doivent être recherchés.</p>
-								<div class="mb-3">
-									<label for="debutPlageH" class="form-label">Début *</label><br>
-									<input name="debutPlageH" type="time" class="form-control" id="debutPlageH" value="08:00" required title="Entrez la date de début de la plage horaire">
-									<small id="debutPlageHError" class="text-danger"></small>
-								</div>
+							<div class="col-md-6 mb-4">
+								<div class="card p-4 shadow-sm">
+									<h5 class="fw-bold text-center mb-3">Plage horaire :</h5>
+									<p class="text-muted">Définissez les heures entre lesquelles les créneaux doivent être recherchés.</p>
+									<div class="mb-3">
+										<label for="debutPlageH" class="form-label">Début *</label><br>
+										<input name="debutPlageH" type="time" class="form-control" id="debutPlageH" value="08:00" required title="Entrez la date de début de la plage horaire">
+										<small id="debutPlageHError" class="text-danger"></small>
+									</div>
 
-								<div class="mb-3">
-									<label for="finPlageH" class="form-label">Fin *</label>
-									<input name="finPlageH" type="text" class="form-control" id="finPlageH" value="18:00" required title="Entrez la date de fin de la plage horaire">
-									<small id="finPlageHError" class="text-danger"></small>
+									<div class="mb-3">
+										<label for="finPlageH" class="form-label">Fin *</label>
+										<input name="finPlageH" type="text" class="form-control" id="finPlageH" value="18:00" required title="Entrez la date de fin de la plage horaire">
+										<small id="finPlageHError" class="text-danger"></small>
+									</div>
+									<p class="text">* Champ obligatoire</p>
 								</div>
-								<p class="text">* Champ obligatoire</p>
 							</div>
 						</div>
-					</div>
-
-
-					<!-- Section Bouton -->
-					<div class="text-center mb-4">
-						<button id="boutonLancerRecherche" type="submit" class="btn btn-primary shadow-lg hover-shadow">Rechercher des créneaux de rendez-vous</button>
-					</div>
-				</form>
+						<!-- Section Bouton -->
+						<div class="text-center mb-4">
+							<button id="boutonLancerRecherche" type="submit" class="btn btn-primary shadow-lg hover-shadow">Rechercher des créneaux de rendez-vous</button>
+						</div>
+					</form>
+				{% endif %}
 			</div>
 			{% if message %}
 				<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">

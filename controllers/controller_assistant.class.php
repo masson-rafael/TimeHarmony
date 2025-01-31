@@ -28,19 +28,32 @@ class ControllerAssistant extends Controller
     }
 
     public function afficherPersonnesObligatoires(): void {
-
+        $template = $this->getTwig()->load('recherche.html.twig');
+        echo $template->render(array(
+            'page' => 1
+        ));
     }
 
     public function afficherPersonnesSouhaitees(): void {
-
+        $template = $this->getTwig()->load('recherche.html.twig');
+        echo $template->render(array(
+            'page' => 2
+        ));
     }
 
     public function afficherParametres(): void {
-
+        $template = $this->getTwig()->load('recherche.html.twig');
+        echo $template->render(array(
+            'page' => 3
+        ));
     }
 
     public function afficherResultats(): void {
         $this->obtenir();
+        $template = $this->getTwig()->load('recherche.html.twig');
+        echo $template->render(array(
+            'page' => 4
+        ));
     }
 
     /**
