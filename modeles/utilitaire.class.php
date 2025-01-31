@@ -721,6 +721,8 @@ class utilitaire
     {
         $valide = true;
 
+        var_dump($contacts);
+
         // 1. Champs obligatoires : vérifier la présence du champ (obligatoire)
         if (empty($contacts) && empty($groupes)) {
             $messagesErreurs[] = "Aucun contact renseigné";
