@@ -48,6 +48,13 @@ $(document).ready(function() {
                 { targets: [3], orderable: false }]
         }
 
+        if ($table.hasClass('notif')) {
+            options.columnDefs = [
+                // Désactivation du tri sur les colonnes images de profil et actions
+                { targets: [0, 3], orderable: false }]
+                options.order = [[1, 'asc']]
+        }
+
         $table.DataTable(options);
     });
 });
