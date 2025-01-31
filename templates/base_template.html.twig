@@ -59,145 +59,138 @@
 			{% endblock %}
 		</title>
 	</head>
-
 	<body class="d-flex flex-column min-vh-100">
 		{% if utilisateurGlobal is not null %}
-			<nav class="navbar navbar-expand-lg bg-primary py-1 shadow">
-				<div class="container-fluid">
-					<!-- Logo et bouton collapsible -->
-					<div class="d-flex align-items-center">
-						<!-- Logo -->
-						<a class="navbar-brand me-2" href="index.php?controleur=utilisateur&methode=menuConnecte">
-							<img src="image/logoNoir.png" alt="logo" style="width: 60px;">
-						</a>
+			<nav class="navbar navbar-expand-lg bg-primary py-1" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+    <div class="container-fluid">
+        <!-- Logo et bouton de bascule -->
+        <a class="navbar-brand" href="index.php?controleur=utilisateur&methode=menuConnecte">
+            <img src="image/logoNoir.png" alt="logo" style="width: 60px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-						<!-- Bouton de bascule (menu collapsible) -->
-						<button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-							<span class="navbar-toggler-icon"></span>
-						</button>
-					</div>
+        <!-- Contenu collapsible -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Menu principal -->
+            <ul class="navbar-nav me-auto d-flex justify-content-center w-100">
+                <li class="nav-item me-3">
+                    <a class="nav-link fs-5 {% if menu == 'recherche' %} active {% endif %}" href="index.php?controleur=assistant&methode=genererVueRecherche">Rechercher un créneau</a>
+                </li>
+                <li class="nav-item me-3">
+                    <a class="nav-link fs-5 {% if menu == 'agenda' %} active {% endif %}" href="index.php?controleur=agenda&methode=lister">Agendas</a>
+                </li>
+                <li class="nav-item me-3">
+                    <a class="nav-link fs-5 {% if menu == 'groupes' %} active {% endif %}" href="index.php?controleur=groupes&methode=lister">Groupes</a>
+                </li>
+                <li class="nav-item me-3">
+                    <a class="nav-link fs-5 {% if menu == 'contacts' %} active {% endif %}" href="index.php?controleur=contacts&methode=lister">Contacts</a>
+                </li>
+            </ul>
 
-					<!-- Photo de profil et icône de notification -->
-					<div class="d-flex align-items-center order-2 order-lg-3">
-						<!-- Photo de profil -->
-						<div class="nav-item dropdown d-flex align-items-center me-3">
-							<a class="nav-link" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-								<img src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" alt="Photo de profil" class="rounded-circle" style="width: 50px; height: 50px;">
-							</a>
-							<ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end bg-primary no-border">
-								<li>
-									<a class="dropdown-item" href="index.php?controleur=utilisateur&methode=afficherProfil">Profil</a>
-								</li>
-								{% if utilisateurGlobal.getEstAdmin %}
-									<li>
-										<a class="dropdown-item" href="index.php?controleur=utilisateur&methode=lister">Administration</a>
-									</li>
-								{% endif %}
-								<li>
-									<a class="dropdown-item" href="index.php?controleur=utilisateur&methode=deconnecter&page=index">Déconnexion</a>
-								</li>
-							</ul>
-						</div>
-						<!-- Icône de notification -->
-						<div class="nav-item d-flex align-items-center me-3">
-							{% if utilisateurGlobal.getNombreDemandesEnCours > 0 %}
-								<a class="nav-link" href="index.php?controleur=utilisateur&methode=afficherPageNotifications"><img src="image/notificationTrue.png" style="width: 35px;" alt="notification"></a>
-							{% else %}
-								<a class="nav-link" href="index.php?controleur=utilisateur&methode=afficherPageNotifications"><img src="image/notificationFalse.png" style="width: 35px;" alt="notification"></a>
-							{% endif %}
-						</div>
-					</div>
+            <!-- Menu aligné à droite -->
+            <ul class="navbar-nav d-flex align-items-center">
+                <li class="nav-item dropdown d-flex">
+                    <a class="nav-link" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" alt="Photo de profil" class="rounded-circle" style="width: 50px; height: 50px;">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="index.php?controleur=utilisateur&methode=afficherProfil">Profil</a>
+                        </li>
+                        {% if utilisateurGlobal.getEstAdmin %}
+                        <li>
+                            <a class="dropdown-item" href="index.php?controleur=utilisateur&methode=lister">Administration</a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a class="dropdown-item" href="index.php?controleur=utilisateur&methode=deconnecter&page=index">Déconnexion</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item d-flex align-items-center">
+                    {% if utilisateurGlobal.getNombreDemandesEnCours > 0 %}
+                    <a class="nav-link" href="index.php?controleur=utilisateur&methode=afficherPageNotifications"><img src="image/notificationTrue.png" style="width: 35px;" alt="notification"></a>
+                    {% else %}
+                    <a class="nav-link" href="index.php?controleur=utilisateur&methode=afficherPageNotifications"><img src="image/notificationFalse.png" style="width: 35px;" alt="notification"></a>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-					<!-- Contenu collapsible -->
-					<div class="collapse navbar-collapse order-3 order-lg-1" id="navbarNav">
-						<!-- Menu principal -->
-						<ul class="navbar-nav me-auto d-flex justify-content-center w-100">
-							<li class="nav-item me-3">
-								<a class="nav-link fs-5 {% if menu == 'recherche' %} active {% endif %}" href="index.php?controleur=assistant&methode=genererVueRecherche">Rechercher un créneau</a>
-							</li>
-							<li class="nav-item me-3">
-								<a class="nav-link fs-5 {% if menu == 'agenda' %} active {% endif %}" href="index.php?controleur=agenda&methode=lister">Agendas</a>
-							</li>
-							<li class="nav-item me-3">
-								<a class="nav-link fs-5 {% if menu == 'groupes' %} active {% endif %}" href="index.php?controleur=groupes&methode=lister">Groupes</a>
-							</li>
-							<li class="nav-item me-3">
-								<a class="nav-link fs-5 {% if menu == 'contacts' %} active {% endif %}" href="index.php?controleur=contacts&methode=lister">Contacts</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</nav>
 
 		{% else %}
-			<nav class="navbar navbar-expand-lg bg-primary py-1 shadow">
-				<div class="container-fluid">
-					<!-- Logo et bouton de bascule -->
-					<a class="navbar-brand" href="index.php">
-						<img src="image/logoNoir.png" alt="logo" style="width: 60px;">
-					</a>
-					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
+<nav class="navbar navbar-expand-lg bg-primary py-1" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+    <div class="container-fluid">
+        <!-- Logo et bouton de bascule -->
+        <a class="navbar-brand" href="index.php">
+            <img src="image/logoNoir.png" alt="logo" style="width: 60px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-					<!-- Contenu collapsible -->
-					<div class="collapse navbar-collapse" id="navbarNav">
-						<ul
-							class="navbar-nav">
-							<!-- Titre centré -->
-							<li class="nav-item">
-								<span class="nav-link dt fs-5 text-black fw-bold">TimeHarmony</span>
-							</li>
-						</ul>
+        <!-- Contenu collapsible -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <!-- Titre centré -->
+                <li class="nav-item">
+                    <span class="nav-link fs-5">TimeHarmony</span>
+                </li>
+            </ul>
 
-						<!-- Liens alignés à droite -->
-						<ul class="navbar-nav ms-auto">
-							<li class="nav-item">
-								<a class="nav-link fs-5 text-black" href="index.php?controleur=utilisateur&methode=premiereConnexion">Se connecter</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link fs-5 text-black" href="index.php?controleur=utilisateur&methode=premiereInscription">S'inscrire</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</nav>
+            <!-- Liens alignés à droite -->
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link fs-5" href="index.php?controleur=utilisateur&methode=premiereConnexion">Se connecter</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fs-5" href="index.php?controleur=utilisateur&methode=premiereInscription">S'inscrire</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
 		{% endif %}
-
 		<div class="flex-grow-1"> 
-            {% block content %}{% endblock %}
+		{% block content %}
+		{% endblock %}
 		</div>
 
-			<footer class="py-3 bg-primary mt-5 shadow-lg">
-                <div class="container">
-                    <div class="row text-center align-items-center">
-                        <!-- Section 1 -->
-                        <div class="col-12 mb-3">
-                            <p class="nav-link fs-5 m-0">&copy; 2025 - TimeHarmony</p>
-                        </div>
-                        <!-- Section 2 -->
-                        <div class="col-6 col-md-3 mb-2">
-                            <a class="nav-link fs-5" href="index.php?controleur=informations&methode=afficherAPropos">À Propos</a>
-                        </div>
-                        <!-- Section 3 -->
-                        <div class="col-6 col-md-3 mb-2">
-                            <a class="nav-link fs-5" href="index.php?controleur=informations&methode=afficherCGDU">CGU</a>
-                        </div>
-                        <!-- Section 4 -->
-                        <div class="col-6 col-md-3 mb-2">
-                            <a class="nav-link fs-5" href="index.php?controleur=informations&methode=afficherPDC">Confidentialité</a>
-                        </div>
-                        <!-- Section 5 -->
-                        <div class="col-6 col-md-3 mb-2">
-                            <a class="nav-link fs-5" href="index.php?controleur=informations&methode=afficherContact">Contact</a>
-                        </div>
-                    </div>
-                </div>
-	</footer>
-    </body>
+<footer class="py-3 bg-primary mt-5" style="box-shadow: 0 -4px 10px;">
+    <div class="container">
+        <div class="row text-center">
+            <!-- Section 1 -->
+            <div class="col-12 col-md-4 mb-2">
+                <p class="nav-link fs-5" >&copy; 2025 - TimeHarmony</p>
+            </div>
+            <!-- Section 2 -->
+            <div class="col-6 col-md-2 mb-2">
+                <a class="nav-link fs-5"  href="index.php?controleur=informations&methode=afficherAPropos">À Propos</a>
+            </div>
+            <!-- Section 3 -->
+            <div class="col-6 col-md-2 mb-2">
+                <a class="nav-link fs-5"  href="index.php?controleur=informations&methode=afficherCGDU">CGDU</a>
+            </div>
+            <!-- Section 4 -->
+            <div class="col-6 col-md-2 mb-2">
+                <a class="nav-link fs-5"  href="index.php?controleur=informations&methode=afficherPDC">Confidentialité</a>
+            </div>
+            <!-- Section 5 -->
+            <div class="col-6 col-md-2 mb-2">
+                <a class="nav-link fs-5"  href="index.php?controleur=informations&methode=afficherContact">Contact</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
 
-
-		{% block javascripts %}
+    {% block javascripts %}
         <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
         <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
@@ -219,4 +212,3 @@
         </script>
     {% endblock %}
 </html>
-
