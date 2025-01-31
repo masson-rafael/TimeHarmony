@@ -27,6 +27,22 @@ class ControllerAssistant extends Controller
         parent::__construct($twig, $loader);
     }
 
+    public function afficherPersonnesObligatoires(): void {
+
+    }
+
+    public function afficherPersonnesSouhaitees(): void {
+
+    }
+
+    public function afficherParametres(): void {
+
+    }
+
+    public function afficherResultats(): void {
+        $this->obtenir();
+    }
+
     /**
      * Fonction qui permet de générer la vue qui contiendra les paramètres de la recherche
      * @return void
