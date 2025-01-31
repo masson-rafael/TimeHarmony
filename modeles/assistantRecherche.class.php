@@ -246,8 +246,8 @@ class Assistant
 
         if($aDesUsersPrioritaires) {
             $tabUsersPrioritaires = [];
-            foreach ($nomUtilisateurPrioritaire as $nomUtilisateurPrioritaire) {
-                $tabUsersPrioritaires[] = $nomUtilisateurPrioritaire;
+            foreach ($nomUtilisateurPrioritaire as $nomUserPrio) {
+                $tabUsersPrioritaires[] = $nomUserPrio;
             }
 
             foreach ($matrice as $date => $creneaux) {
@@ -327,54 +327,6 @@ class Assistant
                         // Vérifier si le nombre d'utilisateurs correspond exactement au critère
                         if ($count_disponibles === $nb_utilisateurs_exact) {
                             $resultat[$date][$plage] = $users;
-                        }
-                    }
-                }
-            }
-        }
-
-        $tabUsersPrioritaires = [];
-        foreach ($nomUtilisateurPrioritaire as $nomUtilisateurPrioritaire) {
-            $tabUsersPrioritaires[] = $nomUtilisateurPrioritaire;
-        }
-
-        foreach ($matrice as $date => $creneaux) {
-            foreach ($creneaux as $plage => $users) {
-                foreach ($tabUsersPrioritaires as $nomUtilisateurPrioritaire) {
-                    if($users[$nomUtilisateurPrioritaire] === 1) {
-                        // Extraire l'heure de début et de fin de la plage horaire
-                        [$heureDebut, $heureFin] = explode(' - ', $plage);
-
-                        // Créer des objets DateTime pour les heures de début et de fin
-                        $heureDebutObj = new DateTime($date . ' ' . $heureDebut);
-                        $heureFinObj = new DateTime($date . ' ' . $heureFin);
-
-                        if ($dateDebut > $dateFin) {
-                            $dateFin->modify('+1 day');
-                        }
-
-                        if ($heureFinObj > $dateFin) {
-                            $dateDebut->modify('+1 day');
-                            $dateFin->modify('+1 day');
-                        }
-
-                        // Gérer les plages qui chevauchent minuit
-                        // Si l'heure de fin est avant l'heure de début, cela signifie que la plage va jusqu'au jour suivant
-                        if ($heureFinObj <= $heureDebutObj) {
-                            $heureFinObj->modify('+1 day');
-                        }
-
-
-                        // Vérifier si la plage horaire est dans l'intervalle souhaité
-                        if ($heureDebutObj >= $dateDebut && $heureFinObj <= $dateFin && $heureFinObj <= $dateFinRecherche) {
-
-                            // Compter le nombre d'utilisateurs disponibles dans ce créneau
-                            $count_disponibles = count(array_filter($users, fn($dispo) => $dispo === 1));
-
-                            // Vérifier si le nombre d'utilisateurs correspond exactement au critère
-                            if ($count_disponibles === $nb_utilisateurs_exact) {
-                                $resultat[$date][$plage] = $users;
-                            }
                         }
                     }
                 }

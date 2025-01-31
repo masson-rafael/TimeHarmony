@@ -101,8 +101,6 @@ class ControllerAssistant extends Controller
         //     $_POST['contactsPrioritaires'] = $_SESSION['contactsPrioritaires'];
         // }
 
-        @var_dump($_POST['contactsPrioritaires']);
-
         $valideDuree = Utilitaire::validerDuree($_POST['debut'], $_POST['fin'], $messagesErreur);
         $dureeMinValide = Utilitaire::validerDureeMinimale($_POST['dureeMin'], $messagesErreur);
         @$contactsPrioritairesValide = Utilitaire::validerContacts($_POST['contactsPrioritaires'], $messagesErreur);
@@ -161,11 +159,9 @@ class ControllerAssistant extends Controller
 
             $contactsPrioritaires = [];
             if(!empty($contactsPrio)) {
-                var_dump($contactsPrio);
                 foreach ($contactsPrio as $contact) {
                     $manager = new UtilisateurDAO($pdo);
                     $user = $manager->find($contact);
-                    var_dump($user);
                     $contactsPrioritaires[] = strtolower($user->getNom());
                 }
                 $aDesPriorites = true;
@@ -247,7 +243,6 @@ class ControllerAssistant extends Controller
                 // $chronoStart = new DateTime();
                 foreach ($agendas as $agenda) {
                     $urlIcs = $agenda->getUrl();
-                    // var_dump($urlIcs);
                     $allEvents = $agenda->recuperationEvenementsAgenda($urlIcs, $debut, $fin, $allEvents);
                 }
                 // $chronoEnd = new DateTime();
@@ -277,7 +272,6 @@ class ControllerAssistant extends Controller
             
             // Appel de la fonction
             $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'], $debutHoraire, $finHoraire, $debut, $fin, $contactsPrioritaires, $aDesPriorites);
-            // var_dump($matrice);
             // exit;
             // $chronoEndGen = new DateTime();
             // $chronoInterval = $chronoStartGen->diff($chronoEndGen);
@@ -313,8 +307,7 @@ class ControllerAssistant extends Controller
                 }
             }
             
-            // var_dump($datesCommunesFrancaise);
-            $this->genererVueCreneaux($datesCommunesFrancaise, $nbrUtilisateursMin, $nombreUtilisateursSeclectionnes);
+            @$this->genererVueCreneaux($datesCommunesFrancaise, $nbrUtilisateursMin, $nombreUtilisateursSeclectionnes);
         } else {
             $this->genererVueRecherche($messagesErreur, true);
 
