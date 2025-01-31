@@ -3,9 +3,16 @@
 @import "../node_modules/bootstrap/scss/variables";
 @import "../node_modules/bootstrap/scss/variables-dark";
 $theme-colors: (
-    "primary": $blue-300,
-    "secondary": $indigo,
+    "primary": #64a19d,
+    "secondary": #eeeeee,
+    "success": #67c29c,
+    "info": #1cabc4,
+    "warning": #e4c662,
+    "danger": #e74c3c,
+    "black": #000,
+    "white": #fff,
 );
+
 
 @import "../node_modules/bootstrap/scss/maps";
 @import "../node_modules/bootstrap/scss/mixins";
