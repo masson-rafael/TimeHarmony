@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['prefixe_5ftable_0',['PREFIXE_TABLE',['../config__app_8php.html#a0623a3f5a8d22a1a18cc58db781a352e',1,'config_app.php']]],
-  ['premiereconnexion_1',['premiereConnexion',['../class_controller_utilisateur.html#abcbd92945238e4baab6476daa5271939',1,'ControllerUtilisateur']]],
-  ['premiereinscription_2',['premiereInscription',['../class_controller_utilisateur.html#a7746bcfde3fad54d7443d1503ff18537',1,'ControllerUtilisateur']]]
+  ['nettoyageutilisateur_0',['nettoyageUtilisateur',['../class_controller.html#add76d8658c444dee320047a2ce34b59c',1,'Controller']]],
+  ['nettoyerutilisateur_1',['nettoyerUtilisateur',['../class_controller_utilisateur.html#ac3b50f7a505e4609f3ff14602e7ad153',1,'ControllerUtilisateur']]]
 ];

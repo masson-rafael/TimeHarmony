@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Félix Autant
- * @bief Classe des créneaux libres
+ * @brief Classe des créneaux libres
  * @version 0.1
  */
 
