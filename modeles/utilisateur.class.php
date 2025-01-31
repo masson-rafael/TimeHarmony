@@ -90,7 +90,7 @@ class Utilisateur {
     /**
      * Constructeur par défaut
      */
-    public function __construct(int $id = null, string $nom = null, string $prenom = null, string $email = null, string $motDePasse = null, string $photoDeProfil = null, bool $estAdmin = false) {
+    public function __construct(int $id = null, string $nom = null, string $prenom = null, string $email = null, string $motDePasse = null, string $photoDeProfil = null, bool $estAdmin = false, ?DateTime $dateDerniereConnexion = new DateTime()) {
         $this->id = $id;
         $this->nom = $nom;
         $this->prenom = $prenom;
@@ -99,6 +99,7 @@ class Utilisateur {
         $this->photoDeProfil = $photoDeProfil;
         $this->estAdmin = $estAdmin;
         $this->nombreDemandesEnCours = $this->getDemandes();
+        $this->dateDerniereConnexion = $dateDerniereConnexion;
     }
 
     /**

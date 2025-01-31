@@ -97,12 +97,15 @@ class ControllerAssistant extends Controller
             $_POST['debutPlageH'] = $_SESSION['debutPlageH'];
             $_POST['finPlageH'] = $_SESSION['finPlageH'];
         }
+        // if(isset($_SESSION['contactsPrioritaires'])) {
+        //     $_POST['contactsPrioritaires'] = $_SESSION['contactsPrioritaires'];
+        // }
 
         $valideDuree = Utilitaire::validerDuree($_POST['debut'], $_POST['fin'], $messagesErreur);
         $dureeMinValide = Utilitaire::validerDureeMinimale($_POST['dureeMin'], $messagesErreur);
+        @$contactsPrioritairesValide = Utilitaire::validerContacts($_POST['contactsPrioritaires'], $messagesErreur);
         @$contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur);
         $plageHoraireValide = Utilitaire::validerPlageHoraire($_POST['debutPlageH'], $_POST['finPlageH'], $messagesErreur);
-
 
         if ($valideDuree && $dureeMinValide && $contactsValide && $plageHoraireValide) {
             if (!isset($_SESSION['debut']) || !isset($_SESSION['fin']) || !isset($_SESSION['dureeMin']) || !isset($_SESSION['contacts']) || !isset($_SESSION['debutPlageH']) || !isset($_SESSION['finPlageH'])) {
@@ -113,6 +116,12 @@ class ControllerAssistant extends Controller
                 $_SESSION['debutPlageH'] = $_POST['debutPlageH'];
                 $_SESSION['finPlageH'] = $_POST['finPlageH'];
             }
+
+            // if ($contactsPrioritairesValide) {
+            //     if (!isset($_SESSION['contactsPrioritaires'])) {
+            //         $_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
+            //     }
+            // }
 
             // $chronoStartGen = new DateTime();
             $managerCreneau = new CreneauLibreDao($pdo);
@@ -127,10 +136,14 @@ class ControllerAssistant extends Controller
                 $_SESSION['debutPlageH'] = $_POST['debutPlageH'];
                 $_SESSION['finPlageH'] = $_POST['finPlageH'];
                 // $_SESSION['nbUserSelectionné'] = sizeof($_POST['contacts']);
+                // $_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
             }
+
+            @$_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
 
             $dureeMin = $_SESSION['dureeMin'];
             $contacts = $_SESSION['contacts'];
+            $contactsPrio = $_SESSION['contactsPrioritaires'];
             $debut = $_SESSION['debut'];
             $fin = $_SESSION['fin'];
             $debutHoraire = $_SESSION['debutPlageH'];
@@ -143,6 +156,20 @@ class ControllerAssistant extends Controller
                 $tableauUtilisateur[] = $managerUtilisateur->find($idUtilisateurCourant);
             }
             $tableauUtilisateur[] = $_SESSION['utilisateur'];
+
+            $contactsPrioritaires = [];
+            if(!empty($contactsPrio)) {
+                foreach ($contactsPrio as $contact) {
+                    $manager = new UtilisateurDAO($pdo);
+                    $user = $manager->find($contact);
+                    $contactsPrioritaires[] = strtolower($user->getNom());
+                }
+                $aDesPriorites = true;
+            }
+
+            if(empty($contactsPrioritaires)) {
+                $aDesPriorites = false;
+            }
 
             if (isset($_POST['groupes'])) {
                 $managerGroupe = new GroupeDao($pdo);
@@ -216,7 +243,6 @@ class ControllerAssistant extends Controller
                 // $chronoStart = new DateTime();
                 foreach ($agendas as $agenda) {
                     $urlIcs = $agenda->getUrl();
-                    // var_dump($urlIcs);
                     $allEvents = $agenda->recuperationEvenementsAgenda($urlIcs, $debut, $fin, $allEvents);
                 }
                 // $chronoEnd = new DateTime();
@@ -245,8 +271,7 @@ class ControllerAssistant extends Controller
             }
             
             // Appel de la fonction
-            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'], $debutHoraire, $finHoraire, $debut, $fin);
-            // var_dump($matrice);
+            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'], $debutHoraire, $finHoraire, $debut, $fin, $contactsPrioritaires, $aDesPriorites);
             // exit;
             // $chronoEndGen = new DateTime();
             // $chronoInterval = $chronoStartGen->diff($chronoEndGen);
@@ -269,21 +294,20 @@ class ControllerAssistant extends Controller
             // }
 
             foreach ($datesCommunes as $dateFr => $plagesHoraires) {
-    // Transformer "30/01/2025" en objet DateTime
-    $dateObj = DateTime::createFromFormat('Y-m-d', $dateFr);
-    
-    // Vérifier si la conversion a réussi
-    if ($dateObj !== false) {
-        // Stocker la date sous forme d'objet DateTime avec format 'Y-m-d'
-        $datesCommunesFrancaise[$dateObj->format('d-m-Y')] = $plagesHoraires;
-    } else {
-        // Gérer l'erreur si la date ne peut pas être parsée
-        echo "Erreur : la date '$dateFr' n'est pas valide.\n";
-    }
-}
+                // Transformer "30/01/2025" en objet DateTime
+                $dateObj = DateTime::createFromFormat('Y-m-d', $dateFr);
+                
+                // Vérifier si la conversion a réussi
+                if ($dateObj !== false) {
+                    // Stocker la date sous forme d'objet DateTime avec format 'Y-m-d'
+                    $datesCommunesFrancaise[$dateObj->format('d-m-Y')] = $plagesHoraires;
+                } else {
+                    // Gérer l'erreur si la date ne peut pas être parsée
+                    echo "Erreur : la date '$dateFr' n'est pas valide.\n";
+                }
+            }
             
-            // var_dump($datesCommunesFrancaise);
-            $this->genererVueCreneaux($datesCommunesFrancaise, $nbrUtilisateursMin, $nombreUtilisateursSeclectionnes);
+            @$this->genererVueCreneaux($datesCommunesFrancaise, $nbrUtilisateursMin, $nombreUtilisateursSeclectionnes);
         } else {
             $this->genererVueRecherche($messagesErreur, true);
 
