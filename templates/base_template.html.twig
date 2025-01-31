@@ -81,20 +81,20 @@
 					<div class="d-flex align-items-center order-2 order-lg-3">
 						<!-- Photo de profil -->
 						<div class="nav-item dropdown d-flex align-items-center me-3">
-							<a class="nav-link" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 								<img src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" alt="Photo de profil" class="rounded-circle" style="width: 50px; height: 50px;">
 							</a>
 							<ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end bg-primary no-border">
 								<li>
-									<a class="text-secondary dropdown-item" href="index.php?controleur=utilisateur&methode=afficherProfil">Profil</a>
+									<a class="dropdown-item" href="index.php?controleur=utilisateur&methode=afficherProfil">Profil</a>
 								</li>
 								{% if utilisateurGlobal.getEstAdmin %}
 									<li>
-										<a class="text-secondary dropdown-item" href="index.php?controleur=utilisateur&methode=lister">Administration</a>
+										<a class="dropdown-item" href="index.php?controleur=utilisateur&methode=lister">Administration</a>
 									</li>
 								{% endif %}
 								<li>
-									<a class="text-secondary dropdown-item" href="index.php?controleur=utilisateur&methode=deconnecter&page=index">Déconnexion</a>
+									<a class="dropdown-item" href="index.php?controleur=utilisateur&methode=deconnecter&page=index">Déconnexion</a>
 								</li>
 							</ul>
 						</div>

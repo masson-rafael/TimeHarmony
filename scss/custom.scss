@@ -46,6 +46,10 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
     }
 }
 
-.dropdown-item:hover {
-    background-color: $primary-hover;
+.dropdown-item {
+    color: $secondary;
+    &:hover {
+        color: $secondary;
+        background-color: $primary-hover;
+    }
 }

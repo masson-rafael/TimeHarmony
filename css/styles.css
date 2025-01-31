@@ -12028,7 +12028,11 @@ textarea.form-control-lg {
   color: #dddddd;
 }
 
+.dropdown-item {
+  color: #eeeeee;
+}
 .dropdown-item:hover {
+  color: #eeeeee;
   background-color: #5a908c;
 }
 
