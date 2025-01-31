@@ -11,7 +11,7 @@ $(document).ready(function() {
             pageLength: 10,
             ordering: true,
             responsive: true,
-            autoWidth: true,
+            autoWidth: false,
             scrollX: true,
             order: [[0, 'asc']]
         };
