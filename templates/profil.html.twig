@@ -18,8 +18,8 @@
 						</div>
 
 						<!-- Formulaire -->
-						<div class="w-100 w-md-75">
-							<form method="POST" id="formProfil" class="justify-content-center align-items-center" action="index.php?controleur=utilisateur&methode=modifier&id={{ utilisateurGlobal.getId }}&type='util'" enctype="multipart/form-data">
+						<div class="w-75">
+							<form method="POST" id="formProfil" class="justify-content-center align-items-center" action="index.php?controleur=utilisateur&methode=modifierUtilisateur&id={{ utilisateurGlobal.getId }}&type='utilisateur'" enctype="multipart/form-data">
 								<div class="mb-3">
 									<label for="nom" class="form-label" style="color: #2c3e50;">Nom *</label>
 									<input type="text" class="form-control shadow-sm" id="nom" name="nom" value="{{ utilisateurGlobal.getNom }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="50" title="Le nom de votre compte" required>
