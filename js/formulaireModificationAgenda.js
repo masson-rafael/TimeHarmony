@@ -39,30 +39,24 @@ function verifierPatternNomAgenda(nomAgenda) {
 }
 
 function verifierPatternURLAgenda(urlAgenda) {
-    const motifProtocol = /^https?:\/\//;
-    const motifDomain = /calendar\.google\.com/;
-    const motifFile = /\/basic\.ics$/;
-    urlAgenda.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
-    var erreursurlAgenda = [];
+    const motifProtocol = /^http/;
+    URL.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
+    var erreursURL = [];
 
-    if(urlAgenda.value === '') {
-        urlAgendaError.textContent = 'Veuillez saisir une urlAgenda.';
+    if(URL.value === '') {
+        urlError.textContent = 'Veuillez saisir une URL.';
         return false;
     }
 
-    if (!motifProtocol.test(urlAgenda.value)) {
-        erreursurlAgenda.push('Le début de l\'urlAgenda doit être http ou https.');
-    } if (!motifDomain.test(urlAgenda.value)) {
-        erreursurlAgenda.push('L\'urlAgenda doit être celle de Google Calendar.');
-    } if (!motifFile.test(urlAgenda.value)) {
-        erreursurlAgenda.push('L\'urlAgenda doit pointer vers un fichier .ics.');
+    if (!motifProtocol.test(URL.value)) {
+        erreursURL.push('Le début de l\'URL doit être http/https.');
     }
 
-    urlAgendaError.innerHTML = erreursurlAgenda.join('<br>');
+    urlError.innerHTML = erreursURL.join('<br>');
 
-    if (motifDomain.test(urlAgenda.value) && motifFile.test(urlAgenda.value) && motifProtocol.test(urlAgenda.value)) {
-        urlAgenda.style.borderColor = ''; // Bordure par défaut (succès)
-        urlAgendaError.textContent = '';
+    if (motifProtocol.test(URL.value)) {
+        URL.style.borderColor = ''; // Bordure par défaut (succès)
+        urlError.textContent = '';
         return true;
     }
 }

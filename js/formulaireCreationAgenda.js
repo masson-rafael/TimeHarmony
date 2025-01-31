@@ -46,9 +46,7 @@ function verifierPatternNom(nom) {
 }
 
 function verifierPatternURL(URL) {
-    const motifProtocol = /^https?:\/\//;
-    const motifDomain = /calendar\.google\.com/;
-    const motifFile = /\/basic\.ics$/;
+    const motifProtocol = /^http/;
     URL.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
     var erreursURL = [];
 
@@ -58,16 +56,12 @@ function verifierPatternURL(URL) {
     }
 
     if (!motifProtocol.test(URL.value)) {
-        erreursURL.push('Le début de l\'URL doit être http ou https.');
-    } if (!motifDomain.test(URL.value)) {
-        erreursURL.push('L\'URL doit être celle de Google Calendar.');
-    } if (!motifFile.test(URL.value)) {
-        erreursURL.push('L\'URL doit pointer vers un fichier .ics.');
+        erreursURL.push('Le début de l\'URL doit être http/https.');
     }
 
     urlError.innerHTML = erreursURL.join('<br>');
 
-    if (motifDomain.test(URL.value) && motifFile.test(URL.value) && motifProtocol.test(URL.value)) {
+    if (motifProtocol.test(URL.value)) {
         URL.style.borderColor = ''; // Bordure par défaut (succès)
         urlError.textContent = '';
         return true;
