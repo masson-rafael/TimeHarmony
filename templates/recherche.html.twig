@@ -15,16 +15,16 @@
 				<nav class="d-flex justify-content-center" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item"><a href="index.php?controleur=assistant&methode=afficherPersonnesObligatoires">Personnes Obligatoires</a></li>
-						<li class="breadcrumb-item"><a href="index.php?controleur=assistant&methode=afficherPersonnesSouhaitees">Personnes Souhaitées</a></li>
-						<li class="breadcrumb-item"><a href="index.php?controleur=assistant&methode=afficherParametres">Paramètres</a></li>
-						<li class="breadcrumb-item active" aria-current="page"><a href="index.php?controleur=assistant&methode=afficherResultats">Résultats</a></li>
+						<li class="breadcrumb-item"><a {% if page != 1 %} href="index.php?controleur=assistant&methode=afficherPersonnesSouhaitees" {% endif %}>Personnes Souhaitées</a></li>
+						<li class="breadcrumb-item"><a {% if page != 1 and page != 2 %} href="index.php?controleur=assistant&methode=afficherParametres" {% endif %}>Paramètres</a></li>
+						<li class="breadcrumb-item"><a {% if page == 4 %} href="index.php?controleur=assistant&methode=afficherResultats" {% endif %}>Résultats</a></li>
 					</ol>
 				</nav>
 			</div>
 
 			<div class="d-flex justify-content-center">
 				{% if page == 1 %}
-				<form action="index.php?controleur=assistant&methode=obtenir" method="post">
+				<form action="index.php?controleur=assistant&methode=afficherPersonnesSouhaitees" method="post">
 					<!-- Section Collaborateurs -->
 					<div class="justify-content-center row-md-4 mb-5">
 						<div class="card p-4 shadow-sm">
@@ -74,7 +74,7 @@
 				</form>
 
 				{% elseif page == 2 %}
-					<form action="index.php?controleur=assistant&methode=obtenir" method="post">
+					<form action="index.php?controleur=assistant&methode=afficherParametres" method="post">
 						<!-- Section Groupes -->
 						<div class="justify-content-center row-md-4 mb-5">
 							<div class="card p-4 shadow-sm">

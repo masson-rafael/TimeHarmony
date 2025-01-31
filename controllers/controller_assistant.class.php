@@ -27,28 +27,108 @@ class ControllerAssistant extends Controller
         parent::__construct($twig, $loader);
     }
 
-    public function afficherPersonnesObligatoires(): void {
+    /**
+     * Fonction qui permet d'afficher la premiere page de la recherche : personnes obligatoires
+     * 
+     * @param array|null $tabMessages tableau contenant les messages d'erreurs
+     * @param bool|null $contientErreurs booleen indiquant si la page contient des erreurs
+     * @return void
+     */
+    public function afficherPersonnesObligatoires(?array $tabMessages = null, ?bool $contientErreurs = false): void {
+        $utilisateur = $_SESSION['utilisateur'];
+        $contacts = $utilisateur->getContact($utilisateur->getId());
+        $groupes = $utilisateur->getGroupe($utilisateur->getId());
+
+        // Récupérer les ids des membres des groupes
+        $membres = [];
+        $pdo = $this->getPdo();
+        $manager = new GroupeDao($pdo);
+
+        // Récupérer les membres de chaque groupe
+        foreach ($groupes as $groupe) {
+            $membresGroupe = $manager->getUsersFromGroup($groupe->getId());
+
+            // Stocker les IDs des membres dans un tableau
+            $membres[$groupe->getId()] = [];
+            foreach ($membresGroupe as $membre) {
+                $membres[$groupe->getId()][] = $membre['idUtilisateur'];
+            }
+        }
+
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
-            'page' => 1
+            'page' => 1,
+            'contacts' => $contacts,
+            'groupes' => $groupes,
+            'message' => $tabMessages,
+            'membres' => $membres,
+            'contientErreurs' => $contientErreurs
         ));
     }
 
-    public function afficherPersonnesSouhaitees(): void {
+    /**
+     * Fonction qui permet d'afficher la deuxieme page de la recherche : personnes souhaitées
+     * 
+     * @param array|null $tabMessages tableau contenant les messages d'erreurs
+     * @param bool|null $contientErreurs booleen indiquant si la page contient des erreurs
+     * @return void
+     */
+    public function afficherPersonnesSouhaitees(?array $tabMessages = null, ?bool $contientErreurs = false): void {
+        $utilisateur = $_SESSION['utilisateur'];
+        $contacts = $utilisateur->getContact($utilisateur->getId());
+        $groupes = $utilisateur->getGroupe($utilisateur->getId());
+
+        // Récupérer les ids des membres des groupes
+        $membres = [];
+        $pdo = $this->getPdo();
+        $manager = new GroupeDao($pdo);
+
+        // Récupérer les membres de chaque groupe
+        foreach ($groupes as $groupe) {
+            $membresGroupe = $manager->getUsersFromGroup($groupe->getId());
+
+            // Stocker les IDs des membres dans un tableau
+            $membres[$groupe->getId()] = [];
+            foreach ($membresGroupe as $membre) {
+                $membres[$groupe->getId()][] = $membre['idUtilisateur'];
+            }
+        }
+
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
-            'page' => 2
+            'page' => 2,
+            'contacts' => $contacts,
+            'groupes' => $groupes,
+            'message' => $tabMessages,
+            'membres' => $membres,
+            'contientErreurs' => $contientErreurs
         ));
     }
 
-    public function afficherParametres(): void {
+    /**
+     * Fonction qui permet d'afficher la troisieme page de la recherche : paramètres
+     * 
+     * @param array|null $tabMessages tableau contenant les messages d'erreurs
+     * @param bool|null $contientErreurs booleen indiquant si la page contient des erreurs
+     * @return void
+     */
+    public function afficherParametres(?array $tabMessages = null, ?bool $contientErreurs = false): void {
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
-            'page' => 3
+            'page' => 3,
+            'message' => $tabMessages,
+            'contientErreurs' => $contientErreurs
         ));
     }
 
-    public function afficherResultats(): void {
+    /**
+     * Fonction qui permet d'afficher la quatrieme page de la recherche : résultats
+     * 
+     * @param array|null $tabMessages tableau contenant les messages d'erreurs
+     * @param bool|null $contientErreurs booleen indiquant si la page contient des erreurs
+     * @return void
+     */
+    public function afficherResultats(?array $tabMessages = null, ?bool $contientErreurs = false): void {
         $this->obtenir();
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
@@ -75,7 +155,6 @@ class ControllerAssistant extends Controller
         unset($_POST['finPlageH']);
 
         $utilisateur = $_SESSION['utilisateur'];
-
         $contacts = $utilisateur->getContact($utilisateur->getId());
         $groupes = $utilisateur->getGroupe($utilisateur->getId());
 
