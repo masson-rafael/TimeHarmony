@@ -6,19 +6,46 @@
 $body-bg: #F5F5DC;
 $body-color: #111;
 
+$primary: #64a19d;
+$primary-hover: #5a908c;
+$secondary: #eeeeee;
+$tertiary: #dddddd;
+$success: #67c29c;
+$info: #1cabc4;
+$warning: #e4c662;
+$danger: #e74c3c;
+
 $theme-colors: (
-    "primary": #64a19d,
-    "secondary": #eeeeee,
-    "success": #67c29c,
-    "info": #1cabc4,
-    "warning": #e4c662,
-    "danger": #e74c3c,
-    "black": #000,
-    "white": #fff,
+    "primary": $primary,
+    "secondary": $secondary,
+    "tertiary": $tertiary,
+    "success": $success,
+    "info": $info,
+    "warning": $warning,
+    "danger": $danger,
 );
+
+// Create your own map
+$custom-colors: (
+    "primary-hover": $primary-hover,
+);
+
+// Merge the maps
+$theme-colors: map-merge($theme-colors, $custom-colors);
 
 @import "../node_modules/bootstrap/scss/maps";
 @import "../node_modules/bootstrap/scss/mixins";
 @import "../node_modules/bootstrap/scss/root";
 
 @import "../node_modules/bootstrap/scss/bootstrap";
+
+.nav-link, .footer {
+    color: $secondary;
+    &:hover {
+        color: $tertiary;
+    }
+}
+
+.dropdown-item:hover {
+    background-color: $primary-hover;
+}
