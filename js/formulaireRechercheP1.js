@@ -12,6 +12,7 @@ mmbrs.forEach(membre => {
             ajouterContactEnfant(membre);
         } else {
             btn.disabled = true;
+            retirerContactEnfant(membre);
         }
     });
 });
@@ -27,11 +28,12 @@ function ajouterContactEnfant(contact) {
     checkbox.name = 'contacts[]';
     checkbox.value = contact.value; // ID du contact
     checkbox.id = `contactCheck${contact.value}`; // ID unique basé sur la valeur du contact
+    checkbox.checked = true;
     celluleCheckbox.appendChild(checkbox); // Ajouter la checkbox à la cellule
 
     // Créer la deuxième cellule avec le nom du contact
     const celluleNom = document.createElement('td');
-    celluleNom.textContent = membres2[contact.value]; // Texte basé sur le nom du contact
+    celluleNom.textContent = contact.parentNode.parentNode.childNodes[3].textContent; // Texte basé sur le nom du contact
 
     // Ajouter les cellules à la ligne
     ligne.appendChild(celluleCheckbox);
@@ -43,6 +45,17 @@ function ajouterContactEnfant(contact) {
         tbody.appendChild(ligne);
     } else {
         console.error("La table n'a pas de <tbody>.");
+    }
+}
+
+function retirerContactEnfant(contact) {
+    const idContact = contact.value;
+    const ligne = tableObligatoire.querySelector(`#contactCheck${idContact}`).parentNode.parentNode;
+
+    if (ligne) {
+        ligne.remove();
+    } else {
+        console.error("La ligne n'a pas été trouvée.");
     }
 }
 
