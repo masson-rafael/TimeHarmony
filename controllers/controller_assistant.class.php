@@ -90,6 +90,13 @@ class ControllerAssistant extends Controller
             $_SESSION['contactsObligatoires'] = $personnesObligatoires;
         }
 
+        if(isset($_POST['groupes'])) {
+            $_SESSION['groupesObligatoires'] = $_POST['groupes'];
+        }
+
+        var_dump($_POST['groupes']);
+        var_dump($_POST['contactsObligatoires']);
+
         $utilisateur = $_SESSION['utilisateur'];
         $contacts = $utilisateur->getContact($utilisateur->getId());
         $groupes = $utilisateur->getGroupe($utilisateur->getId());
@@ -117,7 +124,9 @@ class ControllerAssistant extends Controller
             'groupes' => $groupes,
             'message' => $tabMessages,
             'membres' => $membres,
-            'contientErreurs' => $contientErreurs
+            'contientErreurs' => $contientErreurs,
+            'contactsObligatoires' => $_SESSION['contactsObligatoires'],
+            'groupesObligatoires' => $_SESSION['groupesObligatoires']
         ));
     }
 
