@@ -68,7 +68,7 @@
 							</div>
 							{# SECONDE TABLE OU SONT SELECTIONNES LES CONTACTS / GROUPES CHOISIS #}
 							<div class="col-md-6">
-								<table id="contacts" class="table table-bordered table-hover">
+								<table id="tableObligatoire" class="table table-bordered table-hover">
 									<thead>
 										<tr class="table-primary">
 											<th scope="col">#</th>
@@ -319,56 +319,39 @@
 	{{ parent() }}
 	<script>
 	const membres = {{ membres|json_encode|raw }};
+	console.log('membres', membres);
 	</script>
 	<script src="js/recherche.js"></script>
 	<script src="js/formulaireRecherche.js"></script>
 	<script>
-		
-{ // Récupérer les membres des groupes
-#
-$(document).ready(function () {
-$('#myTable').DataTable({
-language: {
-url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
-},
-"pageLength": 10,
-"ordering": true,
-"responsive": true
-});
-});
-#
-}
-	</script>
-
-	<script>
 		// Récupérer les éléments input
-const dateDebutInput = document.getElementById('dateDebut');
-const dateFinInput = document.getElementById('dateFin');
+		const dateDebutInput = document.getElementById('dateDebut');
+		const dateFinInput = document.getElementById('dateFin');
 
-// Obtenir la date et l'heure actuelles
-const now = new Date();
+		// Obtenir la date et l'heure actuelles
+		const now = new Date();
 
-// Ajuster pour le fuseau horaire local
-const offset = now.getTimezoneOffset(); // Décalage en minutes
-const localTime = new Date(now.getTime() - offset * 60000);
+		// Ajuster pour le fuseau horaire local
+		const offset = now.getTimezoneOffset(); // Décalage en minutes
+		const localTime = new Date(now.getTime() - offset * 60000);
 
-// Arrondir la date de début à l'heure supérieure
-localTime.setMinutes(Math.ceil(localTime.getMinutes() / 60) * 60); // Arrondir les minutes à l'heure suivante
-localTime.setSeconds(0);
-// Mettre les secondes à 0
+		// Arrondir la date de début à l'heure supérieure
+		localTime.setMinutes(Math.ceil(localTime.getMinutes() / 60) * 60); // Arrondir les minutes à l'heure suivante
+		localTime.setSeconds(0);
+		// Mettre les secondes à 0
 
-// Formater la date et l'heure au format requis pour datetime-local (YYYY-MM-DDTHH:MM)
-const formattedDateTime = localTime.toISOString().slice(0, 16); // Garder "YYYY-MM-DDTHH:MM"
-dateDebutInput.value = formattedDateTime;
+		// Formater la date et l'heure au format requis pour datetime-local (YYYY-MM-DDTHH:MM)
+		const formattedDateTime = localTime.toISOString().slice(0, 16); // Garder "YYYY-MM-DDTHH:MM"
+		dateDebutInput.value = formattedDateTime;
 
-// Calculer la date avec une semaine de décalage
-const oneWeekLater = new Date(localTime);
-oneWeekLater.setDate(localTime.getDate() + 7);
-// Ajouter 7 jours
+		// Calculer la date avec une semaine de décalage
+		const oneWeekLater = new Date(localTime);
+		oneWeekLater.setDate(localTime.getDate() + 7);
+		// Ajouter 7 jours
 
-// Formater la date de fin (fin avec une semaine de décalage)
-const formattedDateTimeFin = oneWeekLater.toISOString().slice(0, 16); // Garder "YYYY-MM-DDTHH:MM"
-dateFinInput.value = formattedDateTimeFin;
+		// Formater la date de fin (fin avec une semaine de décalage)
+		const formattedDateTimeFin = oneWeekLater.toISOString().slice(0, 16); // Garder "YYYY-MM-DDTHH:MM"
+		dateFinInput.value = formattedDateTimeFin;
 	</script>
 
 
