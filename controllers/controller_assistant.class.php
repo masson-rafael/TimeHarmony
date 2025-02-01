@@ -74,6 +74,8 @@ class ControllerAssistant extends Controller
      * @return void
      */
     public function afficherPersonnesSouhaitees(?array $tabMessages = null, ?bool $contientErreurs = false): void {
+        $_SESSION['contacts'] = $_POST['contacts'];
+
         $utilisateur = $_SESSION['utilisateur'];
         $contacts = $utilisateur->getContact($utilisateur->getId());
         $groupes = $utilisateur->getGroupe($utilisateur->getId());
@@ -196,6 +198,12 @@ class ControllerAssistant extends Controller
         $messagesErreur = [];
 
         $pdo = $this->getPdo();
+
+        $_SESSION['dureeMin'] = $_POST['dureeMin'];
+        $_SESSION['debut'] = $_POST['debut'];
+        $_SESSION['fin'] = $_POST['fin'];
+        $_SESSION['debutPlageH'] = $_POST['debutPlageH'];
+        $_SESSION['finPlageH'] = $_POST['finPlageH'];
     
         if (isset($_SESSION['debut']) && isset($_SESSION['fin']) && isset($_SESSION['dureeMin']) && isset($_SESSION['contacts']) && isset($_SESSION['debutHoraire']) && isset($_SESSION['finHoraire'])) {
             $_POST['debut'] = $_SESSION['debut'];
@@ -212,8 +220,13 @@ class ControllerAssistant extends Controller
         $valideDuree = Utilitaire::validerDuree($_POST['debut'], $_POST['fin'], $messagesErreur);
         $dureeMinValide = Utilitaire::validerDureeMinimale($_POST['dureeMin'], $messagesErreur);
         @$contactsPrioritairesValide = Utilitaire::validerContacts($_POST['contactsPrioritaires'], $messagesErreur);
-        @$contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur);
+        @$contactsValide = Utilitaire::validerContacts($_SESSION['contacts'], $messagesErreur);
         $plageHoraireValide = Utilitaire::validerPlageHoraire($_POST['debutPlageH'], $_POST['finPlageH'], $messagesErreur);
+
+        var_dump($valideDuree);
+        var_dump($dureeMinValide);
+        var_dump($contactsValide);
+        var_dump($plageHoraireValide);
 
         if ($valideDuree && $dureeMinValide && $contactsValide && $plageHoraireValide) {
             if (!isset($_SESSION['debut']) || !isset($_SESSION['fin']) || !isset($_SESSION['dureeMin']) || !isset($_SESSION['contacts']) || !isset($_SESSION['debutPlageH']) || !isset($_SESSION['finPlageH'])) {
