@@ -223,11 +223,6 @@ class ControllerAssistant extends Controller
         @$contactsValide = Utilitaire::validerContacts($_SESSION['contacts'], $messagesErreur);
         $plageHoraireValide = Utilitaire::validerPlageHoraire($_POST['debutPlageH'], $_POST['finPlageH'], $messagesErreur);
 
-        var_dump($valideDuree);
-        var_dump($dureeMinValide);
-        var_dump($contactsValide);
-        var_dump($plageHoraireValide);
-
         if ($valideDuree && $dureeMinValide && $contactsValide && $plageHoraireValide) {
             if (!isset($_SESSION['debut']) || !isset($_SESSION['fin']) || !isset($_SESSION['dureeMin']) || !isset($_SESSION['contacts']) || !isset($_SESSION['debutPlageH']) || !isset($_SESSION['finPlageH'])) {
                 $_SESSION['debut'] = $_POST['debut'];
@@ -446,9 +441,10 @@ class ControllerAssistant extends Controller
      */
     public function genererVueCreneaux(?array $creneaux, ?int $nbrUtilisateursMin, ?int $nombreUtilisateursSeclectionnes): void
     {
-        $template = $this->getTwig()->load('resultat.html.twig');
+        $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render([
             'menu' => "recherche",
+            'page' => 4,
             'creneauxCommuns' => $creneaux,
             'nbrUtilisateursMin' => $nbrUtilisateursMin,
             'nombreUtilisateursSeclectionnes' => $nombreUtilisateursSeclectionnes

@@ -28,34 +28,79 @@
 					<!-- Section Collaborateurs -->
 					<div class="justify-content-center row-md-4 mb-5">
 						<div class="card p-4 shadow-sm">
-							<h5 class="fw-bold text-center mb-3">Choisir ses contacts :</h5>
-							<p class="text-muted">Ajoutez les personnes avec qui vous souhaitez trouver un créneau commun.</p>
+							<h5 class="fw-bold text-center mb-3">Présence obligatoire :</h5>
+							<p class="text-muted text-center">Ajoutez des groupes ou personnes qui seront obligatoirement présentes lors du résultat de la recherche.</p>
 							{% if contacts|length > 0 %}
+							<div class="row">
+								{# PREMIERE TABLE OU SONT AFFICHES LES CONTACTS / GROUPES #}
+								<div class="col-md-6">
 								<table id="contacts" class="table table-bordered table-hover">
 									<thead>
 										<tr class="table-primary">
-											<th scope="col">Présence souhaitée</th>
-											<th scope="col">Présence obligatoire</th>
-											<th scope="col">Nom prénom</th>
+											<th scope="col">#</th>
+											<th scope="col">Nom du contact ou du groupe</th>
 										</tr>
 									</thead>
 									<tbody>
+									{% if groupes|length > 0 %}
+										{% for groupe in groupes %}
+											<tr>
+												<td>
+													<input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
+												</td>
+												<td>{{ groupe.getNom }}</td>
+											</tr>
+										{% endfor %}
+									{% endif %}
 										{% for contact in contacts %}
 											<tr>
 												<td>
 													<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
 												</td>
-												<td>
-													<input class="form-check-input" type="checkbox" name="contactsPrioritaires[]" value="{{ contact.getId }}">
+												<td>{{ contact.getPrenom|capitalize }}
+													{{ contact.getNom|capitalize }}
 												</td>
-												<td>{{ contact.getPrenom }}
-													{{ contact.getNom }}</td>
-												{# <td>{{ contact.getNom }}</td> #}
 											</tr>
 										{% endfor %}
 									</tbody>
 								</table>
 								<small id="contactsError" class="text-danger"></small>
+							</div>
+							{# SECONDE TABLE OU SONT SELECTIONNES LES CONTACTS / GROUPES CHOISIS #}
+							<div class="col-md-6">
+								<table id="contacts" class="table table-bordered table-hover">
+									<thead>
+										<tr class="table-primary">
+											<th scope="col">#</th>
+											<th scope="col">Nom du contact ou du groupe</th>
+										</tr>
+									</thead>
+									<tbody>
+									{% if groupes|length > 0 %}
+										{% for groupe in groupes %}
+											<tr>
+												<td>
+													<input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
+												</td>
+												<td>{{ groupe.getNom }}</td>
+											</tr>
+										{% endfor %}
+									{% endif %}
+										{% for contact in contacts %}
+											<tr>
+												<td>
+													<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
+												</td>
+												<td>{{ contact.getPrenom|capitalize }}
+													{{ contact.getNom|capitalize }}
+												</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+								<small id="contactsError" class="text-danger"></small>
+								</div>
+							</div>
 							{% else %}
 								<div class="row justify-content-center mt-4 h-25">
 									<div class="col-md-8">
@@ -78,17 +123,18 @@
 						<!-- Section Groupes -->
 						<div class="justify-content-center row-md-4 mb-5">
 							<div class="card p-4 shadow-sm">
-								<h5 class="fw-bold text-center mb-4">Choisir des groupes :</h5>
-								<p class="text-muted">Sélectionnez un groupe pour rechercher un créneau avec plusieurs contacts à la fois.</p>
-								{% if groupes|length > 0 %}
-									<table id="groupes" class="table table-bordered table-hover">
+								<h5 class="fw-bold text-center mb-3">Présence souhaitée :</h5>
+								<p class="text-muted text-center">Ajoutez des groupes ou personnes qui seront potentiellement présentes lors du résultat de la recherche.</p>
+								{% if contacts|length > 0 %}
+									<table id="contacts" class="table table-bordered table-hover">
 										<thead>
 											<tr class="table-primary">
-												<th scope="col">#</th>
-												<th scope="col">Nom</th>
+												<th scope="col">Présence souhaitée</th>
+												<th scope="col">Nom du contact ou du groupe</th>
 											</tr>
 										</thead>
 										<tbody>
+										{% if groupes|length > 0 %}
 											{% for groupe in groupes %}
 												<tr>
 													<td>
@@ -97,9 +143,20 @@
 													<td>{{ groupe.getNom }}</td>
 												</tr>
 											{% endfor %}
+										{% endif %}
+											{% for contact in contacts %}
+												<tr>
+													<td>
+														<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
+													</td>
+													<td>{{ contact.getPrenom|capitalize }}
+														{{ contact.getNom|capitalize }}
+													</td>
+												</tr>
+											{% endfor %}
 										</tbody>
 									</table>
-									<small id="groupesError" class="text-danger"></small>
+									<small id="contactsError" class="text-danger"></small>
 								{% else %}
 									<div class="row justify-content-center mt-4 h-25">
 										<div class="col-md-8">
@@ -173,8 +230,70 @@
 							<button id="" type="submit" class="btn btn-primary shadow-lg hover-shadow">Rechercher des créneaux de rendez-vous</button>
 						</div>
 					</form>
+				</div>
+				{% elseif page == 4 %}
+				</div>
+					{% if creneauxCommuns is empty %}
+						{% if nombreUtilisateursSeclectionnes > nbrUtilisateursMin %}
+							<button type="submit" name="decrement" class="btn btn-secondary">Chercher avec un utilisateur en moins</button>
+						{% endif %}
+						<br>
+						<br>
+						<div class="alert alert-warning" role="alert">
+							<h4>
+								<strong>Aucun créneau disponible n'a été trouvé avec
+									{{nombreUtilisateursSeclectionnes}}
+									utilisateurs.
+								</strong>
+							</h4>
+							<p>Pour augmenter vos chances de trouver un créneau commun, vous pouvez :</p>
+							<ul>
+								<li>Cliquer sur le bouton
+									<strong>"Chercher avec un utilisateur en moins"</strong>
+									pour ajuster les participants.</li>
+								<li>Modifier les
+									<strong>contacts ou groupes concernés</strong>
+									afin d'affiner la recherche.</li>
+								<li>Augmenter la
+									<strong>période de recherche</strong>
+									pour élargir les disponibilités.</li>
+								<li>Rétrécir la
+									<strong>durée prévue du rendez-vous</strong>
+									pour faciliter la planification.</li>
+							</ul>
+							<p>Adaptez vos paramètres et relancez la recherche pour identifier un créneau libre.</p>
+						</div>
+					{% else %}
+					{% for date, creneaux in creneauxCommuns %}
+						<h2>{{ date|format_datetime('full', 'none', locale: 'fr')|capitalize }}</h2>
+						<div class="creneaux-list">
+							<div class="row">
+								{% for plage, disponibilites in creneaux %}
+									<div class="col-md-6">
+										<div class="creneau-item border rounded p-3 mb-1">
+											<strong>Plage horaire :</strong>
+											{{ plage }}<br>
+											<strong>Personnes disponibles :</strong>
+											{% set personnes_dispo = [] %}
+											{% for personne, dispo in disponibilites %}
+												{% if dispo == 1 %}
+													{% set personnes_dispo = personnes_dispo|merge([personne|capitalize]) %}
+												{% endif %}
+											{% endfor %}
+											{{ personnes_dispo|join(', ') }}
+										</div>
+									</div>
+									{% if loop.index is divisible by(2) %}
+									</div>
+									<div class="row">
+									{% endif %}
+								{% endfor %}
+							</div>
+						</div>
+					{% endfor %}
+					{% endif %}
 				{% endif %}
-			</div>
+			
 			{% if message %}
 				<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
 					<div id="toast" class="toast align-items-center text-white bg-{% if contientErreurs %}danger{% else %}success{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
