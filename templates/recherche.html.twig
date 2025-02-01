@@ -77,25 +77,9 @@
 									</thead>
 									<tbody>
 									{% if groupes|length > 0 %}
-										{% for groupe in groupes %}
-											<tr>
-												<td>
-													<input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
-												</td>
-												<td>{{ groupe.getNom }}</td>
-											</tr>
-										{% endfor %}
+										{# QUAND Y'AVAIT DES GROUPES #}
 									{% endif %}
-										{% for contact in contacts %}
-											<tr>
-												<td>
-													<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
-												</td>
-												<td>{{ contact.getPrenom|capitalize }}
-													{{ contact.getNom|capitalize }}
-												</td>
-											</tr>
-										{% endfor %}
+										{# QUAND Y'AVAIT DES CONTACTS #}
 									</tbody>
 								</table>
 								<small id="contactsError" class="text-danger"></small>
@@ -311,17 +295,20 @@
 			{% endif %}
 		</div>
 	</main>
-
+{{dump(membres)}}
+{{dump(groupes)}}
 {% endblock %}
 
 
 {% block javascripts %}
 	{{ parent() }}
 	<script>
-	const membres = {{ membres|json_encode|raw }};
-	console.log('membres', membres);
+	const membres2 = {{ membres|json_encode|raw }};
+	const groupes2 = {{ groupes|json_encode|raw }};
+	console.log('membres', membres2);
+	console.log('groupes', groupes2);
 	</script>
-	<script src="js/recherche.js"></script>
+	<script src="js/formulaireRechercheP1.js"></script>
 	<script src="js/formulaireRecherche.js"></script>
 	<script>
 		// Récupérer les éléments input

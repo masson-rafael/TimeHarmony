@@ -45,15 +45,25 @@ class ControllerAssistant extends Controller
         $manager = new GroupeDao($pdo);
 
         // Récupérer les membres de chaque groupe
-        foreach ($groupes as $groupe) {
-            $membresGroupe = $manager->getUsersFromGroup($groupe->getId());
+        if(!empty($groupes)) {
+            foreach ($groupes as $groupe) {
+                $membresGroupe = $manager->getUsersFromGroup($groupe->getId());
 
-            // Stocker les IDs des membres dans un tableau
-            $membres[$groupe->getId()] = [];
-            foreach ($membresGroupe as $membre) {
-                $membres[$groupe->getId()][] = $membre['idUtilisateur'];
+                // Stocker les IDs des membres dans un tableau
+                $membres[$groupe->getId()] = [];
+                foreach ($membresGroupe as $membre) {
+                    $membres[$groupe->getId()][] = $membre['idUtilisateur'];
+                }
+            }
+        } else {
+            $manager = new UtilisateurDAO($pdo);
+            $contacts = $manager->findAllContact($utilisateur->getId());
+            foreach ($contacts as $contact) {
+                $membres[] = $contact->getId();
             }
         }
+
+        var_dump($groupes);
 
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(

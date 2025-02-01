@@ -1,35 +1,67 @@
-let groupes = document.querySelectorAll('input[name="groupes[]"]'); // Récupérer tous les groupes
+let grps = document.querySelectorAll('input[name="grps[]"]'); // Récupérer tous les grps
+let mmbrs = document.querySelectorAll('input[name="contacts[]"]'); // Récupérer tous les mmbrs
 let tableObligatoire = document.getElementById('tableObligatoire'); // Récupérer la table des contacts obligatoires
-let btn = document.getElementById('boutonLancerRecherche');
+let btn = document.getElementById('boutonFinPage1');
 
 btn.disabled = true;
-console.log(tableObligatoire);
-console.log('groupes');
 
-/* 
-Quand l’utilisateur coche ou décoche un groupe, 
-tous les contacts qui sont dans ce groupe sont aussi cochés ou décochés
-*/
+mmbrs.forEach(membre => {
+    membre.addEventListener('change', () => {
+        if (membre.checked) {
+            btn.disabled = false;
+            ajouterContactEnfant(membre);
+        } else {
+            btn.disabled = true;
+        }
+    });
+});
+function ajouterContactEnfant(contact) {
+    // Créer la ligne <tr>
+    const ligne = document.createElement('tr');
 
-console.log(tableObligatoire);
-console.log('groupes');
+    // Créer la première cellule avec l'input checkbox
+    const celluleCheckbox = document.createElement('td');
+    const checkbox = document.createElement('input');
+    checkbox.className = 'form-check-input';
+    checkbox.type = 'checkbox';
+    checkbox.name = 'contacts[]';
+    checkbox.value = contact.value; // ID du contact
+    checkbox.id = `contactCheck${contact.value}`; // ID unique basé sur la valeur du contact
+    celluleCheckbox.appendChild(checkbox); // Ajouter la checkbox à la cellule
 
-let groupesCoches = new Set(); // Ensemble des groupes cochés
+    // Créer la deuxième cellule avec le nom du contact
+    const celluleNom = document.createElement('td');
+    celluleNom.textContent = membres2[contact.value]; // Texte basé sur le nom du contact
 
-groupes.forEach(groupe => {
+    // Ajouter les cellules à la ligne
+    ligne.appendChild(celluleCheckbox);
+    ligne.appendChild(celluleNom);
+
+    // Ajouter la ligne au tableau
+    const tbody = tableObligatoire.querySelector('tbody'); // Cibler le <tbody> de la table
+    if (tbody) {
+        tbody.appendChild(ligne);
+    } else {
+        console.error("La table n'a pas de <tbody>.");
+    }
+}
+
+let grpsCoches = new Set(); // Ensemble des grps cochés
+
+grps.forEach(groupe => {
     groupe.addEventListener('change', function () {
         const idGroupe = this.value; // ID du groupe
         const isChecked = this.checked; // État coché ou décoché du groupe
 
         if (isChecked) {
-            groupesCoches.add(idGroupe);
+            grpsCoches.add(idGroupe);
         } else {
-            groupesCoches.delete(idGroupe);
+            grpsCoches.delete(idGroupe);
         }
 
-        // Parcourir les membres du groupe modifié
-        if (membres[idGroupe]) {
-            const users = membres[idGroupe];
+        // Parcourir les mmbrs du groupe modifié
+        if (membres2[idGroupe]) {
+            const users = membres2[idGroupe];
 
             users.forEach(idUtilisateur => {
                 const userCheckbox = document.querySelector(`input[name="contacts[]"][value="${idUtilisateur}"]`);
@@ -43,8 +75,8 @@ groupes.forEach(groupe => {
                         // Vérifier si l'utilisateur appartient à un autre groupe coché
                         let estDansUnAutreGroupe = false;
 
-                        groupesCoches.forEach(groupeId => {
-                            if (membres[groupeId] && membres[groupeId].includes(idUtilisateur)) {
+                        grpsCoches.forEach(groupeId => {
+                            if (membres2[groupeId] && membres2[groupeId].includes(idUtilisateur)) {
                                 estDansUnAutreGroupe = true;
                             }
                         });
