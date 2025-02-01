@@ -84,7 +84,9 @@ class ControllerAssistant extends Controller
      * @return void
      */
     public function afficherPersonnesSouhaitees(?array $tabMessages = null, ?bool $contientErreurs = false): void {
-        $_SESSION['contacts'] = $_POST['contacts'];
+        if(isset($_POST['contactsObligatoires'])) {
+            $_SESSION['contactsObligatoires'] = $_POST['contactsObligatoires'];
+        }
 
         $utilisateur = $_SESSION['utilisateur'];
         $contacts = $utilisateur->getContact($utilisateur->getId());
@@ -125,6 +127,10 @@ class ControllerAssistant extends Controller
      * @return void
      */
     public function afficherParametres(?array $tabMessages = null, ?bool $contientErreurs = false): void {
+        if(isset($_POST['contactsSouhaites'])) {
+            $_SESSION['contactsSouhaites'] = $_POST['contactsSouhaites'];
+        }
+        
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
             'page' => 3,

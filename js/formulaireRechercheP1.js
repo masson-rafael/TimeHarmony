@@ -1,21 +1,22 @@
-let grps = document.querySelectorAll('input[name="grps[]"]'); // Récupérer tous les grps
+let grps = document.querySelectorAll('input[name="groupes[]"]'); // Récupérer tous les grps
 let mmbrs = document.querySelectorAll('input[name="contacts[]"]'); // Récupérer tous les mmbrs
+let mmbrsObligatoires;
 let tableObligatoire = document.getElementById('tableObligatoire'); // Récupérer la table des contacts obligatoires
-let btn = document.getElementById('boutonFinPage1');
 
-btn.disabled = true;
+let nombreContactsChecked = 0;
 
 mmbrs.forEach(membre => {
     membre.addEventListener('change', () => {
         if (membre.checked) {
-            btn.disabled = false;
+            nombreContactsChecked++;
             ajouterContactEnfant(membre);
         } else {
-            btn.disabled = true;
-            retirerContactEnfant(membre);
+            nombreContactsChecked--;
+            retirerContactEnfant(membre, tableObligatoire);
         }
     });
 });
+
 function ajouterContactEnfant(contact) {
     // Créer la ligne <tr>
     const ligne = document.createElement('tr');
@@ -25,7 +26,7 @@ function ajouterContactEnfant(contact) {
     const checkbox = document.createElement('input');
     checkbox.className = 'form-check-input';
     checkbox.type = 'checkbox';
-    checkbox.name = 'contacts[]';
+    checkbox.name = 'contactsObligatoires[]';
     checkbox.value = contact.value; // ID du contact
     checkbox.id = `contactCheck${contact.value}`; // ID unique basé sur la valeur du contact
     checkbox.checked = true;
@@ -46,17 +47,24 @@ function ajouterContactEnfant(contact) {
     } else {
         console.error("La table n'a pas de <tbody>.");
     }
+
+    mmbrsObligatoires = document.querySelectorAll('input[name="contactsObligatoires[]"]'); // Récupérer tous les mmbrs obligatoires
+    mettreAJourMembresObligatoires();
 }
 
-function retirerContactEnfant(contact) {
+function retirerContactEnfant(contact, table) {
     const idContact = contact.value;
-    const ligne = tableObligatoire.querySelector(`#contactCheck${idContact}`).parentNode.parentNode;
+    const ligne = table.querySelector(`#contactCheck${idContact}`).parentNode.parentNode;
 
     if (ligne) {
         ligne.remove();
     } else {
         console.error("La ligne n'a pas été trouvée.");
     }
+}
+
+function decocherCase(contact) {
+    contact.checked = false;
 }
 
 let grpsCoches = new Set(); // Ensemble des grps cochés
@@ -84,6 +92,7 @@ grps.forEach(groupe => {
                     if (isChecked) {
                         userCheckbox.checked = true;
                         userCheckbox.disabled = true;
+                        ajouterContactEnfant(userCheckbox);
                     } else {
                         // Vérifier si l'utilisateur appartient à un autre groupe coché
                         let estDansUnAutreGroupe = false;
@@ -91,12 +100,15 @@ grps.forEach(groupe => {
                         grpsCoches.forEach(groupeId => {
                             if (membres2[groupeId] && membres2[groupeId].includes(idUtilisateur)) {
                                 estDansUnAutreGroupe = true;
+                                retirerContactEnfant(userCheckbox, tableObligatoire);
                             }
                         });
 
                         if (!estDansUnAutreGroupe) {
                             userCheckbox.checked = false;
                             userCheckbox.disabled = false;
+                            retirerContactEnfant(userCheckbox, tableObligatoire);
+
                         }
                     }
                 }
@@ -104,3 +116,15 @@ grps.forEach(groupe => {
         }
     });
 });
+
+function mettreAJourMembresObligatoires() {
+    mmbrsObligatoires.forEach(membre => {
+        membre.addEventListener('change', () => {
+            console.log("Membre changé");
+            if (!membre.checked) {
+                retirerContactEnfant(membre, tableObligatoire);
+                decocherCase(document.querySelector(`input[name="contacts[]"][value="${membre.value}"]`));
+            }
+        });
+    });
+}
