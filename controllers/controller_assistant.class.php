@@ -63,8 +63,6 @@ class ControllerAssistant extends Controller
             }
         }
 
-        var_dump($groupes);
-
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
             'page' => 1,
@@ -86,6 +84,10 @@ class ControllerAssistant extends Controller
     public function afficherPersonnesSouhaitees(?array $tabMessages = null, ?bool $contientErreurs = false): void {
         if(isset($_POST['contactsObligatoires'])) {
             $_SESSION['contactsObligatoires'] = $_POST['contactsObligatoires'];
+        } else {
+            $personnesObligatoires = [];
+            $personnesObligatoires[] = $_SESSION['utilisateur']->getId();
+            $_SESSION['contactsObligatoires'] = $personnesObligatoires;
         }
 
         $utilisateur = $_SESSION['utilisateur'];
@@ -130,7 +132,7 @@ class ControllerAssistant extends Controller
         if(isset($_POST['contactsSouhaites'])) {
             $_SESSION['contactsSouhaites'] = $_POST['contactsSouhaites'];
         }
-        
+
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
             'page' => 3,
@@ -221,23 +223,28 @@ class ControllerAssistant extends Controller
         $_SESSION['debutPlageH'] = $_POST['debutPlageH'];
         $_SESSION['finPlageH'] = $_POST['finPlageH'];
     
-        if (isset($_SESSION['debut']) && isset($_SESSION['fin']) && isset($_SESSION['dureeMin']) && isset($_SESSION['contacts']) && isset($_SESSION['debutHoraire']) && isset($_SESSION['finHoraire'])) {
+        if (isset($_SESSION['debut']) && isset($_SESSION['fin']) && isset($_SESSION['dureeMin']) && isset($_SESSION['contactsObligatoires']) && isset($_SESSION['debutHoraire']) && isset($_SESSION['finHoraire'])) {
             $_POST['debut'] = $_SESSION['debut'];
             $_POST['fin'] = $_SESSION['fin'];
             $_POST['dureeMin'] = $_SESSION['dureeMin'];
-            $_POST['contacts'] = $_SESSION['contacts'];
+            $_POST['contacts'] = $_SESSION['contactsObligatoires'];
             $_POST['debutPlageH'] = $_SESSION['debutPlageH'];
             $_POST['finPlageH'] = $_SESSION['finPlageH'];
         }
-        // if(isset($_SESSION['contactsPrioritaires'])) {
-        //     $_POST['contactsPrioritaires'] = $_SESSION['contactsPrioritaires'];
-        // }
+        if(isset($_SESSION['contactsObligatoires'])) {
+            $_POST['contactsObligatoires'] = $_SESSION['contactsObligatoires'];
+        }
+        $_POST['contacts'] = $_SESSION['contactsObligatoires'];
 
         $valideDuree = Utilitaire::validerDuree($_POST['debut'], $_POST['fin'], $messagesErreur);
         $dureeMinValide = Utilitaire::validerDureeMinimale($_POST['dureeMin'], $messagesErreur);
-        @$contactsPrioritairesValide = Utilitaire::validerContacts($_POST['contactsPrioritaires'], $messagesErreur);
-        @$contactsValide = Utilitaire::validerContacts($_SESSION['contacts'], $messagesErreur);
+        @$contactsPrioritairesValide = Utilitaire::validerContacts($_POST['contactsObligatoires'], $messagesErreur);
+        @$contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur);
         $plageHoraireValide = Utilitaire::validerPlageHoraire($_POST['debutPlageH'], $_POST['finPlageH'], $messagesErreur);
+
+        var_dump($_POST['contacts']);
+        var_dump($contactsPrioritairesValide);
+        var_dump($contactsValide);
 
         if ($valideDuree && $dureeMinValide && $contactsValide && $plageHoraireValide) {
             if (!isset($_SESSION['debut']) || !isset($_SESSION['fin']) || !isset($_SESSION['dureeMin']) || !isset($_SESSION['contacts']) || !isset($_SESSION['debutPlageH']) || !isset($_SESSION['finPlageH'])) {
@@ -274,8 +281,8 @@ class ControllerAssistant extends Controller
             @$_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
 
             $dureeMin = $_SESSION['dureeMin'];
-            $contacts = $_SESSION['contacts'];
-            $contactsPrio = $_SESSION['contactsPrioritaires'];
+            $contacts = $_SESSION['contactsObligatoires'];
+            $contactsPrio = $_SESSION['contactsObligatoires'];
             $debut = $_SESSION['debut'];
             $fin = $_SESSION['fin'];
             $debutHoraire = $_SESSION['debutPlageH'];

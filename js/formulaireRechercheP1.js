@@ -14,10 +14,14 @@ mmbrs.forEach(membre => {
     membre.addEventListener('change', () => {
         if (membre.checked) {
             nombreContactsChecked++;
-            ajouterContactEnfant(membre); // Ajouter le membre à la table obligatoire
+            ajouterContactEnfant(membre);
         } else {
             nombreContactsChecked--;
-            retirerContactEnfant(membre, tableObligatoire); // Retirer le membre de la table obligatoire
+            retirerContactEnfant(membre, tableObligatoire);
+
+            // Vérifier si le membre retiré était le dernier du groupe
+            console.log(idUtilisateur);
+            verifierSiDernierDuGroupe(idUtilisateur);
         }
     });
 });
@@ -109,7 +113,6 @@ grps.forEach(groupe => {
                     if (isChecked) {
                         // Groupe activé : cocher et désactiver les cases
                         userCheckbox.checked = true;
-                        userCheckbox.disabled = false; // Désactiver la checkbox car gérée par le groupe
                         ajouterContactEnfant(userCheckbox);
                     } else {
                         // Groupe désactivé : vérifier si les cases doivent être réactivées
@@ -124,7 +127,6 @@ grps.forEach(groupe => {
                         if (!estDansUnAutreGroupe) {
                             // Réactiver la checkbox et décocher
                             userCheckbox.checked = false;
-                            userCheckbox.disabled = false; // Réactiver la case
                             retirerContactEnfant(userCheckbox, tableObligatoire);
                         }
                     }
@@ -163,6 +165,39 @@ function verifierEtReactiverMembresDuGroupe(idGroupe) {
             });
         }
     }
+}
+
+/**
+ * Vérifie si un contact est le dernier dans la table obligatoire pour un groupe donné,
+ * en excluant l'ID spécifié.
+ * Si oui, décoche le groupe dans la liste principale.
+ * @param {string} idContact - L'ID du contact retiré
+ */
+function verifierSiDernierDuGroupe(idContact) {
+    // Parcourir les groupes pour lesquels ce contact pourrait appartenir
+    Object.keys(membres2).forEach(idGroupe => {
+        const membresDuGroupe = membres2[idGroupe]; // Liste des membres du groupe
+        let tousRetires = true;
+
+        // Vérifier si un membre du groupe (autre que le contact retiré) est toujours dans la table des obligatoires
+        membresDuGroupe.forEach(idMembre => {
+            if (idMembre !== idContact) { // Exclure le contact actuellement traité
+                const obligatoireCheckbox = document.querySelector(`#contactCheck${idMembre}`);
+                if (obligatoireCheckbox) {
+                    tousRetires = false; // Il reste au moins un autre membre dans la table
+                }
+            }
+        });
+
+        // Si tous les membres du groupe (autre que le contact traité) sont retirés, décocher le groupe
+        if (tousRetires) {
+            const groupeCheckbox = document.querySelector(`input[name="groupes[]"][value="${idGroupe}"]`);
+            if (groupeCheckbox) {
+                groupeCheckbox.checked = false; // Décocher la case du groupe
+                grpsCoches.delete(idGroupe); // Retirer le groupe de l'ensemble des groupes cochés
+            }
+        }
+    });
 }
 
 // === GESTION DES MEMBRES OBLIGATOIRES ===

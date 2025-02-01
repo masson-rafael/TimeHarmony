@@ -98,7 +98,7 @@
 						</div>
 					</div>
 					<div class="text-center mb-4">
-						<button id="boutonFinPage1" type="submit" class="btn btn-primary shadow-lg hover-shadow">Passer à l'étape suivante</button>
+						<button id="boutonPasserEtape2" type="submit" class="btn btn-primary shadow-lg hover-shadow">Passer à l'étape suivante</button>
 					</div>
 				</form>
 
@@ -295,16 +295,16 @@
 			{% endif %}
 		</div>
 	</main>
-{{dump(membres)}}
-{{dump(groupes)}}
 {% endblock %}
 
 
 {% block javascripts %}
 	{{ parent() }}
 	<script>
+	const idUtilisateur = {{ utilisateurGlobal.id }};
 	const membres2 = {{ membres|json_encode|raw }};
 	const groupes2 = {{ groupes|json_encode|raw }};
+	console.log('id', idUtilisateur);
 	console.log('membres', membres2);
 	console.log('groupes', groupes2);
 	</script>
