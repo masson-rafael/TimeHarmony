@@ -44,14 +44,14 @@
 											<a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ utilisateur.getId }}">
 											<i class="fa-solid fa-pencil fa-2xl text-primary"></i></a>
 								            <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleSuppression{{ utilisateur.getId }}">
-											<i class="fa-solid fa-trash fa-2xl text-primary"></i></a>
+											<i class="fa-solid fa-trash fa-2xl text-danger"></i></a>
 										{% endif %}
 									</td>
 								</tr>
 								<div class="modal fade" id="fenetreModale{{ utilisateur.getId }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 									<div class="modal-dialog modal-lg">
 										<div class="modal-content">
-											<div class="modal-header">
+											<div class="modal-header bg-primary text-secondary">
 												<h1 class="modal-title fs-5" id="exampleModalLabel">Modification de l'utilisateur
 													{{ utilisateur.getEmail }}</h1>
 												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -60,42 +60,42 @@
 												<div class="modal-body">
 													<div class="container mt-2">
 														<div class="form-group">
-															<label for="nom">Nom *</label>
-															<input type="text" class="form-control" id="nom" name="nom" value="{{ utilisateur.getNom }}" placeholder="Entrez le nom de l'utilisateur" required maxlength="50" minlength="2" title="Entrez le vrai nom de l'utilisateur">
+															<label class="p-1" for="nom">Nom *</label>
+															<input type="text" class="form-control bg-secondary" id="nom" name="nom" value="{{ utilisateur.getNom }}" placeholder="Entrez le nom de l'utilisateur" required maxlength="50" minlength="2" title="Entrez le vrai nom de l'utilisateur">
 														</div>
-														<div class="form-group">
-															<label for="prenom">Prenom *</label>
-															<input type="text" class="form-control" id="prenom" name="prenom" value="{{ utilisateur.getPrenom }}" placeholder="Entrez le prenom de l'utilisateur" required maxlength="50" minlength="2" title="Entrez le vrai prénom de l'utilisateur">
+														<div class="form-group mt-2">
+															<label class="p-1" for="prenom">Prenom *</label>
+															<input type="text" class="form-control bg-secondary" id="prenom" name="prenom" value="{{ utilisateur.getPrenom }}" placeholder="Entrez le prenom de l'utilisateur" required maxlength="50" minlength="2" title="Entrez le vrai prénom de l'utilisateur">
 														</div>
-														<div class="form-group">
-															<label for="email">Adresse mail *</label>
-															<input type="email" class="form-control" id="email" name="email" value="{{ utilisateur.getEmail }}" placeholder="Entrez l'e-mail de l'utilisateur" required maxlength="255" minlength="5" title="Entrez l'adresse email qui sera liée au compte de l'utilisateur">
+														<div class="form-group mt-2">
+															<label class="p-1" for="email">Adresse mail *</label>
+															<input type="email" class="form-control bg-secondary" id="email" name="email" value="{{ utilisateur.getEmail }}" placeholder="Entrez l'e-mail de l'utilisateur" required maxlength="255" minlength="5" title="Entrez l'adresse email qui sera liée au compte de l'utilisateur">
 														</div>
-														<div class="form-group">
-															<label for="role">Role *</label>
-															<select class="form-control" id="role" name="role">
-																<option selected>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</option>
-																<option>{{ utilisateur.getEstAdmin ? 'User' : 'Admin' }}</option>
+														<div class="form-group mt-2">
+															<label class="p-1" for="role">Role *</label>
+															<select class="form-control bg-secondary" id="role" name="role">
+																<option class="bg-secondary" selected>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</option>
+																<option class="bg-secondary">{{ utilisateur.getEstAdmin ? 'User' : 'Admin' }}</option>
 															</select>
 														</div>
-														<div class="form-group">
-															<label for="statut">Statut *</label>
-															<select class="form-control" id="statut" name="statut">
-																<option selected>{{ utilisateur.getStatutCompte|capitalize }}</option>
+														<div class="form-group mt-2">
+															<label class="p-1" for="statut">Statut *</label>
+															<select class="form-control bg-secondary" id="statut" name="statut">
+																<option class="bg-secondary" selected>{{ utilisateur.getStatutCompte|capitalize }}</option>
 																{% if utilisateur.getStatutCompte == 'actif' %}
-																	<option value="desactive">Désactivé</option>
-																	<option value="bloque">Bloqué</option>
+																	<option class="bg-secondary" value="desactive">Désactivé</option>
+																	<option class="bg-secondary" value="bloque">Bloqué</option>
 																{% elseif utilisateur.getStatutCompte == 'desactive' %}
-																	<option value="actif">Actif</option>
-																	<option value="bloque">Bloqué</option>
+																	<option class="bg-secondary" value="actif">Actif</option>
+																	<option class="bg-secondary" value="bloque">Bloqué</option>
 																{% elseif utilisateur.getStatutCompte == 'bloque' %}
-																	<option value="actif">Actif</option>
-																	<option value="desactive">Désactivé</option>
+																	<option class="bg-secondary" value="actif">Actif</option>
+																	<option class="bg-secondary" value="desactive">Désactivé</option>
 																{% endif %}
 															</select>
 														</div>
-														<div class="form-group">
-															<label for="photo">Image de profil</label>
+														<div class="form-group mt-2">
+															<label class="p-1" for="photo">Image de profil</label>
 															<input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .png">
 														</div>
 													</div>
@@ -113,11 +113,11 @@
 									<div class="modal-dialog modal-md">
 										<div class="modal-content shadow-lg">
 											<form action="index.php?controleur=utilisateur&methode=supprimer&id={{ utilisateur.getId }}&type='admin'" method="POST">
-												<div class="modal-header" style="background-color: #e74c3c; color: white;">
-													<h5 class="modal-title" id="exampleModalLabel">Supprimer mon compte</h5>
+												<div class="modal-header bg-danger">
+													<h5 class="text-secondary modal-title" id="exampleModalLabel">Supprimer mon compte</h5>
 													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 												</div>
-												<div class="modal-body text-center" style="padding: 30px;">
+												<div class="modal-body text-center p-3">
 													<p class="fs-5 text-danger">
 														<strong>!! Attention !!</strong><br>
 														Vous êtes sur le point de supprimer le compte
@@ -125,8 +125,8 @@
 													</p>
 												</div>
 												<div class="modal-footer d-flex justify-content-center">
-													<button type="submit" class="btn btn-danger px-4" style="background-color: #e74c3c; border: none;">Supprimer</button>
-													<button type="button" class="btn btn-secondary px-4" style="background-color: #95a5a6; border: none;" data-bs-dismiss="modal">Annuler</button>
+													<button type="submit" class="btn btn-danger px-4">Supprimer</button>
+													<button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Annuler</button>
 												</div>
 											</form>
 										</div>

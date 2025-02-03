@@ -8,12 +8,12 @@ $body-color: #111;
 
 $primary: #64a19d;
 $primary-hover: #5a908c;
-$secondary: #eeeeee;
-$tertiary: #dddddd;
+$secondary: #f6f6f6;
+$tertiary: #e6e6e6;
 $success: #67c29c;
 $info: #1cabc4;
 $warning: #e4c662;
-$danger: #e74c3c;
+$danger: #c70039;
 
 $theme-colors: (
     "primary": $primary,
@@ -98,7 +98,7 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
         background-color: transparent;
 
         thead th {
-            background-color: rgba(darken($secondary, 5%), 0.5);
+            background-color: rgba($secondary, 0.5);
             border-bottom: 2px solid rgba($primary, 0.2);
             color: $body-color;
             font-weight: bold;
@@ -120,7 +120,7 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 
     .page-item {
         margin: 0 2px;
-        padding-top: 2rem;
+        padding-top: 1rem;
 
         &.active .page-link {
             background-color: $primary !important;
@@ -164,10 +164,33 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
     }
 }
 
-.dropdown-item {
+.dropdown-item, 
+.btn-primary {
     color: $secondary;
     &:hover {
         color: $secondary;
         background-color: $primary-hover;
+    }
+}
+
+.btn-danger {
+    color: $secondary;
+    &:hover {
+        color: $secondary;
+    }
+}
+
+.btn-secondary {
+    border-color: $primary;
+    &:hover {
+        background-color: $tertiary;
+        border-color: $primary;
+    }
+}
+
+.form-control {
+    &:focus {
+        box-shadow: 0 0 0 0.2rem rgba($primary, 0.25);
+        border-color: $primary;
     }
 }
