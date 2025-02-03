@@ -202,3 +202,9 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
         border-color: $primary;
     }
 }
+
+.photos {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
