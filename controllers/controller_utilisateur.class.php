@@ -300,7 +300,6 @@ class ControllerUtilisateur extends Controller
         /**
          * Step 1 : Appel de la fonction qui trouve ET RENVOIE les contacts que j'ai envoyé
          * Step 2 : Appel de la fonction qui trouve ET RENVOIE les demandes de contact d'autres utilisateurs
-         * Step 3 : Appel de la fonction qui trouve et renvoie les demandes d'ajout au groupe
          * Step 4 : Affichage du twig
          */
         $pdo = $this->getPdo();
