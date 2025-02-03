@@ -92,9 +92,9 @@ class ControllerAssistant extends Controller
 
         if(isset($_POST['groupes'])) {
             $_SESSION['groupesObligatoires'] = $_POST['groupes'];
+            var_dump($_POST['groupes']);
         }
 
-        var_dump($_POST['groupes']);
         var_dump($_POST['contactsObligatoires']);
 
         $utilisateur = $_SESSION['utilisateur'];
@@ -458,7 +458,6 @@ class ControllerAssistant extends Controller
             @$this->genererVueCreneaux($datesCommunesFrancaise, $nbrUtilisateursMin, $nombreUtilisateursSeclectionnes);
         } else {
             $this->genererVueRecherche($messagesErreur, true);
-
         }
     
     }

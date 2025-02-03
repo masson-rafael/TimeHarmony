@@ -38,7 +38,7 @@ btn.addEventListener('click', sauvegarderVariables);
 
 const date = new Date();
 preparationDates(date, dateDebut, 0); // Remplissage du formulaire par valeur de base (jour actuel)
-preparationDates(date, dateFin, 7);
+preparationDates(date, dateFin, 1);
 verifierTousLesChamps();
 
 function preparationVariables() {
