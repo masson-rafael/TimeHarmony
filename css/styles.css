@@ -12118,6 +12118,10 @@ textarea.form-control-lg {
   box-shadow: 0 0 0 0.2rem rgba(100, 161, 157, 0.25);
 }
 
+.text-truncate {
+  width: 400px;
+}
+
 .nav-link, .footer {
   color: #f6f6f6;
 }
@@ -12125,13 +12129,16 @@ textarea.form-control-lg {
   color: #e6e6e6;
 }
 
+.nav-active {
+  color: rgb(217.25, 217.25, 217.25) !important;
+}
+
 .dropdown-item,
 .btn-primary {
-  color: #f6f6f6;
+  color: #f6f6f6 !important;
 }
 .dropdown-item:hover,
 .btn-primary:hover {
-  color: #f6f6f6;
   background-color: #5a908c;
 }
 
@@ -12150,6 +12157,9 @@ textarea.form-control-lg {
   border-color: #64a19d;
 }
 
+.form-control {
+  background-color: #f6f6f6 !important;
+}
 .form-control:focus {
   box-shadow: 0 0 0 0.2rem rgba(100, 161, 157, 0.25);
   border-color: #64a19d;

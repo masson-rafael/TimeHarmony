@@ -157,6 +157,10 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
     }
 }
 
+.text-truncate {
+    width: 400px;
+}
+
 .nav-link, .footer {
     color: $secondary;
     &:hover {
@@ -164,11 +168,14 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
     }
 }
 
+.nav-active {
+    color: darken($tertiary, 5%) !important;
+}
+
 .dropdown-item, 
 .btn-primary {
-    color: $secondary;
+    color: $secondary !important;
     &:hover {
-        color: $secondary;
         background-color: $primary-hover;
     }
 }
@@ -189,6 +196,7 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 }
 
 .form-control {
+    background-color: $secondary !important;
     &:focus {
         box-shadow: 0 0 0 0.2rem rgba($primary, 0.25);
         border-color: $primary;

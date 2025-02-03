@@ -61,19 +61,19 @@
 													<div class="container mt-2">
 														<div class="form-group">
 															<label class="p-1" for="nom">Nom *</label>
-															<input type="text" class="form-control bg-secondary" id="nom" name="nom" value="{{ utilisateur.getNom }}" placeholder="Entrez le nom de l'utilisateur" required maxlength="50" minlength="2" title="Entrez le vrai nom de l'utilisateur">
+															<input type="text" class="form-control" id="nom" name="nom" value="{{ utilisateur.getNom }}" placeholder="Entrez le nom de l'utilisateur" required maxlength="50" minlength="2" title="Entrez le vrai nom de l'utilisateur">
 														</div>
 														<div class="form-group mt-2">
 															<label class="p-1" for="prenom">Prenom *</label>
-															<input type="text" class="form-control bg-secondary" id="prenom" name="prenom" value="{{ utilisateur.getPrenom }}" placeholder="Entrez le prenom de l'utilisateur" required maxlength="50" minlength="2" title="Entrez le vrai prénom de l'utilisateur">
+															<input type="text" class="form-control" id="prenom" name="prenom" value="{{ utilisateur.getPrenom }}" placeholder="Entrez le prenom de l'utilisateur" required maxlength="50" minlength="2" title="Entrez le vrai prénom de l'utilisateur">
 														</div>
 														<div class="form-group mt-2">
 															<label class="p-1" for="email">Adresse mail *</label>
-															<input type="email" class="form-control bg-secondary" id="email" name="email" value="{{ utilisateur.getEmail }}" placeholder="Entrez l'e-mail de l'utilisateur" required maxlength="255" minlength="5" title="Entrez l'adresse email qui sera liée au compte de l'utilisateur">
+															<input type="email" class="form-control" id="email" name="email" value="{{ utilisateur.getEmail }}" placeholder="Entrez l'e-mail de l'utilisateur" required maxlength="255" minlength="5" title="Entrez l'adresse email qui sera liée au compte de l'utilisateur">
 														</div>
 														<div class="form-group mt-2">
 															<label class="p-1" for="role">Role *</label>
-															<select class="form-control bg-secondary" id="role" name="role">
+															<select class="form-control" id="role" name="role">
 																<option class="bg-secondary" selected>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</option>
 																<option class="bg-secondary">{{ utilisateur.getEstAdmin ? 'User' : 'Admin' }}</option>
 															</select>
