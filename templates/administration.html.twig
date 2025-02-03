@@ -1,172 +1,179 @@
 {% extends 'base_template.html.twig' %}
 
-{% block title %}Administration - {{ constant('WEBSITE_TITLE') }}{% endblock %}
+{% block title %}Administration -
+	{{ constant('WEBSITE_TITLE') }}
+{% endblock %}
 
 {% block content %}
-<main>
-    <div class="container">
-    {# <div class="table-responsive"> #}
-    {% if utilisateurCourant.getEstAdmin %}
-        <div class="row text-center mt-3 mb-3">
-            <h1 class="text-center py-5">Administration</h1>
-        </div>
-        <table id="myTable" class="table admin table-striped table-bordered" style="width: 100%;">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Email</th>
-                    <th>Nom</th>
-                    <th>Prenom</th>
-                    <th>Rôle</th>
-                    <th>Statut</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for utilisateur in listeUtilisateurs %}
-                <tr>
-                    <td>{{ utilisateur.getId }}</td>
-                    <td>{{ utilisateur.getEmail }}</td>
-                    <td>{{ utilisateur.getNom }}</td>
-                    <td>{{ utilisateur.getPrenom }}</td>
-                    <td>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</td>
-                    <td>{{ utilisateur.getStatutCompte }}</td>
-                    <td>
-                        <img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photo de profil" class="rounded-circle" style="width: 50px; height: 50px;">
-                    </td>
-                    <td>
-                        {% if utilisateur.getId != utilisateurCourant.getId %}
-                            <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ utilisateur.getId }}">
-                            <i class="fa-solid fa-pencil"></i></a>
-                            <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleSuppression{{ utilisateur.getId }}">
-                            <i class="fa-solid fa-trash"></i></a>
-                        {% endif %}
-                    </td>
-                </tr>
-                <div class="modal fade" id="fenetreModale{{ utilisateur.getId }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Modification de l'utilisateur {{ utilisateur.getEmail }}</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <form action="index.php?controleur=utilisateur&methode=modifierUtilisateur&id={{ utilisateur.getId }}&type='admin'" method="POST" enctype="multipart/form-data">
-                                <div class="modal-body">
-                                    <div class="container mt-2">
-                                        <div class="form-group">
-                                            <label for="nom">Nom *</label>
-                                            <input type="text" class="form-control" id="nom" name="nom" value="{{ utilisateur.getNom }}"  placeholder="Entrez le nom de l'utilisateur" required maxlength="50" minlength="2" title="Entrez le vrai nom de l'utilisateur">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="prenom">Prenom *</label>
-                                            <input type="text" class="form-control" id="prenom" name="prenom" value="{{ utilisateur.getPrenom }}" placeholder="Entrez le prenom de l'utilisateur" required maxlength="50" minlength="2" title="Entrez le vrai prénom de l'utilisateur">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="email">Adresse mail *</label>
-                                            <input type="email" class="form-control" id="email" name="email" value="{{ utilisateur.getEmail }}" placeholder="Entrez l'e-mail de l'utilisateur" required maxlength="255" minlength="5" title="Entrez l'adresse email qui sera liée au compte de l'utilisateur">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="role">Role *</label>
-                                            <select class="form-control" id="role" name="role">
-                                                <option selected>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</option>
-                                                <option>{{ utilisateur.getEstAdmin ? 'User' : 'Admin' }}</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="statut">Statut *</label>
-                                            <select class="form-control" id="statut" name="statut">
-                                                <option selected>{{ utilisateur.getStatutCompte|capitalize }}</option>
-                                                {% if utilisateur.getStatutCompte == 'actif' %}
-                                                    <option value="desactive">Désactivé</option>
-                                                    <option value="bloque">Bloqué</option>
-                                                {% elseif utilisateur.getStatutCompte == 'desactive' %}
-                                                    <option value="actif">Actif</option>
-                                                    <option value="bloque">Bloqué</option>
-                                                {% elseif utilisateur.getStatutCompte == 'bloque' %}
-                                                    <option value="actif">Actif</option>
-                                                    <option value="desactive">Désactivé</option>
-                                                {% endif %}
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="photo">Image de profil</label>
-                                            <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .png">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" name="update_article">Mettre à jour</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <!-- Fenêtre modale -->
-                <div class="modal fade position-absolute" id="fenetreModaleSuppression{{ utilisateur.getId }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-md">
-                        <div class="modal-content shadow-lg">
-                            <form action="index.php?controleur=utilisateur&methode=supprimer&id={{ utilisateur.getId }}&type='admin'" method="POST">
-                                <div class="modal-header" style="background-color: #e74c3c; color: white;">
-                                    <h5 class="modal-title" id="exampleModalLabel">Supprimer mon compte</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body text-center" style="padding: 30px;">
-                                    <p class="fs-5 text-danger">
-                                        <strong>!! Attention !!</strong><br>
-                                        Vous êtes sur le point de supprimer le compte {{utilisateur.getNom}}. Cette action est irréversible.
-                                    </p>
-                                </div>
-                                <div class="modal-footer d-flex justify-content-center">
-                                    <button type="submit" class="btn btn-danger px-4" style="background-color: #e74c3c; border: none;">Supprimer</button>
-                                    <button type="button" class="btn btn-secondary px-4" style="background-color: #95a5a6; border: none;" data-bs-dismiss="modal">Annuler</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div class="mb-3 text-center pt-3">
-            <a class="px-5 btn btn-secondary" href="index.php?controleur=bd&methode=restaurer&userId={{utilisateurCourant.getId}}" role="button">Restaurer la base de données</a>
-        </div>
-        {% if message %}
-            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
-                <div id="toast" class="toast align-items-center text-white bg-{% if contientErreurs %}danger{% else %}success{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                    <div class="d-flex">
-                        <div class="toast-body">
-                            {% for messages in message %}
-                                {{ messages }}
-                                <br>
-                            {% endfor %}
-                        </div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-    {% else %}
-        <div class="row text-center mt-3 mb-3">
-            <h1>Erreur !</h1>
-        </div>
-        <div class="row justify-content-center mt-4 h-25">
-            <div class="col-md-8">
-                <div class="alert alert-info text-center" role="alert">
-                    Cette page vous est interdite d'accès !
-                </div>
-            </div>
-        </div>
-        <div class="text-center">
-            <a class="px-5 btn btn-primary" href="index.php?controleur=utilisateur&methode=menuConnecte">Revenir en lieu sûr</a>
-        </div>
-    {% endif %}
-    </div>
-</main>
+	<main>
+		<div
+			class="container-fluid">
+			{# <div class="table-responsive"> #}
+			{% if utilisateurCourant.getEstAdmin %}
+				<div class="row text-center mt-3 mb-3">
+					<h1 class="text-center py-5">Administration</h1>
+				</div>
+				<div class="container-xxl">
+					<table id="myTable" class="table admin table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Email</th>
+								<th>Nom</th>
+								<th>Prenom</th>
+								<th>Rôle</th>
+								<th>Statut</th>
+								<th></th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for utilisateur in listeUtilisateurs %}
+								<tr>
+									<td>{{ utilisateur.getId }}</td>
+									<td>{{ utilisateur.getEmail }}</td>
+									<td>{{ utilisateur.getNom }}</td>
+									<td>{{ utilisateur.getPrenom }}</td>
+									<td>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</td>
+									<td>{{ utilisateur.getStatutCompte }}</td>
+									<td>
+										<img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photo de profil" class="rounded-circle" style="width: 50px; height: 50px;">
+									</td>
+									<td>
+										{% if utilisateur.getId != utilisateurCourant.getId %}
+											<a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ utilisateur.getId }}">
+											<i class="fa-solid fa-pencil fa-2xl text-primary"></i></a>
+								            <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleSuppression{{ utilisateur.getId }}">
+											<i class="fa-solid fa-trash fa-2xl text-primary"></i></a>
+										{% endif %}
+									</td>
+								</tr>
+								<div class="modal fade" id="fenetreModale{{ utilisateur.getId }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal-dialog modal-lg">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h1 class="modal-title fs-5" id="exampleModalLabel">Modification de l'utilisateur
+													{{ utilisateur.getEmail }}</h1>
+												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											</div>
+											<form action="index.php?controleur=utilisateur&methode=modifierUtilisateur&id={{ utilisateur.getId }}&type='admin'" method="POST" enctype="multipart/form-data">
+												<div class="modal-body">
+													<div class="container mt-2">
+														<div class="form-group">
+															<label for="nom">Nom *</label>
+															<input type="text" class="form-control" id="nom" name="nom" value="{{ utilisateur.getNom }}" placeholder="Entrez le nom de l'utilisateur" required maxlength="50" minlength="2" title="Entrez le vrai nom de l'utilisateur">
+														</div>
+														<div class="form-group">
+															<label for="prenom">Prenom *</label>
+															<input type="text" class="form-control" id="prenom" name="prenom" value="{{ utilisateur.getPrenom }}" placeholder="Entrez le prenom de l'utilisateur" required maxlength="50" minlength="2" title="Entrez le vrai prénom de l'utilisateur">
+														</div>
+														<div class="form-group">
+															<label for="email">Adresse mail *</label>
+															<input type="email" class="form-control" id="email" name="email" value="{{ utilisateur.getEmail }}" placeholder="Entrez l'e-mail de l'utilisateur" required maxlength="255" minlength="5" title="Entrez l'adresse email qui sera liée au compte de l'utilisateur">
+														</div>
+														<div class="form-group">
+															<label for="role">Role *</label>
+															<select class="form-control" id="role" name="role">
+																<option selected>{{ utilisateur.getEstAdmin ? 'Admin' : 'User' }}</option>
+																<option>{{ utilisateur.getEstAdmin ? 'User' : 'Admin' }}</option>
+															</select>
+														</div>
+														<div class="form-group">
+															<label for="statut">Statut *</label>
+															<select class="form-control" id="statut" name="statut">
+																<option selected>{{ utilisateur.getStatutCompte|capitalize }}</option>
+																{% if utilisateur.getStatutCompte == 'actif' %}
+																	<option value="desactive">Désactivé</option>
+																	<option value="bloque">Bloqué</option>
+																{% elseif utilisateur.getStatutCompte == 'desactive' %}
+																	<option value="actif">Actif</option>
+																	<option value="bloque">Bloqué</option>
+																{% elseif utilisateur.getStatutCompte == 'bloque' %}
+																	<option value="actif">Actif</option>
+																	<option value="desactive">Désactivé</option>
+																{% endif %}
+															</select>
+														</div>
+														<div class="form-group">
+															<label for="photo">Image de profil</label>
+															<input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .png">
+														</div>
+													</div>
+												</div>
+												<div class="modal-footer">
+													<button type="submit" class="btn btn-primary" name="update_article">Mettre à jour</button>
+													<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+								<!-- Fenêtre modale -->
+								<div class="modal fade position-absolute" id="fenetreModaleSuppression{{ utilisateur.getId }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal-dialog modal-md">
+										<div class="modal-content shadow-lg">
+											<form action="index.php?controleur=utilisateur&methode=supprimer&id={{ utilisateur.getId }}&type='admin'" method="POST">
+												<div class="modal-header" style="background-color: #e74c3c; color: white;">
+													<h5 class="modal-title" id="exampleModalLabel">Supprimer mon compte</h5>
+													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												</div>
+												<div class="modal-body text-center" style="padding: 30px;">
+													<p class="fs-5 text-danger">
+														<strong>!! Attention !!</strong><br>
+														Vous êtes sur le point de supprimer le compte
+														{{utilisateur.getNom}}. Cette action est irréversible.
+													</p>
+												</div>
+												<div class="modal-footer d-flex justify-content-center">
+													<button type="submit" class="btn btn-danger px-4" style="background-color: #e74c3c; border: none;">Supprimer</button>
+													<button type="button" class="btn btn-secondary px-4" style="background-color: #95a5a6; border: none;" data-bs-dismiss="modal">Annuler</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				<div class="mb-3 text-center pt-3">
+					<a class="px-5 btn btn-warning" href="index.php?controleur=bd&methode=restaurer&userId={{utilisateurCourant.getId}}" role="button">Restaurer la base de données</a>
+				</div>
+				{% if message %}
+					<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
+						<div id="toast" class="toast align-items-center text-white bg-{% if contientErreurs %}danger{% else %}success{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+							<div class="d-flex">
+								<div class="toast-body">
+									{% for messages in message %}
+										{{ messages }}
+										<br>
+									{% endfor %}
+								</div>
+								<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+			{% else %}
+				<div class="row text-center mt-3 mb-3">
+					<h1>Erreur !</h1>
+				</div>
+				<div class="row justify-content-center mt-4 h-25">
+					<div class="col-md-8">
+						<div class="alert alert-info text-center" role="alert">
+							Cette page vous est interdite d'accès !
+						</div>
+					</div>
+				</div>
+				<div class="text-center">
+					<a class="px-5 btn btn-primary" href="index.php?controleur=utilisateur&methode=menuConnecte">Revenir en lieu sûr</a>
+				</div>
+			{% endif %}
+		</div>
+	</main>
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
-    <script src="js/datatable.js"></script>
+	{{ parent() }}
+	<script src="js/datatable.js"></script>
 {% endblock %}
