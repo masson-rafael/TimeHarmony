@@ -9,7 +9,7 @@
 		<div class="container">
         {% if ajout == false %}
             <div class="row text-center mt-3 mb-3">
-                <h1 class="text-center py-5">Mes Agendas</h1>
+                <h1 class="text-center py-5"><i class="fa-solid fa-calendar-days"></i> Mes Agendas</h1>
             </div>
 			<!-- Liste des agendas -->
 			{% if agendas|length > 0 %}
@@ -123,7 +123,7 @@
 			<div class="row justify-content-center mt-5 h-75">
 				<div class="col-md-6">
                     <a class="" href="index.php?controleur=agenda&methode=lister" role="button"><img src="image/retour.png" style="width: 35px;" alt="retour"></a>
-					<h1 class="text-center py-5">Ajouter un agenda</h1>
+					<h1 class="text-center py-5"><i class="fa-solid fa-calendar-days"></i> Ajouter un agenda</h1>
 					<form id="formAjouteAgenda" action="index.php?controleur=agenda&methode=ajouterAgenda" method="post" required>
 						<div class="mb-3">
 							<label for="nom" class="form-label">Nom *</label>

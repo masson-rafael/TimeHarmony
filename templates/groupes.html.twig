@@ -10,10 +10,10 @@
 		<div class="container">
 			{% if modification == false and creation == false %}
 				<div class="row text-center mt-3 mb-3">
-					<h1 class="text-center py-5">Mes Groupes</h1>
+					<h1 class="text-center py-5"><i class="fa-solid fa-users"></i> Mes Groupes</h1>
 				</div>
 				{% if groupes|length > 0 %}
-					<table id="myTable" class="table groupe table-striped">
+					<table id="myTable" class="table groupe table-striped table-bordered">
 						<thead>
 							<tr>
 								<th>Nom</th>
@@ -30,9 +30,9 @@
 									<td>{{ nombrePersonnes[loop.index0] }}</td>
 									<td>
 										<a role="button" href="index.php?controleur=groupes&methode=afficherPageModification&id={{ groupe.id }}">
-										<i class="fa-solid fa-pencil"></i></a>
+										<i class="fa-solid fa-pencil fa-2xl text-primary"></i></a>
 										<a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleSuppression{{ groupe.id }}">
-										<i class="fa-solid fa-trash"></i></a>
+										<i class="fa-solid fa-trash fa-2xl text-danger"></i></a>
 									</td>
 								</tr>
 								<div class="modal fade" id="fenetreModaleSuppression{{ groupe.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -74,7 +74,7 @@
 				</div>
 			{% elseif modification %}
 				<div class="row text-center mt-3 mb-3">
-					<h1>Modifier mon groupe</h1>
+					<h1 class="text-center py-5"><i class="fa-solid fa-users"></i> Modifier mon groupe</h1>
 				</div>
 				<div
 					class="d-flex align-items-center">
@@ -128,7 +128,7 @@
 				<div class="row justify-content-center mt-5 h-75">
 					<div class="col-md-6">
 						<a class="" href="index.php?controleur=groupes&methode=lister" role="button"><img src="image/retour.png" style="width: 35px;" alt="retour"></a>
-						<h4 class="text-center mb-4">Créer un groupe</h4>
+						<h1 class="text-center py-5"><i class="fa-solid fa-users"></i> Créer un groupe</h1>
 						<form id="formCreationGroupe" class="justify-content-center align-items-center" action="index.php?controleur=groupes&methode=creer" method="post" required>
 							<div class="mb-3">
 								<label for="nom" class="form-label">Nom *</label>
