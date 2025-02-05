@@ -10,9 +10,9 @@
 	<main>
 	<div class="container-fluid">
     <div class="row justify-content-center align-items-center h-100">
-        <div class="col-12 col-md-10 col-lg-8 mt-5">
+        <div class="col-12 col-md-10 col-lg-8 mt-3">
             {% if CGDU %}
-                <header class="text-center mb-4">
+                <header class="text-center mb-3">
                     <h1 class="text-center py-5">Conditions Générales d'Utilisation (CGU)</h1>
                     <p><strong>Dernière mise à jour :</strong> 31/01/2025</p>
                 </header>
@@ -135,9 +135,9 @@
                     </div>
             {% elseif contact %}
 					<!-- Card for the contact form -->
-					<div class="card card_custom shadow-lg w-100" style="height: auto; padding: 1rem;">
+					<div class="card card_custom shadow-lg w-100 p-2">
 						<div class="card-body">
-							<h4 class="card-title text-center mb-4" style="font-size: 1.5rem;">Formulaire de Contact</h4>
+							<h4 class="card-title text-center mb-4 fs-3">Formulaire de Contact</h4>
 							<form id="formContact" action="index.php?controleur=informations&methode=envoyer" method="post">
 								<!-- Email Field -->
 								<div class="mb-3">
@@ -148,7 +148,7 @@
 								<!-- Dropdown Field -->
 								<div class="mb-3">
 									<label for="contactReason" class="form-label">Motif de contact</label>
-									<select name="motif" id="contactReason" class="form-select form-select-lg" required>
+									<select name="motif" id="contactReason" class="form-select form-control form-select-lg" required>
 										<option value="" disabled selected>Choisissez un motif...</option>
 										<option value="Demande generale d'information">Demande d'informations</option>
 										<option value="Question conditions generales d'utilisation">Question conditions générales d'utilisation</option>
@@ -176,8 +176,8 @@
 					</div>
 
             {% elseif aPropos %}
-				<header class="text-center mb-4">
-					<h1 class="text-center py-5">A propos</h1>
+				<header class="text-center mb-3">
+					<h1 class="text-center py-5">À propos</h1>
 					<p><strong>Dernière mise à jour :</strong> 20/12/2024</p>
 				</header>
 
@@ -212,7 +212,7 @@
 
 			{% elseif PDC %}
 				<div class="col-12">
-					<header class="text-center mb-4">
+					<header class="text-center mb-3">
 						<h1 class="text-center py-5">Politique de Confidentialité</h1>
 						<p><strong>Dernière mise à jour :</strong> 19/12/2024</p>
 					</header>

@@ -80,7 +80,7 @@
 														</div>
 														<div class="form-group mt-2">
 															<label class="p-1" for="statut">Statut *</label>
-															<select class="form-control bg-secondary" id="statut" name="statut">
+															<select class="form-control" id="statut" name="statut">
 																<option class="bg-secondary" selected>{{ utilisateur.getStatutCompte|capitalize }}</option>
 																{% if utilisateur.getStatutCompte == 'actif' %}
 																	<option class="bg-secondary" value="desactive">Désactivé</option>
