@@ -114,14 +114,14 @@
 										<div class="modal-content shadow-lg">
 											<form action="index.php?controleur=utilisateur&methode=supprimer&id={{ utilisateur.getId }}&type='admin'" method="POST">
 												<div class="modal-header bg-danger">
-													<h5 class="text-secondary modal-title" id="exampleModalLabel">Supprimer mon compte</h5>
+													<h5 class="text-secondary modal-title" id="exampleModalLabel">Supprimer le compte de {{ utilisateur.getPrenom }} {{ utilisateur.getNom }}</h5>
 													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 												</div>
 												<div class="modal-body text-center p-3">
 													<p class="fs-5 text-danger">
 														<strong>!! Attention !!</strong><br>
-														Vous êtes sur le point de supprimer le compte
-														{{utilisateur.getNom}}. Cette action est irréversible.
+														Vous êtes sur le point de supprimer le compte de {{ utilisateur.getPrenom }} {{utilisateur.getNom}}. 
+														Cette action est irréversible.
 													</p>
 												</div>
 												<div class="modal-footer d-flex justify-content-center">

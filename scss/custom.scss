@@ -203,6 +203,16 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
     }
 }
 
+.form-check-input{
+    background-color: $secondary;
+    border-color: $primary !important;
+    box-shadow: $primary !important;
+    padding: 0.75rem;
+    &:checked {
+        background-color: $primary;
+    }
+}
+
 .photos {
     width: 50px;
     height: 50px;

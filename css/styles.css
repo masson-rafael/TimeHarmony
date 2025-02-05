@@ -12165,6 +12165,16 @@ textarea.form-control-lg {
   border-color: #64a19d;
 }
 
+.form-check-input {
+  background-color: #f6f6f6;
+  border-color: #64a19d !important;
+  box-shadow: #64a19d !important;
+  padding: 0.75rem;
+}
+.form-check-input:checked {
+  background-color: #64a19d;
+}
+
 .photos {
   width: 50px;
   height: 50px;
