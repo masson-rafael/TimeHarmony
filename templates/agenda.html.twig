@@ -120,9 +120,8 @@
 
         {% if ajout %}
 			<!-- Formulaire d'ajout d'agenda -->
-			<div class="row justify-content-center mt-5 h-75">
+			<div class="row mt-3 mb-3 justify-content-center">
 				<div class="col-md-6">
-                    <a class="" href="index.php?controleur=agenda&methode=lister" role="button"><img src="image/retour.png" style="width: 35px;" alt="retour"></a>
 					<h1 class="text-center py-5"><i class="fa-solid fa-calendar-plus"></i> Ajouter un agenda</h1>
 					<form id="formAjouteAgenda" action="index.php?controleur=agenda&methode=ajouterAgenda" method="post" required>
 						<div class="mb-3">
@@ -146,6 +145,7 @@
                         </div>
                         <div class="mb-3 text-center pt-3">
                             <button id="boutonAjoutAgenda" type="submit" class="btn btn-primary ">Ajouter un agenda</button>
+                            <a class="btn btn-secondary" href="index.php?controleur=agenda&methode=lister">Annuler</a>
                         </div>
 					</form>
 				</div>
