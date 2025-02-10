@@ -149,6 +149,7 @@ function verifierPresence(champ, error) {
         return false;
     }
     champ.style.borderColor = '';
+    error.textContent = '';
     return true;
 }
 

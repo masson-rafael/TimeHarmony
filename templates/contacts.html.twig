@@ -6,14 +6,14 @@
 
 {% block content %}
 	<main>
-		<div class="container-fluid">
+		<div class="container">
 			{% if contacts is not null %}
 				<div class="row text-center mt-3 mb-3">
-					<h1>Mes contacts</h1>
+					<h1 class="text-center py-5"><i class="fa-regular fa-comments"></i> Mes contacts</h1>
 				</div>
 				{% if contacts|length > 0 %}
 					<div class="container-lg table-responsive">
-						<table id="myTable" class="table contact table-striped">
+						<table id="myTable" class="table contact table-striped table-bordered">
 							<thead>
 								<tr>
 									<th></th>
@@ -27,8 +27,8 @@
 								{% for utilisateur in contacts %}
 									<tr>
 										<td>
-											<div class="d-flex justify-content-center align-items-center" style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; background-color: #fff;">
-												<img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil" style="width: 100%; height: 100%; object-fit: cover;">
+											<div>
+												<img class="photos" src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil">
 											</div>
 										</td>
 										<td>{{ utilisateur.getPrenom }}</td>
@@ -36,14 +36,14 @@
 										<td>{{ utilisateur.getEmail }}</td>
 										<td>
 											<a role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ utilisateur.getId }}" aria-expanded="false">
-												<i class="fa-solid fa-trash"></i>
+												<i class="fa-solid fa-user-minus fa-2xl text-danger"></i>
 											</a>
 										</td>
 									</tr>
 									<div class="modal fade" id="fenetreModale{{ utilisateur.getId }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-										<div class="modal-dialog modal-dialog-centered">
+										<div class="modal-dialog modal-md">
 											<div class="modal-content">
-												<div class="modal-header">
+												<div class="modal-header bg-danger text-secondary">
 													<h1 class="modal-title fs-5" id="exampleModalLabel">Suppression du contact
 														{{ utilisateur.getPrenom }}
 														{{ utilisateur.getNom }}</h1>
@@ -81,12 +81,12 @@
 					<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
 				</div>
 			{% else %}
-			<div class="d-flex align-items-center justify-content-between mt-3 mb-3">
-    			<a href="index.php?controleur=contacts&methode=lister" role="button" style="margin: 10px;"><img src="image/retour.png" style="width: 35px;" alt="retour"></a>
-    			<h1 class="flex-grow-1 text-center m-0">Ajouter un contact</h1>
+			<div class="row text-center mt-3 mb-3">
+    			<a href="index.php?controleur=contacts&methode=lister" role="button"><img src="image/retour.png" style="width: 35px;" alt="retour"></a>
+    			<h1 class="text-center py-5"><i class="fa-solid fa-user-plus"></i> Ajouter un contact</h1>
 			</div>
-
-				<table id="myTable" class="table contact table-striped">
+			<div class="row justify-content-center">
+				<table id="myTable" class="table contact table-striped table-bordered">
 					<thead>
 						<tr>
 							<th></th>
@@ -100,8 +100,8 @@
 						{% for utilisateur in utilisateurs %}
 							<tr>
 								<td>
-									<div class="d-flex justify-content-center align-items-center" style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; background-color: #fff;">
-										<img src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil" style="width: 100%; height: 100%; object-fit: cover;">
+									<div>
+										<img class="photos" src="image/photo_user/{{ utilisateur.getPhotoDeProfil }}" alt="photoDeProfil">
 									</div>
 								</td>
 								<td>{{ utilisateur.getPrenom }}</td>
@@ -109,14 +109,14 @@
 								<td>{{ utilisateur.getEmail }}</td>
 								<td>
 									<a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModale{{utilisateur.getId}}" aria-expanded="false">
-										<i class="fa-solid fa-plus"></i>
+										<i class="fa-solid fa-plus fa-2xl text-primary"></i>
 									</a>
 								</td>
 							</tr>
 							<div class="modal fade" id="fenetreModale{{utilisateur.getId}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 								<div class="modal-dialog modal-lg">
 									<div class="modal-content">
-										<div class="modal-header">
+										<div class="modal-header bg-primary text-secondary">
 											<h1 class="modal-title fs-5" id="exampleModalLabel">Ajout du contact
 												{{utilisateur.getPrenom}}
 												{{utilisateur.getNom}}</h1>
@@ -140,8 +140,7 @@
 						{% endfor %}
 					</tbody>
 				</table>
-				<div class="text-center">
-				</div>
+			</div>
 			{% endif %}
 			<!-- Affichage des messages -->
 			{% if message %}

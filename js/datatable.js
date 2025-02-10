@@ -12,7 +12,6 @@ $(document).ready(function() {
             ordering: true,
             responsive: true,
             autoWidth: false,
-            scrollX: true,
             order: [[0, 'asc']]
         };
 

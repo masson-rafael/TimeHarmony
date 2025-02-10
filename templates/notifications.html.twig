@@ -7,37 +7,39 @@
     <div class="container">
         <div class="row">
             <div class="row text-center mt-3">
-				<strong><h1>Mes demandes de contact</h1></strong>
+				<h1 class="text-center py-5"><i class="fa-solid fa-envelope"></i> Mes demandes de contact</h1>
 			</div>
-            <div class="row text-center mt-5 mb-3 pt-5">
-				<h3>Mes demandes envoyées</h3>
+            <div class="row text-center mb-3">
+				<h3><i class="fa-solid fa-paper-plane"></i> Mes demandes envoyées</h3>
 			</div>
 			{% if demandesContactEnvoyees|length > 0 %}
-				<table id="myTable1" class="table notif table-striped mw-75"> <!-- w-75 fonctionne mais pas mw-75 SUS -->
+				<table id="myTable1" class="table notif table-striped table-bordered w-100">
 					<thead>
 						<tr>
 							<th></th>
 							<th>Prenom</th>
 							<th>Nom</th>
+							<th>Email</th>
 							<th></th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for demande in demandesContactEnvoyees %}
 							<tr>
-								<td><img src="image/photo_user/{{ demande.photoDeProfil }}" alt="photoDeProfil"  class="rounded-circle" style="width: 50px; height: 50px;"></td>
+								<td><img src="image/photo_user/{{ demande.photoDeProfil }}" alt="photoDeProfil"  class="photos"></td>
 								<td>{{ demande.prenom }}</td>
 								<td>{{ demande.nom }}</td>
+								<td>{{ demande.email }}</td>
 								<td>
 									<a class="" role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModaleDemandeAnnulation{{demande.id}}" aria-expanded="false">
-										<i class="fa-solid fa-trash"></i>
+										<i class="fa-solid fa-trash fa-2xl text-danger"></i>
 									</a>
 								</td>
 							</tr>
 							<div class="modal fade" id="fenetreModaleDemandeAnnulation{{demande.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 								<div class="modal-dialog modal-lg">
 									<div class="modal-content">
-										<div class="modal-header">
+										<div class="modal-header bg-danger text-secondary">
 											<h1 class="modal-title fs-5" id="exampleModalLabel">Suppression de la demande de contact de
 												{{demande.prenom}}
 												{{demande.nom}}</h1>
@@ -51,7 +53,7 @@
 													?</label>
 											</div>
 											<div class="modal-footer">
-												<button type="submit" class="btn btn-primary" name="update_article">Supprimer</button>
+												<button type="submit" class="btn btn-danger" name="update_article">Supprimer</button>
 												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
 											</div>
 										</form>
@@ -71,36 +73,38 @@
 				</div>
 			{% endif %}
 
-			<div class="row text-center mb-3 pt-5 mt-5">
-				<h3>Mes demandes reçues</h3>
+			<div class="row text-center my-3">
+				<h3><i class="fa-solid fa-arrow-left"></i> Mes demandes reçues</h3>
 			</div>
 			{% if demandesContactRecues|length > 0 %}
-			<table id="myTable2" class="table notif table-striped mw-75">
+			<table id="myTable2" class="table notif table-striped table-bordered w-100">
 				<thead>
 					<tr>
 						<th></th>
 						<th>Prenom</th>
 						<th>Nom</th>
+						<th>Email</th>
 						<th></th>
 					</tr>
 				</thead>
 				<tbody>
 					{% for demande in demandesContactRecues %}
 						<tr>
-							<td><img src="image/photo_user/{{ demande.photoDeProfil }}" alt="photoDeProfil"  class="rounded-circle" style="width: 50px; height: 50px;"></td>
+							<td><img src="image/photo_user/{{ demande.photoDeProfil }}" alt="photoDeProfil"  class="photos"></td>
 							<td>{{ demande.prenom }}</td>
 							<td>{{ demande.nom }}</td>
+							<td>{{ demande.email }}</td>
 							<td>
 								<a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleRecueAccepte{{demande.id}}" aria-expanded="false">
-								<i class="fa-solid fa-check"></i></a>
+								<i class="fa-solid fa-check fa-2xl text-primary"></i></a>
 								<a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleRecueRefuse{{demande.id}}" aria-expanded="false">
-								<i class="fa-solid fa-trash"></i></a>
+								<i class="fa-solid fa-trash fa-2xl text-danger"></i></a>
 							</td>
 						</tr>
 						<div class="modal fade" id="fenetreModaleRecueAccepte{{demande.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 							<div class="modal-dialog modal-lg">
 								<div class="modal-content">
-									<div class="modal-header">
+									<div class="modal-header bg-primary text-secondary">
 										<h1 class="modal-title fs-5" id="exampleModalLabel">Accepter la demande de 
 											{{demande.prenom}}
 											{{demande.nom}}</h1>
@@ -124,7 +128,7 @@
 						<div class="modal fade" id="fenetreModaleRecueRefuse{{demande.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 							<div class="modal-dialog modal-lg">
 								<div class="modal-content">
-									<div class="modal-header">
+									<div class="modal-header bg-danger text-secondary">
 										<h1 class="modal-title fs-5" id="exampleModalLabel">Refuser la demande de 
 											{{demande.prenom}}
 											{{demande.nom}}</h1>
@@ -138,7 +142,7 @@
 												?</label>
 										</div>
 										<div class="modal-footer">
-											<button type="submit" class="btn btn-primary" name="update_article">Refuser</button>
+											<button type="submit" class="btn btn-danger" name="update_article">Refuser</button>
 											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
 										</div>
 									</form>
@@ -162,92 +166,6 @@
 			</div>
 			<div class="text-center pt-3">
 				<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
-			</div>
-			<div class="row text-center mt-3">
-				<strong><h1>Mes demandes de groupe</h1></strong>
-			</div>
-			<div class="row text-center mb-3 pt-5 mt-5">
-				<h3>Mes demandes reçues</h3>
-			</div>
-			{% if demandesGroupeRecues|length > 0 %}
-			<table id="myTable2" class="table table-striped mw-75">
-				<thead>
-					<tr>
-						<th>Nom du Groupe</th>
-						<th>Description</th>
-						<th>Chef</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for demande in demandesGroupeRecues %}
-						<tr>
-							<td>{{ demande.nomGr }}</td>
-							<td>{{ demande.description }}</td>
-							<td>{{ demande.nom }} {{ demande.prenom }}</td>
-							<td>
-								<a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleRecueAccepte{{demande.id}}" aria-expanded="false">
-								<i class="fa-solid fa-check"></i></a>
-								<a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleRecueRefuse{{demande.id}}" aria-expanded="false">
-								<i class="fa-solid fa-trash"></i></a>
-							</td>
-						</tr>
-						<div class="modal fade" id="fenetreModaleRecueAccepte{{demande.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-							<div class="modal-dialog modal-lg">
-								<div class="modal-content">
-									<div class="modal-header">
-										<h1 class="modal-title fs-5" id="exampleModalLabel">Accepter la demande d'ajout au groupe {{demande.nomGr}}</h1>
-										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<form action="index.php?controleur=utilisateur&methode=accepterDemandeGroupeRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
-										<div class="modal-body">
-											<label>Êtes-vous sûr de vouloir accepter la demande d'ajout au groupe {{demande.nomGr}}	?</label>
-										</div>
-										<div class="modal-footer">
-											<button type="submit" class="btn btn-primary" name="update_article">Accepter</button>
-											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-						<div class="modal fade" id="fenetreModaleRecueRefuse{{demande.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-							<div class="modal-dialog modal-lg">
-								<div class="modal-content">
-									<div class="modal-header">
-										<h1 class="modal-title fs-5" id="exampleModalLabel">Refuser la demande d'ajout au groupe {{demande.nomGr}}</h1>
-										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<form action="index.php?controleur=utilisateur&methode=refuserDemandeGroupeRecue&id={{ demande.id }}" method="POST" enctype="multipart/form-data">
-										<div class="modal-body">
-											<label>Êtes-vous sûr de vouloir refuser la demande d'ajout au groupe {{demande.nomGr}} ?</label>
-										</div>
-										<div class="modal-footer">
-											<button type="submit" class="btn btn-primary" name="update_article">Refuser</button>
-											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-					{% endfor %}
-				</tbody>
-			</table>
-			{% else %}
-				<div class="row justify-content-center mt-4 h-25">
-					<div class="col-md-8">
-						<div class="alert alert-info text-center" role="alert">
-							Aucune demande en attente. Revenez plus tard !
-						</div>
-					</div>
-				</div>
-			{% endif %}
-
-			<div class="text-center pt-5">
-				<a class="px-5 btn btn-secondary" href="index.php?controleur=groupes&methode=lister" role="button">Afficher mes groupes</a>
-			</div>
-			<div class="text-center pt-3">
-				<a class="px-5 btn btn-primary" href="index.php?controleur=groupes&methode=ajouter" role="button">Créer un groupe</a>
 			</div>
         </div>
 		<!-- Affichage des messages -->

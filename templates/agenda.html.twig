@@ -9,7 +9,7 @@
 		<div class="container">
         {% if ajout == false %}
             <div class="row text-center mt-3 mb-3">
-                <h1>Mes Agendas</h1>
+                <h1 class="text-center py-5"><i class="fa-solid fa-calendar-days"></i> Mes Agendas</h1>
             </div>
 			<!-- Liste des agendas -->
 			{% if agendas|length > 0 %}
@@ -27,7 +27,7 @@
                     {% for agenda in agendas %}
                     <tr>
                         <td>{{ agenda.nom }}</td>
-                        <td><p class="text-wrap text-truncate" style="width: 200px;"><a href="{{ agenda.url }}">{{ agenda.url }}</a></p></td>
+                        <td><p class="text-wrap text-truncate"><a class="text-primary" href="{{ agenda.url }}">{{ agenda.url }}</a></p></td>
                         <td>
                             <div class="d-flex">
                                 <span class="rounded-circle me-2" style="width: 20px; height: 20px; background-color: {{ agenda.couleur }};"></span>
@@ -36,15 +36,15 @@
                         </td>
                         <td>
                             <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ agenda.id }}">
-                            <i class="fa-solid fa-pencil"></i></a>
+                            <i class="fa-solid fa-pencil fa-2xl text-primary"></i></a>
                             <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleSuppression{{ agenda.id }}" >
-                            <i class="fa-solid fa-trash"></i></a>
+                            <i class="fa-solid fa-trash fa-2xl text-danger"></i></a>
                         </td>
                     </tr>
                     <div class="modal fade" id="fenetreModale{{ agenda.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
-                                <div class="modal-header">
+                                <div class="modal-header bg-primary text-secondary">
                                     <h1 class="modal-title fs-5" id="exampleModalLabel">Modification de l'agenda {{ agenda.nom }}</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
@@ -83,7 +83,7 @@
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <form action="index.php?controleur=agenda&methode=supprimerAgenda&id={{ agenda.id }}" method="POST">
-                                    <div class="modal-header">
+                                    <div class="modal-header bg-danger text-secondary">
                                         <h1 class="modal-title fs-5" id="exampleModalLabel">Supprimer l'agenda {{ agenda.nom }}</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
@@ -123,7 +123,7 @@
 			<div class="row justify-content-center mt-5 h-75">
 				<div class="col-md-6">
                     <a class="" href="index.php?controleur=agenda&methode=lister" role="button"><img src="image/retour.png" style="width: 35px;" alt="retour"></a>
-					<h4 class="text-center mb-4">Ajouter un agenda</h4>
+					<h1 class="text-center py-5"><i class="fa-solid fa-calendar-plus"></i> Ajouter un agenda</h1>
 					<form id="formAjouteAgenda" action="index.php?controleur=agenda&methode=ajouterAgenda" method="post" required>
 						<div class="mb-3">
 							<label for="nom" class="form-label">Nom *</label>
