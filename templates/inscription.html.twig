@@ -9,21 +9,23 @@
 		<div class="container">
 		{% if utilisateurGlobal == null %}
 			<div class="row justify-content-center align-items-center h-100 pt-5">
-				<div class="col-6 d-flex align-items-center">
+				<div class="col-8 d-flex align-items-center">
 					<!-- Card for the form -->
 					<div class="card card_custom shadow-lg w-100 p-2">
 						<div class="card-body ">
 							<h4 class="card-title text-center mb-4 fs-3">Inscription</h4>
 							<form id="form" action="index.php?controleur=utilisateur&methode=inscription" method="post" required>
-								<div class="mb-3">
-									<label for="nom" class="form-label">Nom *</label>
-									<input type="text" name="nom" class="form-control form-control-lg" id="nom" placeholder="Entrez votre nom" required maxlength="50" minlength="2" title="Entrez votre vrai nom pour votre compte">
-									<small id="nomError" class="text-danger"></small>
-								</div>
-								<div class="mb-3">
-									<label for="prenom" class="form-label">Prénom *</label>
-									<input type="text" name="prenom" class="form-control form-control-lg" id="prenom" placeholder="Entrez votre prénom" required maxlength="50" minlength="2" title="Entrez votre vrai prénom pour votre compte">
-									<small id="prenomError" class="text-danger"></small>
+								<div class="row mb-3">
+									<div class="col-12 col-md-6">
+										<label for="nom" class="form-label">Nom *</label>
+										<input type="text" name="nom" class="form-control form-control-lg" id="nom" placeholder="Entrez votre nom" required maxlength="50" minlength="2" title="Entrez votre vrai nom pour votre compte">
+										<small id="nomError" class="text-danger"></small>
+									</div>
+									<div class="col-12 col-md-6">
+										<label for="prenom" class="form-label">Prénom *</label>
+										<input type="text" name="prenom" class="form-control form-control-lg" id="prenom" placeholder="Entrez votre prénom" required maxlength="50" minlength="2" title="Entrez votre vrai prénom pour votre compte">
+										<small id="prenomError" class="text-danger"></small>
+									</div>
 								</div>
 								<div class="mb-3">
 									<label for="email" class="form-label">E-mail *</label>
