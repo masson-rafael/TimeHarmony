@@ -7,10 +7,10 @@
     <div class="container">
         <div class="row">
             <div class="row text-center mt-3">
-				<h1 class="text-center py-5">Mes demandes de contact</h1>
+				<h1 class="text-center py-5"><i class="fa-solid fa-envelope"></i> Mes demandes de contact</h1>
 			</div>
             <div class="row text-center mb-3">
-				<h3>Mes demandes envoyées</h3>
+				<h3><i class="fa-solid fa-paper-plane"></i> Mes demandes envoyées</h3>
 			</div>
 			{% if demandesContactEnvoyees|length > 0 %}
 				<table id="myTable1" class="table notif table-striped table-bordered w-100">
@@ -74,7 +74,7 @@
 			{% endif %}
 
 			<div class="row text-center my-3">
-				<h3>Mes demandes reçues</h3>
+				<h3><i class="fa-solid fa-arrow-left"></i> Mes demandes reçues</h3>
 			</div>
 			{% if demandesContactRecues|length > 0 %}
 			<table id="myTable2" class="table notif table-striped table-bordered w-100">

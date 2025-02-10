@@ -36,7 +36,7 @@
 										<td>{{ utilisateur.getEmail }}</td>
 										<td>
 											<a role="button" href="" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ utilisateur.getId }}" aria-expanded="false">
-												<i class="fa-solid fa-trash fa-2xl text-danger"></i>
+												<i class="fa-solid fa-user-minus fa-2xl text-danger"></i>
 											</a>
 										</td>
 									</tr>
@@ -83,7 +83,7 @@
 			{% else %}
 			<div class="row text-center mt-3 mb-3">
     			<a href="index.php?controleur=contacts&methode=lister" role="button"><img src="image/retour.png" style="width: 35px;" alt="retour"></a>
-    			<h1 class="text-center py-5"><i class="fa-regular fa-comments"></i> Ajouter un contact</h1>
+    			<h1 class="text-center py-5"><i class="fa-solid fa-user-plus"></i> Ajouter un contact</h1>
 			</div>
 			<div class="row justify-content-center">
 				<table id="myTable" class="table contact table-striped table-bordered">
