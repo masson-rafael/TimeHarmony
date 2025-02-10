@@ -84,6 +84,7 @@ class ControllerAssistant extends Controller
     public function afficherPersonnesSouhaitees(?array $tabMessages = null, ?bool $contientErreurs = false): void {
         if(isset($_POST['contactsObligatoires'])) {
             $_SESSION['contactsObligatoires'] = $_POST['contactsObligatoires'];
+            var_dump($_POST['contactsObligatoires']);
         } else {
             $personnesObligatoires = [];
             $personnesObligatoires[] = $_SESSION['utilisateur']->getId();
@@ -94,8 +95,6 @@ class ControllerAssistant extends Controller
             $_SESSION['groupesObligatoires'] = $_POST['groupes'];
             var_dump($_POST['groupes']);
         }
-
-        var_dump($_POST['contactsObligatoires']);
 
         $utilisateur = $_SESSION['utilisateur'];
         $contacts = $utilisateur->getContact($utilisateur->getId());
@@ -304,6 +303,11 @@ class ControllerAssistant extends Controller
                 $tableauUtilisateur[] = $managerUtilisateur->find($idUtilisateurCourant);
             }
             $tableauUtilisateur[] = $_SESSION['utilisateur'];
+            foreach ($_SESSION['contacts'] as $contact) {
+                if(!in_array($contact, $contacts)) {
+                    $tableauUtilisateur[] = $managerUtilisateur->find($contact);
+                }
+            }
 
             $contactsPrioritaires = [];
             if(!empty($contactsPrio)) {
@@ -364,6 +368,13 @@ class ControllerAssistant extends Controller
             // $chronoStart = new DateTime();
 
             // Génération des dates pour la période
+            //var_dump($tableauUtilisateur);
+            var_dump($_SESSION['contacts']);
+
+            foreach($tableauUtilisateur as $utilisateur) {
+                var_dump($utilisateur->getNom());
+            }
+
             $dates = $assistantRecherche->genererDates($debut, $fin);
             
             // $chronoEnd = new DateTime();

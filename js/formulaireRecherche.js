@@ -214,5 +214,4 @@ function verifierTousLesChamps() {
 
     // Activer ou désactiver le bouton en fonction des validations
     btn.disabled = !(dateDebutCorrect && dateFinCorrect && presenceCorrect && dureeCorrect && contactCorrect && groupesContactCorrect && debutPlageCorrect && finPlageCorrect);
-
 }
