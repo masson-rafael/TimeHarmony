@@ -26,7 +26,7 @@
   --bs-gray-900: #212529;
   --bs-primary: #64a19d;
   --bs-secondary: #f6f6f6;
-  --bs-tertiary: #e6e6e6;
+  --bs-tertiary: #e3e3e3;
   --bs-success: #67c29c;
   --bs-info: #1cabc4;
   --bs-warning: #e4c662;
@@ -34,7 +34,7 @@
   --bs-primary-hover: #5a908c;
   --bs-primary-rgb: 100, 161, 157;
   --bs-secondary-rgb: 246, 246, 246;
-  --bs-tertiary-rgb: 230, 230, 230;
+  --bs-tertiary-rgb: 227, 227, 227;
   --bs-success-rgb: 103, 194, 156;
   --bs-info-rgb: 28, 171, 196;
   --bs-warning-rgb: 228, 198, 98;
@@ -208,7 +208,7 @@
   --bs-gray-900: #212529;
   --bs-primary: #64a19d;
   --bs-secondary: #f6f6f6;
-  --bs-tertiary: #e6e6e6;
+  --bs-tertiary: #e3e3e3;
   --bs-success: #67c29c;
   --bs-info: #1cabc4;
   --bs-warning: #e4c662;
@@ -216,7 +216,7 @@
   --bs-primary-hover: #5a908c;
   --bs-primary-rgb: 100, 161, 157;
   --bs-secondary-rgb: 246, 246, 246;
-  --bs-tertiary-rgb: 230, 230, 230;
+  --bs-tertiary-rgb: 227, 227, 227;
   --bs-success-rgb: 103, 194, 156;
   --bs-info-rgb: 28, 171, 196;
   --bs-warning-rgb: 228, 198, 98;
@@ -3179,19 +3179,19 @@ textarea.form-control-lg {
 
 .btn-tertiary {
   --bs-btn-color: #000;
-  --bs-btn-bg: #e6e6e6;
-  --bs-btn-border-color: #e6e6e6;
+  --bs-btn-bg: #e3e3e3;
+  --bs-btn-border-color: #e3e3e3;
   --bs-btn-hover-color: #000;
-  --bs-btn-hover-bg: rgb(233.75, 233.75, 233.75);
-  --bs-btn-hover-border-color: rgb(232.5, 232.5, 232.5);
-  --bs-btn-focus-shadow-rgb: 196, 196, 196;
+  --bs-btn-hover-bg: rgb(231.2, 231.2, 231.2);
+  --bs-btn-hover-border-color: rgb(229.8, 229.8, 229.8);
+  --bs-btn-focus-shadow-rgb: 193, 193, 193;
   --bs-btn-active-color: #000;
-  --bs-btn-active-bg: #ebebeb;
-  --bs-btn-active-border-color: rgb(232.5, 232.5, 232.5);
+  --bs-btn-active-bg: rgb(232.6, 232.6, 232.6);
+  --bs-btn-active-border-color: rgb(229.8, 229.8, 229.8);
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   --bs-btn-disabled-color: #000;
-  --bs-btn-disabled-bg: #e6e6e6;
-  --bs-btn-disabled-border-color: #e6e6e6;
+  --bs-btn-disabled-bg: #e3e3e3;
+  --bs-btn-disabled-border-color: #e3e3e3;
 }
 
 .btn-success {
@@ -3314,19 +3314,19 @@ textarea.form-control-lg {
 }
 
 .btn-outline-tertiary {
-  --bs-btn-color: #e6e6e6;
-  --bs-btn-border-color: #e6e6e6;
+  --bs-btn-color: #e3e3e3;
+  --bs-btn-border-color: #e3e3e3;
   --bs-btn-hover-color: #000;
-  --bs-btn-hover-bg: #e6e6e6;
-  --bs-btn-hover-border-color: #e6e6e6;
-  --bs-btn-focus-shadow-rgb: 230, 230, 230;
+  --bs-btn-hover-bg: #e3e3e3;
+  --bs-btn-hover-border-color: #e3e3e3;
+  --bs-btn-focus-shadow-rgb: 227, 227, 227;
   --bs-btn-active-color: #000;
-  --bs-btn-active-bg: #e6e6e6;
-  --bs-btn-active-border-color: #e6e6e6;
+  --bs-btn-active-bg: #e3e3e3;
+  --bs-btn-active-border-color: #e3e3e3;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #e6e6e6;
+  --bs-btn-disabled-color: #e3e3e3;
   --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: #e6e6e6;
+  --bs-btn-disabled-border-color: #e3e3e3;
   --bs-gradient: none;
 }
 
@@ -6986,8 +6986,8 @@ textarea.form-control-lg {
   text-decoration-color: RGBA(var(--bs-tertiary-rgb), var(--bs-link-underline-opacity, 1)) !important;
 }
 .link-tertiary:hover, .link-tertiary:focus {
-  color: RGBA(235, 235, 235, var(--bs-link-opacity, 1)) !important;
-  text-decoration-color: RGBA(235, 235, 235, var(--bs-link-underline-opacity, 1)) !important;
+  color: RGBA(233, 233, 233, var(--bs-link-opacity, 1)) !important;
+  text-decoration-color: RGBA(233, 233, 233, var(--bs-link-underline-opacity, 1)) !important;
 }
 
 .link-success {
@@ -12039,7 +12039,7 @@ textarea.form-control-lg {
   background-color: #f6f6f6 !important;
 }
 .dataTables_wrapper .dataTables_length select option:hover {
-  background-color: #e6e6e6 !important;
+  background-color: #e3e3e3 !important;
 }
 .dataTables_wrapper .dataTables_filter input,
 .dataTables_wrapper .dataTables_length select {
@@ -12092,7 +12092,7 @@ textarea.form-control-lg {
 }
 .dataTables_wrapper .page-item.active .page-link {
   background-color: #64a19d !important;
-  border-color: #e6e6e6 !important;
+  border-color: #e3e3e3 !important;
   color: #f6f6f6 !important;
 }
 .dataTables_wrapper .page-item.active .page-link:hover {
@@ -12100,18 +12100,18 @@ textarea.form-control-lg {
 }
 .dataTables_wrapper .page-item.disabled .page-link {
   background-color: rgba(246, 246, 246, 0.5) !important;
-  border-color: #e6e6e6 !important;
+  border-color: #e3e3e3 !important;
   color: rgb(144.5, 144.5, 144.5) !important;
 }
 .dataTables_wrapper .page-item .page-link {
   background-color: #f6f6f6 !important;
-  border-color: #e6e6e6 !important;
+  border-color: #e3e3e3 !important;
   color: #111 !important;
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
 }
 .dataTables_wrapper .page-item .page-link:hover {
-  background-color: #e6e6e6 !important;
+  background-color: #e3e3e3 !important;
   border-color: #64a19d !important;
 }
 .dataTables_wrapper .page-item .page-link:focus {
@@ -12126,11 +12126,11 @@ textarea.form-control-lg {
   color: #f6f6f6;
 }
 .nav-link:hover, .footer:hover {
-  color: #e6e6e6;
+  color: #e3e3e3;
 }
 
 .nav-active {
-  color: rgb(217.25, 217.25, 217.25) !important;
+  color: rgb(214.25, 214.25, 214.25) !important;
 }
 
 .dropdown-item,
@@ -12153,7 +12153,7 @@ textarea.form-control-lg {
   border-color: #64a19d;
 }
 .btn-secondary:hover {
-  background-color: #e6e6e6;
+  background-color: #e3e3e3;
   border-color: #64a19d;
 }
 
@@ -12178,7 +12178,43 @@ textarea.form-control-lg {
 .photos {
   width: 50px;
   height: 50px;
+  object-fit: cover;
   border-radius: 50%;
+}
+
+.container-photo {
+  position: relative;
+}
+
+.photo-profil {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  padding: 0;
+  border: solid 2px #64a19d;
+}
+
+.modif-photo {
+  position: absolute;
+  cursor: pointer;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: white;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  width: 145px;
+  height: 145px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+.modif-photo:hover {
+  opacity: 1;
 }
 
 /*# sourceMappingURL=styles.css.map */

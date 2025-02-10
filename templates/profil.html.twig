@@ -7,95 +7,93 @@
 {% block content %}
 
 	<main>
-		<div class="container-fluid px-4">
-			<div class="row mt-4 justify-content-center">
-				<div class="col-12 col-md-8 p-4 rounded shadow" style="background-color: #f9f9f9;">
-					<h3 class="text-center mb-4" style="color: #2c3e50; font-weight: bold;">Mon Profil</h3>
-					<div class="d-flex flex-column flex-lg-row align-items-center">
-						<!-- Image cercle -->
-						<div class="me-4 w-100 w-md-25 d-flex align-items-center justify-content-center mb-3 mb-md-0">
-							<img src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" alt="Photo de profil" class="rounded-circle shadow-lg" style="width: 120px; height: 120px; border: 4px solid #3498db;">
+		<div class="container-fluid">
+			<div class="row text-center mt-3 mb-3">
+				<h1 class="text-center py-5">Mon Profil</h1>
+			</div>
+			<div class="row justify-content-center align-items-center">
+				<div class="col-8 d-flex align-items-center">
+					<!-- Card for the form -->
+					<div class="card card-body shadow-lg p-4">
+					<form method="POST" id="formProfil" class="justify-content-center align-items-center" action="index.php?controleur=utilisateur&methode=modifierUtilisateur&id={{ utilisateurGlobal.getId }}&type='utilisateur'" enctype="multipart/form-data">
+						<div class="mb-5">
+							<label for="photo" class="form-label container-photo row justify-content-center align-items-center">
+							<img src="{{ utilisateurGlobal.getPhotoDeProfil ? 'image/photo_user/' ~ utilisateurGlobal.getPhotoDeProfil : 'image/utilisateurBase.png' }}" alt="Photo de profil" class="photo-profil">
+							<i class="fa-solid fa-pencil fa-lg modif-photo"></i>
+							</label>
+							<input type="file" class="form-control" hidden id="photo" name="photo" accept=".jpg, .png" title="La photo de profil de votre compte">
 						</div>
-
-						<!-- Formulaire -->
-						<div class="w-75">
-							<form method="POST" id="formProfil" class="justify-content-center align-items-center" action="index.php?controleur=utilisateur&methode=modifierUtilisateur&id={{ utilisateurGlobal.getId }}&type='utilisateur'" enctype="multipart/form-data">
-								<div class="mb-3">
-									<label for="nom" class="form-label" style="color: #2c3e50;">Nom *</label>
-									<input type="text" class="form-control shadow-sm" id="nom" name="nom" value="{{ utilisateurGlobal.getNom }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="50" title="Le nom de votre compte" required>
-									<small id="nomError" class="text-danger"></small>
-								</div>
-								<div class="mb-3">
-									<label for="prenom" class="form-label" style="color: #2c3e50;">Prénom *</label>
-									<input type="text" class="form-control shadow-sm" id="prenom" name="prenom" value="{{ utilisateurGlobal.getPrenom }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="50" title="Le prénom de votre compte" required>
-									<small id="prenomError" class="text-danger"></small>
-								</div>
-								<div class="mb-3">
-									<label for="email" class="form-label" style="color: #2c3e50;">E-mail *</label>
-									<p class="form-text" style="background-color: #ecf0f1; padding: 10px; border-radius: 5px;">{{ utilisateurGlobal.getEmail }}</p>
-									<input type="hidden" class="form-control" id="role" name="role" value="{{ utilisateurGlobal.getEstAdmin }}">
-								</div>
-								<div class="mb-3">
-									<label for="photo" class="form-label" style="color: #2c3e50;">Changer la photo de profil</label>
-									<input type="file" class="form-control shadow-sm" id="photo" name="photo" style="border: 1px solid #ddd;" accept=".jpg, .png" title="La photo de profil de votre compte">
-								</div>
-								<div class="d-flex flex-column flex-md-row justify-content-center align-items-center">
-									<button id="boutonModification" type="submit" class="btn btn-primary shadow-sm me-3" style="background-color: #3498db; border: none;">Modifier mon profil</button>
-									<button class="btn btn-secondary" href="index.php?controleur=utilisateur&methode=demanderReinitialisationMail" role="button">Réinitialiser mon mot de passe</button>
-								</div>
-							</form>
-							<!-- Bouton supprimer -->
-							<div class="text-center mt-4">
-								<button type="button" data-bs-toggle="modal" data-bs-target="#fenetreModale" class="btn btn-danger">Supprimer mon compte</button>
+						<div class="row mb-3">
+							<div class="col-12 col-md-6">
+								<label for="nom" class="form-label">Nom *</label>
+								<input type="text" class="form-control p-2" id="nom" name="nom" value="{{ utilisateurGlobal.getNom }}" maxlength="50" title="Le nom de votre compte" required>
+								<small id="nomError" name="nom" class="text-danger"></small>
+							</div>
+							<div class="col-12 col-md-6">
+								<label for="prenom" class="form-label">Prénom *</label>
+								<input type="text" class="form-control p-2" id="prenom" name="prenom" value="{{ utilisateurGlobal.getPrenom }}" maxlength="50" title="Le prénom de votre compte" required>
+								<small id="prenomError" name="prenom" class="text-danger"></small>
 							</div>
 						</div>
+						<div class="mb-4">
+							<label for="email" class="form-label">E-mail *</label>
+							<p class="form-text bg-tertiary p-2">{{ utilisateurGlobal.getEmail }}</p>
+							<input type="hidden" class="form-control" id="role" name="role" value="{{ utilisateurGlobal.getEstAdmin }}">
+						</div>
+						<div class="mb-2">
+							<a href="index.php?controleur=utilisateur&methode=demanderReinitialisationMail" class="text-primary">Réinitialiser mon mot de passe</a>
+						</div>
+						<div class="mb-4">
+							<a href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale" class="text-primary">Supprimer mon compte</a>
+						</div>
+						<div class="d-flex flex-column flex-md-row justify-content-end">
+							<button id="boutonModification" type="submit" class="btn btn-primary me-3">Enregistrer les modifications</button>
+							<a class="btn btn-secondary" href="index.php?controleur=utilisateur&methode=menuConnecte">Annuler</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- Affichage des messages -->
+		{% if message %}
+			<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
+				<div id="toast" class="toast align-items-center text-white bg-{% if contientErreurs %}danger{% else %}success{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+					<div class="d-flex">
+						<div class="toast-body">
+							{% for messages in message %}
+								{{ messages }}
+								<br>
+							{% endfor %}
+						</div>
+						<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
 					</div>
 				</div>
 			</div>
-			<!-- Affichage des messages -->
-			{% if message %}
-				<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
-					<div id="toast" class="toast align-items-center text-white bg-{% if contientErreurs %}danger{% else %}success{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-						<div class="d-flex">
-							<div class="toast-body">
-								{% for messages in message %}
-									{{ messages }}
-									<br>
-								{% endfor %}
-							</div>
-							<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-						</div>
-					</div>
-				</div>
-			{% endif %}
-      
+		{% endif %}
+
 		<!-- Fenêtre modale -->
 		<div class="modal fade position-absolute" id="fenetreModale" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-md">
 				<div class="modal-content shadow-lg">
 					<form action="index.php?controleur=utilisateur&methode=supprimer&id={{ utilisateurGlobal.getId }}&type='utilisateur'" method="POST">
-						<div class="modal-header" style="background-color: #e74c3c; color: white;">
+						<div class="modal-header bg-danger text-secondary">
 							<h5 class="modal-title" id="exampleModalLabel">Supprimer mon compte</h5>
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
-						<div class="modal-body text-center" style="padding: 30px;">
+						<div class="modal-body text-center">
 							<p class="fs-5 text-danger">
 								<strong>!! Attention !!</strong><br>
 								Vous êtes sur le point de supprimer votre compte. Cette action est irréversible.
 							</p>
 						</div>
 						<div class="modal-footer d-flex flex-column flex-md-row justify-content-center">
-							<button type="submit" class="btn btn-danger px-4" style="background-color: #e74c3c; border: none;">Supprimer</button>
-							<button type="button" class="btn btn-secondary px-4" style="background-color: #95a5a6; border: none;" data-bs-dismiss="modal">Annuler</button>
+							<button type="submit" class="btn btn-danger px-4">Supprimer</button>
+							<button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Annuler</button>
 						</div>
 					</form>
 				</div>
 			</div>
 		</div>
 	</div>
-</main>
-{% endblock %}
-{% block javascripts %}
-	{{ parent() }}
-	<script src="js/formulaireModificationProfil.js"></script>
-{% endblock %}
+</main>{% endblock %}{% block javascripts %}
+{{ parent() }}<script src="js/formulaireModificationProfil.js"></script>{% endblock %}

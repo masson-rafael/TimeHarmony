@@ -9,7 +9,7 @@ $body-color: #111;
 $primary: #64a19d;
 $primary-hover: #5a908c;
 $secondary: #f6f6f6;
-$tertiary: #e6e6e6;
+$tertiary: #e3e3e3;
 $success: #67c29c;
 $info: #1cabc4;
 $warning: #e4c662;
@@ -216,5 +216,42 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 .photos {
     width: 50px;
     height: 50px;
+    object-fit: cover;
     border-radius: 50%;
+}
+
+.container-photo {
+    position: relative;
+}
+
+.photo-profil {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    padding: 0;
+    border: solid 2px $primary;
+}
+
+.modif-photo {
+    position: absolute;
+    cursor: pointer;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: white;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    width: 145px;
+    height: 145px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+
+    &:hover {
+        opacity: 1;
+    }
 }
