@@ -75,61 +75,6 @@ class ControllerAssistant extends Controller
     }
 
     /**
-     * Fonction qui permet d'afficher la deuxieme page de la recherche : personnes souhaitées
-     * 
-     * @param array|null $tabMessages tableau contenant les messages d'erreurs
-     * @param bool|null $contientErreurs booleen indiquant si la page contient des erreurs
-     * @return void
-     */
-    public function afficherPersonnesSouhaitees(?array $tabMessages = null, ?bool $contientErreurs = false): void {
-        if(isset($_POST['contactsObligatoires'])) {
-            $_SESSION['contactsObligatoires'] = $_POST['contactsObligatoires'];
-            var_dump($_POST['contactsObligatoires']);
-        } else {
-            $personnesObligatoires = [];
-            $personnesObligatoires[] = $_SESSION['utilisateur']->getId();
-            $_SESSION['contactsObligatoires'] = $personnesObligatoires;
-        }
-
-        if(isset($_POST['groupes'])) {
-            $_SESSION['groupesObligatoires'] = $_POST['groupes'];
-            var_dump($_POST['groupes']);
-        }
-
-        $utilisateur = $_SESSION['utilisateur'];
-        $contacts = $utilisateur->getContact($utilisateur->getId());
-        $groupes = $utilisateur->getGroupe($utilisateur->getId());
-
-        // Récupérer les ids des membres des groupes
-        $membres = [];
-        $pdo = $this->getPdo();
-        $manager = new GroupeDao($pdo);
-
-        // Récupérer les membres de chaque groupe
-        foreach ($groupes as $groupe) {
-            $membresGroupe = $manager->getUsersFromGroup($groupe->getId());
-
-            // Stocker les IDs des membres dans un tableau
-            $membres[$groupe->getId()] = [];
-            foreach ($membresGroupe as $membre) {
-                $membres[$groupe->getId()][] = $membre['idUtilisateur'];
-            }
-        }
-
-        $template = $this->getTwig()->load('recherche.html.twig');
-        echo $template->render(array(
-            'page' => 2,
-            'contacts' => $contacts,
-            'groupes' => $groupes,
-            'message' => $tabMessages,
-            'membres' => $membres,
-            'contientErreurs' => $contientErreurs,
-            'contactsObligatoires' => $_SESSION['contactsObligatoires'],
-            'groupesObligatoires' => $_SESSION['groupesObligatoires']
-        ));
-    }
-
-    /**
      * Fonction qui permet d'afficher la troisieme page de la recherche : paramètres
      * 
      * @param array|null $tabMessages tableau contenant les messages d'erreurs
@@ -143,7 +88,7 @@ class ControllerAssistant extends Controller
 
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
-            'page' => 3,
+            'page' => 2,
             'message' => $tabMessages,
             'contientErreurs' => $contientErreurs
         ));
@@ -160,7 +105,7 @@ class ControllerAssistant extends Controller
         $this->obtenir();
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
-            'page' => 4
+            'page' => 3
         ));
     }
 
@@ -486,7 +431,7 @@ class ControllerAssistant extends Controller
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render([
             'menu' => "recherche",
-            'page' => 4,
+            'page' => 3,
             'creneauxCommuns' => $creneaux,
             'nbrUtilisateursMin' => $nbrUtilisateursMin,
             'nombreUtilisateursSeclectionnes' => $nombreUtilisateursSeclectionnes

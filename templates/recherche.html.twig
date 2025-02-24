@@ -14,17 +14,16 @@
 			<div class="row pb-4">
 				<nav class="d-flex justify-content-center" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
 					<ol class="breadcrumb">
-						<li class="breadcrumb-item"><a href="index.php?controleur=assistant&methode=afficherPersonnesObligatoires">Personnes Obligatoires</a></li>
-						<li class="breadcrumb-item"><a {% if page != 1 %} href="index.php?controleur=assistant&methode=afficherPersonnesSouhaitees" {% endif %}>Personnes Souhaitées</a></li>
-						<li class="breadcrumb-item"><a {% if page != 1 and page != 2 %} href="index.php?controleur=assistant&methode=afficherParametres" {% endif %}>Paramètres</a></li>
-						<li class="breadcrumb-item"><a {% if page == 4 %} href="index.php?controleur=assistant&methode=afficherResultats" {% endif %}>Résultats</a></li>
+						<li class="breadcrumb-item"><a href="index.php?controleur=assistant&methode=afficherPersonnesObligatoires">Personnes Présentes</a></li>
+						<li class="breadcrumb-item"><a {% if page == 2 or page == 3 %} href="index.php?controleur=assistant&methode=afficherParametres" {% endif %}>Paramètres</a></li>
+						<li class="breadcrumb-item"><a {% if page == 3 %} href="index.php?controleur=assistant&methode=afficherResultats" {% endif %}>Résultats</a></li>
 					</ol>
 				</nav>
 			</div>
 
 			<div class="d-flex justify-content-center">
 				{% if page == 1 %}
-				<form action="index.php?controleur=assistant&methode=afficherPersonnesSouhaitees" method="post">
+				<form action="index.php?controleur=assistant&methode=afficherParametres" method="post">
 					<!-- Section Collaborateurs -->
 					<div class="justify-content-center row-md-4 mb-5">
 						<div class="card p-4 shadow-sm">
@@ -103,91 +102,6 @@
 				</form>
 
 				{% elseif page == 2 %}
-					<form action="index.php?controleur=assistant&methode=afficherParametres" method="post">
-						<!-- Section Groupes -->
-						<div class="justify-content-center row-md-4 mb-5">
-							<div class="card p-4 shadow-sm">
-								<h5 class="fw-bold text-center mb-3">Présence souhaitée :</h5>
-								<p class="text-muted text-center">Ajoutez des groupes ou personnes qui seront potentiellement présentes lors du résultat de la recherche.</p>
-								{% if contacts|length > 0 %}
-									<div class="row">
-										{# PREMIERE TABLE OU SONT AFFICHES LES CONTACTS / GROUPES #}
-										<div class="col-md-6">
-										<table id="contacts" class="table table-bordered table-hover">
-											<thead>
-												<tr class="table-primary">
-													<th scope="col">#</th>
-													<th scope="col">Nom du contact ou du groupe</th>
-												</tr>
-											</thead>
-											<tbody>
-											{% if groupes|length > 0 %}
-												{% for groupe in groupes %}
-													{% if groupe.getId not in groupesObligatoires %}
-														<tr>
-															<td>
-																<input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
-															</td>
-															<td>{{ groupe.getNom }}</td>
-														</tr>
-													{% endif %}	
-												{% endfor %}
-											{% endif %}
-												{% for contact in contacts %}
-													{% if contact.getId not in contactsObligatoires %}
-														<tr>
-															<td>
-																<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
-															</td>
-															<td>{{ contact.getPrenom|capitalize }}
-																{{ contact.getNom|capitalize }}
-															</td>
-														</tr>
-													{% endif %}
-												{% endfor %}
-											</tbody>
-										</table>
-										<small id="contactsError" class="text-danger"></small>
-									</div>
-									{# SECONDE TABLE OU SONT SELECTIONNES LES CONTACTS / GROUPES CHOISIS #}
-									<div class="col-md-6">
-										<table id="tableObligatoire" class="table table-bordered table-hover">
-											<thead>
-												<tr class="table-primary">
-													<th scope="col">#</th>
-													<th scope="col">Nom du contact ou du groupe</th>
-												</tr>
-											</thead>
-											<tbody>
-											{% if groupes|length > 0 %}
-												{# QUAND Y'AVAIT DES GROUPES #}
-											{% endif %}
-												{# QUAND Y'AVAIT DES CONTACTS #}
-											</tbody>
-										</table>
-										<small id="contactsError" class="text-danger"></small>
-										</div>
-									</div>
-									{% else %}
-									<div class="row justify-content-center mt-4 h-25">
-										<div class="col-md-8">
-											<div class="alert alert-info text-center" role="alert">
-												Aucun groupe trouvé. Ajoutez-en un ci-dessous.
-											</div>
-										</div>
-									</div>
-									<div class="text-center">
-										<a class="px-5 btn btn-primary" href="index.php?controleur=groupes&methode=ajouter" role="button">Ajouter un groupe</a>
-									</div>
-								{% endif %}
-							</div>
-						</div>
-						<div class="text-center mb-4">
-							<button id="boutonPage2" type="submit" class="btn btn-primary shadow-lg hover-shadow">Passer à l'étape suivante</button>
-						</div>
-					</form>
-
-				{% elseif page == 3 %}
 					<form action="index.php?controleur=assistant&methode=obtenir" method="post">
 						<div class="row">
 							<!-- Section Période -->
@@ -242,7 +156,7 @@
 						</div>
 					</form>
 				</div>
-				{% elseif page == 4 %}
+				{% elseif page == 3 %}
 				</div>
 					{% if creneauxCommuns is empty %}
 						{% if nombreUtilisateursSeclectionnes > nbrUtilisateursMin %}
