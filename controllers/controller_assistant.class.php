@@ -88,7 +88,7 @@ class ControllerAssistant extends Controller
         $messagesErreur = [];
 
         $pdo = $this->getPdo();
-    
+
         if (isset($_SESSION['debut']) && isset($_SESSION['fin']) && isset($_SESSION['dureeMin']) && isset($_SESSION['contacts']) && isset($_SESSION['debutHoraire']) && isset($_SESSION['finHoraire'])) {
             $_POST['debut'] = $_SESSION['debut'];
             $_POST['fin'] = $_SESSION['fin'];
@@ -183,14 +183,14 @@ class ControllerAssistant extends Controller
                     $_SESSION['nbUserSelectionné']--;
                 }
             }
-            
+
             $assistantRecherche = new Assistant(new Datetime($debut), new Datetime($fin), $tableauUtilisateur);
-            
+
             // $chronoStart = new DateTime();
 
             // Génération des dates pour la période
             $dates = $assistantRecherche->genererDates($debut, $fin);
-            
+
             // $chronoEnd = new DateTime();
             // $chronoInterval = $chronoStart->diff($chronoEnd);
             // $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
@@ -201,7 +201,7 @@ class ControllerAssistant extends Controller
 
             // Initialisation de la matrice
             $matrice = $assistantRecherche->initMatrice($tableauUtilisateur, $dates, $dureeMin);
-            
+
             // $chronoEnd = new DateTime();
             // $chronoInterval = $chronoStart->diff($chronoEnd);
             // $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
@@ -243,9 +243,10 @@ class ControllerAssistant extends Controller
                 // echo "Durée remplir creneau : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
                 // echo "Durée totale en secondes remplir creneau : $chronoSeconds secondes." . "<br>" . "<br>";
             }
-            
+
             // Appel de la fonction
             $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'], $debutHoraire, $finHoraire, $debut, $fin);
+
             // var_dump($matrice);
             // exit;
             // $chronoEndGen = new DateTime();
@@ -263,35 +264,40 @@ class ControllerAssistant extends Controller
             // foreach ($datesCommunes as $date => $plagesHoraires) {
             //     // Transformer la date en format français
             //     $dateFr = DateTime::createFromFormat('Y-m-d', $date)->format('d/m/Y');
-            
+
             //     // Copier les plages horaires sous la nouvelle clé formatée
             //     $datesCommunesFrancaise[$dateFr] = $plagesHoraires;
             // }
 
+            // Compter le nombre total de créneaux disponibles
+            $nombreCreneauxDisponibles = 0;
+
             foreach ($datesCommunes as $dateFr => $plagesHoraires) {
-    // Transformer "30/01/2025" en objet DateTime
-    $dateObj = DateTime::createFromFormat('Y-m-d', $dateFr);
-    
-    // Vérifier si la conversion a réussi
-    if ($dateObj !== false) {
-        // Stocker la date sous forme d'objet DateTime avec format 'Y-m-d'
-        $datesCommunesFrancaise[$dateObj->format('d-m-Y')] = $plagesHoraires;
-    } else {
-        // Gérer l'erreur si la date ne peut pas être parsée
-        echo "Erreur : la date '$dateFr' n'est pas valide.\n";
-    }
-}
-            
+                // Transformer "30/01/2025" en objet DateTime
+                $dateObj = DateTime::createFromFormat('Y-m-d', $dateFr);
+
+                // Vérifier si la conversion a réussi
+                if ($dateObj !== false) {
+                    // Stocker la date sous forme d'objet DateTime avec format 'Y-m-d'
+                    $datesCommunesFrancaise[$dateObj->format('d-m-Y')] = $plagesHoraires;
+                } else {
+                    // Gérer l'erreur si la date ne peut pas être parsée
+                    echo "Erreur : la date '$dateFr' n'est pas valide.\n";
+                }
+
+                $nombreCreneauxDisponibles += count($plagesHoraires);
+            }
+
+            //var_dump($nombreCreneauxDisponibles);
             // var_dump($datesCommunesFrancaise);
+
             $this->genererVueCreneaux($datesCommunesFrancaise, $nbrUtilisateursMin, $nombreUtilisateursSeclectionnes);
         } else {
             $this->genererVueRecherche($messagesErreur, true);
-
         }
-    
     }
-    
-    
+
+
     /**
      * Fonction qui permet de générer la vue qui contiendra les résultats de la recherche
      * @param array|null $creneaux les creneaux libres communs trouvés grace a la recherche
@@ -301,13 +307,85 @@ class ControllerAssistant extends Controller
      */
     public function genererVueCreneaux(?array $creneaux, ?int $nbrUtilisateursMin, ?int $nombreUtilisateursSeclectionnes): void
     {
+        // Formater les créneaux pour le calendrier FullCalendar
+        $evenements = [];
+
+        foreach ($creneaux as $date => $plagesHoraires) {
+            $dateObj = DateTime::createFromFormat('d-m-Y', $date);
+            if (!$dateObj) continue;
+            
+            // Tri des plages par heure de début
+            uksort($plagesHoraires, function($a, $b) {
+                $startA = explode(' - ', $a)[0];
+                $startB = explode(' - ', $b)[0];
+                return strtotime($startA) <=> strtotime($startB);
+            });
+    
+            $mergedEvent = null;
+            
+            foreach ($plagesHoraires as $plage => $participants) {
+                // Récupérer les dates de début et de fin
+                list($debut, $fin) = explode(' - ', $plage);
+                $start = DateTime::createFromFormat('d-m-Y H:i', "$date $debut");
+                $dateDebut = $start; // Date initiale de la recherche
+                $end = DateTime::createFromFormat('d-m-Y H:i', "$date $fin");
+                
+                // Vérifier si on doit fusionner les événements (interval de 30 minutes)
+                if (!$mergedEvent) {
+                    // Premier événement
+                    $mergedEvent = [
+                        'start' => $start,
+                        'end' => $end,
+                    ];
+                } 
+                else {
+                    $diffSeconds = $start->getTimestamp() - $mergedEvent['end']->getTimestamp();
+                    if ($diffSeconds <= 30 * 60) { // 30 minutes = 1800 secondes
+                        // Si les événements se chevauchent ou si l'écart est inférieur ou égal à 30 minutes, on fusionne
+                        if ($end > $mergedEvent['end']) {
+                            $mergedEvent['end'] = $end;
+                        }
+                    } else {
+                        // Sinon, on ajoute l'événement fusionné et on réinitialise
+                        $evenements[] = $this->createEventObject($mergedEvent);
+                        $mergedEvent = [
+                            'start' => $start,
+                            'end' => $end,
+                        ];
+                    }
+                }
+            }
+            
+            // Ajouter le dernier événement fusionné
+            if ($mergedEvent) {
+                $evenements[] = $this->createEventObject($mergedEvent);
+            }
+        }
+
         $template = $this->getTwig()->load('resultat.html.twig');
+
         echo $template->render([
             'menu' => "recherche",
             'creneauxCommuns' => $creneaux,
             'nbrUtilisateursMin' => $nbrUtilisateursMin,
-            'nombreUtilisateursSeclectionnes' => $nombreUtilisateursSeclectionnes
+            'nombreUtilisateursSeclectionnes' => $nombreUtilisateursSeclectionnes,
+            'evenements' => $evenements,
+            'dateDebut' => $dateDebut,
         ]);
+    }
+
+    /**
+    * Créer un objet événement pour FullCalendar
+    * @param array $mergedEvent
+    * @return array
+    */
+    private function createEventObject(array $mergedEvent): array
+    {
+        return [
+            'title' => 'Créneau disponible',
+            'start' => $mergedEvent['start']->format('Y-m-d\TH:i:s'),
+            'end' => $mergedEvent['end']->format('Y-m-d\TH:i:s'),
+        ];
     }
 
     /**
@@ -319,4 +397,6 @@ class ControllerAssistant extends Controller
         $template = $this->getTwig()->load('index.html.twig');
         echo $template->render(array());
     }
+
+    
 }
