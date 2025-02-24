@@ -1,6 +1,8 @@
 <?php
 
 require_once 'modeles/utilisateur.class.php';
+require_once 'modeles/utilisateur.dao.php';
+require_once 'modeles/bd.class.php';
 
 //ajout de la classe IntlExtension et creation de l’alias IntlExtension
 use Twig\Extra\Intl\IntlExtension;
@@ -21,7 +23,23 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (isset($_SESSION['utilisateur']) && ! empty($_SESSION['utilisateur'])) {
-    $twig->addGlobal('utilisateurGlobal', $_SESSION['utilisateur']);
+
+        $db = Bd::getInstance();
+        $pdo = $db->getConnexion();
+        $managerUtilisateur = new UtilisateurDao($pdo);
+        $utilisateur = $managerUtilisateur->find($_SESSION['utilisateur']);
+    
+        $utilisateurCourant = new Utilisateur(
+        $utilisateur->getId(),
+        $utilisateur->getNom(),
+        $utilisateur->getPrenom(),
+        $utilisateur->getEmail(),
+        null,
+        $utilisateur->getPhotoDeProfil(),
+        $utilisateur->getEstAdmin(),
+        $utilisateur->getDateDerniereConnexion());
+
+    $twig->addGlobal('utilisateurGlobal', value: $utilisateurCourant);
 } else {
     $twig->addGlobal('utilisateurGlobal', null);
 }

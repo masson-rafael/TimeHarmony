@@ -9,39 +9,41 @@
 		<div class="container">
 		{% if utilisateurGlobal == null %}
 			<div class="row justify-content-center align-items-center h-100 pt-5">
-				<div class="col-12 col-md-6 col-lg-4 d-flex align-items-center" style="width: 100%; max-width: 700px;">
+				<div class="col-8 d-flex align-items-center">
 					<!-- Card for the form -->
-					<div class="card card_custom shadow-lg w-100" style="height: auto; padding: 1rem;">
+					<div class="card card_custom shadow-lg w-100 p-2">
 						<div class="card-body ">
-							<h4 class="card-title text-center mb-4" style="font-size: 1.5rem;">Inscription</h4>
+							<h4 class="card-title text-center mb-4 fs-3">Inscription</h4>
 							<form id="form" action="index.php?controleur=utilisateur&methode=inscription" method="post" required>
-								<div class="mb-3">
-									<label for="nom" class="form-label" style="font-size: 1rem;">Nom *</label>
-									<input type="text" name="nom" class="form-control form-control-lg" id="nom" placeholder="Entrez votre nom" required maxlength="50" minlength="2" title="Entrez votre vrai nom pour votre compte">
-									<small id="nomError" class="text-danger"></small>
+								<div class="row mb-3">
+									<div class="col-12 col-md-6">
+										<label for="nom" class="form-label">Nom *</label>
+										<input type="text" name="nom" class="form-control form-control-lg" id="nom" placeholder="Entrez votre nom" required maxlength="50" minlength="2" title="Entrez votre vrai nom pour votre compte">
+										<small id="nomError" class="text-danger"></small>
+									</div>
+									<div class="col-12 col-md-6">
+										<label for="prenom" class="form-label">Prénom *</label>
+										<input type="text" name="prenom" class="form-control form-control-lg" id="prenom" placeholder="Entrez votre prénom" required maxlength="50" minlength="2" title="Entrez votre vrai prénom pour votre compte">
+										<small id="prenomError" class="text-danger"></small>
+									</div>
 								</div>
 								<div class="mb-3">
-									<label for="prenom" class="form-label" style="font-size: 1rem;">Prénom *</label>
-									<input type="text" name="prenom" class="form-control form-control-lg" id="prenom" placeholder="Entrez votre prénom" required maxlength="50" minlength="2" title="Entrez votre vrai prénom pour votre compte">
-									<small id="prenomError" class="text-danger"></small>
-								</div>
-								<div class="mb-3">
-									<label for="email" class="form-label" style="font-size: 1rem;">E-mail *</label>
+									<label for="email" class="form-label">E-mail *</label>
 									<input type="email" name="email" class="form-control form-control-lg" id="email" placeholder="Entrez votre e-mail" required maxlength="255" minlength="5" title="Entrez l'adresse email qui sera liée au compte">
 									<small id="emailError" class="text-danger"></small>
 								</div>
 								<div class="mb-3">
-									<label for="pwd" class="form-label" style="font-size: 1rem;">Mot de passe *</label>
+									<label for="pwd" class="form-label">Mot de passe *</label>
 									<input type="password" name="pwd" class="form-control form-control-lg" id="pwd" placeholder="Entrez un mot de passe" required minlength="8" maxlength="25" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$" title="Le mot de passe doit contenir au moins : une lettre minuscule, une majuscule, un chiffre et un caractère spécial, et être compris entre 8 et 25 caractères.">
 									<small id="passwordError" class="text-danger"></small>
 								</div>
 								<div class="mb-3">
-									<label for="pwdConfirme" class="form-label" style="font-size: 1rem;">Confirmer le mot de passe *</label>
+									<label for="pwdConfirme" class="form-label">Confirmer le mot de passe *</label>
 									<input type="password" name="pwdConfirme" class="form-control form-control-lg" id="pwdConfirme" placeholder="Confirmez le mot de passe" required minlength="8" maxlength="25" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,25}$" title="Le mot de passe doit contenir au moins : une lettre minuscule, une majuscule, un chiffre et un caractère spécial, et être compris entre 8 et 25 caractères.">
 									<small id="passwordConfirmeError" class="text-danger"></small>
 								</div>
-								<a class="d-block mb-3 text-center" href="index.php?controleur=utilisateur&methode=premiereConnexion" style="font-size: 1rem;">Déjà un compte ? Se connecter</a>
-								<button id="boutonInscription" type="submit" class="btn btn-primary w-75 py-2" style="font-size: 1rem; transform: translatex(15%) ">S'inscrire</button>
+								<a class="text-primary d-block mb-3 text-center" href="index.php?controleur=utilisateur&methode=premiereConnexion">Déjà un compte ? Se connecter</a>
+								<button id="boutonInscription" type="submit" class="btn btn-primary w-100 py-2">S'inscrire</button>
 							</form>
 						</div>
 					</div>

@@ -45,7 +45,13 @@ class ControllerAssistant extends Controller
         unset($_POST['debutPlageH']);
         unset($_POST['finPlageH']);
 
-        $utilisateur = $_SESSION['utilisateur'];
+        // $utilisateur = $_SESSION['utilisateur'];
+
+        // var_dump($utilisateur);
+        $pdo = $this->getPdo();
+        $managerUtilisateur = new UtilisateurDao($pdo);
+        $utilisateur = $managerUtilisateur->find($_SESSION['utilisateur']);
+        
 
         $contacts = $utilisateur->getContact($utilisateur->getId());
         $groupes = $utilisateur->getGroupe($utilisateur->getId());
@@ -97,12 +103,15 @@ class ControllerAssistant extends Controller
             $_POST['debutPlageH'] = $_SESSION['debutPlageH'];
             $_POST['finPlageH'] = $_SESSION['finPlageH'];
         }
+        // if(isset($_SESSION['contactsPrioritaires'])) {
+        //     $_POST['contactsPrioritaires'] = $_SESSION['contactsPrioritaires'];
+        // }
 
         $valideDuree = Utilitaire::validerDuree($_POST['debut'], $_POST['fin'], $messagesErreur);
         $dureeMinValide = Utilitaire::validerDureeMinimale($_POST['dureeMin'], $messagesErreur);
+        @$contactsPrioritairesValide = Utilitaire::validerContacts($_POST['contactsPrioritaires'], $messagesErreur);
         @$contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur);
         $plageHoraireValide = Utilitaire::validerPlageHoraire($_POST['debutPlageH'], $_POST['finPlageH'], $messagesErreur);
-
 
         if ($valideDuree && $dureeMinValide && $contactsValide && $plageHoraireValide) {
             if (!isset($_SESSION['debut']) || !isset($_SESSION['fin']) || !isset($_SESSION['dureeMin']) || !isset($_SESSION['contacts']) || !isset($_SESSION['debutPlageH']) || !isset($_SESSION['finPlageH'])) {
@@ -113,6 +122,12 @@ class ControllerAssistant extends Controller
                 $_SESSION['debutPlageH'] = $_POST['debutPlageH'];
                 $_SESSION['finPlageH'] = $_POST['finPlageH'];
             }
+
+            // if ($contactsPrioritairesValide) {
+            //     if (!isset($_SESSION['contactsPrioritaires'])) {
+            //         $_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
+            //     }
+            // }
 
             // $chronoStartGen = new DateTime();
             $managerCreneau = new CreneauLibreDao($pdo);
@@ -127,10 +142,14 @@ class ControllerAssistant extends Controller
                 $_SESSION['debutPlageH'] = $_POST['debutPlageH'];
                 $_SESSION['finPlageH'] = $_POST['finPlageH'];
                 // $_SESSION['nbUserSelectionné'] = sizeof($_POST['contacts']);
+                // $_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
             }
+
+            @$_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
 
             $dureeMin = $_SESSION['dureeMin'];
             $contacts = $_SESSION['contacts'];
+            $contactsPrio = $_SESSION['contactsPrioritaires'];
             $debut = $_SESSION['debut'];
             $fin = $_SESSION['fin'];
             $debutHoraire = $_SESSION['debutPlageH'];
@@ -142,7 +161,23 @@ class ControllerAssistant extends Controller
             foreach ($contacts as $idUtilisateurCourant) {
                 $tableauUtilisateur[] = $managerUtilisateur->find($idUtilisateurCourant);
             }
-            $tableauUtilisateur[] = $_SESSION['utilisateur'];
+
+            $utilisateur = $managerUtilisateur->find($_SESSION['utilisateur']);
+            $tableauUtilisateur[] = $utilisateur;
+
+            $contactsPrioritaires = [];
+            if(!empty($contactsPrio)) {
+                foreach ($contactsPrio as $contact) {
+                    $manager = new UtilisateurDAO($pdo);
+                    $user = $manager->find($contact);
+                    $contactsPrioritaires[] = strtolower($user->getNom());
+                }
+                $aDesPriorites = true;
+            }
+
+            if(empty($contactsPrioritaires)) {
+                $aDesPriorites = false;
+            }
 
             if (isset($_POST['groupes'])) {
                 $managerGroupe = new GroupeDao($pdo);
@@ -216,7 +251,6 @@ class ControllerAssistant extends Controller
                 // $chronoStart = new DateTime();
                 foreach ($agendas as $agenda) {
                     $urlIcs = $agenda->getUrl();
-                    // var_dump($urlIcs);
                     $allEvents = $agenda->recuperationEvenementsAgenda($urlIcs, $debut, $fin, $allEvents);
                 }
                 // $chronoEnd = new DateTime();
@@ -245,9 +279,7 @@ class ControllerAssistant extends Controller
             }
 
             // Appel de la fonction
-            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'], $debutHoraire, $finHoraire, $debut, $fin);
-
-            // var_dump($matrice);
+            $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'], $debutHoraire, $finHoraire, $debut, $fin, $contactsPrioritaires, $aDesPriorites);
             // exit;
             // $chronoEndGen = new DateTime();
             // $chronoInterval = $chronoStartGen->diff($chronoEndGen);

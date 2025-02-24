@@ -22,10 +22,10 @@ let groupesContactError = document.getElementById('groupesError');
 preparationVariables();
 
 // Ajout des evenements qui declechent les fonctions de validation à chaque input
-dateDebut.addEventListener('change', verifierTousLesChamps);
-dateDebut.addEventListener('input', verifierTousLesChamps);
-dateFin.addEventListener('change', verifierTousLesChamps);
-dateFin.addEventListener('input', verifierTousLesChamps);
+//dateDebut.addEventListener('change', verifierTousLesChamps);
+//dateDebut.addEventListener('input', verifierTousLesChamps);
+//dateFin.addEventListener('change', verifierTousLesChamps);
+//dateFin.addEventListener('input', verifierTousLesChamps);
 duree.addEventListener('change', verifierTousLesChamps);
 duree.addEventListener('input', verifierTousLesChamps);
 debutPlageH.addEventListener('change', verifierTousLesChamps);
@@ -203,9 +203,9 @@ function verifierPatternContacts() {
 // Fonction générale de vérification de tous les champs
 function verifierTousLesChamps() {
     console.log('Verification des champs');
-    const dateDebutCorrect = verifierDate(dateDebut, dateDebutError, dateFin);
-    const dateFinCorrect = verifierDate(dateFin, dateFinError, dateFin);
-    const dureeCorrect = verifierDuree(duree, dureeError);
+    const dateDebutCorrect = true;//verifierDate(dateDebut, dateDebutError, dateFin);
+    const dateFinCorrect = true;//VerifierDate(dateFin, dateFinError, dateFin);
+    const dureeCorrect = true;//verifierDuree(duree, dureeError);
     const contactCorrect = verifierPatternContacts();
     const groupesContactCorrect = verifierPatternContacts();
     const presenceCorrect = verifierPresence();
