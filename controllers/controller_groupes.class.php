@@ -32,7 +32,7 @@ class ControllerGroupes extends Controller
     {
         $pdo = $this->getPdo();
         $manager = new GroupeDao($pdo);
-        $tableauGroupes = $manager->getGroupesFromUserId($_SESSION['utilisateur']->getId());
+        $tableauGroupes = $manager->getGroupesFromUserId($_SESSION['utilisateur']);
 
         $template = $this->getTwig()->load('groupes.html.twig'); // Generer la page de réinitialisation mdp avec tableau d'erreurs
         echo $template->render(
@@ -95,7 +95,7 @@ class ControllerGroupes extends Controller
     {
         $pdo = $this->getPdo();
         $managerUtilisateur = new UtilisateurDao($pdo);
-        $contacts = $managerUtilisateur->findAllContact($_SESSION['utilisateur']->getId());
+        $contacts = $managerUtilisateur->findAllContact($_SESSION['utilisateur']);
         return $contacts;
     }
 
@@ -133,9 +133,9 @@ class ControllerGroupes extends Controller
         } elseif ($nomValide && $descriptionValide && !$groupeExiste) {
             // Etape 1 : créer groupe
             $manager = new GroupeDao($this->getPdo());
-            $manager->creerGroupe($_SESSION['utilisateur']->getId(), $nom, $description);
+            $manager->creerGroupe($_SESSION['utilisateur'], $nom, $description);
             $manager = new GroupeDao($this->getPdo());
-            $groupe = $manager->getGroupe($_SESSION['utilisateur']->getId(), $nom, $description);
+            $groupe = $manager->getGroupe($_SESSION['utilisateur'], $nom, $description);
 
             // Etape 2 : ajouter membres
             $this->ajouterMembres($groupe->getId(), $tableauContacts);
@@ -157,7 +157,7 @@ class ControllerGroupes extends Controller
     public function ajouterMembres(?int $idGroupe, ?array $contacts): void
     {
         $manager = new GroupeDao($this->getPdo());
-        $manager->ajouterMembreGroupe($idGroupe, $_SESSION['utilisateur']->getId());
+        $manager->ajouterMembreGroupe($idGroupe, $_SESSION['utilisateur']);
 
         if ($contacts) {   // Condition si est vide
             foreach ($contacts as $contact) {
@@ -183,7 +183,7 @@ class ControllerGroupes extends Controller
         }
 
         $id = $_GET['id']; // id du groupe
-        $currentIdUser = $_SESSION['utilisateur']->getId(); // id de l'utilisateur actuel
+        $currentIdUser = $_SESSION['utilisateur']; // id de l'utilisateur actuel
 
         $messages = [];
 
