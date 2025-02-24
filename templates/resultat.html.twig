@@ -93,30 +93,27 @@
 	</main>
 {% endblock %}
 {% block javascripts %}
+	{{ parent() }}
  <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'timeGridWeek', // Vue par semaine
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                events: [
-                    {
-                        title: 'Réunion équipe',
-                        start: '2025-02-01T10:00:00',
-                        end: '2025-02-01T11:00:00'
-                    },
-                    {
-                        title: 'Appel client',
-                        start: '2025-02-02T14:00:00'
-                    }
-                ]
-            });
+		// Récupération des événements transmis par le contrôleur
+		var evenements = {{ evenements|json_encode|raw }};
 
-            calendar.render();
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+			var calendarEl = document.getElementById('calendar');
+
+			var calendar = new FullCalendar.Calendar(calendarEl, {
+				initialView: 'timeGridWeek',
+                initialDate: "{{ dateDebut|date('Y-m-d') }}", // Afficher le calendrier à partir du premier jour recherché
+				headerToolbar: {
+					left: 'prev,next',
+					center: 'title',
+					right: '' // Supprimer les boutons de changement de vue
+				},
+				locale: 'fr', // Calendrier en français
+				events: evenements,				
+			});
+
+			calendar.render();
+		});
     </script>
 {% endblock %}
