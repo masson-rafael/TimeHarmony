@@ -29,77 +29,95 @@
 
 			<div class="d-flex justify-content-center">
 				{% if page == 1 %}
-					<form action="index.php?controleur=assistant&methode=afficherParametres" method="post">
+					<form
+						action="index.php?controleur=assistant&methode=afficherParametres" method="post">
 						<!-- Section Collaborateurs -->
 						<div class="justify-content-center row-md-4 mb-5">
 							<div class="card p-4 shadow-sm">
 								<h5 class="fw-bold text-center mb-3">Personnes présentes :</h5>
 								{% if contacts|length > 0 %}
-									<div class="row">
+									<div
+										class="row">
 										{# PREMIERE TABLE OU SONT AFFICHES LES CONTACTS / GROUPES #}
 										<div class="col-md-6">
 											<p class="text-muted text-center">Ajoutez des groupes ou contacts qui seront présents lors du résultat de la recherche.</p>
 											<div class="accordion" id="accordionPanelsStayOpenExample">
 												<div class="accordion-item">
 													<h2 class="accordion-header">
-														<button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-															Accordion Item #1
+														<button class="accordion-button {% if groupes|length == 0 %} collapsed {% endif %} fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="{% if groupes|length > 0 %}true{% else %}false{% endif %}" aria-controls="panelsStayOpen-collapseOne">
+															Mes groupes
 														</button>
 													</h2>
-													<div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+													<div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse {% if groupes|length > 0 %} show{% endif %}">
 														<div class="accordion-body">
-															<strong>This is the first item's accordion body.</strong>
-															It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the
-															<code>.accordion-body</code>, though the transition does limit overflow.
+															{% if groupes|length != 0 %}
+																<table id="groupes" class="table table-bordered table-hover">
+																	<thead>
+																		<tr class="table-primary">
+																			<th scope="col">#</th>
+																			<th scope="col">Nom du groupe</th>
+																		</tr>
+																	</thead>
+																	<tbody>
+																		{% if groupes|length > 0 %}
+																			{% for groupe in groupes %}
+																				<tr>
+																					<td>
+																						<input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
+																					</td>
+																					<td>{{ groupe.getNom }}</td>
+																				</tr>
+																			{% endfor %}
+																		{% endif %}
+																	</tbody>
+																</table>
+																<small id="contactsError" class="text-danger"></small>
+															{% else %}
+																<div class="row justify-content-center mt-4 h-25">
+																	<div class="col-md-8">
+																		<div class="alert alert-info text-center" role="alert">Aucun contact trouvé. Ajoutez-en un ci-dessous.</div>
+																	</div>
+																</div>
+																<div class="text-center">
+																	<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
+																</div>
+															{% endif %}
 														</div>
 													</div>
 												</div>
 												<div class="accordion-item">
 													<h2 class="accordion-header">
 														<button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
-															Accordion Item #2
+															Mes contacts
 														</button>
 													</h2>
 													<div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
 														<div class="accordion-body">
-															<strong>This is the second item's accordion body.</strong>
-															It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the
-															<code>.accordion-body</code>, though the transition does limit overflow.
+															<table id="contacts" class="table table-bordered table-hover">
+																<thead>
+																	<tr class="table-primary">
+																		<th scope="col">#</th>
+																		<th scope="col">Nom du groupe</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	{% for contact in contacts %}
+																		<tr>
+																			<td>
+																				<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
+																			</td>
+																			<td>{{ contact.getPrenom|capitalize }}
+																				{{ contact.getNom|capitalize }}
+																			</td>
+																		</tr>
+																	{% endfor %}
+																</tbody>
+															</table>
+															<small id="contactsError" class="text-danger"></small>
 														</div>
 													</div>
 												</div>
 											</div>
-											<table id="contacts" class="table table-bordered table-hover">
-												<thead>
-													<tr class="table-primary">
-														<th scope="col">#</th>
-														<th scope="col">Nom du contact ou du groupe</th>
-													</tr>
-												</thead>
-												<tbody>
-													{% if groupes|length > 0 %}
-														{% for groupe in groupes %}
-															<tr>
-																<td>
-																	<input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
-																</td>
-																<td>{{ groupe.getNom }}</td>
-															</tr>
-														{% endfor %}
-													{% endif %}
-													{% for contact in contacts %}
-														<tr>
-															<td>
-																<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
-															</td>
-															<td>{{ contact.getPrenom|capitalize }}
-																{{ contact.getNom|capitalize }}
-															</td>
-														</tr>
-													{% endfor %}
-												</tbody>
-											</table>
-											<small id="contactsError" class="text-danger"></small>
 										</div>
 										{# SECONDE TABLE OU SONT SELECTIONNES LES CONTACTS / GROUPES CHOISIS #}
 										<div class="col-md-6">
