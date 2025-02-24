@@ -82,9 +82,23 @@ class ControllerAssistant extends Controller
      * @return void
      */
     public function afficherParametres(?array $tabMessages = null, ?bool $contientErreurs = false): void {
-        if(isset($_POST['contactsSouhaites'])) {
-            $_SESSION['contactsSouhaites'] = $_POST['contactsSouhaites'];
+        var_dump($_POST);
+        unset($_SESSION['contactsObligatoires']);
+        unset($_SESSION['contacts']);
+
+        if(isset($_POST['contactsObligatoires'])) {
+            $_SESSION['contactsObligatoires'] = $_POST['contactsObligatoires'];
+            foreach ($_POST['contacts'] as $contact) {
+                if(!in_array($contact, $_SESSION['contactsObligatoires'])) {
+                    $_SESSION['contacts'][] = $contact;
+                }
+            }
+        } elseif(isset($_POST['contacts'])) {
+            $_SESSION['contacts'] = $_POST['contacts'];
         }
+
+        var_dump($_SESSION['contacts']);
+        var_dump($_SESSION['contactsObligatoires']);
 
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
@@ -187,7 +201,7 @@ class ControllerAssistant extends Controller
         if(isset($_SESSION['contactsObligatoires'])) {
             $_POST['contactsObligatoires'] = $_SESSION['contactsObligatoires'];
         }
-        $_POST['contacts'] = $_SESSION['contactsObligatoires'];
+        $_POST['contacts'] = $_SESSION['contacts'];
 
         $valideDuree = Utilitaire::validerDuree($_POST['debut'], $_POST['fin'], $messagesErreur);
         $dureeMinValide = Utilitaire::validerDureeMinimale($_POST['dureeMin'], $messagesErreur);
@@ -234,7 +248,7 @@ class ControllerAssistant extends Controller
             @$_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
 
             $dureeMin = $_SESSION['dureeMin'];
-            $contacts = $_SESSION['contactsObligatoires'];
+            $contacts = $_SESSION['contacts'];
             $contactsPrio = $_SESSION['contactsObligatoires'];
             $debut = $_SESSION['debut'];
             $fin = $_SESSION['fin'];
@@ -247,6 +261,7 @@ class ControllerAssistant extends Controller
             foreach ($contacts as $idUtilisateurCourant) {
                 $tableauUtilisateur[] = $managerUtilisateur->find($idUtilisateurCourant);
             }
+            //var_dump($tableauUtilisateur);
             $tableauUtilisateur[] = $_SESSION['utilisateur'];
             foreach ($_SESSION['contacts'] as $contact) {
                 if(!in_array($contact, $contacts)) {
