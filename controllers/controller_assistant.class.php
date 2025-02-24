@@ -45,7 +45,13 @@ class ControllerAssistant extends Controller
         unset($_POST['debutPlageH']);
         unset($_POST['finPlageH']);
 
-        $utilisateur = $_SESSION['utilisateur'];
+        // $utilisateur = $_SESSION['utilisateur'];
+
+        // var_dump($utilisateur);
+        $pdo = $this->getPdo();
+        $managerUtilisateur = new UtilisateurDao($pdo);
+        $utilisateur = $managerUtilisateur->find($_SESSION['utilisateur']);
+        
 
         $contacts = $utilisateur->getContact($utilisateur->getId());
         $groupes = $utilisateur->getGroupe($utilisateur->getId());
@@ -155,7 +161,9 @@ class ControllerAssistant extends Controller
             foreach ($contacts as $idUtilisateurCourant) {
                 $tableauUtilisateur[] = $managerUtilisateur->find($idUtilisateurCourant);
             }
-            $tableauUtilisateur[] = $_SESSION['utilisateur'];
+
+            $utilisateur = $managerUtilisateur->find($_SESSION['utilisateur']);
+            $tableauUtilisateur[] = $utilisateur;
 
             $contactsPrioritaires = [];
             if(!empty($contactsPrio)) {

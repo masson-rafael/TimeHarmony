@@ -43,7 +43,7 @@ class ControllerContacts extends Controller
      * @return void
      */
     function lister(?array $tableauMessages = null, ?bool $contientErreurs = false): void {
-        $contacts = $this->recupererContacts($_SESSION['utilisateur']->getId());
+        $contacts = $this->recupererContacts($_SESSION['utilisateur']);
         //Génération de la vue
         $template = $this->getTwig()->load('contacts.html.twig');
         echo $template->render(array(
@@ -61,7 +61,7 @@ class ControllerContacts extends Controller
      */
     function supprimer(): void {
         // Récupération de l'id envoyé en parametre du lien
-        $id1 = $_SESSION['utilisateur']->getId();
+        $id1 = $_SESSION['utilisateur'];
         $id2 = $_GET['id'];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
@@ -79,7 +79,7 @@ class ControllerContacts extends Controller
     function afficherUtilisateurs(): void {
         $pdo = $this->getPdo();
         $managerUtilisateur = new UtilisateurDao($pdo);
-        $utilisateursPasContacts = $managerUtilisateur->recupererIdsUtilisateursPasContacts($_SESSION['utilisateur']->getId());
+        $utilisateursPasContacts = $managerUtilisateur->recupererIdsUtilisateursPasContacts($_SESSION['utilisateur']);
         $utilisateurs = $managerUtilisateur->hydrateAll($utilisateursPasContacts);
         //Génération de la vue
         $template = $this->getTwig()->load('contacts.html.twig');
@@ -96,7 +96,7 @@ class ControllerContacts extends Controller
      */
     function ajouter(): void {
         // Récupération de l'id envoyé en parametre du lien
-        $id1 = $_SESSION['utilisateur']->getId();
+        $id1 = $_SESSION['utilisateur'];
         $id2 = $_GET['id'];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);

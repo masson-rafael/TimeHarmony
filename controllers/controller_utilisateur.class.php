@@ -240,8 +240,19 @@ class ControllerUtilisateur extends Controller
         if ($utilisateur !== null) {
             // Stockage en session et définition de la variable globale
             $utilisateur = Utilisateur::createWithCopy($utilisateur);
-            $_SESSION['utilisateur'] = $utilisateur;
-            $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+            $_SESSION['utilisateur'] = $utilisateur->getId();
+
+            $utilisateurCourant = new Utilisateur(
+                $utilisateur->getId(),
+                $utilisateur->getNom(),
+                $utilisateur->getPrenom(),
+                $utilisateur->getEmail(),
+                null,
+                $utilisateur->getPhotoDeProfil(),
+                $utilisateur->getEstAdmin(),
+                $utilisateur->getDateDerniereConnexion());
+
+            $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurCourant);
         }
 
         $template = $this->getTwig()->load('menu.html.twig');
@@ -262,8 +273,19 @@ class ControllerUtilisateur extends Controller
         if ($utilisateur !== null) {
             // Stockage en session et définition de la variable globale
             $utilisateur = Utilisateur::createWithCopy($utilisateur);
-            $_SESSION['utilisateur'] = $utilisateur;
-            $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+            $_SESSION['utilisateur'] = $utilisateur->getId();
+
+            $utilisateurCourant = new Utilisateur(
+                $utilisateur->getId(),
+                $utilisateur->getNom(),
+                $utilisateur->getPrenom(),
+                $utilisateur->getEmail(),
+                null,
+                $utilisateur->getPhotoDeProfil(),
+                $utilisateur->getEstAdmin(),
+                $utilisateur->getDateDerniereConnexion());
+
+            $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurCourant);
         }
 
         $template = $this->getTwig()->load('connexion.html.twig');
@@ -304,8 +326,8 @@ class ControllerUtilisateur extends Controller
          */
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
-        $demandesContactEnvoyees = $manager->getDemandesContactEnvoyees($_SESSION['utilisateur']->getId());
-        $demandesContactRecues = $manager->getDemandesContactRecues($_SESSION['utilisateur']->getId());
+        $demandesContactEnvoyees = $manager->getDemandesContactEnvoyees($_SESSION['utilisateur']);
+        $demandesContactRecues = $manager->getDemandesContactRecues($_SESSION['utilisateur']);
 
         $template = $this->getTwig()->load('notifications.html.twig');
         echo $template->render(array(
@@ -326,7 +348,7 @@ class ControllerUtilisateur extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $utilisateurEnvoieDemande = $manager->find($idReceveur);
-        $tabDemandesPourMoi = $manager->supprimerDemandeContactEnvoyee($_SESSION['utilisateur']->getId(), $idReceveur);
+        $tabDemandesPourMoi = $manager->supprimerDemandeContactEnvoyee($_SESSION['utilisateur'], $idReceveur);
         $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " supprimée avec succès !";
         $this->afficherPageNotifications($tableauMessages, false);
     }
@@ -339,13 +361,24 @@ class ControllerUtilisateur extends Controller
         $idReceveur = $_GET['id'];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
-        $tabDemandesPourMoi = $manager->refuserDemandeContact($_SESSION['utilisateur']->getId(), $idReceveur);
+        $tabDemandesPourMoi = $manager->refuserDemandeContact($_SESSION['utilisateur'], $idReceveur);
         $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
         $utilisateur->getDemandes();
         $manager->miseAJourUtilisateur($utilisateur);
         $_SESSION['utilisateur'] = $utilisateur;
         $utilisateurEnvoieDemande = $manager->find($idReceveur);
-        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+
+        $utilisateurCourant = new Utilisateur(
+            $utilisateur->getId(),
+            $utilisateur->getNom(),
+            $utilisateur->getPrenom(),
+            $utilisateur->getEmail(),
+            null,
+            $utilisateur->getPhotoDeProfil(),
+            $utilisateur->getEstAdmin(),
+            $utilisateur->getDateDerniereConnexion());
+
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurCourant);
         $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " refusée avec succès !";
         $this->afficherPageNotifications($tableauMessages, false);
     }
@@ -358,13 +391,24 @@ class ControllerUtilisateur extends Controller
         $idReceveur = $_GET['id'];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
-        $tabDemandesPourMoi = $manager->accepterDemandeContact($idReceveur, $_SESSION['utilisateur']->getId());
+        $tabDemandesPourMoi = $manager->accepterDemandeContact($idReceveur, $_SESSION['utilisateur']);
         $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
         $utilisateur->getDemandes();
         $manager->miseAJourUtilisateur($utilisateur);
         $utilisateurEnvoieDemande = $manager->find($idReceveur);
         $_SESSION['utilisateur'] = $utilisateur;
-        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateur);
+
+        $utilisateurCourant = new Utilisateur(
+            $utilisateur->getId(),
+            $utilisateur->getNom(),
+            $utilisateur->getPrenom(),
+            $utilisateur->getEmail(),
+            null,
+            $utilisateur->getPhotoDeProfil(),
+            $utilisateur->getEstAdmin(),
+            $utilisateur->getDateDerniereConnexion());
+
+        $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurCourant);
         $tableauMessages[] = "Demande de " . $utilisateurEnvoieDemande->getNom() . " " . $utilisateurEnvoieDemande->getPrenom() . " acceptée avec succès !";
         $this->afficherPageNotifications($tableauMessages, false);
     }
@@ -382,7 +426,10 @@ class ControllerUtilisateur extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $utilisateurs = $manager->findAll();
-        $utilisateurCourant = $_SESSION['utilisateur'];
+
+        $utilisateurCourant = $manager->find($_SESSION['utilisateur']);
+
+        // $utilisateurCourant = $_SESSION['utilisateur'];
         if($utilisateurCourant->getEstAdmin()) {
             $template = $this->getTwig()->load('administration.html.twig');
             echo $template->render(
@@ -416,7 +463,7 @@ class ControllerUtilisateur extends Controller
         $utilisateurSupprime = $manager->find($id);
         $message[] = "L'utilisateur " . $utilisateurSupprime->getNom() . " " . $utilisateurSupprime->getPrenom() . " a été supprimé avec succès !";
         $manager->supprimerUtilisateur($id);
-        if($id == $_SESSION['utilisateur']->getId()) {
+        if($id == $_SESSION['utilisateur']) {
             $this->deconnecter();
             $this->genererVueVide('index');
         } else {
@@ -478,9 +525,21 @@ class ControllerUtilisateur extends Controller
             }
 
             $utilisateurConcerne = $manager->find($id);
-            if ($utilisateurConcerne->getId() == $_SESSION['utilisateur']->getId() && $utilisateurConcerne->getStatutCompte() == 'actif') {
-                $_SESSION['utilisateur'] = $utilisateurConcerne;
-                $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurConcerne);
+            $utilisateur = $manager->find($_SESSION['utilisateur']);
+            if ($utilisateurConcerne->getId() == $utilisateur->getId() && $utilisateurConcerne->getStatutCompte() == 'actif') {
+                $_SESSION['utilisateur'] = $utilisateurConcerne->getId();
+
+                $utilisateurCourant = new Utilisateur(
+                    $utilisateurConcerne->getId(),
+                    $utilisateurConcerne->getNom(),
+                    $utilisateurConcerne->getPrenom(),
+                    $utilisateurConcerne->getEmail(),
+                    null,
+                    $utilisateurConcerne->getPhotoDeProfil(),
+                    $utilisateurConcerne->getEstAdmin(),
+                    $utilisateurConcerne->getDateDerniereConnexion());
+
+                $this->getTwig()->addGlobal('utilisateurGlobal', $utilisateurCourant);
                 $messageErreurs[] = "L'utilisateur " . $utilisateurConcerne->getNom() . " " . $utilisateurConcerne->getPrenom() . " a été modifié avec succès !";
                 $this->afficherProfil($messageErreurs, false);
             } else {
@@ -505,7 +564,8 @@ class ControllerUtilisateur extends Controller
     {
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
-        $utilisateur = $manager->getUserMail($_SESSION['utilisateur']->getEmail());
+        $utilisateur = $manager->find($_SESSION['utilisateur']);
+        // $utilisateur = $manager->getUserMail($_SESSION['utilisateur']->getEmail());
         $template = $this->getTwig()->load('profil.html.twig');
         echo $template->render(
             array(

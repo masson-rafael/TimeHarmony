@@ -34,7 +34,7 @@ class ControllerAgenda extends Controller
         $pdo = $this->getPdo(); // Récupérer l'instance PDO
 
         $tableauErreurs = [];
-        $id = $_SESSION['utilisateur']->getId();
+        $id = $_SESSION['utilisateur'];
         $urlValide = utilitaire::validerURLAgenda($_POST['url'], $tableauErreurs);
         $couleurValide = utilitaire::validerCouleur($_POST['couleur'], $tableauErreurs);
         $nomValide = utilitaire::validerNom($_POST['nom'], $tableauErreurs);
@@ -46,7 +46,7 @@ class ControllerAgenda extends Controller
             // var_dump($_SESSION['utilisateur']->getId());
             // var_dump($id);
 
-            if($manager->URLEstUnique($_POST['url'], $id, $_SESSION['utilisateur']->getId())) {
+            if($manager->URLEstUnique($_POST['url'], $id, $_SESSION['utilisateur'])) {
                 // Créer une nouvelle instance d'Agenda avec les données du formulaire
                 $nouvelAgenda = new Agenda($_POST['url'], $_POST['couleur'], $_POST['nom'], $id);
                 // Ajouter l'agenda dans la base de données
@@ -74,7 +74,7 @@ class ControllerAgenda extends Controller
      */
     public function lister(?array $tabMessages = null, ?bool $contientErreurs = false): void {
         $manager = new AgendaDao($this->getPdo());
-        $id = $_SESSION['utilisateur']->getId();
+        $id = $_SESSION['utilisateur'];
         $agendas = $manager->getAgendasUtilisateur($id);
         $template = $this->getTwig()->load('agenda.html.twig');
 
@@ -150,7 +150,7 @@ class ControllerAgenda extends Controller
             // Créer une instance de AgendaDao pour interagir avec la base de données
             $manager = new AgendaDao($pdo);
             // Ajouter l'agenda dans la base de données
-            if($manager->URLEstUnique($_POST['url'], $id, $_SESSION['utilisateur']->getId())) {
+            if($manager->URLEstUnique($_POST['url'], $id, $_SESSION['utilisateur'])) {
                 $manager->modifierAgenda($id, $_POST['url'], $_POST['couleur'], $_POST['nom']);
                 // Retourner un message de succès
                 $tableauErreurs[] = "Modification réussie !";
