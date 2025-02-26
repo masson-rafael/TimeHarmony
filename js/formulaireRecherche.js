@@ -38,7 +38,7 @@ btn.addEventListener('click', sauvegarderVariables);
 
 const date = new Date();
 preparationDates(date, dateDebut, 0); // Remplissage du formulaire par valeur de base (jour actuel)
-preparationDates(date, dateFin, 7);
+preparationDates(date, dateFin, 1);
 verifierTousLesChamps();
 
 function preparationVariables() {
@@ -214,5 +214,4 @@ function verifierTousLesChamps() {
 
     // Activer ou désactiver le bouton en fonction des validations
     btn.disabled = !(dateDebutCorrect && dateFinCorrect && presenceCorrect && dureeCorrect && contactCorrect && groupesContactCorrect && debutPlageCorrect && finPlageCorrect);
-
 }

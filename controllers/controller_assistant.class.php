@@ -107,13 +107,26 @@ class ControllerAssistant extends Controller
         //     $_POST['contactsPrioritaires'] = $_SESSION['contactsPrioritaires'];
         // }
 
+        // var_dump($_POST);
+
+        if(isset($_SESSION['contacts'])) {
+            $_POST['contacts'] = $_SESSION['contacts'];
+        }
+
         $valideDuree = Utilitaire::validerDuree($_POST['debut'], $_POST['fin'], $messagesErreur);
         $dureeMinValide = Utilitaire::validerDureeMinimale($_POST['dureeMin'], $messagesErreur);
         @$contactsPrioritairesValide = Utilitaire::validerContacts($_POST['contactsPrioritaires'], $messagesErreur);
         @$contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur);
         $plageHoraireValide = Utilitaire::validerPlageHoraire($_POST['debutPlageH'], $_POST['finPlageH'], $messagesErreur);
 
+        // var_dump($_POST['contacts']);
+        // var_dump($valideDuree);
+        // var_dump($dureeMinValide);
+        // var_dump($contactsValide);
+        // var_dump($plageHoraireValide);
+
         if ($valideDuree && $dureeMinValide && $contactsValide && $plageHoraireValide) {
+            //var_dump("CHAMPS VALIDES");
             if (!isset($_SESSION['debut']) || !isset($_SESSION['fin']) || !isset($_SESSION['dureeMin']) || !isset($_SESSION['contacts']) || !isset($_SESSION['debutPlageH']) || !isset($_SESSION['finPlageH'])) {
                 $_SESSION['debut'] = $_POST['debut'];
                 $_SESSION['fin'] = $_POST['fin'];
@@ -134,22 +147,20 @@ class ControllerAssistant extends Controller
             $managerCreneau->supprimerCreneauxLibres();
 
             extract($_POST, EXTR_OVERWRITE);
-            if (isset($_POST['debut']) && isset($_POST['fin']) && isset($_POST['dureeMin']) && isset($_POST['contacts']) && isset($_POST['debutPLageH']) && isset($_POST['finPlageH'])) {
+
+            if (isset($_POST['debut']) && isset($_POST['fin']) && isset($_POST['dureeMin']) && isset($_POST['debutPlageH']) && isset($_POST['finPlageH'])) {
                 $_SESSION['dureeMin'] = $_POST['dureeMin'];
-                $_SESSION['contacts'] = $_POST['contacts'];
                 $_SESSION['debut'] = $_POST['debut'];
                 $_SESSION['fin'] = $_POST['fin'];
                 $_SESSION['debutPlageH'] = $_POST['debutPlageH'];
                 $_SESSION['finPlageH'] = $_POST['finPlageH'];
-                // $_SESSION['nbUserSelectionné'] = sizeof($_POST['contacts']);
-                // $_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
+                //var_dump("STOP");
             }
-
-            @$_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
 
             $dureeMin = $_SESSION['dureeMin'];
             $contacts = $_SESSION['contacts'];
-            $contactsPrio = $_SESSION['contactsPrioritaires'];
+            // A FAIRE PLUS TARD : Faire une vérification des contacts prioritaires vidés
+            @$contactsPrio = $_SESSION['contactsPrioritaires'];
             $debut = $_SESSION['debut'];
             $fin = $_SESSION['fin'];
             $debutHoraire = $_SESSION['debutPlageH'];
@@ -219,6 +230,9 @@ class ControllerAssistant extends Controller
                 }
             }
 
+            // var_dump($debut);
+            // var_dump($fin);
+            // var_dump($tableauUtilisateur);
             $assistantRecherche = new Assistant(new Datetime($debut), new Datetime($fin), $tableauUtilisateur);
 
             // $chronoStart = new DateTime();
@@ -430,5 +444,68 @@ class ControllerAssistant extends Controller
         echo $template->render(array());
     }
 
-    
+        /**
+     * Fonction qui permet d'afficher la premiere page de la recherche : personnes obligatoires
+     * 
+     * @param array|null $tabMessages tableau contenant les messages d'erreurs
+     * @param bool|null $contientErreurs booleen indiquant si la page contient des erreurs
+     * @return void
+     */
+    public function afficherPersonnesObligatoires(?array $tabMessages = null, ?bool $contientErreurs = false): void {
+        $utilisateur = $_SESSION['utilisateur'];
+        $contacts = $utilisateur->getContact($utilisateur->getId());
+        $groupes = $utilisateur->getGroupe($utilisateur->getId());
+
+        // Récupérer les ids des membres des groupes
+        $membres = [];
+        $pdo = $this->getPdo();
+        $manager = new GroupeDao($pdo);
+
+        // Récupérer les membres de chaque groupe
+        if(!empty($groupes)) {
+            foreach ($groupes as $groupe) {
+                $membresGroupe = $manager->getUsersFromGroup($groupe->getId());
+
+                // Stocker les IDs des membres dans un tableau
+                $membres[$groupe->getId()] = [];
+                foreach ($membresGroupe as $membre) {
+                    $membres[$groupe->getId()][] = $membre['idUtilisateur'];
+                }
+            }
+        } else {
+            $manager = new UtilisateurDAO($pdo);
+            $contacts = $manager->findAllContact($utilisateur->getId());
+            foreach ($contacts as $contact) {
+                $membres[] = $contact->getId();
+            }
+        }
+
+        $template = $this->getTwig()->load('recherche.html.twig');
+        echo $template->render(array(
+            'page' => 1,
+            'contacts' => $contacts,
+            'groupes' => $groupes,
+            'message' => $tabMessages,
+            'membres' => $membres,
+            'contientErreurs' => $contientErreurs
+        ));
+    }
+
+    public function afficherParametres(?array $tabMessages = null, ?bool $contientErreurs = false): void {
+        if(isset($_POST['contacts'])) {
+            $_SESSION['contacts'] = $_POST['contacts'];
+        }
+
+        if(isset($_POST['contactsPrioritaires'])) {
+            unset($_SESSION['contactsPrioritaires']);
+            $_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
+        }
+
+        $template = $this->getTwig()->load('recherche.html.twig');
+        echo $template->render(array(
+            'page' => 2,
+            'message' => $tabMessages,
+            'contientErreurs' => $contientErreurs
+        ));
+    }
 }
