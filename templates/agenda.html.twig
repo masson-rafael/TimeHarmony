@@ -61,13 +61,15 @@
                                                 <input type="text" class="form-control" id="url" name="url" value="{{ agenda.url }}" required>
                                                 <small id="urlAgendaError" class="text-danger"></small>
                                             </div>
-                                            <div class="mb-3">
-                                                <div class="mb-3">
-                                                    <label for="couleur" class="form-label">Couleur *</label><br>
-                                                    <small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
-                                                    <input type="color" name="couleur" class="form-control" id="couleur" value="{{ agenda.couleur }}" required>
-                                                    <small id="couleurAgendaError" class="text-danger"></small>
-                                                </div>
+                                            <div class="d-flex align-items-center gap-3 mt-2">
+                                                <input type="color" name="couleur" id="couleur" 
+                                                class="form-control form-control-color rounded-circle shadow-sm border" 
+                                                value="{{ agenda.couleur }}" 
+                                                style="cursor: pointer; width: 50px; height: 50px; border: 3px solid #ced4da; transition: all 0.3s ease-in-out;" required>
+                                            <small class="form-text text-muted text-start" style="max-width: 250px;">
+                                             Choisissez une couleur dans la liste ou entrez un code hexadécimal.
+                                            </small>
+                                             </div>
                                             </div>
                                         </div>
                                     </div>
@@ -138,11 +140,15 @@
                         </div>
                         <div class="mb-3">
                             <label for="couleur" class="form-label">Couleur *</label><br>
-                            <small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
-                            <input type="color" name="couleur" class="form-control form-control-color border rounded p-0 mt-3 mx-auto shadow-sm w-50" 
-                                    id="couleur" value="{{ agenda.couleur }}" style="cursor: pointer; width: 60px; height: 40px;" required>
-                            <small id="couleurError" class="text-danger"></small>
-                        </div>
+                            <div class="d-flex align-items-center gap-3 mt-2">
+                                <input type="color" name="couleur" id="couleur" 
+                                       class="form-control form-control-color rounded-circle shadow-sm border" 
+                                       value="{{ agenda.couleur }}" 
+                                       style="cursor: pointer; width: 50px; height: 50px; border: 3px solid #ced4da; transition: all 0.3s ease-in-out;" required>
+                                <small class="form-text text-muted text-start" style="max-width: 250px;">
+                                    Choisissez une couleur dans la liste ou entrez un code hexadécimal.
+                                </small>
+                            </div>
                         <div class="text-center pt-3">
                         </div>
                         <div class="mb-3 text-center pt-3">
