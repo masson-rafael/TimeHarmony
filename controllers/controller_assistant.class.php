@@ -153,7 +153,8 @@ class ControllerAssistant extends Controller
 
             $dureeMin = $_SESSION['dureeMin'];
             $contacts = $_SESSION['contacts'];
-            $contactsPrio = $_SESSION['contactsPrioritaires'];
+            // A FAIRE PLUS TARD : Faire une vérification des contacts prioritaires vidés
+            @$contactsPrio = $_SESSION['contactsPrioritaires'];
             $debut = $_SESSION['debut'];
             $fin = $_SESSION['fin'];
             $debutHoraire = $_SESSION['debutPlageH'];
