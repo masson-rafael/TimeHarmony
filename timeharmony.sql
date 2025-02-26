@@ -127,13 +127,13 @@ INSERT INTO `timeharmony_utilisateur` (`nom`, `prenom`, `email`, `motDePasse`, `
  ('autant', 'félix', 'fautant@iutbayonne.univ-pau.fr', '$2y$10$.qzWFHVUE3cpUVy3TAs1yO/.QVNp.gjKqwoKSgV0kpnUvwTsSW1r2', 'felix.jpg', true, 'actif'),
  ('etcheverry', 'patrick', 'patrick.etcheverry@iutbayonne.univ-pau.fr', '$2y$10$mBTdsf6nYV6ZAYm7wuD4p.lyH1xlxHCBFZxFQrjp9MQTCWPmndupi', 'petch.jpg', false, 'actif'),
  ('moulin', 'antoine', 'antoine.moulin@iutbayonne.univ-pau.fr', '$2y$10$zkyNPYF7XebIXxNH4QW6veoVeeGWUbWhRcVKRlQF0UG9cvbVp/Shu', 'antoine.jpg', false, 'actif'),
- ('pantxika', 'dagorret', 'pantxika.dagorret@iutbayonne.univ-pau.fr', '$2y$10$F8u3lSyuhU4mugsBJVIgmeccowZupq5dgQl5SaPhjJ60a/l8VtmGq', 'pantxika.jpg', false, 'actif'),
- ('sophie', 'voisin', 'sophie.voisin@iutbayonne.univ-pau.fr', '$2y$10$EbNnJgh848jUnqrqeVHKx.vchALW7ZHdUPFIgiRLwsg45AfOA.50O', 'sophie.jpg', false, 'actif'),
- ('christophe', 'marquesuzaa', 'christophe.marquesuzaa@iutbayonne.univ-pau.fr', '$2y$10$DqHEdsa3Y1cJ4KC2IccV3eImTTx8k622vnI1KnYPkVg3UndA2YgZm', 'christophe.png', false, 'actif'),
- ('olivier', 'dezeque', 'olivier.dezeque@iutbayonne.univ-pau.fr', '$2y$10$Wx.XZ34n6xF93ToBnzfdiOb8rXxIPgVUcq5n4fxpP2jA3zF/I/8Ma', 'olivier.jpg', false, 'desactive'),
- ('chiara', 'rustici', 'chiara.rustici@iutbayonne.univ-pau.fr', '$2y$10$INfusoSi/dQSmXxy5RtQhuPN.UyKuESik1QO.i8gOZpg8MGtO3bS2', 'chiara.jpg', false, 'desactive'),
- ('ugo', 'bergos', 'ubergos@iutbayonne.univ-pau.fr', '$2y$10$hDI16y1VKBCUjPM58D5uQuVLRB6NldjWmAumJXxGwvwgbgdZvq5FG', 'ugo.png', true, 'actif'),
- ('manon', 'klein-pol', 'mkpol@iutbayonne.univ-pau.fr', '$2y$10$O4pjDJhpb0zBriz2NZuNpOoqNT5DYyHByZI8tVG53Gx1jGpOSMR/e', 'manon.jpg', true, 'actif');
+ ('bergos', 'ugo', 'ubergos@iutbayonne.univ-pau.fr', '$2y$10$hDI16y1VKBCUjPM58D5uQuVLRB6NldjWmAumJXxGwvwgbgdZvq5FG', 'ugo.png', true, 'actif'),
+ ('klein-pol', 'manon', 'mkpol@iutbayonne.univ-pau.fr', '$2y$10$O4pjDJhpb0zBriz2NZuNpOoqNT5DYyHByZI8tVG53Gx1jGpOSMR/e', 'manon.jpg', true, 'actif'),
+ ('dagorret', 'pantxika', 'pantxika.dagorret@iutbayonne.univ-pau.fr', '$2y$10$F8u3lSyuhU4mugsBJVIgmeccowZupq5dgQl5SaPhjJ60a/l8VtmGq', 'pantxika.jpg', false, 'actif'),
+ ('voisin', 'sophie', 'sophie.voisin@iutbayonne.univ-pau.fr', '$2y$10$EbNnJgh848jUnqrqeVHKx.vchALW7ZHdUPFIgiRLwsg45AfOA.50O', 'sophie.jpg', false, 'actif'),
+ ('marquesuzaa', 'christophe', 'christophe.marquesuzaa@iutbayonne.univ-pau.fr', '$2y$10$DqHEdsa3Y1cJ4KC2IccV3eImTTx8k622vnI1KnYPkVg3UndA2YgZm', 'christophe.png', false, 'actif'),
+ ('dezeque', 'olivier', 'olivier.dezeque@iutbayonne.univ-pau.fr', '$2y$10$Wx.XZ34n6xF93ToBnzfdiOb8rXxIPgVUcq5n4fxpP2jA3zF/I/8Ma', 'olivier.jpg', false, 'desactive'),
+ ('rustici', 'chiara', 'chiara.rustici@iutbayonne.univ-pau.fr', '$2y$10$INfusoSi/dQSmXxy5RtQhuPN.UyKuESik1QO.i8gOZpg8MGtO3bS2', 'chiara.jpg', false, 'desactive');
 
 
 --
@@ -312,7 +312,8 @@ CREATE TABLE IF NOT EXISTS `timeharmony_demander` (
 --
 
 INSERT INTO `timeharmony_demander` (`idUtilisateur1`, `idUtilisateur2`) VALUES
- (1, 6), (2, 6), (3, 5);
+ (1, 6), (2, 6), (3, 5),
+ (7, 1), (7, 2), (8, 2);
 
 --
 -- Déchargement des données de la table 'demander'
@@ -337,7 +338,9 @@ CREATE TABLE IF NOT EXISTS `timeharmony_composer` (
 --
 
 INSERT INTO `timeharmony_composer` (`idGroupe`, `idUtilisateur`) VALUES
- (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (2, 1), (2, 2), (2, 3), (2, 4),
+ (1,1), (1,2), (1,3), (1,4), (1,5), 
+ (2,1), (2,2), (2,3), (2,4),
+ (3,1), (3,2),
  (4,1), (4,2), (4,3), (4,4), (4,5),
  (5,1), (5,2), (5,3), (5,4), (5,5),
  (6,1), (6,2), (6,3), (6,4), (6,5);

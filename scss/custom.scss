@@ -2,13 +2,256 @@
 
 @import "../node_modules/bootstrap/scss/variables";
 @import "../node_modules/bootstrap/scss/variables-dark";
+
+$body-bg: #F5F5DC;
+$body-color: #111;
+
+$primary: #64a19d;
+$primary-hover: #5a908c;
+$secondary: #f6f6f6;
+$tertiary: #e3e3e3;
+$success: #67c29c;
+$info: #1cabc4;
+$warning: #e4c662;
+$danger: #c70039;
+
 $theme-colors: (
-    "primary": $blue-300,
-    "secondary": $indigo,
+    "primary": $primary,
+    "secondary": $secondary,
+    "tertiary": $tertiary,
+    "success": $success,
+    "info": $info,
+    "warning": $warning,
+    "danger": $danger,
 );
+
+// Create your own map
+$custom-colors: (
+    "primary-hover": $primary-hover,
+);
+
+// Merge the maps
+$theme-colors: map-merge($theme-colors, $custom-colors);
 
 @import "../node_modules/bootstrap/scss/maps";
 @import "../node_modules/bootstrap/scss/mixins";
 @import "../node_modules/bootstrap/scss/root";
 
 @import "../node_modules/bootstrap/scss/bootstrap";
+
+// DATATABLES
+.dataTables_wrapper {
+    color: $body-color;
+    width: 100% !important;
+
+    .dataTables_length,
+    .dataTables_filter,
+    .dataTables_info,
+    .dataTables_paginate {
+    color: $body-color !important;
+    margin: 1rem 0;
+    }
+
+    .dataTables_length select {
+        width: 5rem !important; 
+
+        option {
+            background-color: $secondary !important;
+
+            &:hover {
+                background-color: $tertiary !important;
+            }
+        }
+    }
+
+    .dataTables_filter input,
+    .dataTables_length select {
+        background-color: $secondary !important;
+        color: $body-color !important;
+        border: 1px solid rgba($primary, 0.2) !important;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        margin: 0 0.5rem;  
+
+        &:focus {
+            border-color: $primary !important;
+            box-shadow: 0 0 0 0.2rem rgba($primary, 0.25) !important;
+        }
+
+        &::placeholder {
+            color: $body-color;
+        }
+    }
+
+    .card {
+        background: rgba($secondary, 0.95) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba($primary, 0.1);
+
+        .table-responsive {
+            border-radius: 0.5rem;
+        }
+    }
+
+    table {
+        margin: 0 !important;
+        background-color: transparent;
+
+        thead th {
+            background-color: rgba($secondary, 0.5);
+            border-bottom: 2px solid rgba($primary, 0.2);
+            color: $body-color;
+            font-weight: bold;
+            padding: 1rem;
+        }
+
+        tbody tr {
+            &:hover {
+            background-color: rgba(lighten($secondary, 5%), 0.5) !important;
+            }
+
+            td {
+            vertical-align: middle;
+            padding: 1rem;
+            border-color: rgba($primary, 0.2);
+            }
+        }
+    }
+
+    .page-item {
+        margin: 0 2px;
+        padding-top: 1rem;
+
+        &.active .page-link {
+            background-color: $primary !important;
+            border-color: $tertiary !important;
+            color: $secondary !important;
+
+            &:hover {
+                background-color: $primary-hover !important;
+                }
+        }
+
+        &.disabled .page-link {
+            background-color: rgba($secondary, 0.5) !important;
+            border-color: $tertiary !important;
+            color: lighten($body-color, 50%) !important;
+        }
+
+        .page-link {
+            background-color: $secondary !important;
+            border-color: $tertiary !important;
+            color: $body-color !important;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+
+            &:hover {
+            background-color: $tertiary !important;
+            border-color: $primary !important;
+            }
+
+            &:focus {
+            box-shadow: 0 0 0 0.2rem rgba($primary, 0.25);
+            }
+        }
+    }
+}
+
+.text-truncate {
+    width: 400px;
+}
+
+.nav-link, .footer {
+    color: $secondary;
+    &:hover {
+        color: $tertiary;
+    }
+}
+
+.nav-active {
+    color: darken($tertiary, 5%) !important;
+}
+
+.dropdown-item, 
+.btn-primary {
+    color: $secondary !important;
+    &:hover {
+        background-color: $primary-hover;
+    }
+}
+
+.btn-danger {
+    color: $secondary;
+    &:hover {
+        color: $secondary;
+    }
+}
+
+.btn-secondary {
+    border-color: $primary;
+    &:hover {
+        background-color: $tertiary;
+        border-color: $primary;
+    }
+}
+
+.form-control {
+    background-color: $secondary !important;
+    &:focus {
+        box-shadow: 0 0 0 0.2rem rgba($primary, 0.25);
+        border-color: $primary;
+    }
+}
+
+.form-check-input{
+    background-color: $secondary;
+    border-color: $primary !important;
+    box-shadow: $primary !important;
+    padding: 0.75rem;
+    &:checked {
+        background-color: $primary;
+    }
+}
+
+.photos {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.container-photo {
+    position: relative;
+}
+
+.photo-profil {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    padding: 0;
+    border: solid 2px $primary;
+}
+
+.modif-photo {
+    position: absolute;
+    cursor: pointer;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: white;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    width: 145px;
+    height: 145px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+
+    &:hover {
+        opacity: 1;
+    }
+}

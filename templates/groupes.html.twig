@@ -10,10 +10,12 @@
 		<div class="container">
 			{% if modification == false and creation == false %}
 				<div class="row text-center mt-3 mb-3">
-					<h1>Mes Groupes</h1>
+					<h1 class="text-center py-5">
+						<i class="fa-solid fa-users"></i>
+						Mes Groupes</h1>
 				</div>
 				{% if groupes|length > 0 %}
-					<table id="myTable" class="table groupe table-striped">
+					<table id="myTable" class="table groupe table-striped table-bordered">
 						<thead>
 							<tr>
 								<th>Nom</th>
@@ -30,15 +32,15 @@
 									<td>{{ nombrePersonnes[loop.index0] }}</td>
 									<td>
 										<a role="button" href="index.php?controleur=groupes&methode=afficherPageModification&id={{ groupe.id }}">
-										<i class="fa-solid fa-pencil"></i></a>
+										<i class="fa-solid fa-pencil fa-2xl text-primary"></i></a>
 										<a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleSuppression{{ groupe.id }}">
-										<i class="fa-solid fa-trash"></i></a>
+										<i class="fa-solid fa-trash fa-2xl text-danger"></i></a>
 									</td>
 								</tr>
 								<div class="modal fade" id="fenetreModaleSuppression{{ groupe.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 									<div class="modal-dialog modal-lg">
 										<div class="modal-content">
-											<div class="modal-header">
+											<div class="modal-header bg-danger text-secondary">
 												<h1 class="modal-title fs-5" id="exampleModalLabel">Suppression du groupe
 													{{ groupe.nom }}</h1>
 												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -50,7 +52,7 @@
 														?</label>
 												</div>
 												<div class="modal-footer">
-													<button type="submit" class="btn btn-primary" name="update_article">Supprimer</button>
+													<button type="submit" class="btn btn-danger" name="update_article">Supprimer</button>
 													<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
 												</div>
 											</form>
@@ -74,7 +76,9 @@
 				</div>
 			{% elseif modification %}
 				<div class="row text-center mt-3 mb-3">
-					<h1>Modifier mon groupe</h1>
+					<h1 class="text-center py-5">
+						<i class="fa-solid fa-users"></i>
+						Modifier mon groupe</h1>
 				</div>
 				<div
 					class="d-flex align-items-center">
@@ -82,53 +86,61 @@
 					<div class="w-100">
 						<form id="formModificationGroupe" method="POST" action="index.php?controleur=groupes&methode=modifier&id={{ groupeCourant.id }}">
 							<div class="mb-3">
-								<label for="nom" class="form-label" style="color: #2c3e50;">Nom *</label>
-								<input type="text" class="form-control shadow-sm" id="nom" name="nom" value="{{ groupeCourant.nom }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="50" required>
+								<label for="nom" class="form-label">Nom *</label>
+								<input type="text" class="form-control" id="nom" name="nom" value="{{ groupeCourant.nom }}" maxlength="50" required>
 								<small id="nomGroupeError" class="text-danger"></small>
 							</div>
 							<div class="mb-3">
-								<label for="description" maxlength="101" class="form-label" style="color: #2c3e50;">Description *</label>
-								<input type="text" class="form-control shadow-sm" id="description" name="description" value="{{ groupeCourant.description }}" style="border: 1px solid #ddd; padding: 10px;" maxlength="255" required>
+								<label for="description" maxlength="101" class="form-label">Description *</label>
+								<input type="text" class="form-control" id="description" name="description" value="{{ groupeCourant.description }}" maxlength="255" required>
 								<small id="descriptionGroupeError" class="text-danger"></small>
 							</div>
 							<div class="mb-3">
-								<label for="contacts[]" class="form-label" style="color: #2c3e50;">Membres *</label>
+								<label for="contacts[]" class="form-label">Membres *</label>
 								<div class="card p-4 shadow-sm">
-								<table class="table groupe2 table-bordered table-hover">
-									<thead>
-										<tr class="table-primary">
-											<th>#</th>
-											<th>Prénom</th>
-											<th>Nom</th>
-										</tr>
-									</thead>
-									<tbody>
-										{% for contact in contacts %}
+									<table class="table groupe2 table-bordered table-hover">
+										<thead>
 											<tr>
-												<!-- Si l'id du contact est dans idsMembres, on coche la case -->
-												<td>
-													<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}" {% if contact.getId in idsMembres %} checked {% endif %}>
-												</td>
-												<td>{{ contact.getPrenom }}</td>
-												<td>{{ contact.getNom }}</td>
+												<th></th>
+												<th>Prénom</th>
+												<th>Nom</th>
 											</tr>
-										{% endfor %}
-									</tbody>
-								</table>
-								<small id="contactsGroupeError" class="text-danger"></small>
+										</thead>
+										<tbody>
+											{% for contact in contacts %}
+												<tr>
+													<!-- Si l'id du contact est dans idsMembres, on coche la case -->
+													<td>
+														<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}" {% if contact.getId in idsMembres %} checked {% endif %}>
+													</td>
+													<td>{{ contact.getPrenom }}</td>
+													<td>{{ contact.getNom }}</td>
+												</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<small id="contactsGroupeError" class="text-danger"></small>
 								</div>
 							</div>
 							<div class="text-center mt-4">
-								<button id="boutonModificationGroupe" type="submit" class="btn btn-primary px-4 shadow-sm" >Modifier mon groupe</button>
+								<button role="button" class="btn btn-secondary px-4" href="index.php?controleur=groupes&methode=lister">Retour à mes groupes</button>
+							</div>
+							<div class="text-center mt-4">
+								<button id="boutonModificationGroupe" type="submit" class="btn btn-primary px-4 shadow-sm">Modifier mon groupe</button>
 							</div>
 						</form>
 					</div>
 				</div>
 			{% elseif creation %}
-				<div class="row justify-content-center mt-5 h-75">
-					<div class="col-md-6">
-						<a class="" href="index.php?controleur=groupes&methode=lister" role="button"><img src="image/retour.png" style="width: 35px;" alt="retour"></a>
-						<h4 class="text-center mb-4">Créer un groupe</h4>
+				<div class="row text-center mt-3 mb-3">
+					<h1 class="text-center py-5">
+						<i class="fa-solid fa-users"></i>
+						Créer un groupe</h1>
+				</div>
+				<div
+					class="d-flex align-items-center">
+					<!-- Formulaire Modification -->
+					<div class="w-100">
 						<form id="formCreationGroupe" class="justify-content-center align-items-center" action="index.php?controleur=groupes&methode=creer" method="post" required>
 							<div class="mb-3">
 								<label for="nom" class="form-label">Nom *</label>
@@ -143,26 +155,26 @@
 							<div class="mb-3">
 								<label for="description" class="form-label">Ajoutez vos contacts à votre groupe</label>
 								{% if contacts %}
-								<div class="card p-4 shadow-sm mb-0">
-									<table class="table groupe2 table-bordered table-hover">
-										<thead>
-											<tr class="table-primary">
-												<th>#</th>
-												<th>Prénom</th>
-												<th>Nom</th>
-											</tr>
-										</thead>
-										<tbody>
-											{% for contact in contacts %}
+									<div class="card p-4 shadow-sm mb-0">
+										<table class="table groupe2 table-bordered table-hover">
+											<thead>
 												<tr>
-													<td><input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}"></td>
-													<td>{{ contact.getPrenom }}</td>
-													<td>{{ contact.getNom }}</td>
+													<th></th>
+													<th>Prénom</th>
+													<th>Nom</th>
 												</tr>
-											{% endfor %}
-										</tbody>
-									</table>
-								</div>
+											</thead>
+											<tbody>
+												{% for contact in contacts %}
+													<tr>
+														<td><input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}"></td>
+														<td>{{ contact.getPrenom }}</td>
+														<td>{{ contact.getNom }}</td>
+													</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
 								{% else %}
 									<div class="alert alert-info text-center" role="alert">Aucun contact trouvé. Ajoutez-en un ci-dessous.</div>
 									<div class="text-center">
@@ -171,10 +183,10 @@
 								{% endif %}
 								<small id="contactsError" class="text-danger"></small>
 							</div>
-							<div class="text-center pt-5">
-							</div>
+							<div class="text-center pt-5"></div>
 							<div class="mb-3 text-center pt-3">
 								<button id="boutonCreationGroupe" type="submit" class="btn btn-primary">Créer le groupe</button>
+								<a type="submit" href="index.php?controleur=groupes&methode=lister" class="btn btn-secondary">Annuler</a>
 							</div>
 						</form>
 					</div>
