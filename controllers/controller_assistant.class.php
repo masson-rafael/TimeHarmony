@@ -101,7 +101,7 @@ class ControllerAssistant extends Controller
         //     $_POST['contactsPrioritaires'] = $_SESSION['contactsPrioritaires'];
         // }
 
-        var_dump($_POST);
+        // var_dump($_POST);
 
         if(isset($_SESSION['contacts'])) {
             $_POST['contacts'] = $_SESSION['contacts'];
@@ -113,14 +113,14 @@ class ControllerAssistant extends Controller
         @$contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur);
         $plageHoraireValide = Utilitaire::validerPlageHoraire($_POST['debutPlageH'], $_POST['finPlageH'], $messagesErreur);
 
-        var_dump($_POST['contacts']);
-        var_dump($valideDuree);
-        var_dump($dureeMinValide);
-        var_dump($contactsValide);
-        var_dump($plageHoraireValide);
+        // var_dump($_POST['contacts']);
+        // var_dump($valideDuree);
+        // var_dump($dureeMinValide);
+        // var_dump($contactsValide);
+        // var_dump($plageHoraireValide);
 
         if ($valideDuree && $dureeMinValide && $contactsValide && $plageHoraireValide) {
-            var_dump("CHAMPS VALIDES");
+            //var_dump("CHAMPS VALIDES");
             if (!isset($_SESSION['debut']) || !isset($_SESSION['fin']) || !isset($_SESSION['dureeMin']) || !isset($_SESSION['contacts']) || !isset($_SESSION['debutPlageH']) || !isset($_SESSION['finPlageH'])) {
                 $_SESSION['debut'] = $_POST['debut'];
                 $_SESSION['fin'] = $_POST['fin'];
@@ -148,7 +148,7 @@ class ControllerAssistant extends Controller
                 $_SESSION['fin'] = $_POST['fin'];
                 $_SESSION['debutPlageH'] = $_POST['debutPlageH'];
                 $_SESSION['finPlageH'] = $_POST['finPlageH'];
-                var_dump("STOP");
+                //var_dump("STOP");
             }
 
             $dureeMin = $_SESSION['dureeMin'];
@@ -221,9 +221,9 @@ class ControllerAssistant extends Controller
                 }
             }
 
-            var_dump($debut);
-            var_dump($fin);
-            var_dump($tableauUtilisateur);
+            // var_dump($debut);
+            // var_dump($fin);
+            // var_dump($tableauUtilisateur);
             
             $assistantRecherche = new Assistant(new Datetime($debut), new Datetime($fin), $tableauUtilisateur);
             
