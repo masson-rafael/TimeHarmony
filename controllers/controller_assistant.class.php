@@ -194,10 +194,16 @@ class ControllerAssistant extends Controller
                         }
                     }
                     if ($verif === false) {
-                        $tableauUtilisateur[] = $managerUtilisateur->find($idUtilisateurGroupe);
+                        $tableauUtilisateur[] = $managerUtilisateur->find($idUtilisateurGroupe)->getId();
                         $_SESSION['contacts'][] = $idUtilisateurGroupe;
                     }
                 }
+            }
+            
+            // Faire un tableau de correspondance entre les id et les noms des utilisateurs
+            $tabIdsNoms = [];
+            foreach ($tableauUtilisateur as $utilisateur) {
+                $tabIdsNoms[$utilisateur->getId()] = $utilisateur->getPrenom() . ' ' . $utilisateur->getNom();
             }
 
             $tailleTabUser = count($tableauUtilisateur);
@@ -289,6 +295,7 @@ class ControllerAssistant extends Controller
 
             // Générer la vue avec les données structurées
             $tailleContacts = sizeof($tableauUtilisateur);
+
             $nombreUtilisateursSeclectionnes = $_SESSION['nbUserSelectionné'];
             $nbrUtilisateursMin = ceil($tailleContacts / 2);
 
@@ -322,8 +329,7 @@ class ControllerAssistant extends Controller
 
             //var_dump($nombreCreneauxDisponibles);
             // var_dump($datesCommunesFrancaise);
-
-            $this->genererVueCreneaux($datesCommunesFrancaise, $nbrUtilisateursMin, $nombreUtilisateursSeclectionnes);
+            $this->genererVueCreneaux($datesCommunesFrancaise, $tabIdsNoms, $nbrUtilisateursMin, $nombreUtilisateursSeclectionnes);
         } else {
             $this->genererVueRecherche($messagesErreur, true);
         }
@@ -337,29 +343,20 @@ class ControllerAssistant extends Controller
      * @param int|null $nombreUtilisateursSelectionnes le nombre de personnes selectionnés par la recherche
      * @return void
      */
-    public function genererVueCreneaux(?array $creneaux, ?int $nbrUtilisateursMin, ?int $nombreUtilisateursSeclectionnes): void
+    public function genererVueCreneaux(?array $creneaux, ?array $tabIdsNoms, ?int $nbrUtilisateursMin, ?int $nombreUtilisateursSeclectionnes): void
     {
         // Formater les créneaux pour le calendrier FullCalendar
         $evenements = [];
 
         foreach ($creneaux as $date => $plagesHoraires) {
-            $dateObj = DateTime::createFromFormat('d-m-Y', $date);
-            if (!$dateObj) continue;
-            
-            // Tri des plages par heure de début
-            uksort($plagesHoraires, function($a, $b) {
-                $startA = explode(' - ', $a)[0];
-                $startB = explode(' - ', $b)[0];
-                return strtotime($startA) <=> strtotime($startB);
-            });
     
             $mergedEvent = null;
             
             foreach ($plagesHoraires as $plage => $participants) {
+                
                 // Récupérer les dates de début et de fin
                 list($debut, $fin) = explode(' - ', $plage);
                 $start = DateTime::createFromFormat('d-m-Y H:i', "$date $debut");
-                $dateDebut = $start; // Date initiale de la recherche
                 $end = DateTime::createFromFormat('d-m-Y H:i', "$date $fin");
                 
                 // Vérifier si on doit fusionner les événements (interval de 30 minutes)
@@ -392,6 +389,7 @@ class ControllerAssistant extends Controller
             if ($mergedEvent) {
                 $evenements[] = $this->createEventObject($mergedEvent);
             }
+ 
         }
 
         $template = $this->getTwig()->load('resultat.html.twig');
@@ -402,7 +400,7 @@ class ControllerAssistant extends Controller
             'nbrUtilisateursMin' => $nbrUtilisateursMin,
             'nombreUtilisateursSeclectionnes' => $nombreUtilisateursSeclectionnes,
             'evenements' => $evenements,
-            'dateDebut' => $dateDebut,
+            'tabIdsNoms' => $tabIdsNoms
         ]);
     }
 
@@ -414,7 +412,6 @@ class ControllerAssistant extends Controller
     private function createEventObject(array $mergedEvent): array
     {
         return [
-            'title' => 'Créneau disponible',
             'start' => $mergedEvent['start']->format('Y-m-d\TH:i:s'),
             'end' => $mergedEvent['end']->format('Y-m-d\TH:i:s'),
         ];
