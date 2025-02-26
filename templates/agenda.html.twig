@@ -61,15 +61,14 @@
                                                 <input type="text" class="form-control" id="url" name="url" value="{{ agenda.url }}" required>
                                                 <small id="urlAgendaError" class="text-danger"></small>
                                             </div>
-                                            <div class="d-flex align-items-center gap-3 mt-2">
-                                                <input type="color" name="couleur" id="couleur" 
-                                                class="form-control form-control-color rounded-circle shadow-sm border" 
-                                                value="{{ agenda.couleur }}" 
-                                                style="cursor: pointer; width: 50px; height: 50px; border: 3px solid #ced4da; transition: all 0.3s ease-in-out;" required>
-                                            <small class="form-text text-muted text-start" style="max-width: 250px;">
-                                             Choisissez une couleur dans la liste ou entrez un code hexadécimal.
-                                            </small>
-                                             </div>
+                                            <div class="d-flex  gap-3 mt-2">
+                                                 <input type="color" name="couleur" id="couleur" 
+                                                      class="form-control form-control-color rounded-circle shadow-sm border" 
+                                                      value="{{ agenda.couleur }}" 
+                                                      style="cursor: pointer; width: 50px; height: 50px; border: 3px solid #ced4da; transition: all 0.3s ease-in-out;" required>
+                                                 <small class="form-text text-muted text-start" style="max-width: 250px;">
+                                                 Choisissez une couleur dans la liste ou entrez un code hexadécimal.
+                                                 </small>
                                             </div>
                                         </div>
                                     </div>
@@ -138,17 +137,19 @@
                             <i class="fa-solid fa-circle-info text-info small me-1"></i>
                             <a href="#" class="small text-info" data-bs-toggle="modal" data-bs-target="#modaleAideImportation">Où trouver le lien de mon agenda ?</a>
                         </div>
-                        <div class="mb-3">
-                            <label for="couleur" class="form-label">Couleur *</label><br>
-                            <div class="d-flex align-items-center gap-3 mt-2">
-                                <input type="color" name="couleur" id="couleur" 
-                                       class="form-control form-control-color rounded-circle shadow-sm border" 
-                                       value="{{ agenda.couleur }}" 
-                                       style="cursor: pointer; width: 50px; height: 50px; border: 3px solid #ced4da; transition: all 0.3s ease-in-out;" required>
-                                <small class="form-text text-muted text-start" style="max-width: 250px;">
-                                    Choisissez une couleur dans la liste ou entrez un code hexadécimal.
-                                </small>
+                        <div class="mb-3 ">
+                            <label for="couleur" class="form-label ">Couleur *</label>
+                            <div class="d-flex  gap-3 mt-2">
+                            <input type="color" name="couleur" id="couleur" 
+                                class="form-control form-control-color rounded-circle shadow-sm border" 
+                                value="{{ agenda.couleur }}" 
+                                style="cursor: pointer; width: 50px; height: 50px; border: 3px solid #ced4da; transition: all 0.3s ease-in-out;" required>
+                            <small class="form-text text-muted text-start" style="max-width: 250px;">
+                            Choisissez une couleur dans la liste ou entrez un code hexadécimal.
+                            </small>
                             </div>
+                            <small id="couleurError" class="text-danger d-block mt-2"></small>
+                        </div>
                         <div class="text-center pt-3">
                         </div>
                         <div class="mb-3 text-center pt-3">
@@ -182,7 +183,7 @@
                                            <strong>2.</strong> Dans la colonne de gauche, passez la souris sur le calendrier que vous souhaitez partager et cliquez sur les trois points. <br>
                                            <strong>3.</strong> Sélectionnez <strong>Paramètres et partage</strong>. <br>
                                            <strong>4.</strong> Faites défiler jusqu’à <strong>Intégrer le calendrier</strong>. <br>
-                                           <strong>5.</strong> Copiez le lien ICS dans la section <strong>Adresse secrète au format iCal</strong> (nécessaire si le calendrier est privé). <br>
+                                           <strong>5.</strong>  Copiez le lien ICS dans la section <strong>Adresse secrète au format iCal</strong> (nécessaire si le calendrier est privé). <br>
                                         </div>
                                     </div>
                                 </div>
