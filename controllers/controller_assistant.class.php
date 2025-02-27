@@ -51,7 +51,7 @@ class ControllerAssistant extends Controller
         $pdo = $this->getPdo();
         $managerUtilisateur = new UtilisateurDao($pdo);
         $utilisateur = $managerUtilisateur->find($_SESSION['utilisateur']);
-        
+
 
         $contacts = $utilisateur->getContact($utilisateur->getId());
         $groupes = $utilisateur->getGroupe($utilisateur->getId());
@@ -166,7 +166,7 @@ class ControllerAssistant extends Controller
             $tableauUtilisateur[] = $utilisateur;
 
             $contactsPrioritaires = [];
-            if(!empty($contactsPrio)) {
+            if (!empty($contactsPrio)) {
                 foreach ($contactsPrio as $contact) {
                     $manager = new UtilisateurDAO($pdo);
                     $user = $manager->find($contact);
@@ -175,7 +175,7 @@ class ControllerAssistant extends Controller
                 $aDesPriorites = true;
             }
 
-            if(empty($contactsPrioritaires)) {
+            if (empty($contactsPrioritaires)) {
                 $aDesPriorites = false;
             }
 
@@ -198,12 +198,6 @@ class ControllerAssistant extends Controller
                         $_SESSION['contacts'][] = $idUtilisateurGroupe;
                     }
                 }
-            }
-            
-            // Faire un tableau de correspondance entre les id et les noms des utilisateurs
-            $tabIdsNoms = [];
-            foreach ($tableauUtilisateur as $utilisateur) {
-                $tabIdsNoms[$utilisateur->getId()] = $utilisateur->getPrenom() . ' ' . $utilisateur->getNom();
             }
 
             $tailleTabUser = count($tableauUtilisateur);
@@ -286,6 +280,7 @@ class ControllerAssistant extends Controller
 
             // Appel de la fonction
             $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'], $debutHoraire, $finHoraire, $debut, $fin, $contactsPrioritaires, $aDesPriorites);
+
             // exit;
             // $chronoEndGen = new DateTime();
             // $chronoInterval = $chronoStartGen->diff($chronoEndGen);
@@ -329,7 +324,7 @@ class ControllerAssistant extends Controller
 
             //var_dump($nombreCreneauxDisponibles);
             // var_dump($datesCommunesFrancaise);
-            $this->genererVueCreneaux($datesCommunesFrancaise, $tabIdsNoms, $nbrUtilisateursMin, $nombreUtilisateursSeclectionnes);
+            $this->genererVueCreneaux($datesCommunesFrancaise, $nbrUtilisateursMin, $nombreUtilisateursSeclectionnes);
         } else {
             $this->genererVueRecherche($messagesErreur, true);
         }
@@ -343,22 +338,27 @@ class ControllerAssistant extends Controller
      * @param int|null $nombreUtilisateursSelectionnes le nombre de personnes selectionnés par la recherche
      * @return void
      */
-    public function genererVueCreneaux(?array $creneaux, ?array $tabIdsNoms, ?int $nbrUtilisateursMin, ?int $nombreUtilisateursSeclectionnes): void
+    public function genererVueCreneaux(?array $creneaux, ?int $nbrUtilisateursMin, ?int $nombreUtilisateursSeclectionnes): void
     {
         // Formater les créneaux pour le calendrier FullCalendar
         $evenements = [];
 
         foreach ($creneaux as $date => $plagesHoraires) {
-    
+
             $mergedEvent = null;
-            
+
             foreach ($plagesHoraires as $plage => $participants) {
-                
+
                 // Récupérer les dates de début et de fin
                 list($debut, $fin) = explode(' - ', $plage);
                 $start = DateTime::createFromFormat('d-m-Y H:i', "$date $debut");
                 $end = DateTime::createFromFormat('d-m-Y H:i', "$date $fin");
-                
+
+                // Récupérer l'heure de début et de fin initiales
+                $heureDebut = $_SESSION['debutPlageH'];
+                $heureFin = $_SESSION['finPlageH'];
+                $heuresInitiales = [$heureDebut, $heureFin];
+
                 // Vérifier si on doit fusionner les événements (interval de 30 minutes)
                 if (!$mergedEvent) {
                     // Premier événement
@@ -366,8 +366,7 @@ class ControllerAssistant extends Controller
                         'start' => $start,
                         'end' => $end,
                     ];
-                } 
-                else {
+                } else {
                     $diffSeconds = $start->getTimestamp() - $mergedEvent['end']->getTimestamp();
                     if ($diffSeconds <= 30 * 60) { // 30 minutes = 1800 secondes
                         // Si les événements se chevauchent ou si l'écart est inférieur ou égal à 30 minutes, on fusionne
@@ -384,34 +383,54 @@ class ControllerAssistant extends Controller
                     }
                 }
             }
-            
+
             // Ajouter le dernier événement fusionné
             if ($mergedEvent) {
                 $evenements[] = $this->createEventObject($mergedEvent);
             }
- 
         }
+
+        // Faire un tableau de correspondance entre les id et les noms des utilisateurs
+        $tabIdsNoms = [];
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDAO($pdo);
+
+        foreach ($participants as $id => $dispo) {
+            $user = $manager->find($id);
+            $tabIdsNoms[$id] = $user->getNom() . " " . $user->getPrenom();
+        }
+        var_dump($tabIdsNoms);
+
+        // Récupérer la première date dans evenements
+        $dateDebut = $evenements[0]['start'];
 
         $template = $this->getTwig()->load('resultat.html.twig');
 
+
+        // Faire un tableau de correspondance entre les id et les noms des utilisateurs
+
+        var_dump($dateDebut);
         echo $template->render([
             'menu' => "recherche",
             'creneauxCommuns' => $creneaux,
             'nbrUtilisateursMin' => $nbrUtilisateursMin,
             'nombreUtilisateursSeclectionnes' => $nombreUtilisateursSeclectionnes,
             'evenements' => $evenements,
-            'tabIdsNoms' => $tabIdsNoms
+            'heuresInitiales' => $heuresInitiales,
+            'tabIdsNoms' => $tabIdsNoms,
+            'dateDebut' => $dateDebut,
         ]);
     }
 
     /**
-    * Créer un objet événement pour FullCalendar
-    * @param array $mergedEvent
-    * @return array
-    */
+     * Créer un objet événement pour FullCalendar
+     * @param array $mergedEvent
+     * @return array
+     */
     private function createEventObject(array $mergedEvent): array
     {
         return [
+            "title" => "Créneau disponible",
             'start' => $mergedEvent['start']->format('Y-m-d\TH:i:s'),
             'end' => $mergedEvent['end']->format('Y-m-d\TH:i:s'),
         ];
@@ -426,6 +445,4 @@ class ControllerAssistant extends Controller
         $template = $this->getTwig()->load('index.html.twig');
         echo $template->render(array());
     }
-
-    
 }
