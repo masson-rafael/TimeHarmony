@@ -14,7 +14,7 @@
 				</a>
 				<h1 class="text-center py-5">Résultats de la recherche</h1>
 			</div>
-			<div id="calendar" data-tab-ids-noms='{{ tabIdsNoms|json_encode|raw }}' data-creneaux='{{ creneauxCommuns is not empty ? creneauxCommuns|json_encode|raw : "{}" }}' data-evenements='{{ evenements|json_encode|raw }}'></div>
+			<div id="calendar" data-heure-debut= '{{ heureDebut|json_encode|raw }}' data-heure-fin= '{{ heureFin|json_encode|raw }}' data-date-debut='{{ dateDebut|json_encode|raw }}' data-tab-ids-noms='{{ tabIdsNoms|json_encode|raw }}' data-creneaux='{{ creneauxCommuns is not empty ? creneauxCommuns|json_encode|raw : "{}" }}' data-evenements='{{ evenements is not empty ? evenements|json_encode|raw : "{}" }}'></div>
 			<!-- Modal -->
 			<div class="modal fade" id="modalResult" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
 				<div class="modal-dialog">
