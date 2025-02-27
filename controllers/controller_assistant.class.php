@@ -399,26 +399,46 @@ class ControllerAssistant extends Controller
             $user = $manager->find($id);
             $tabIdsNoms[$id] = $user->getNom() . " " . $user->getPrenom();
         }
-        var_dump($tabIdsNoms);
 
-        // Récupérer la première date dans evenements
+        // Récupérer la première dans la liste des événements
         $dateDebut = $evenements[0]['start'];
+
+        $heureDebut1 = new DateTime($dateDebut);
+        $heureDebut1 = $heureDebut1->format('H:i');
+        $heureFin1 = new DateTime($evenements[count($evenements) - 1]['end']);
+        $heureFin1 = $heureFin1->format('H:i');
+
+        // Récupérer l'heure de début et de fin saisies
+        $heureDebut2 = new DateTime($_SESSION['debutPlageH']);
+        $heureFin2 = new DateTime($_SESSION['finPlageH']);
+
+        $heureDebut2 = $heureDebut2->format('H:i');
+        $heureFin2 = $heureFin2->format('H:i');
+
+        // Comparer les heures et les dates de début, et garder la plus petites
+        if($heureDebut1 < $heureDebut2) {
+            $heureDebut = strval($heureDebut1);
+        }
+        else {
+            $heureDebut = strval($heureDebut2);
+        }
+        // Pareil pour les dates de fin, mais en gardant la plus grande
+        if($heureFin1 > $heureFin2) {
+            $heureFin = strval($heureFin);
+        }
 
         $template = $this->getTwig()->load('resultat.html.twig');
 
-
-        // Faire un tableau de correspondance entre les id et les noms des utilisateurs
-
-        var_dump($dateDebut);
         echo $template->render([
             'menu' => "recherche",
             'creneauxCommuns' => $creneaux,
             'nbrUtilisateursMin' => $nbrUtilisateursMin,
             'nombreUtilisateursSeclectionnes' => $nombreUtilisateursSeclectionnes,
             'evenements' => $evenements,
-            'heuresInitiales' => $heuresInitiales,
             'tabIdsNoms' => $tabIdsNoms,
             'dateDebut' => $dateDebut,
+            'heureDebut' => $heureDebut,
+            'heureFin' => $heureFin,
         ]);
     }
 
