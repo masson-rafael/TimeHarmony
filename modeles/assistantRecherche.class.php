@@ -158,7 +158,7 @@ class Assistant
 
                 // Initialisation des utilisateurs dans chaque créneau
                 $matrice[$date][$key] = array_fill_keys(array_map(function ($user) {
-                    return $user->getNom();
+                    return $user->getId();
                 }, $utilisateurs), 0);
             }
         }
