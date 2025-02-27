@@ -158,7 +158,7 @@ class Assistant
 
                 // Initialisation des utilisateurs dans chaque créneau
                 $matrice[$date][$key] = array_fill_keys(array_map(function ($user) {
-                    return $user->getNom();
+                    return $user->getId();
                 }, $utilisateurs), 0);
             }
         }
@@ -207,7 +207,7 @@ class Assistant
 
                 // Vérifier si la date et l'heure à comparer sont dans l'intervalle
                 if ($debutCreneau <= $debutPlage && $finCreneau >= $finPlage) {
-                    $matrice[$date][$interval][$utilisateur->getNom()] = 1;
+                    $matrice[$date][$interval][$utilisateur->getId()] = 1;
                 }
             }
         }
@@ -223,7 +223,7 @@ class Assistant
      * @param string|null $finHoraire : fin de la plage horaire
      * @return array
      */
-    function getCreneauxCommunsExact(array $matrice, int $nb_utilisateurs_exact, string $debutHoraire, string $finHoraire, string $debut, string $fin, ?array $nomUtilisateurPrioritaire, ?bool $aDesUsersPrioritaires): array
+    function getCreneauxCommunsExact(array $matrice, int $nb_utilisateurs_exact, string $debutHoraire, string $finHoraire, string $debut, string $fin, ?array $idUtilisateursPrioritaires, ?bool $aDesUsersPrioritaires): array
     {
         $resultat = [];
         $dateDebutRecherche = new DateTime($debut);
@@ -246,14 +246,14 @@ class Assistant
 
         if($aDesUsersPrioritaires) {
             $tabUsersPrioritaires = [];
-            foreach ($nomUtilisateurPrioritaire as $nomUserPrio) {
-                $tabUsersPrioritaires[] = $nomUserPrio;
+            foreach ($idUtilisateursPrioritaires as $idUserPrio) {
+                $tabUsersPrioritaires[] = $idUserPrio;
             }
 
             foreach ($matrice as $date => $creneaux) {
                 foreach ($creneaux as $plage => $users) {
-                    foreach ($tabUsersPrioritaires as $nomUtilisateurPrioritaire) {
-                        if($users[$nomUtilisateurPrioritaire] === 1) {
+                    foreach ($tabUsersPrioritaires as $idUtilisateursPrioritaires) {
+                        if($users[$idUtilisateursPrioritaires] === 1) {
                             // Extraire l'heure de début et de fin de la plage horaire
                             [$heureDebut, $heureFin] = explode(' - ', $plage);
 
