@@ -488,7 +488,8 @@ class ControllerAssistant extends Controller
      * @return void
      */
     public function afficherPersonnesObligatoires(?array $tabMessages = null, ?bool $contientErreurs = false): void {
-        $utilisateur = $_SESSION['utilisateur'];
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        $utilisateur = $managerUtilisateur->find($_SESSION['utilisateur']);
         $contacts = $utilisateur->getContact($utilisateur->getId());
         $groupes = $utilisateur->getGroupe($utilisateur->getId());
 
