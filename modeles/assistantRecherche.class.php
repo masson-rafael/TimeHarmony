@@ -139,31 +139,65 @@ class Assistant
      * @param string|null $duration durée des créneaux communs demandés
      * @return array
      */
-    function initMatrice($utilisateurs, $dates, $duration = "00:30"): array
-    {
-        $matrice = [];
-        list($durationHours, $durationMinutes) = explode(':', $duration); // Extraire les heures et minutes depuis la chaîne
-        $durationInterval = $durationHours * 60 + $durationMinutes; // Convertir la durée en minutes
+    function initMatrice(?array $utilisateurs, ?array $dates, ?string $debut, ?string $fin, ?string $debutH, ?string $finH, ?string $duration = "00:30"): array
+{
+    $matrice = [];
+    list($durationHours, $durationMinutes) = explode(':', $duration);
+    $durationInterval = $durationHours * 60 + $durationMinutes; // En minutes
 
-        foreach ($dates as $date) {
-            $matrice[$date] = [];
-            $time = new DateTime("$date 00:00");
-            $totalSlots = floor((24 * 60) / 2); // Total de créneaux possibles en une journée (intervalles de 5 minutes)
-
-            for ($i = 0; $i < $totalSlots; $i++) {
-                $start = $time->format('H:i');
-                $end = $time->add(new DateInterval("PT{$durationInterval}M"))->format('H:i');
-                $time->sub(new DateInterval('PT' . ($durationInterval - 5) . 'M')); // Ajustement pour le prochain créneau
-                $key = "$start - $end";
-
-                // Initialisation des utilisateurs dans chaque créneau
-                $matrice[$date][$key] = array_fill_keys(array_map(function ($user) {
-                    return $user->getId();
-                }, $utilisateurs), 0);
-            }
+    // Formatage des heures limites
+    $debutFormatted = new DateTime($debut);
+    $finFormatted = new DateTime($fin);
+    $deb = $debutFormatted->format('H:i');
+    $fin = $finFormatted->format('H:i');
+    
+    foreach ($dates as $date) {
+        $matrice[$date] = [];
+        
+        // Déterminer l'heure de début pour cette date
+        $startTime = new DateTime("$date $debutH");
+        $endTimeOfDay = new DateTime("$date $finH");
+        
+        // Pour le premier jour, vérifier si deb est après debutH
+        if ($date === $dates[0] && $deb > $debutH) {
+            $startTime = new DateTime("$date $deb");
         }
-        return $matrice;
+        
+        // Pour le dernier jour, vérifier si fin est avant finH
+        $isLastDay = ($date === end($dates));
+        $endTimeToUse = clone $endTimeOfDay;
+        if ($isLastDay && $fin < $finH) {
+            $endTimeToUse = new DateTime("$date $fin");
+        }
+        
+        // Générer les créneaux
+        while ($startTime < $endTimeToUse) {
+            $start = $startTime->format('H:i');
+            
+            // Calculer l'heure de fin du créneau
+            $endTime = clone $startTime;
+            $endTime->add(new DateInterval("PT{$durationInterval}M"));
+            
+            // Si la fin du créneau dépasse la fin de journée, arrêter
+            if ($endTime > $endTimeToUse) {
+                break;
+            }
+            
+            $end = $endTime->format('H:i');
+            $key = "$start - $end";
+            
+            // Initialiser les utilisateurs dans ce créneau
+            $matrice[$date][$key] = array_fill_keys(array_map(function ($user) {
+                return $user->getId();
+            }, $utilisateurs), 0);
+            
+            // Avancer au prochain créneau (incrément de 5 minutes)
+            $startTime->add(new DateInterval('PT5M'));
+        }
     }
+    
+    return $matrice;
+}
 
 
     /**

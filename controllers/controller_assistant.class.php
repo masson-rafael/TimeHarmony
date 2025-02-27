@@ -142,7 +142,7 @@ class ControllerAssistant extends Controller
             //     }
             // }
 
-            // $chronoStartGen = new DateTime();
+            $chronoStartGen = new DateTime();
             $managerCreneau = new CreneauLibreDao($pdo);
             $managerCreneau->supprimerCreneauxLibres();
 
@@ -235,48 +235,49 @@ class ControllerAssistant extends Controller
             // var_dump($tableauUtilisateur);
             $assistantRecherche = new Assistant(new Datetime($debut), new Datetime($fin), $tableauUtilisateur);
 
-            // $chronoStart = new DateTime();
+            $chronoStart = new DateTime();
 
             // Génération des dates pour la période
             $dates = $assistantRecherche->genererDates($debut, $fin);
 
-            // $chronoEnd = new DateTime();
-            // $chronoInterval = $chronoStart->diff($chronoEnd);
-            // $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
-            // echo "Durée genererDates : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
-            // echo "Durée totale en secondes genererDates : $chronoSeconds secondes." . "<br>" . "<br>";
+            $chronoEnd = new DateTime();
+            $chronoInterval = $chronoStart->diff($chronoEnd);
+            $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
+            echo "Durée genererDates : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
+            echo "Durée totale en secondes genererDates : $chronoSeconds secondes." . "<br>" . "<br>";
 
-            // $chronoStart = new DateTime();
+            $chronoStart = new DateTime();
 
             // Initialisation de la matrice
-            $matrice = $assistantRecherche->initMatrice($tableauUtilisateur, $dates, $dureeMin);
+            $matrice = $assistantRecherche->initMatrice($tableauUtilisateur, $dates, $debut, $fin, $debutHoraire, $finHoraire, $dureeMin);
+            var_dump($matrice);
 
-            // $chronoEnd = new DateTime();
-            // $chronoInterval = $chronoStart->diff($chronoEnd);
-            // $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
-            // echo "Durée initMatrine : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
-            // echo "Durée totale en secondes initMatrice : $chronoSeconds secondes." . "<br>" . "<br>";
+            $chronoEnd = new DateTime();
+            $chronoInterval = $chronoStart->diff($chronoEnd);
+            $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
+            echo "Durée initMatrine : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
+            echo "Durée totale en secondes initMatrice : $chronoSeconds secondes." . "<br>" . "<br>";
 
             foreach ($assistantRecherche->getUtilisateurs() as $utilisateurCourant) {
                 $utilisateur = new Utilisateur($utilisateurCourant->getId(), $utilisateurCourant->getNom());
                 $agendas = $utilisateur->getAgendas();
                 $allEvents = [];
 
-                // $chronoStart = new DateTime();
+                $chronoStart = new DateTime();
                 foreach ($agendas as $agenda) {
                     $urlIcs = $agenda->getUrl();
                     $allEvents = $agenda->recuperationEvenementsAgenda($urlIcs, $debut, $fin, $allEvents);
                 }
-                // $chronoEnd = new DateTime();
-                // $chronoInterval = $chronoStart->diff($chronoEnd);
-                // $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
-                // echo "Durée recup events agendas : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
-                // echo "Durée totale en secondes recup events agendas : $chronoSeconds secondes." . "<br>" . "<br>";
+                $chronoEnd = new DateTime();
+                $chronoInterval = $chronoStart->diff($chronoEnd);
+                $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
+                echo "Durée recup events agendas : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
+                echo "Durée totale en secondes recup events agendas : $chronoSeconds secondes." . "<br>" . "<br>";
 
                 $mergedEvents = $agenda->mergeAgendas($allEvents);
                 $creneauxByUtilisateur = $agenda->recherche('Europe/Paris', $debut, $fin, $mergedEvents);
 
-                // $chronoStart = new DateTime();
+                $chronoStart = new DateTime();
                 foreach ($creneauxByUtilisateur as $key => $creneau) {
                     $dateDebut = $creneau->getDateDebut()->format('Y-m-d H:i:s');
                     $datetime_debut = new DateTime($dateDebut);  // Début du créneau
@@ -285,22 +286,22 @@ class ControllerAssistant extends Controller
                     $assistantRecherche->remplirCreneau($matrice, $datetime_debut, $datetime_fin, $utilisateurCourant);
                 }
 
-                // $chronoEnd = new DateTime();
-                // $chronoInterval = $chronoStart->diff($chronoEnd);
-                // $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
-                // echo "Durée remplir creneau : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
-                // echo "Durée totale en secondes remplir creneau : $chronoSeconds secondes." . "<br>" . "<br>";
+                $chronoEnd = new DateTime();
+                $chronoInterval = $chronoStart->diff($chronoEnd);
+                $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
+                echo "Durée remplir creneau : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
+                echo "Durée totale en secondes remplir creneau : $chronoSeconds secondes." . "<br>" . "<br>";
             }
 
             // Appel de la fonction
             $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'], $debutHoraire, $finHoraire, $debut, $fin, $contactsPrioritaires, $aDesPriorites);
 
             // exit;
-            // $chronoEndGen = new DateTime();
-            // $chronoInterval = $chronoStartGen->diff($chronoEndGen);
-            // $chronoSeconds = $chronoEndGen->getTimestamp() - $chronoStartGen->getTimestamp();
-            // echo "Durée totale algo : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
-            // echo "Durée totale en secondes totale algo : $chronoSeconds secondes." . "<br>" . "<br>";
+            $chronoEndGen = new DateTime();
+            $chronoInterval = $chronoStartGen->diff($chronoEndGen);
+            $chronoSeconds = $chronoEndGen->getTimestamp() - $chronoStartGen->getTimestamp();
+            echo "Durée totale algo : " . $chronoInterval->format('%s secondes (%H:%I:%S)') . "<br>";
+            echo "Durée totale en secondes totale algo : $chronoSeconds secondes." . "<br>" . "<br>";
 
             // Générer la vue avec les données structurées
             $tailleContacts = sizeof($tableauUtilisateur);
@@ -488,7 +489,8 @@ class ControllerAssistant extends Controller
      * @return void
      */
     public function afficherPersonnesObligatoires(?array $tabMessages = null, ?bool $contientErreurs = false): void {
-        $utilisateur = $_SESSION['utilisateur'];
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        $utilisateur = $managerUtilisateur->find($_SESSION['utilisateur']);
         $contacts = $utilisateur->getContact($utilisateur->getId());
         $groupes = $utilisateur->getGroupe($utilisateur->getId());
 
