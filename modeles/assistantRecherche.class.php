@@ -136,6 +136,10 @@ class Assistant
      *
      * @param array|null $utilisateurs concernés par la recherche d'un créneau commun
      * @param array|null $dates concernés par la recherche
+     * @param string|null $debut date de debut de la recherche (1er jour de recherche)
+     * @param string|null $fin Date de fin de la recherche (dernier jour de recherche)
+     * @param string|null $debutH heure de debut de la recherche
+     * @param string|null $finH heure de fin de la recherche
      * @param string|null $duration durée des créneaux communs demandés
      * @return array
      */
@@ -146,40 +150,40 @@ class Assistant
     $durationInterval = $durationHours * 60 + $durationMinutes; // En minutes
 
     // Formatage des heures limites
-    $debutFormatted = new DateTime($debut);
-    $finFormatted = new DateTime($fin);
-    $deb = $debutFormatted->format('H:i');
-    $fin = $finFormatted->format('H:i');
+    $debutFormate = new DateTime($debut);
+    $finFormate = new DateTime($fin);
+    $deb = $debutFormate->format('H:i');
+    $fin = $finFormate->format('H:i');
     
     foreach ($dates as $date) {
         $matrice[$date] = [];
         
         // Déterminer l'heure de début pour cette date
-        $startTime = new DateTime("$date $debutH");
-        $endTimeOfDay = new DateTime("$date $finH");
+        $heureDebutJournée = new DateTime("$date $debutH");
+        $heureFinJournée = new DateTime("$date $finH");
         
         // Pour le premier jour, vérifier si deb est après debutH
         if ($date === $dates[0] && $deb > $debutH) {
-            $startTime = new DateTime("$date $deb");
+            $heureDebutJournée = new DateTime("$date $deb");
         }
         
         // Pour le dernier jour, vérifier si fin est avant finH
-        $isLastDay = ($date === end($dates));
-        $endTimeToUse = clone $endTimeOfDay;
-        if ($isLastDay && $fin < $finH) {
-            $endTimeToUse = new DateTime("$date $fin");
+        $estDernierJour = ($date === end($dates));
+        $heureFinDernierJR = clone $heureFinJournée;
+        if ($estDernierJour && $fin < $finH) {
+            $heureFinDernierJR = new DateTime("$date $fin");
         }
         
         // Générer les créneaux
-        while ($startTime < $endTimeToUse) {
-            $start = $startTime->format('H:i');
+        while ($heureDebutJournée < $heureFinDernierJR) {
+            $start = $heureDebutJournée->format('H:i');
             
             // Calculer l'heure de fin du créneau
-            $endTime = clone $startTime;
+            $endTime = clone $heureDebutJournée;
             $endTime->add(new DateInterval("PT{$durationInterval}M"));
             
             // Si la fin du créneau dépasse la fin de journée, arrêter
-            if ($endTime > $endTimeToUse) {
+            if ($endTime > $heureFinDernierJR) {
                 break;
             }
             
@@ -192,10 +196,9 @@ class Assistant
             }, $utilisateurs), 0);
             
             // Avancer au prochain créneau (incrément de 5 minutes)
-            $startTime->add(new DateInterval('PT5M'));
+            $heureDebutJournée->add(new DateInterval('PT5M'));
         }
     }
-    
     return $matrice;
 }
 
