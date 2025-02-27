@@ -10,41 +10,137 @@
 			<div class="row text-center mt-3 mb-3">
 				<h1 class="text-center py-5">Recherche d'un créneau</h1>
 			</div>
-			<div class="column justify-content-center pb-5">
-				<form action="index.php?controleur=assistant&methode=obtenir" method="post">
-					<div
-						class="row">
+
+			<div class="row pb-4">
+				<nav class="d-flex justify-content-center" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item">
+							<a href="index.php?controleur=assistant&methode=afficherPersonnesObligatoires">Personnes Présentes</a>
+						</li>
+						<li class="breadcrumb-item">
+							<a {% if page == 2 or page == 3 %} href="index.php?controleur=assistant&methode=afficherParametres" {% endif %}>Paramètres</a>
+						</li>
+						<li class="breadcrumb-item">
+							<a {% if page == 3 %} href="index.php?controleur=assistant&methode=afficherResultats" {% endif %}>Résultats</a>
+						</li>
+					</ol>
+				</nav>
+			</div>
+
+			<div class="d-flex justify-content-center">
+				{% if page == 1 %}
+					<form
+						action="index.php?controleur=assistant&methode=afficherParametres" method="post">
 						<!-- Section Collaborateurs -->
-						<div class="col-md-4 mb-4">
+						<div class="justify-content-center row-md-4 mb-5">
 							<div class="card p-4 shadow-sm">
-								<h5 class="fw-bold text-center mb-3">Choisir ses contacts :</h5>
-								<p class="text-muted">Ajoutez les personnes avec qui vous souhaitez trouver un créneau commun.</p>
+								<h5 class="fw-bold text-center mb-3">Personnes présentes :</h5>
 								{% if contacts|length > 0 %}
-									<table id="contacts" class="table table-bordered table-hover">
-										<thead>
-											<tr class="table-primary">
-												<th scope="col">Présence souhaitée</th>
-												<th scope="col">Présence obligatoire</th>
-												<th scope="col">Nom prénom</th>
-											</tr>
-										</thead>
-										<tbody>
-											{% for contact in contacts %}
-												<tr>
-													<td>
-														<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
-													</td>
-													<td>
-														<input class="form-check-input" type="checkbox" name="contactsPrioritaires[]" value="{{ contact.getId }}">
-													</td>
-													<td>{{ contact.getPrenom }}
-														{{ contact.getNom }}</td>
-													{# <td>{{ contact.getNom }}</td> #}
-												</tr>
-											{% endfor %}
-										</tbody>
-									</table>
-									<small id="contactsError" class="text-danger"></small>
+									<div
+										class="row">
+										{# PREMIERE TABLE OU SONT AFFICHES LES CONTACTS / GROUPES #}
+										<div class="col-md-6">
+											<p class="text-muted text-center">Ajoutez des groupes ou contacts qui seront présents lors du résultat de la recherche.</p>
+											<div class="accordion" id="accordionPanelsStayOpenExample">
+												<div class="accordion-item">
+													<h2 class="accordion-header">
+														<button class="accordion-button {% if groupes|length == 0 %} collapsed {% endif %} fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="{% if groupes|length > 0 %}true{% else %}false{% endif %}" aria-controls="panelsStayOpen-collapseOne">
+															Mes groupes
+														</button>
+													</h2>
+													<div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse {% if groupes|length > 0 %} show{% endif %}">
+														<div class="accordion-body">
+															{% if groupes|length != 0 %}
+																<table id="groupes" class="table table-bordered table-hover">
+																	<thead>
+																		<tr class="table-primary">
+																			<th scope="col">#</th>
+																			<th scope="col">Nom du groupe</th>
+																		</tr>
+																	</thead>
+																	<tbody>
+																		{% if groupes|length > 0 %}
+																			{% for groupe in groupes %}
+																				<tr>
+																					<td>
+																						<input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
+																					</td>
+																					<td>{{ groupe.getNom }}</td>
+																				</tr>
+																			{% endfor %}
+																		{% endif %}
+																	</tbody>
+																</table>
+																<small id="contactsError" class="text-danger"></small>
+															{% else %}
+																<div class="row justify-content-center mt-4 h-25">
+																	<div class="col-md-8">
+																		<div class="alert alert-info text-center" role="alert">Aucun contact trouvé. Ajoutez-en un ci-dessous.</div>
+																	</div>
+																</div>
+																<div class="text-center">
+																	<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
+																</div>
+															{% endif %}
+														</div>
+													</div>
+												</div>
+												<div class="accordion-item">
+													<h2 class="accordion-header">
+														<button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
+															Mes contacts
+														</button>
+													</h2>
+													<div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
+														<div class="accordion-body">
+															<table id="contacts" class="table table-bordered table-hover">
+																<thead>
+																	<tr class="table-primary">
+																		<th scope="col">#</th>
+																		<th scope="col">Nom du contact</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	{% for contact in contacts %}
+																		<tr>
+																			<td>
+																				<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
+																			</td>
+																			<td>{{ contact.getPrenom|capitalize }}
+																				{{ contact.getNom|capitalize }}
+																			</td>
+																		</tr>
+																	{% endfor %}
+																</tbody>
+															</table>
+															<small id="contactsError" class="text-danger"></small>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										{# SECONDE TABLE OU SONT SELECTIONNES LES CONTACTS / GROUPES CHOISIS #}
+										<div class="col-md-6">
+											<p class="text-muted text-center">Sélectionnez les contacts qui seront nécessaires à la recherche.
+												<br>
+												Les autres contacts non cochés seront des contacts souhaités.</p>
+											<table id="tableObligatoire" class="table table-bordered table-hover">
+												<thead>
+													<tr class="table-primary">
+														<th scope="col">#</th>
+														<th scope="col">Nom du contact ou du groupe</th>
+													</tr>
+												</thead>
+												<tbody>
+													{% if groupes|length > 0 %}
+														{# QUAND Y'AVAIT DES GROUPES #}
+													{% endif %}
+													{# QUAND Y'AVAIT DES CONTACTS #}
+												</tbody>
+											</table>
+											<small id="contactsError" class="text-danger"></small>
+										</div>
+									</div>
 								{% else %}
 									<div class="row justify-content-center mt-4 h-25">
 										<div class="col-md-8">
@@ -57,147 +153,159 @@
 								{% endif %}
 							</div>
 						</div>
+						<div class="text-center mb-4">
+							<button id="boutonPasserEtape2" type="submit" class="btn btn-primary shadow-lg hover-shadow">Passer à l'étape suivante</button>
+						</div>
+					</form>
 
-						<!-- Section Groupes -->
-						<div class="col-md-4 mb-4">
-							<div class="card p-4 shadow-sm">
-								<h5 class="fw-bold text-center mb-3">Choisir des groupes :</h5>
-								<p class="text-muted">Sélectionnez un groupe pour rechercher un créneau avec plusieurs contacts à la fois.</p>
-								{% if groupes|length > 0 %}
-									<table id="groupes" class="table table-bordered table-hover">
-										<thead>
-											<tr class="table-primary">
-												<th scope="col">#</th>
-												<th scope="col">Nom</th>
-											</tr>
-										</thead>
-										<tbody>
-											{% for groupe in groupes %}
-												<tr>
-													<td>
-														<input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
-													</td>
-													<td>{{ groupe.getNom }}</td>
-												</tr>
-											{% endfor %}
-										</tbody>
-									</table>
-									<small id="groupesError" class="text-danger"></small>
-								{% else %}
-									<div class="row justify-content-center mt-4 h-25">
-										<div class="col-md-8">
-											<div class="alert alert-info text-center" role="alert">
-												Aucun groupe trouvé. Ajoutez-en un ci-dessous.
-											</div>
-										</div>
+				{% elseif page == 2 %}
+					<form action="index.php?controleur=assistant&methode=obtenir" method="post">
+						<div
+							class="row">
+							<!-- Section Période -->
+							<div class="col-md-6 mb-4">
+								<div class="card p-4 shadow-sm">
+									<h5 class="fw-bold text-center mb-3">Période de recherche :</h5>
+									<p class="text-muted">Définissez la période pendant laquelle vous souhaitez rechercher un créneau.</p>
+									<div class="mb-3">
+										<label for="Datedebut" class="form-label">Début *</label>
+										<input name="debut" type="datetime-local" class="form-control" id="dateDebut" required title="Entrez la date de début de votre recherche">
+										<small id="dateDebutError" class="text-danger"></small>
 									</div>
-									<div class="text-center">
-										<a class="px-5 btn btn-primary" href="index.php?controleur=groupes&methode=ajouter" role="button">Ajouter un groupe</a>
+
+									<div class="mb-4">
+										<label for="Datefin" class="form-label">Fin *</label>
+										<input name="fin" type="datetime-local" class="form-control" id="dateFin" required title="Entrez la date de fin de votre recherche">
+										<small id="dateFinError" class="text-danger"></small>
 									</div>
-								{% endif %}
+
+									<div class="mb-3">
+										<label for="dureeMin" class="form-label">Durée exacte du rendez-vous *</label>
+										<p class="text-muted">Spécifiez la durée exacte du créneau à trouver.</p>
+										<input id="duree" name="dureeMin" type="time" class="form-control" value="01:00" min="00:05" required title="Entrez la durée minimale du créneau à rechercher">
+										<small id="dureeError" class="text-danger"></small>
+									</div>
+									<p class="text">* Champ obligatoire</p>
+								</div>
+							</div>
+							<div class="col-md-6 mb-4">
+								<div class="card p-4 shadow-sm">
+									<h5 class="fw-bold text-center mb-3">Plage horaire :</h5>
+									<p class="text-muted">Définissez les heures entre lesquelles les créneaux doivent être recherchés.</p>
+									<div class="mb-3">
+										<label for="debutPlageH" class="form-label">Début *</label><br>
+										<input name="debutPlageH" type="time" class="form-control" id="debutPlageH" value="08:00" required title="Entrez la date de début de la plage horaire">
+										<small id="debutPlageHError" class="text-danger"></small>
+									</div>
+
+									<div class="mb-3">
+										<label for="finPlageH" class="form-label">Fin *</label>
+										<input name="finPlageH" type="time" class="form-control" id="finPlageH" value="12:00" required title="Entrez la date de fin de la plage horaire">
+										<small id="finPlageHError" class="text-danger"></small>
+									</div>
+									<p class="text">* Champ obligatoire</p>
+								</div>
 							</div>
 						</div>
-
-						<!-- Section Période -->
-						<div class="col-md-4 mb-4">
-							<div class="card p-4 shadow-sm">
-								<h5 class="fw-bold text-center mb-3">Période de recherche :</h5>
-								<p class="text-muted">Définissez la période pendant laquelle vous souhaitez rechercher un créneau.</p>
-								<div class="mb-3">
-									<label for="Datedebut" class="form-label">Début *</label>
-									<input name="debut" type="datetime-local" class="form-control" id="dateDebut" required title="Entrez la date de début de votre recherche">
-									<small id="dateDebutError" class="text-danger"></small>
-
-								</div>
-
-								<div class="mb-4">
-									<label for="Datefin" class="form-label">Fin *</label>
-									<input name="fin" type="datetime-local" class="form-control" id="dateFin" required title="Entrez la date de fin de votre recherche">
-									<small id="dateFinError" class="text-danger"></small>
-								</div>
-
-								<div class="mb-3">
-									<label for="dureeMin" class="form-label">Durée exacte du rendez-vous *</label>
-									<p class="text-muted">Spécifiez la durée exacte du créneau à trouver.</p>
-									<input id="duree" name="dureeMin" type="time" class="form-control" value="01:00" min="00:05" required title="Entrez la durée minimale du créneau à rechercher">
-									<small id="dureeError" class="text-danger"></small>
-								</div>
-								<p class="text">* Champ obligatoire</p>
-							</div>
-							<div class="card p-4 shadow-sm mt-3">
-								<h5 class="fw-bold text-center mb-3">Plage horaire :</h5>
-								<p class="text-muted">Définissez les heures entre lesquelles les créneaux doivent être recherchés.</p>
-								<div class="mb-3">
-									<label for="debutPlageH" class="form-label">Début *</label><br>
-									<input name="debutPlageH" type="time" class="form-control" id="debutPlageH" value="08:00" required title="Entrez la date de début de la plage horaire">
-									<small id="debutPlageHError" class="text-danger"></small>
-								</div>
-
-								<div class="mb-3">
-									<label for="finPlageH" class="form-label">Fin *</label>
-									<input name="finPlageH" type="text" class="form-control" id="finPlageH" value="18:00" required title="Entrez la date de fin de la plage horaire">
-									<small id="finPlageHError" class="text-danger"></small>
-								</div>
-								<p class="text">* Champ obligatoire</p>
-							</div>
+						<!-- Section Bouton -->
+						<div class="text-center mb-4">
+							<button id="" type="submit" class="btn btn-primary shadow-lg hover-shadow">Rechercher des créneaux de rendez-vous</button>
 						</div>
-					</div>
-
-
-					<!-- Section Bouton -->
-					<div class="text-center mb-4">
-						<button id="boutonLancerRecherche" type="submit" class="btn btn-primary shadow-lg hover-shadow">Rechercher des créneaux de rendez-vous</button>
-					</div>
-				</form>
+					</form>
+				</div>
+		{% elseif page == 3 %}
 			</div>
-			{% if message %}
-				<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
-					<div id="toast" class="toast align-items-center text-white bg-{% if contientErreurs %}danger{% else %}success{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-						<div class="d-flex">
-							<div class="toast-body">
-								{% for messages in message %}
-									{{ messages }}
-									<br>
-								{% endfor %}
-							</div>
-							<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+			{% if creneauxCommuns is empty %}
+				{% if nombreUtilisateursSeclectionnes > nbrUtilisateursMin %}
+					<button type="submit" name="decrement" class="btn btn-secondary">Chercher avec un utilisateur en moins</button>
+				{% endif %}
+				<br>
+				<br>
+				<div class="alert alert-warning" role="alert">
+					<h4>
+						<strong>Aucun créneau disponible n'a été trouvé avec
+							{{nombreUtilisateursSeclectionnes}}
+							utilisateurs.
+						</strong>
+					</h4>
+					<p>Pour augmenter vos chances de trouver un créneau commun, vous pouvez :</p>
+					<ul>
+						<li>Cliquer sur le bouton
+							<strong>"Chercher avec un utilisateur en moins"</strong>
+							pour ajuster les participants.</li>
+						<li>Modifier les
+							<strong>contacts ou groupes concernés</strong>
+							afin d'affiner la recherche.</li>
+						<li>Augmenter la
+							<strong>période de recherche</strong>
+							pour élargir les disponibilités.</li>
+						<li>Rétrécir la
+							<strong>durée prévue du rendez-vous</strong>
+							pour faciliter la planification.</li>
+					</ul>
+					<p>Adaptez vos paramètres et relancez la recherche pour identifier un créneau libre.</p>
+				</div>
+			{% else %}
+				{% for date, creneaux in creneauxCommuns %}
+					<h2>{{ date|format_datetime('full', 'none', locale: 'fr')|capitalize }}</h2>
+					<div class="creneaux-list">
+						<div class="row">
+							{% for plage, disponibilites in creneaux %}
+								<div class="col-md-6">
+									<div class="creneau-item border rounded p-3 mb-1">
+										<strong>Plage horaire :</strong>
+										{{ plage }}<br>
+										<strong>Personnes disponibles :</strong>
+										{% set personnes_dispo = [] %}
+										{% for personne, dispo in disponibilites %}
+											{% if dispo == 1 %}
+												{% set personnes_dispo = personnes_dispo|merge([personne|capitalize]) %}
+											{% endif %}
+										{% endfor %}
+										{{ personnes_dispo|join(', ') }}
+									</div>
+								</div>
+								{% if loop.index is divisible by(2) %}
+								</div>
+								<div class="row">
+								{% endif %}
+							{% endfor %}
 						</div>
+					</div>
+				{% endfor %}
+			{% endif %}
+		{% endif %}
+
+		{% if message %}
+			<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1600">
+				<div id="toast" class="toast align-items-center text-white bg-{% if contientErreurs %}danger{% else %}success{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+					<div class="d-flex">
+						<div class="toast-body">
+							{% for messages in message %}
+								{{ messages }}
+								<br>
+							{% endfor %}
+						</div>
+						<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
 					</div>
 				</div>
-			{% endif %}
-		</div>
-	</main>
-
-{% endblock %}
-
-
-{% block javascripts %}
-	{{ parent() }}
-	<script>
-	const membres = {{ membres|json_encode|raw }};
-	</script>
-	<script src="js/recherche.js"></script>
-	<script src="js/formulaireRecherche.js"></script>
-	<script>
-		
-{ // Récupérer les membres des groupes
-#
-$(document).ready(function () {
-$('#myTable').DataTable({
-language: {
-url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
-},
-"pageLength": 10,
-"ordering": true,
-"responsive": true
-});
-});
-#
-}
-	</script>
-
-	<script>
-		// Récupérer les éléments input
+			</div>
+		{% endif %}
+	</div>
+</main>{% endblock %}{% block javascripts %}
+{{ parent() }}
+<script>
+	const idUtilisateur = {{ utilisateurGlobal.id }};
+const membres2 = {{ membres|json_encode|raw }};
+const groupes2 = {{ groupes|json_encode|raw }};
+console.log('id', idUtilisateur);
+console.log('membres', membres2);
+console.log('groupes', groupes2);
+</script>
+<script src="js/formulaireRechercheP1.js"></script>
+<script src="js/formulaireRecherche.js"></script>
+<script>
+	// Récupérer les éléments input
 const dateDebutInput = document.getElementById('dateDebut');
 const dateFinInput = document.getElementById('dateFin');
 
@@ -219,13 +327,10 @@ dateDebutInput.value = formattedDateTime;
 
 // Calculer la date avec une semaine de décalage
 const oneWeekLater = new Date(localTime);
-oneWeekLater.setDate(localTime.getDate() + 7);
+oneWeekLater.setDate(localTime.getDate() + 1);
 // Ajouter 7 jours
 
 // Formater la date de fin (fin avec une semaine de décalage)
 const formattedDateTimeFin = oneWeekLater.toISOString().slice(0, 16); // Garder "YYYY-MM-DDTHH:MM"
 dateFinInput.value = formattedDateTimeFin;
-	</script>
-
-
-{% endblock %}
+</script>{% endblock %}

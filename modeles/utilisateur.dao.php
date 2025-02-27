@@ -95,7 +95,7 @@ class UtilisateurDao
      * @return array|null Un tableau d'utilisateurs.
      */
     public function findAllContact(?int $id): array {
-        $sql="SELECT * FROM timeharmony_utilisateur INNER JOIN timeharmony_contacter ON id = idUtilisateur2 WHERE idUtilisateur1 = :id";
+        $sql="SELECT * FROM timeharmony_utilisateur INNER JOIN timeharmony_contacter ON id = idUtilisateur2 WHERE idUtilisateur1 = :id ";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array("id" => $id));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
@@ -112,7 +112,7 @@ class UtilisateurDao
      * @return array tableau d'identifiants utilisateurs
      */
     public function recupererIdsUtilisateursPasContacts(?int $id): array {
-        $sql="SELECT * FROM ".PREFIXE_TABLE."utilisateur u WHERE u.id != :id AND u.id NOT IN ( 
+        $sql="SELECT * FROM ".PREFIXE_TABLE."utilisateur u WHERE u.id != :id AND statutCompte = 'actif' AND u.id NOT IN ( 
         SELECT idUtilisateur2 FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur1 = :id UNION
         SELECT idUtilisateur1 FROM ".PREFIXE_TABLE."contacter WHERE idUtilisateur2 = :id UNION
         SELECT idUtilisateur2 FROM ".PREFIXE_TABLE."demander WHERE idUtilisateur1 = :id UNION
@@ -244,7 +244,7 @@ class UtilisateurDao
      * @return void
      */
     public function ajouterDemandeContact(?int $id1, ?int $id2): void {
-        $verifsql = "SELECT COUNT(*) FROM " . PREFIXE_TABLE . "demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2 = :id2";
+        $verifsql = "SELECT COUNT(*) FROM " . PREFIXE_TABLE . "demander WHERE idUtilisateur1 = :id1 AND idUtilisateur2 = :id2  "  ;
         $pdoStatement = $this->pdo->prepare($verifsql);
         $pdoStatement->execute(array("id1" => $id1, "id2" => $id2));
         $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
