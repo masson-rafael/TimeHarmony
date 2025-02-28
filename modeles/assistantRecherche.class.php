@@ -136,34 +136,71 @@ class Assistant
      *
      * @param array|null $utilisateurs concernés par la recherche d'un créneau commun
      * @param array|null $dates concernés par la recherche
+     * @param string|null $debut date de debut de la recherche (1er jour de recherche)
+     * @param string|null $fin Date de fin de la recherche (dernier jour de recherche)
+     * @param string|null $debutH heure de debut de la recherche
+     * @param string|null $finH heure de fin de la recherche
      * @param string|null $duration durée des créneaux communs demandés
      * @return array
      */
-    function initMatrice($utilisateurs, $dates, $duration = "00:30"): array
-    {
-        $matrice = [];
-        list($durationHours, $durationMinutes) = explode(':', $duration); // Extraire les heures et minutes depuis la chaîne
-        $durationInterval = $durationHours * 60 + $durationMinutes; // Convertir la durée en minutes
+    function initMatrice(?array $utilisateurs, ?array $dates, ?string $debut, ?string $fin, ?string $debutH, ?string $finH, ?string $duration = "00:30"): array
+{
+    $matrice = [];
+    list($durationHours, $durationMinutes) = explode(':', $duration);
+    $durationInterval = $durationHours * 60 + $durationMinutes; // En minutes
 
-        foreach ($dates as $date) {
-            $matrice[$date] = [];
-            $time = new DateTime("$date 00:00");
-            $totalSlots = floor((24 * 60) / 2); // Total de créneaux possibles en une journée (intervalles de 5 minutes)
-
-            for ($i = 0; $i < $totalSlots; $i++) {
-                $start = $time->format('H:i');
-                $end = $time->add(new DateInterval("PT{$durationInterval}M"))->format('H:i');
-                $time->sub(new DateInterval('PT' . ($durationInterval - 5) . 'M')); // Ajustement pour le prochain créneau
-                $key = "$start - $end";
-
-                // Initialisation des utilisateurs dans chaque créneau
-                $matrice[$date][$key] = array_fill_keys(array_map(function ($user) {
-                    return $user->getId();
-                }, $utilisateurs), 0);
-            }
+    // Formatage des heures limites
+    $debutFormate = new DateTime($debut);
+    $finFormate = new DateTime($fin);
+    $deb = $debutFormate->format('H:i');
+    $fin = $finFormate->format('H:i');
+    
+    foreach ($dates as $date) {
+        $matrice[$date] = [];
+        
+        // Déterminer l'heure de début pour cette date
+        $heureDebutJournée = new DateTime("$date $debutH");
+        $heureFinJournée = new DateTime("$date $finH");
+        
+        // Pour le premier jour, vérifier si deb est après debutH
+        if ($date === $dates[0] && $deb > $debutH) {
+            $heureDebutJournée = new DateTime("$date $deb");
         }
-        return $matrice;
+        
+        // Pour le dernier jour, vérifier si fin est avant finH
+        $estDernierJour = ($date === end($dates));
+        $heureFinDernierJR = clone $heureFinJournée;
+        if ($estDernierJour && $fin < $finH) {
+            $heureFinDernierJR = new DateTime("$date $fin");
+        }
+        
+        // Générer les créneaux
+        while ($heureDebutJournée < $heureFinDernierJR) {
+            $start = $heureDebutJournée->format('H:i');
+            
+            // Calculer l'heure de fin du créneau
+            $endTime = clone $heureDebutJournée;
+            $endTime->add(new DateInterval("PT{$durationInterval}M"));
+            
+            // Si la fin du créneau dépasse la fin de journée, arrêter
+            if ($endTime > $heureFinDernierJR) {
+                break;
+            }
+            
+            $end = $endTime->format('H:i');
+            $key = "$start - $end";
+            
+            // Initialiser les utilisateurs dans ce créneau
+            $matrice[$date][$key] = array_fill_keys(array_map(function ($user) {
+                return $user->getId();
+            }, $utilisateurs), 0);
+            
+            // Avancer au prochain créneau (incrément de 5 minutes)
+            $heureDebutJournée->add(new DateInterval('PT5M'));
+        }
     }
+    return $matrice;
+}
 
 
     /**
