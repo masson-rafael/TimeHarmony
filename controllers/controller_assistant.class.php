@@ -96,6 +96,13 @@ class ControllerAssistant extends Controller
 
         $pdo = $this->getPdo();
 
+        // var_dump(isset($_SESSION['debut']));
+        // var_dump(isset($_SESSION['fin']));
+        // var_dump(isset($_SESSION['dureeMin']));
+        // var_dump(isset($_SESSION['contacts']));
+        // var_dump(isset($_SESSION['debutHoraire']));
+        // var_dump(isset($_SESSION['finHoraire']));
+
         if (isset($_SESSION['debut']) && isset($_SESSION['fin']) && isset($_SESSION['dureeMin']) && isset($_SESSION['contacts']) && isset($_SESSION['debutHoraire']) && isset($_SESSION['finHoraire'])) {
             $_POST['debut'] = $_SESSION['debut'];
             $_POST['fin'] = $_SESSION['fin'];
@@ -135,6 +142,13 @@ class ControllerAssistant extends Controller
                 $_SESSION['contacts'] = $_POST['contacts'];
                 $_SESSION['debutPlageH'] = $_POST['debutPlageH'];
                 $_SESSION['finPlageH'] = $_POST['finPlageH'];
+            } else {
+                $_SESSION['debut'] = $_POST['debut'];
+                $_SESSION['fin'] = $_POST['fin'];
+                $_SESSION['dureeMin'] = $_POST['dureeMin'];
+                $_SESSION['contacts'] = $_POST['contacts'];
+                $_SESSION['debutPlageH'] = $_POST['debutPlageH'];
+                $_SESSION['finPlageH'] = $_POST['finPlageH'];
             }
 
             // if ($contactsPrioritairesValide) {
@@ -166,6 +180,8 @@ class ControllerAssistant extends Controller
             $fin = $_SESSION['fin'];
             $debutHoraire = $_SESSION['debutPlageH'];
             $finHoraire = $_SESSION['finPlageH'];
+            $_SESSION['finHoraire'] = $finHoraire;
+            $_SESSION['debutHoraire'] = $debutHoraire;
 
             $managerUtilisateur = new UtilisateurDAO($pdo);
             $tableauUtilisateur = [];
@@ -465,6 +481,7 @@ class ControllerAssistant extends Controller
             'dateDebut' => $dateDebut,
             'heureDebut' => $heureDebut,
             'heureFin' => $heureFin,
+            'page' => 3
         ]);
     }
 

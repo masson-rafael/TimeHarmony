@@ -163,16 +163,33 @@ class Assistant
         $heureFinJournée = new DateTime("$date $finH");
         
         // Pour le premier jour, vérifier si deb est après debutH
-        if ($date === $dates[0] && $deb > $debutH) {
-            $heureDebutJournée = new DateTime("$date $deb");
+        if ($date === $dates[0]) {
+            if ($deb > $debutH) {
+                // Si deb est après debutH, utiliser deb
+                $heureDebutJournée = new DateTime("$date $deb");
+            } else if ($deb < $debutH) {
+                // Si deb est avant debutH, utiliser deb
+                $heureDebutJournée = new DateTime("$date $deb");
+            }
         }
+        //var_dump($heureDebutJournée);
         
         // Pour le dernier jour, vérifier si fin est avant finH
         $estDernierJour = ($date === end($dates));
         $heureFinDernierJR = clone $heureFinJournée;
-        if ($estDernierJour && $fin < $finH) {
-            $heureFinDernierJR = new DateTime("$date $fin");
+        //var_dump($estDernierJour);
+        if ($estDernierJour) {
+            // var_dump($fin);
+            // var_dump($finH);
+            if ($fin < $finH) {
+                // Si fin est avant finH, utiliser fin
+                $heureFinDernierJR = new DateTime("$date $fin");
+            } else if ($fin > $finH) {
+                // Si fin est après finH, utiliser fin
+                $heureFinDernierJR = new DateTime("$date $fin");
+            }
         }
+        //var_dump($heureFinDernierJR);
         
         // Générer les créneaux
         while ($heureDebutJournée < $heureFinDernierJR) {
