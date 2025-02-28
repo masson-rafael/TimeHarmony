@@ -172,15 +172,15 @@ class Assistant
                 $heureDebutJournée = new DateTime("$date $deb");
             }
         }
-        var_dump($heureDebutJournée);
+        //var_dump($heureDebutJournée);
         
         // Pour le dernier jour, vérifier si fin est avant finH
         $estDernierJour = ($date === end($dates));
         $heureFinDernierJR = clone $heureFinJournée;
-        var_dump($estDernierJour);
+        //var_dump($estDernierJour);
         if ($estDernierJour) {
-            var_dump($fin);
-            var_dump($finH);
+            // var_dump($fin);
+            // var_dump($finH);
             if ($fin < $finH) {
                 // Si fin est avant finH, utiliser fin
                 $heureFinDernierJR = new DateTime("$date $fin");
@@ -189,7 +189,7 @@ class Assistant
                 $heureFinDernierJR = new DateTime("$date $fin");
             }
         }
-        var_dump($heureFinDernierJR);
+        //var_dump($heureFinDernierJR);
         
         // Générer les créneaux
         while ($heureDebutJournée < $heureFinDernierJR) {

@@ -90,7 +90,7 @@ class ControllerAssistant extends Controller
      */
     public function obtenir(): void
     {
-        $debugMode = true;
+        $debugMode = false;
         $datesCommunes = [];
         $messagesErreur = [];
 
