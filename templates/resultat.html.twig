@@ -14,6 +14,23 @@
 				</a>
 				<h1 class="text-center py-5">Résultats de la recherche</h1>
 			</div>
+
+			<div class="row pb-4">
+				<nav class="d-flex justify-content-center" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item">
+							<a href="index.php?controleur=assistant&methode=afficherPersonnesObligatoires">Personnes Présentes</a>
+						</li>
+						<li class="breadcrumb-item">
+							<a {% if page == 2 or page == 3 %} href="index.php?controleur=assistant&methode=afficherParametres" {% endif %}>Paramètres</a>
+						</li>
+						<li class="breadcrumb-item">
+							<a {% if page == 3 %} href="index.php?controleur=assistant&methode=obtenir" {% endif %}>Résultats</a>
+						</li>
+					</ol>
+				</nav>
+			</div>
+			
 			<div id="calendar" data-heure-debut= '{{ heureDebut|json_encode|raw }}' data-heure-fin= '{{ heureFin|json_encode|raw }}' data-date-debut='{{ dateDebut|json_encode|raw }}' data-tab-ids-noms='{{ tabIdsNoms|json_encode|raw }}' data-creneaux='{{ creneauxCommuns is not empty ? creneauxCommuns|json_encode|raw : "{}" }}' data-evenements='{{ evenements is not empty ? evenements|json_encode|raw : "{}" }}'></div>
 			<!-- Modal -->
 			<div class="modal fade" id="modalResult" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">

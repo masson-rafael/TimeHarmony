@@ -90,7 +90,7 @@ class ControllerAssistant extends Controller
      */
     public function obtenir(): void
     {
-        $debugMode = false;
+        $debugMode = true;
         $datesCommunes = [];
         $messagesErreur = [];
 
@@ -465,6 +465,7 @@ class ControllerAssistant extends Controller
             'dateDebut' => $dateDebut,
             'heureDebut' => $heureDebut,
             'heureFin' => $heureFin,
+            'page' => 3
         ]);
     }
 
