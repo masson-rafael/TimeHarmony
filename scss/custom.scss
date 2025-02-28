@@ -31,6 +31,14 @@ $custom-colors: ("primary-hover": $primary-hover,
 // Merge the maps
 $theme-colors: map-merge($theme-colors, $custom-colors);
 
+// Accordion Bootstrap
+$accordion-bg: $secondary;
+$accordion-button-bg: $primary;
+$accordion-button-color:$secondary;
+$accordion-button-active-bg: $primary-hover;
+$accordion-button-active-color: $secondary;
+
+
 @import "../node_modules/bootstrap/scss/maps";
 @import "../node_modules/bootstrap/scss/mixins";
 @import "../node_modules/bootstrap/scss/root";
@@ -258,6 +266,139 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 
     &:hover {
         opacity: 1;
+    }
+
+}
+
+
+/* Icône d’aide (bouton flottant) */
+#aide {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2rem;  /* Taille relative */
+    color: $primary;
+    background-color: $body-bg;
+    cursor: pointer;
+    z-index: 1000;  /* S'assurer qu'il est au-dessus */
+    border: $secondary;
+    border-style: solid;
+    border-radius: 50%;
+}
+
+/* Fenêtre d’aide */
+#fenetreAide {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, right 0.3s ease-in-out;
+    position: fixed;
+    top: 50%;
+    right: -30vw;
+    transform: translate(0, -50%);
+    background: white;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    height: 80vh;
+    width: 25vw;
+    max-width: 400px;
+    z-index: 999;
+
+    overflow-y: auto;  /* Permet de défiler uniquement si nécessaire */
+    scrollbar-width: thin; /* Firefox */
+    // scrollbar-color: #007E8D #E0E0E0; /* Couleur de la barre et du fond */
+}
+
+/* Scrollbar pour Chrome, Edge et Safari */
+#fenetreAide::-webkit-scrollbar {
+    width: 8px; /* Largeur de la scrollbar */
+}
+
+/* Couleur du fond de la scrollbar */
+#fenetreAide::-webkit-scrollbar-track {
+    background: #E0E0E0;  /* Gris clair */
+    border-radius: 5px;
+}
+
+/* Couleur et style de la barre de défilement */
+#fenetreAide::-webkit-scrollbar-thumb {
+    background: $primary; /* Bleu de ta charte */
+    border-radius: 5px;
+    transition: background 0.3s ease-in-out;
+}
+
+/* Changement de couleur au survol */
+#fenetreAide::-webkit-scrollbar-thumb:hover {
+    background: $primary; /* Bleu plus foncé */
+}
+
+
+/* Quand la fenêtre est ouverte */
+#fenetreAide.ouvert {
+    opacity: 1;
+    visibility: visible;
+    right: 10px; /* Animation d’entrée */
+}
+
+/* Contenu de l’aide */
+#accordionExample {
+    padding: 15px;
+}
+
+/* En-tête */
+#headerAide {
+    background-color: $primary;
+    color: white;
+    width: 100%;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+/* Bouton de fermeture */
+#fermerAide {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 18px;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #aide {
+        font-size: 2.5rem; /* Augmenter la taille sur mobile */
+        bottom: 15px;
+        right: 15px;
+    }
+
+    #fenetreAide {
+        width: 80vw;  /* Plus large sur mobile */
+        height: 70vh;
+        max-width: none;
+        right: -100vw; /* Complètement caché au début */
+    }
+
+    #fenetreAide.ouvert {
+        right: 10px; /* Positionne la fenêtre au bord */
+    }
+}
+
+@media (max-width: 480px) {
+    #fenetreAide {
+        width: 90vw; /* Encore plus large sur très petits écrans */
+        height: 75vh;
+    }
+
+    #fermerAide {
+        top: 10px;
+        right: 10px;
     }
 }
 

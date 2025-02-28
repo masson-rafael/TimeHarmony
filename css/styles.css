@@ -4656,7 +4656,7 @@ textarea.form-control-lg {
 
 .accordion {
   --bs-accordion-color: var(--bs-body-color);
-  --bs-accordion-bg: var(--bs-body-bg);
+  --bs-accordion-bg: #f6f6f6;
   --bs-accordion-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-radius 0.15s ease;
   --bs-accordion-border-color: var(--bs-border-color);
   --bs-accordion-border-width: var(--bs-border-width);
@@ -4664,8 +4664,8 @@ textarea.form-control-lg {
   --bs-accordion-inner-border-radius: calc(var(--bs-border-radius) - (var(--bs-border-width)));
   --bs-accordion-btn-padding-x: 1.25rem;
   --bs-accordion-btn-padding-y: 1rem;
-  --bs-accordion-btn-color: var(--bs-body-color);
-  --bs-accordion-btn-bg: var(--bs-accordion-bg);
+  --bs-accordion-btn-color: #f6f6f6;
+  --bs-accordion-btn-bg: #64a19d;
   --bs-accordion-btn-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23212529' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M2 5L8 11L14 5'/%3e%3c/svg%3e");
   --bs-accordion-btn-icon-width: 1.25rem;
   --bs-accordion-btn-icon-transform: rotate(-180deg);
@@ -4674,8 +4674,8 @@ textarea.form-control-lg {
   --bs-accordion-btn-focus-box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
   --bs-accordion-body-padding-x: 1.25rem;
   --bs-accordion-body-padding-y: 1rem;
-  --bs-accordion-active-color: var(--bs-primary-text-emphasis);
-  --bs-accordion-active-bg: var(--bs-primary-bg-subtle);
+  --bs-accordion-active-color: #f6f6f6;
+  --bs-accordion-active-bg: #5a908c;
 }
 
 .accordion-button {
@@ -12219,6 +12219,130 @@ textarea.form-control-lg {
   opacity: 1;
 }
 
+
+/* Icône d’aide (bouton flottant) */
+#aide {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 2rem; /* Taille relative */
+  color: #64a19d;
+  background-color: #F5F5DC;
+  cursor: pointer;
+  z-index: 1000; /* S'assurer qu'il est au-dessus */
+  border: #f6f6f6;
+  border-style: solid;
+  border-radius: 50%;
+}
+
+/* Fenêtre d’aide */
+#fenetreAide {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, right 0.3s ease-in-out;
+  position: fixed;
+  top: 50%;
+  right: -30vw;
+  transform: translate(0, -50%);
+  background: white;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  height: 80vh;
+  width: 25vw;
+  max-width: 400px;
+  z-index: 999;
+  overflow-y: auto; /* Permet de défiler uniquement si nécessaire */
+  scrollbar-width: thin; /* Firefox */
+}
+
+/* Scrollbar pour Chrome, Edge et Safari */
+#fenetreAide::-webkit-scrollbar {
+  width: 8px; /* Largeur de la scrollbar */
+}
+
+/* Couleur du fond de la scrollbar */
+#fenetreAide::-webkit-scrollbar-track {
+  background: #E0E0E0; /* Gris clair */
+  border-radius: 5px;
+}
+
+/* Couleur et style de la barre de défilement */
+#fenetreAide::-webkit-scrollbar-thumb {
+  background: #64a19d; /* Bleu de ta charte */
+  border-radius: 5px;
+  transition: background 0.3s ease-in-out;
+}
+
+/* Changement de couleur au survol */
+#fenetreAide::-webkit-scrollbar-thumb:hover {
+  background: #64a19d; /* Bleu plus foncé */
+}
+
+/* Quand la fenêtre est ouverte */
+#fenetreAide.ouvert {
+  opacity: 1;
+  visibility: visible;
+  right: 10px; /* Animation d’entrée */
+}
+
+/* Contenu de l’aide */
+#accordionExample {
+  padding: 15px;
+}
+
+/* En-tête */
+#headerAide {
+  background-color: #64a19d;
+  color: white;
+  width: 100%;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+/* Bouton de fermeture */
+#fermerAide {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 18px;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  #aide {
+    font-size: 2.5rem; /* Augmenter la taille sur mobile */
+    bottom: 15px;
+    right: 15px;
+  }
+  #fenetreAide {
+    width: 80vw; /* Plus large sur mobile */
+    height: 70vh;
+    max-width: none;
+    right: -100vw; /* Complètement caché au début */
+  }
+  #fenetreAide.ouvert {
+    right: 10px; /* Positionne la fenêtre au bord */
+  }
+}
+@media (max-width: 480px) {
+  #fenetreAide {
+    width: 90vw; /* Encore plus large sur très petits écrans */
+    height: 75vh;
+  }
+  #fermerAide {
+    top: 10px;
+    right: 10px;
+  }
+
 .fc-scrollgrid,
 .fc-scrollgrid table {
   background-color: whitesmoke;
@@ -12278,6 +12402,7 @@ textarea.form-control-lg {
 .modal-body {
   max-height: 70vh;
   overflow-y: auto;
+
 }
 
 /*# sourceMappingURL=styles.css.map */
