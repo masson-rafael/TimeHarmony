@@ -14,7 +14,39 @@
 				</a>
 				<h1 class="text-center py-5">Résultats de la recherche</h1>
 			</div>
-            <div id='calendar'></div>
+
+			<div class="row pb-4">
+				<nav class="d-flex justify-content-center" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item">
+							<a href="index.php?controleur=assistant&methode=afficherPersonnesObligatoires">Personnes Présentes</a>
+						</li>
+						<li class="breadcrumb-item">
+							<a {% if page == 2 or page == 3 %} href="index.php?controleur=assistant&methode=afficherParametres" {% endif %}>Paramètres</a>
+						</li>
+						<li class="breadcrumb-item">
+							<a {% if page == 3 %} href="index.php?controleur=assistant&methode=obtenir" {% endif %}>Résultats</a>
+						</li>
+					</ol>
+				</nav>
+			</div>
+			
+			<div id="calendar" data-heure-debut= '{{ heureDebut|json_encode|raw }}' data-heure-fin= '{{ heureFin|json_encode|raw }}' data-date-debut='{{ dateDebut|json_encode|raw }}' data-tab-ids-noms='{{ tabIdsNoms|json_encode|raw }}' data-creneaux='{{ creneauxCommuns is not empty ? creneauxCommuns|json_encode|raw : "{}" }}' data-evenements='{{ evenements is not empty ? evenements|json_encode|raw : "{}" }}'></div>
+			<!-- Modal -->
+			<div class="modal fade" id="modalResult" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header bg-primary text-secondary">
+							<h5 class="modal-title fs-5" id="modalTitle"></h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body" id="modalBody">
+							<!-- Les détails filtrés des créneaux s'afficheront ici -->
+						</div>
+						<div class="modal-footer"></div>
+					</div>
+				</div>
+			</div>
 
 			<form method="post" class="mb-4">
 				{% if creneauxCommuns is empty %}
@@ -49,71 +81,10 @@
 					</div>
 				{% endif %}
 			</form>
-
-			{# <form method="post" class="mb-4">
-						    {% if ttlPersonnes != ttlPersonnesChoisies %}
-						        <button type="submit" name="increment" class="btn btn-primary">Chercher avec un utilisateur en plus</button>
-						    {% endif %}
-						    {% if ttlPersonnesChoisies > 2 %}
-						        <button type="submit" name="decrement" class="btn btn-secondary">Chercher avec un utilisateur en moins</button>
-						    {% endif %}
-						    </form> #}
-
-
-			{% for date, creneaux in creneauxCommuns %}
-				<h2>{{ date|format_datetime('full', 'none', locale: 'fr')|capitalize }}</h2>
-
-				<div class="creneaux-list">
-					<div class="row">
-						{% for plage, disponibilites in creneaux %}
-							<div class="col-md-6">
-								<div class="creneau-item border rounded p-3 mb-1">
-									<strong>Plage horaire :</strong>
-									{{ plage }}<br>
-									<strong>Personnes disponibles :</strong>
-									{% set personnes_dispo = [] %}
-									{% for personne, dispo in disponibilites %}
-										{% if dispo == 1 %}
-											{% set personnes_dispo = personnes_dispo|merge([personne|capitalize]) %}
-										{% endif %}
-									{% endfor %}
-									{{ personnes_dispo|join(', ') }}
-								</div>
-							</div>
-							{% if loop.index is divisible by(2) %}
-							</div>
-							<div class="row">
-							{% endif %}
-						{% endfor %}
-					</div>
-				</div>
-			{% endfor %}
-
-		</div>
 	</main>
 {% endblock %}
 {% block javascripts %}
 	{{ parent() }}
- <script>
-		// Récupération des événements transmis par le contrôleur
-		var evenements = {{ evenements|json_encode|raw }};
-
-        document.addEventListener('DOMContentLoaded', function() {
-			var calendarEl = document.getElementById('calendar');
-
-			var calendar = new FullCalendar.Calendar(calendarEl, {
-				initialView: 'timeGridWeek',
-                initialDate: "{{ dateDebut|date('Y-m-d') }}", // Afficher le calendrier à partir du premier jour recherché
-				headerToolbar: {
-					left: 'prev,next',
-					center: 'title',
-					right: '' // Supprimer les boutons de changement de vue
-				},
-				locale: 'fr', // Calendrier en français
-				events: evenements,				
-			});
-
-			calendar.render();
-		});
-    </script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="js/resultat.js"></script>
 {% endblock %}

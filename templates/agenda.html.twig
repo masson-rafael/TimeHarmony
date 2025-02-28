@@ -37,7 +37,7 @@
                         <td>
                             <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModale{{ agenda.id }}">
                             <i class="fa-solid fa-pencil fa-2xl text-primary"></i></a>
-                            <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleSuppression{{ agenda.id }}" >
+                            <a role="button" href="#" data-bs-toggle="modal" data-bs-target="#fenetreModaleSuppression{{ agenda.id }}">
                             <i class="fa-solid fa-trash fa-2xl text-danger"></i></a>
                         </td>
                     </tr>
@@ -61,13 +61,14 @@
                                                 <input type="text" class="form-control" id="url" name="url" value="{{ agenda.url }}" required>
                                                 <small id="urlAgendaError" class="text-danger"></small>
                                             </div>
-                                            <div class="mb-3">
-                                                <div class="mb-3">
-                                                    <label for="couleur" class="form-label">Couleur *</label><br>
-                                                    <small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
-                                                    <input type="color" name="couleur" class="form-control" id="couleur" value="{{ agenda.couleur }}" required>
-                                                    <small id="couleurAgendaError" class="text-danger"></small>
-                                                </div>
+                                            <div class="d-flex  gap-3 mt-2">
+                                                 <input type="color" name="couleur" id="couleur" 
+                                                      class="form-control form-control-color rounded-circle shadow-sm border" 
+                                                      value="{{ agenda.couleur }}" 
+                                                      style="cursor: pointer; width: 50px; height: 50px; border: 3px solid #ced4da; transition: all 0.3s ease-in-out;" required>
+                                                 <small class="form-text text-muted text-start" style="max-width: 250px;">
+                                                 Choisissez une couleur dans la liste ou entrez un code hexadécimal.
+                                                 </small>
                                             </div>
                                         </div>
                                     </div>
@@ -132,14 +133,22 @@
 						<div class="mb-3">
 							<label for="url" class="form-label">URL *</label>
 							<input type="url" name="url" class="form-control" id="url" required placeholder="Entrez une URL valide" title="Entrez l'URL valide de votre agenda Google.">
-                            <small id="urlError" class="text-danger"></small>
+                            <small id="urlError" class="text-danger"></small><br>
+                            <i class="fa-solid fa-circle-info text-info small me-1"></i>
+                            <a href="#" class="small text-info" data-bs-toggle="modal" data-bs-target="#modaleAideImportation">Où trouver le lien de mon agenda ?</a>
                         </div>
-                        <div class="mb-3">
-                            <label for="couleur" class="form-label">Couleur *</label><br>
-                            <small class="form-text text-muted">Choisissez une couleur dans la liste ou entrez un code hexadécimal dans le champ suivant :</small>
-                            <input type="color" name="couleur" class="form-control form-control-color border rounded p-0 mt-3 mx-auto shadow-sm w-50" 
-                                    id="couleur" value="{{ agenda.couleur }}" style="cursor: pointer; width: 60px; height: 40px;" required>
-                            <small id="couleurError" class="text-danger"></small>
+                        <div class="mb-3 ">
+                            <label for="couleur" class="form-label ">Couleur *</label>
+                            <div class="d-flex  gap-3 mt-2">
+                            <input type="color" name="couleur" id="couleur" 
+                                class="form-control form-control-color rounded-circle shadow-sm border" 
+                                value="{{ agenda.couleur }}" 
+                                style="cursor: pointer; width: 50px; height: 50px; border: 3px solid #ced4da; transition: all 0.3s ease-in-out;" required>
+                            <small class="form-text text-muted text-start" style="max-width: 250px;">
+                            Choisissez une couleur dans la liste ou entrez un code hexadécimal.
+                            </small>
+                            </div>
+                            <small id="couleurError" class="text-danger d-block mt-2"></small>
                         </div>
                         <div class="text-center pt-3">
                         </div>
@@ -150,6 +159,110 @@
 					</form>
 				</div>
 			</div>
+            <!-- Fenêtre modale de guidage pour l'importation d'agendas-->
+            <div class="modal fade" id="modaleAideImportation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-secondary">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Où trouver le lien de mon agenda ?</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="accordion" id="accordionAideImportation">
+          
+                                <!-- Google Agenda -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingGoogle">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGoogle" aria-expanded="false" aria-controls="collapseGoogle">
+                                            <i class="fa-brands fa-google me-2"></i> Google Agenda 
+                                        </button>
+                                    </h2>
+                                    <div id="collapseGoogle" class="accordion-collapse collapse show" aria-labelledby="headingGoogle" data-bs-parent="#accordionAideImportation">
+                                        <div class="accordion-body">
+                                           <strong>1.</strong> Ouvrez <a href="https://calendar.google.com/" target="_blank">Google Agenda</a> sur un navigateur. <br>
+                                           <strong>2.</strong> Dans la colonne de gauche, passez la souris sur le calendrier que vous souhaitez partager et cliquez sur les trois points. <br>
+                                           <strong>3.</strong> Sélectionnez <strong>Paramètres et partage</strong>. <br>
+                                           <strong>4.</strong> Faites défiler jusqu’à <strong>Intégrer le calendrier</strong>. <br>
+                                           <strong>5.</strong>  Copiez le lien ICS dans la section <strong>Adresse secrète au format iCal</strong> (nécessaire si le calendrier est privé). <br>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Outlook -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOutlook">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOutlook" aria-expanded="false" aria-controls="collapseOutlook">
+                                            <i class="fa-brands fa-microsoft me-2"></i> Microsoft Outlook
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOutlook" class="accordion-collapse collapse" aria-labelledby="headingOutlook" data-bs-parent="#accordionAideImportation">
+                                        <div class="accordion-body">
+                                           <strong>1.</strong> Allez sur <a href="https://outlook.live.com/" target="_blank">Outlook Web</a> et connectez-vous. <br>
+                                           <strong>2.</strong>  Dans le menu de gauche, cliquez sur <strong>Paramètres</strong> (roue dentée). <br>
+                                           <strong>3.</strong> Recherchez <strong>Calendriers partagés</strong> et sélectionnez votre calendrier. <br>
+                                           <strong>4.</strong>  Sous <strong>Publier un calendrier</strong>, choisissez <strong>Peut afficher tous les détails</strong>. <br>
+                                           <strong>5.</strong>  Copiez le lien ICS généré sous <strong>Lien ICS</strong>. <br>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Apple Calendar -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingApple">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseApple" aria-expanded="false" aria-controls="collapseApple">
+                                            <i class="fa-brands fa-apple me-2"></i> Apple Calendar
+                                        </button>
+                                    </h2>
+                                    <div id="collapseApple" class="accordion-collapse collapse" aria-labelledby="headingApple" data-bs-parent="#accordionAideImportation">
+                                        <div class="accordion-body">
+                                            <strong>1.</strong> Ouvrez <a href="https://www.icloud.com/" target="_blank">iCloud.com</a> et connectez-vous. <br>
+                                            <strong>2.</strong> Accédez à <strong>Calendrier</strong>. <br>
+                                            <strong>3.</strong>3. Cliquez sur l’icône des options (à droite du nom du calendrier). <br>
+                                            <strong>4.</strong> Cochez <strong>Calendrier public</strong>. <br>
+                                            <strong>5.</strong> Copiez le lien ICS affiché. <br>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Yahoo Calendar -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingYahoo">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseYahoo" aria-expanded="false" aria-controls="collapseYahoo">
+                                            <i class="fa-brands fa-yahoo me-2"></i> Yahoo Calendar
+                                        </button>
+                                    </h2>
+                                    <div id="collapseYahoo" class="accordion-collapse collapse" aria-labelledby="headingYahoo" data-bs-parent="#accordionAideImportation">
+                                        <div class="accordion-body">
+                                            <strong>1.</strong> Ouvrez <a href="https://calendar.yahoo.com/" target="_blank">Yahoo Calendar</a> et connectez-vous. <br>
+                                            <strong>2.</strong> Cliquez sur l’icône en forme d'engrenage en haut à droite et sélectionnez <strong>Paramètres</strong>. <br>
+                                            <strong>3.</strong> Accédez à l’onglet <strong>Calendriers</strong>, puis sélectionnez le calendrier à partager. <br>
+                                            <strong>4.</strong> Cochez <strong>Partager par lien</strong> et copiez le lien ICS généré. <br>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Autres plateformes -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingAutres">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAutres" aria-expanded="false" aria-controls="collapseAutres">
+                                            <i class="fa-solid fa-calendar me-2"></i> Autres plateformes
+                                        </button>
+                                    </h2>
+                                    <div id="collapseAutres" class="accordion-collapse collapse" aria-labelledby="headingAutres" data-bs-parent="#accordionAideImportation">
+                                        <div class="accordion-body">
+                                            <strong>1.</strong> Ouvrez votre application ou service de calendrier et accédez aux paramètres. <br>
+                                            <strong>2.</strong> Recherchez une option de partage ou d'exportation de calendrier. <br>
+                                            <strong>3.</strong> Vérifiez si une option <strong>Partager via un lien ICS</strong> est disponible. <br>
+                                            <strong>4.</strong> Copiez le lien ICS fourni. <br>
+                                        </div>
+                                    </div>
+                                </div>
+
+                        {# <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        </div> #}
+                    </div>
+                </div>
+            </div>
             {% endif %}
         <!-- Affichage des messages -->
         {% if message %}

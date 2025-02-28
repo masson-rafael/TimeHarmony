@@ -12122,10 +12122,12 @@ textarea.form-control-lg {
   width: 400px;
 }
 
-.nav-link, .footer {
+.nav-link,
+.footer {
   color: #f6f6f6;
 }
-.nav-link:hover, .footer:hover {
+.nav-link:hover,
+.footer:hover {
   color: #e3e3e3;
 }
 
@@ -12216,6 +12218,7 @@ textarea.form-control-lg {
 .modif-photo:hover {
   opacity: 1;
 }
+
 
 /* Icône d’aide (bouton flottant) */
 #aide {
@@ -12339,6 +12342,67 @@ textarea.form-control-lg {
     top: 10px;
     right: 10px;
   }
+
+.fc-scrollgrid,
+.fc-scrollgrid table {
+  background-color: whitesmoke;
+}
+
+.fc-event,
+.fc-timegrid-event {
+  background-color: #64a19d;
+  border: none;
+  color: white;
+  color: #111;
+}
+.fc-event:hover,
+.fc-timegrid-event:hover {
+  background-color: #5a908c;
+  cursor: pointer;
+}
+.fc-event .fc-event-main,
+.fc-timegrid-event .fc-event-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+.fc-event .fc-event-main .fc-event-main-frame,
+.fc-timegrid-event .fc-event-main .fc-event-main-frame {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+.fc-event .fc-event-main .fc-event-time,
+.fc-timegrid-event .fc-event-main .fc-event-time {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.fc-col-header-cell-cushion {
+  text-decoration: none;
+  color: #111;
+}
+
+#modalResult .modal-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+
 }
 
 /*# sourceMappingURL=styles.css.map */

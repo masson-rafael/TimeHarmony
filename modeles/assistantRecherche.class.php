@@ -136,34 +136,88 @@ class Assistant
      *
      * @param array|null $utilisateurs concernés par la recherche d'un créneau commun
      * @param array|null $dates concernés par la recherche
+     * @param string|null $debut date de debut de la recherche (1er jour de recherche)
+     * @param string|null $fin Date de fin de la recherche (dernier jour de recherche)
+     * @param string|null $debutH heure de debut de la recherche
+     * @param string|null $finH heure de fin de la recherche
      * @param string|null $duration durée des créneaux communs demandés
      * @return array
      */
-    function initMatrice($utilisateurs, $dates, $duration = "00:30"): array
-    {
-        $matrice = [];
-        list($durationHours, $durationMinutes) = explode(':', $duration); // Extraire les heures et minutes depuis la chaîne
-        $durationInterval = $durationHours * 60 + $durationMinutes; // Convertir la durée en minutes
+    function initMatrice(?array $utilisateurs, ?array $dates, ?string $debut, ?string $fin, ?string $debutH, ?string $finH, ?string $duration = "00:30"): array
+{
+    $matrice = [];
+    list($durationHours, $durationMinutes) = explode(':', $duration);
+    $durationInterval = $durationHours * 60 + $durationMinutes; // En minutes
 
-        foreach ($dates as $date) {
-            $matrice[$date] = [];
-            $time = new DateTime("$date 00:00");
-            $totalSlots = floor((24 * 60) / 2); // Total de créneaux possibles en une journée (intervalles de 5 minutes)
-
-            for ($i = 0; $i < $totalSlots; $i++) {
-                $start = $time->format('H:i');
-                $end = $time->add(new DateInterval("PT{$durationInterval}M"))->format('H:i');
-                $time->sub(new DateInterval('PT' . ($durationInterval - 5) . 'M')); // Ajustement pour le prochain créneau
-                $key = "$start - $end";
-
-                // Initialisation des utilisateurs dans chaque créneau
-                $matrice[$date][$key] = array_fill_keys(array_map(function ($user) {
-                    return $user->getNom();
-                }, $utilisateurs), 0);
+    // Formatage des heures limites
+    $debutFormate = new DateTime($debut);
+    $finFormate = new DateTime($fin);
+    $deb = $debutFormate->format('H:i');
+    $fin = $finFormate->format('H:i');
+    
+    foreach ($dates as $date) {
+        $matrice[$date] = [];
+        
+        // Déterminer l'heure de début pour cette date
+        $heureDebutJournée = new DateTime("$date $debutH");
+        $heureFinJournée = new DateTime("$date $finH");
+        
+        // Pour le premier jour, vérifier si deb est après debutH
+        if ($date === $dates[0]) {
+            if ($deb > $debutH) {
+                // Si deb est après debutH, utiliser deb
+                $heureDebutJournée = new DateTime("$date $deb");
+            } else if ($deb < $debutH) {
+                // Si deb est avant debutH, utiliser deb
+                $heureDebutJournée = new DateTime("$date $deb");
             }
         }
-        return $matrice;
+        //var_dump($heureDebutJournée);
+        
+        // Pour le dernier jour, vérifier si fin est avant finH
+        $estDernierJour = ($date === end($dates));
+        $heureFinDernierJR = clone $heureFinJournée;
+        //var_dump($estDernierJour);
+        if ($estDernierJour) {
+            // var_dump($fin);
+            // var_dump($finH);
+            if ($fin < $finH) {
+                // Si fin est avant finH, utiliser fin
+                $heureFinDernierJR = new DateTime("$date $fin");
+            } else if ($fin > $finH) {
+                // Si fin est après finH, utiliser fin
+                $heureFinDernierJR = new DateTime("$date $fin");
+            }
+        }
+        //var_dump($heureFinDernierJR);
+        
+        // Générer les créneaux
+        while ($heureDebutJournée < $heureFinDernierJR) {
+            $start = $heureDebutJournée->format('H:i');
+            
+            // Calculer l'heure de fin du créneau
+            $endTime = clone $heureDebutJournée;
+            $endTime->add(new DateInterval("PT{$durationInterval}M"));
+            
+            // Si la fin du créneau dépasse la fin de journée, arrêter
+            if ($endTime > $heureFinDernierJR) {
+                break;
+            }
+            
+            $end = $endTime->format('H:i');
+            $key = "$start - $end";
+            
+            // Initialiser les utilisateurs dans ce créneau
+            $matrice[$date][$key] = array_fill_keys(array_map(function ($user) {
+                return $user->getId();
+            }, $utilisateurs), 0);
+            
+            // Avancer au prochain créneau (incrément de 5 minutes)
+            $heureDebutJournée->add(new DateInterval('PT5M'));
+        }
     }
+    return $matrice;
+}
 
 
     /**
@@ -207,7 +261,7 @@ class Assistant
 
                 // Vérifier si la date et l'heure à comparer sont dans l'intervalle
                 if ($debutCreneau <= $debutPlage && $finCreneau >= $finPlage) {
-                    $matrice[$date][$interval][$utilisateur->getNom()] = 1;
+                    $matrice[$date][$interval][$utilisateur->getId()] = 1;
                 }
             }
         }
@@ -223,7 +277,7 @@ class Assistant
      * @param string|null $finHoraire : fin de la plage horaire
      * @return array
      */
-    function getCreneauxCommunsExact(array $matrice, int $nb_utilisateurs_exact, string $debutHoraire, string $finHoraire, string $debut, string $fin, ?array $nomUtilisateurPrioritaire, ?bool $aDesUsersPrioritaires): array
+    function getCreneauxCommunsExact(array $matrice, int $nb_utilisateurs_exact, string $debutHoraire, string $finHoraire, string $debut, string $fin, ?array $idUtilisateursPrioritaires, ?bool $aDesUsersPrioritaires): array
     {
         $resultat = [];
         $dateDebutRecherche = new DateTime($debut);
@@ -246,14 +300,14 @@ class Assistant
 
         if($aDesUsersPrioritaires) {
             $tabUsersPrioritaires = [];
-            foreach ($nomUtilisateurPrioritaire as $nomUserPrio) {
-                $tabUsersPrioritaires[] = $nomUserPrio;
+            foreach ($idUtilisateursPrioritaires as $idUserPrio) {
+                $tabUsersPrioritaires[] = $idUserPrio;
             }
 
             foreach ($matrice as $date => $creneaux) {
                 foreach ($creneaux as $plage => $users) {
-                    foreach ($tabUsersPrioritaires as $nomUtilisateurPrioritaire) {
-                        if($users[$nomUtilisateurPrioritaire] === 1) {
+                    foreach ($tabUsersPrioritaires as $idUtilisateursPrioritaires) {
+                        if($users[$idUtilisateursPrioritaires] === 1) {
                             // Extraire l'heure de début et de fin de la plage horaire
                             [$heureDebut, $heureFin] = explode(' - ', $plage);
 
