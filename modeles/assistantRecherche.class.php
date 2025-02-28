@@ -212,8 +212,8 @@ class Assistant
                 return $user->getId();
             }, $utilisateurs), 0);
             
-            // Avancer au prochain créneau (incrément de 5 minutes)
-            $heureDebutJournée->add(new DateInterval('PT5M'));
+            // Avancer au prochain créneau (incrément de 15 minutes)
+            $heureDebutJournée->add(new DateInterval('PT15M'));
         }
     }
     return $matrice;
