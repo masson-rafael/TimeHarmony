@@ -121,14 +121,15 @@
 										</div>
 										{# SECONDE TABLE OU SONT SELECTIONNES LES CONTACTS / GROUPES CHOISIS #}
 										<div class="col-md-6">
-											<p class="text-muted text-center">Sélectionnez les contacts qui seront nécessaires à la recherche.
+											<p class="text-muted text-center">Sélectionnez les contacts qui seront <strong>nécessaires</strong> à la recherche.
 												<br>
-												Les autres contacts non cochés seront des contacts souhaités.</p>
+												Les autres contacts non cochés seront des contacts souhaités.<br>
+												Il <strong>n'est pas obligatoire</strong> de sélectionner des personnes obligatoires</p>
 											<table id="tableObligatoire" class="table table-bordered table-hover">
 												<thead>
 													<tr class="table-primary">
 														<th scope="col">#</th>
-														<th scope="col">Nom du contact ou du groupe</th>
+														<th scope="col">Nom des contacts présents</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -165,18 +166,20 @@
 							<!-- Section Période -->
 							<div class="col-md-6 mb-4">
 								<div class="card p-4 shadow-sm">
-									<h5 class="fw-bold text-center mb-3">Période de recherche :</h5>
+									<h5 class="fw-bold text-center mb-3">Période de recherche</h5>
 									<p class="text-muted">Définissez la période pendant laquelle vous souhaitez rechercher un créneau.</p>
-									<div class="mb-3">
-										<label for="Datedebut" class="form-label">Début *</label>
-										<input name="debut" type="datetime-local" class="form-control" id="dateDebut" required title="Entrez la date de début de votre recherche">
-										<small id="dateDebutError" class="text-danger"></small>
-									</div>
+									<div class="row mb-3">
+										<div class="col-12 col-md-6">
+											<label for="Datedebut" class="form-label">Début *</label>
+											<input name="debut" type="datetime-local" class="form-control" id="dateDebut" required title="Entrez la date de début de votre recherche">
+											<small id="dateDebutError" class="text-danger"></small>
+										</div>
 
-									<div class="mb-4">
-										<label for="Datefin" class="form-label">Fin *</label>
-										<input name="fin" type="datetime-local" class="form-control" id="dateFin" required title="Entrez la date de fin de votre recherche">
-										<small id="dateFinError" class="text-danger"></small>
+										<div class="col-12 col-md-6">
+											<label for="Datefin" class="form-label">Fin *</label>
+											<input name="fin" type="datetime-local" class="form-control" id="dateFin" required title="Entrez la date de fin de votre recherche">
+											<small id="dateFinError" class="text-danger"></small>
+										</div>
 									</div>
 
 									<div class="mb-3">
@@ -185,25 +188,27 @@
 										<input id="duree" name="dureeMin" type="time" class="form-control" value="01:00" min="00:05" required title="Entrez la durée minimale du créneau à rechercher">
 										<small id="dureeError" class="text-danger"></small>
 									</div>
-									<p class="text">* Champ obligatoire</p>
+									<p class="text-muted fst-italic">* Champ obligatoire</p>
 								</div>
 							</div>
 							<div class="col-md-6 mb-4">
 								<div class="card p-4 shadow-sm">
-									<h5 class="fw-bold text-center mb-3">Plage horaire :</h5>
+									<h5 class="fw-bold text-center mb-3">Plage horaire</h5>
 									<p class="text-muted">Définissez les heures entre lesquelles les créneaux doivent être recherchés.</p>
-									<div class="mb-3">
-										<label for="debutPlageH" class="form-label">Début *</label><br>
-										<input name="debutPlageH" type="time" class="form-control" id="debutPlageH" value="08:00" required title="Entrez la date de début de la plage horaire">
-										<small id="debutPlageHError" class="text-danger"></small>
-									</div>
+									<div class="row mb-3">
+										<div class="col-12 col-md-6">
+											<label for="debutPlageH" class="form-label">Début *</label><br>
+											<input name="debutPlageH" type="time" class="form-control" id="debutPlageH" value="08:00" required title="Entrez la date de début de la plage horaire">
+											<small id="debutPlageHError" class="text-danger"></small>
+										</div>
 
-									<div class="mb-3">
-										<label for="finPlageH" class="form-label">Fin *</label>
-										<input name="finPlageH" type="time" class="form-control" id="finPlageH" value="12:00" required title="Entrez la date de fin de la plage horaire">
-										<small id="finPlageHError" class="text-danger"></small>
+										<div class="col-12 col-md-6">
+											<label for="finPlageH" class="form-label">Fin *</label>
+											<input name="finPlageH" type="time" class="form-control" id="finPlageH" value="12:00" required title="Entrez la date de fin de la plage horaire">
+											<small id="finPlageHError" class="text-danger"></small>
+										</div>
 									</div>
-									<p class="text">* Champ obligatoire</p>
+									<p class="text-muted fst-italic">* Champ obligatoire</p>
 								</div>
 							</div>
 						</div>

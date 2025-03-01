@@ -25,8 +25,7 @@ function preparationChamps() {
         emailError.textContent = 'Veuillez saisir votre adresse email.';
         email.focus();
     }
-    mdp.style.borderColor = 'red';
-    mdpError.textContent = 'Veuillez saisir votre mot de passe.';
+    mdp.style.borderColor = '';
     verifierTousLesChamps();
 }
 
@@ -57,25 +56,18 @@ function verifierPattern(motDePasse) {
     const motifMajuscule = /[A-Z]/;
     const motifChiffre = /\d/;
     const motifSpecial = /\W/;
-    motDePasse.style.borderColor = 'red';
     var erreursMdp = [];
 
     if(motDePasse.value === '') {
-        mdpError.textContent = 'Veuillez saisir votre mot de passe.';
+        mdpError.textContent = '';
         return false;
     }
 
-    if (!motifTaille.test(motDePasse.value)) {
-        erreursMdp.push('Le mot de passe doit contenir entre 8 et 25 caractères.');
-    } if (!motifMinuscule.test(motDePasse.value)) {
-        erreursMdp.push('Le mot de passe doit contenir au moins une lettre minuscule.');
-    } if (!motifMajuscule.test(motDePasse.value)) {
-        erreursMdp.push('Le mot de passe doit contenir au moins une lettre majuscule.');
-    } if (!motifChiffre.test(motDePasse.value)) {
-        erreursMdp.push('Le mot de passe doit contenir au moins un chiffre.');
-    } if (!motifSpecial.test(motDePasse.value)) {
-        erreursMdp.push('Le mot de passe doit contenir au moins un caractère spécial.');
-    } 
+    if (!motifTaille.test(motDePasse.value) || !motifMinuscule.test(motDePasse.value) || !motifMajuscule.test(motDePasse.value) || !motifChiffre.test(motDePasse.value) || !motifSpecial.test(motDePasse.value)) {
+        erreursMdp.push('Le mot de passe doit contenir au moins 8 caractères, une minuscule, une majuscule, un chiffre et un caractère spécial.');
+        motDePasse.style.borderColor = '';
+        mdpError.style.color = 'black';
+    }
     mdpError.innerHTML = erreursMdp.join('<br>');
 
     if (motifTaille.test(motDePasse.value) && motifMinuscule.test(motDePasse.value) && motifMajuscule.test(motDePasse.value) && motifChiffre.test(motDePasse.value) && motifSpecial.test(motDePasse.value))
