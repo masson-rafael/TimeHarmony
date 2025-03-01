@@ -321,3 +321,13 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
     max-height: 70vh;
     overflow-y: auto;
 }
+
+.couleur {
+    width: 50px;
+    height: 50px;
+    border: 3px solid $secondary !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    outline: none !important;
+    appearance: none !important;
+}
