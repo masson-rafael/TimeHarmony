@@ -6,7 +6,7 @@
 
 {% block content %}
 	<main>
-		<div class="container-fluid">
+		<div class="container">
 			<div class="row text-center mt-3 mb-3">
 				<h1 class="text-center py-5">Recherche d'un créneau</h1>
 			</div>
@@ -88,10 +88,8 @@
 							<div class="col-md-6 mb-4">
 								<div class="card p-4 shadow-sm">
 									{# SECONDE TABLE OU SONT SELECTIONNES LES CONTACTS / GROUPES CHOISIS #}
-										<p class="text-muted text-center">Sélectionnez les contacts qui seront <strong>nécessaires</strong> à la recherche.
-											<br>
-											Les autres contacts non cochés seront des contacts souhaités.<br>
-											Il <strong>n'est pas obligatoire</strong> de sélectionner des personnes obligatoires</p>
+										<h5 class="fw-bold text-center mb-3">Mes contacts sélectionnés</h5>
+										<p class="text-muted text-center">Sélectionnez les contacts qui seront présents et nécessaires lors de la recherche. Si un contact nécessaire n'est pas disponible, le créneau n'est pas proposé. Si un contact sélectionné mais non obligatoire n'est pas disponible, le créneau apparaître comme une alternative</p>
 										<table id="tableObligatoire" class="table table-bordered table-hover">
 											<thead>
 												<tr class="table-primary">
@@ -116,7 +114,8 @@
 								{% if contacts|length > 0 %}
 									<div class="row">
 										{# PREMIERE TABLE OU SONT AFFICHES LES CONTACTS / GROUPES #}
-										<p class="text-muted text-center">Ajoutez des groupes ou contacts qui seront présents lors du résultat de la recherche.</p>
+										<h5 class="fw-bold text-center mb-3">Tous mes contacts</h5>
+										<p class="text-muted text-center">Ajoutez des contacts additionnels qui seront présent lors de la recherche. Vous pouvez aussi supprimer des contacts sélectionnés à traver les groupes</p>
 
 										<table id="contacts" class="table table-bordered table-hover">
 											<thead>
@@ -152,6 +151,11 @@
 								{% endif %}
 								</div>
 							</div>
+						</div>
+						<div class="text-center mb-4">
+							<button id="boutonPasserEtape2" type="submit" class="btn btn-primary shadow-lg hover-shadow">Passer à l'étape suivante</button>
+						</div>
+					</form>
 
 {# 
 						<div class="justify-content-center row-md-4 mb-5">
