@@ -115,7 +115,7 @@ class ControllerAssistant extends Controller
         //     $_POST['contactsPrioritaires'] = $_SESSION['contactsPrioritaires'];
         // }
 
-        var_dump($_POST);
+        // var_dump($_POST);
 
         if (isset($_SESSION['contacts'])) {
             $_POST['contacts'] = $_SESSION['contacts'];
@@ -127,7 +127,7 @@ class ControllerAssistant extends Controller
         @$contactsValide = Utilitaire::validerContacts($_POST['contacts'], $messagesErreur);
         $plageHoraireValide = Utilitaire::validerPlageHoraire($_POST['debutPlageH'], $_POST['finPlageH'], $messagesErreur);
 
-        var_dump($_POST['contacts']);
+        // var_dump($_POST['contacts']);
         // var_dump($valideDuree);
         // var_dump($dureeMinValide);
         // var_dump($contactsValide);
