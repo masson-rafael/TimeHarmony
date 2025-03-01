@@ -12219,7 +12219,6 @@ textarea.form-control-lg {
   opacity: 1;
 }
 
-
 /* Icône d’aide (bouton flottant) */
 #aide {
   position: fixed;
@@ -12342,7 +12341,7 @@ textarea.form-control-lg {
     top: 10px;
     right: 10px;
   }
-
+}
 .fc-scrollgrid,
 .fc-scrollgrid table {
   background-color: whitesmoke;
@@ -12405,7 +12404,6 @@ textarea.form-control-lg {
 #modalResult .modal-dialog .modal-content .modal-body {
   max-height: 70vh;
   overflow-y: auto;
-
 }
 #modalResult .modal-dialog .modal-content .modal-body .creneau-item {
   border: none;

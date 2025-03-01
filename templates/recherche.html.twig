@@ -6,8 +6,8 @@
 
 {% block content %}
 	<main>
-		<div class="container-fluid">
-			<div class="row text-center mt-3 mb-3">
+		<div class="container">
+			<div class="row text-center mt-3">
 				<h1 class="text-center py-5">Recherche d'un créneau</h1>
 			</div>
 
@@ -29,129 +29,126 @@
 
 			<div class="d-flex justify-content-center">
 				{% if page == 1 %}
-					<form
-						action="index.php?controleur=assistant&methode=afficherParametres" method="post">
+					<form action="index.php?controleur=assistant&methode=afficherParametres" method="post">
 						<!-- Section Collaborateurs -->
-						<div class="justify-content-center row-md-4 mb-5">
-							<div class="card p-4 shadow-sm">
-								<h5 class="fw-bold text-center mb-3">Personnes présentes :</h5>
-								{% if contacts|length > 0 %}
-									<div
-										class="row">
-										{# PREMIERE TABLE OU SONT AFFICHES LES CONTACTS / GROUPES #}
-										<div class="col-md-6">
-											<p class="text-muted text-center">Ajoutez des groupes ou contacts qui seront présents lors du résultat de la recherche.</p>
-											<div class="accordion" id="accordionPanelsStayOpenExample">
-												<div class="accordion-item">
-													<h2 class="accordion-header">
-														<button class="accordion-button {% if groupes|length == 0 %} collapsed {% endif %} fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="{% if groupes|length > 0 %}true{% else %}false{% endif %}" aria-controls="panelsStayOpen-collapseOne">
-															Mes groupes
-														</button>
-													</h2>
-													<div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse {% if groupes|length > 0 %} show{% endif %}">
-														<div class="accordion-body">
-															{% if groupes|length != 0 %}
-																<table id="groupes" class="table table-bordered table-hover">
-																	<thead>
-																		<tr class="table-primary">
-																			<th scope="col">#</th>
-																			<th scope="col">Nom du groupe</th>
-																		</tr>
-																	</thead>
-																	<tbody>
-																		{% if groupes|length > 0 %}
-																			{% for groupe in groupes %}
-																				<tr>
-																					<td>
-																						<input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
-																					</td>
-																					<td>{{ groupe.getNom }}</td>
-																				</tr>
-																			{% endfor %}
-																		{% endif %}
-																	</tbody>
-																</table>
-																<small id="contactsError" class="text-danger"></small>
-															{% else %}
-																<div class="row justify-content-center mt-4 h-25">
-																	<div class="col-md-8">
-																		<div class="alert alert-info text-center" role="alert">Aucun contact trouvé. Ajoutez-en un ci-dessous.</div>
-																	</div>
-																</div>
-																<div class="text-center">
-																	<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
-																</div>
-															{% endif %}
-														</div>
-													</div>
-												</div>
-												<div class="accordion-item">
-													<h2 class="accordion-header">
-														<button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
-															Mes contacts
-														</button>
-													</h2>
-													<div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
-														<div class="accordion-body">
-															<table id="contacts" class="table table-bordered table-hover">
-																<thead>
-																	<tr class="table-primary">
-																		<th scope="col">#</th>
-																		<th scope="col">Nom du contact</th>
-																	</tr>
-																</thead>
-																<tbody>
-																	{% for contact in contacts %}
-																		<tr>
-																			<td>
-																				<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ loop.index }}">
-																			</td>
-																			<td>{{ contact.getPrenom|capitalize }}
-																				{{ contact.getNom|capitalize }}
-																			</td>
-																		</tr>
-																	{% endfor %}
-																</tbody>
-															</table>
-															<small id="contactsError" class="text-danger"></small>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-										{# SECONDE TABLE OU SONT SELECTIONNES LES CONTACTS / GROUPES CHOISIS #}
-										<div class="col-md-6">
-											<p class="text-muted text-center">Sélectionnez les contacts qui seront <strong>nécessaires</strong> à la recherche.
-												<br>
-												Les autres contacts non cochés seront des contacts souhaités.<br>
-												Il <strong>n'est pas obligatoire</strong> de sélectionner des personnes obligatoires</p>
-											<table id="tableObligatoire" class="table table-bordered table-hover">
+						<div class= "row">
+							<div class="col-md-6 mb-4">
+								<div class="card p-4 shadow-sm">
+									<h5 class="fw-bold text-center mb-3">Mes groupes</h5>
+									<p class="text-muted">Ajoutez des groupes contenant vos contacts qui seront présents lors du résultat de la recherche.</p>
+									{% if contacts|length > 0 %}
+									<div class="row">
+
+										{% if groupes|length != 0 %}
+											<table id="groupes" class="table table-bordered table-hover">
 												<thead>
 													<tr class="table-primary">
-														<th scope="col">#</th>
-														<th scope="col">Nom des contacts présents</th>
+														<th class="bg-primary text-secondary" scope="col">#</th>
+														<th class="bg-primary text-secondary" scope="col">Nom du groupe</th>
 													</tr>
 												</thead>
 												<tbody>
 													{% if groupes|length > 0 %}
-														{# QUAND Y'AVAIT DES GROUPES #}
+														{% for groupe in groupes %}
+															<tr>
+																<td class="bg-secondary">
+																	<input class="form-check-input" type="checkbox" name="groupes[]" value="{{ groupe.getId }}" id="groupeCheck{{ loop.index }}">
+																</td>
+																<td class="bg-secondary">{{ groupe.getNom }}</td>
+															</tr>
+														{% endfor %}
 													{% endif %}
-													{# QUAND Y'AVAIT DES CONTACTS #}
 												</tbody>
 											</table>
 											<small id="contactsError" class="text-danger"></small>
-										</div>
+										{% else %}
+											<div class="row justify-content-center mt-4 h-25">
+												<div class="col-md-8">
+													<div class="alert alert-info text-center" role="alert">Aucun contact trouvé. Ajoutez-en un ci-dessous.</div>
+												</div>
+											</div>
+											<div class="text-center">
+												<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
+											</div>
+										{% endif %}
 									</div>
 								{% else %}
 									<div class="row justify-content-center mt-4 h-25">
 										<div class="col-md-8">
-											<div class="alert alert-info text-center" role="alert">Aucun contact trouvé. Ajoutez-en un ci-dessous.</div>
+											<div class="alert alert-info text-center" role="alert">Aucun groupe trouvé. Vous devez ajouter au moins un contact pour créer un groupe. Ajoutez-en un ci-dessous.</div>
 										</div>
 									</div>
 									<div class="text-center">
 										<a class="px-5 btn btn-primary" href="index.php?controleur=contacts&methode=afficherUtilisateurs" role="button">Ajouter un contact</a>
 									</div>
 								{% endif %}
+								</div>
+							</div>
+
+							<div class="col-md-6 mb-4">
+								<div class="card p-4 shadow-sm">
+									{# SECONDE TABLE OU SONT SELECTIONNES LES CONTACTS / GROUPES CHOISIS #}
+										<h5 class="fw-bold text-center mb-3">Mes contacts sélectionnés</h5>
+										<p class="text-muted text-center">Sélectionnez les contacts qui seront présents et nécessaires lors de la recherche. Si un contact nécessaire n'est pas disponible, le créneau n'est pas proposé. Si un contact sélectionné mais non obligatoire n'est pas disponible, le créneau apparaître comme une alternative</p>
+										<table id="tableObligatoire" class="table table-bordered table-hover">
+											<thead>
+												<tr class="table-primary">
+													<th class="bg-primary text-secondary" scope="col">Spécifiez le type de présence</th>
+													<th class="bg-primary text-secondary" scope="col">Nom des contacts présents</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% if groupes|length > 0 %}
+													{# QUAND Y'AVAIT DES GROUPES #}
+												{% endif %}
+													{# QUAND Y'AVAIT DES CONTACTS #}
+											</tbody>
+										</table>
+										<small id="contactsError" class="text-danger"></small>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-12 mb-4">
+							<div class="card p-4 shadow-sm">
+							{% if contacts|length > 0 %}
+								<div class="row">
+									<h5 class="fw-bold text-center mb-3">Tous mes contacts</h5>
+									<p class="text-muted text-center">Ajoutez des contacts additionnels qui seront présent lors de la recherche. Vous pouvez aussi supprimer des contacts sélectionnés à traver les groupes</p>
+									
+									<div class="row">
+										{% set columns = 4 %}
+										{% set itemsPerColumn = (contacts|length / columns)|round(0, 'ceil') %}
+										
+										{% for i in 0..columns-1 %}
+											<div class="col-md-3">
+												<table class="table table-bordered table-hover">
+													<tbody>
+														{% for j in 0..itemsPerColumn-1 %}
+															{% set index = i * itemsPerColumn + j %}
+															{% if index < contacts|length %}
+																{% set contact = contacts[index] %}
+																<tr>
+																	<td class="bg-secondary" style="width: 40px">
+																		<input class="form-check-input" type="checkbox" name="contacts[]" value="{{ contact.getId }}" id="contactCheck{{ index + 1 }}">
+																	</td>
+																	<td class="bg-secondary">
+																		{{ contact.getPrenom|capitalize }} {{ contact.getNom|capitalize }}
+																	</td>
+																</tr>
+															{% endif %}
+														{% endfor %}
+													</tbody>
+												</table>
+											</div>
+										{% endfor %}
+									</div>
+									
+									<small id="contactsError" class="text-danger"></small>
+								</div>
+							{% else %}
+								<!-- Le reste du code reste inchangé -->
+							{% endif %}
 							</div>
 						</div>
 						<div class="text-center mb-4">

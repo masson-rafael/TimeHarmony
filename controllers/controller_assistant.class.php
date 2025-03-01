@@ -518,20 +518,53 @@ class ControllerAssistant extends Controller
 
     public function afficherParametres(?array $tabMessages = null, ?bool $contientErreurs = false): void
     {
+        // Récupération des contacts sélectionnés
         if (isset($_POST['contacts'])) {
             $_SESSION['contacts'] = $_POST['contacts'];
         }
-
+    
+        // Récupération des contacts dans la table obligatoire
+        if (isset($_POST['contactsObligatoires'])) {
+            // Initialiser les tableaux pour stocker les contacts présents et obligatoires
+            $_SESSION['contactsPresents'] = [];
+            $_SESSION['contactsObligatoires'] = [];
+            
+            // Parcourir tous les contacts de la table obligatoire
+            foreach ($_POST['contactsObligatoires'] as $contactId) {
+                // Vérifier si le contact est marqué comme obligatoire ou présent
+                $statusName = "contactStatus" . $contactId;
+                
+                if (isset($_POST[$statusName]) && $_POST[$statusName] === 'obligatoire') {
+                    // Le contact est marqué comme obligatoire
+                    $_SESSION['contactsObligatoires'][] = $contactId;
+                } else {
+                    // Par défaut, si non marqué comme obligatoire, on le considère comme présent
+                    $_SESSION['contactsPresents'][] = $contactId;
+                }
+            }
+        } else {
+            // Si aucun contact n'est dans la table, réinitialiser les tableaux
+            $_SESSION['contactsPresents'] = [];
+            $_SESSION['contactsObligatoires'] = [];
+        }
+        
+        // Conservation du code existant pour les contacts prioritaires
         if (isset($_POST['contactsPrioritaires'])) {
             unset($_SESSION['contactsPrioritaires']);
             $_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
         }
-
+    
+        // Afficher des informations de débogage si nécessaire
+        // var_dump($_SESSION['contactsPresents']);
+        // var_dump($_SESSION['contactsObligatoires']);
+    
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
             'page' => 2,
             'message' => $tabMessages,
-            'contientErreurs' => $contientErreurs
+            'contientErreurs' => $contientErreurs,
+            'contactsPresents' => $_SESSION['contactsPresents'] ?? [],
+            'contactsObligatoires' => $_SESSION['contactsObligatoires'] ?? []
         ));
     }
 }

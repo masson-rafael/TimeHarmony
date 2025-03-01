@@ -133,7 +133,34 @@ INSERT INTO `timeharmony_utilisateur` (`nom`, `prenom`, `email`, `motDePasse`, `
  ('voisin', 'sophie', 'sophie.voisin@iutbayonne.univ-pau.fr', '$2y$10$EbNnJgh848jUnqrqeVHKx.vchALW7ZHdUPFIgiRLwsg45AfOA.50O', 'sophie.jpg', false, 'actif'),
  ('marquesuzaa', 'christophe', 'christophe.marquesuzaa@iutbayonne.univ-pau.fr', '$2y$10$DqHEdsa3Y1cJ4KC2IccV3eImTTx8k622vnI1KnYPkVg3UndA2YgZm', 'christophe.png', false, 'actif'),
  ('dezeque', 'olivier', 'olivier.dezeque@iutbayonne.univ-pau.fr', '$2y$10$Wx.XZ34n6xF93ToBnzfdiOb8rXxIPgVUcq5n4fxpP2jA3zF/I/8Ma', 'olivier.jpg', false, 'desactive'),
- ('rustici', 'chiara', 'chiara.rustici@iutbayonne.univ-pau.fr', '$2y$10$INfusoSi/dQSmXxy5RtQhuPN.UyKuESik1QO.i8gOZpg8MGtO3bS2', 'chiara.jpg', false, 'desactive');
+ ('rustici', 'chiara', 'chiara.rustici@iutbayonne.univ-pau.fr', '$2y$10$INfusoSi/dQSmXxy5RtQhuPN.UyKuESik1QO.i8gOZpg8MGtO3bS2', 'chiara.jpg', false, 'desactive'),
+ ('AMREIN', 'Nathan', 'nathan.amrein@iutbayonne.univ-pau.fr', '$2y$10$randomhash1', 'utilisateurBase.png', false, 'actif'),
+('ARANDIA', 'Iban', 'iban.arandia@iutbayonne.univ-pau.fr', '$2y$10$randomhash2', 'utilisateurBase.png', false, 'actif'),
+('BARLIC', 'Francois', 'francois.barlic@iutbayonne.univ-pau.fr', '$2y$10$randomhash4', 'utilisateurBase.png', false, 'actif'),
+('BAROS', 'Arthur', 'arthur.baros@iutbayonne.univ-pau.fr', '$2y$10$randomhash5', 'utilisateurBase.png', false, 'actif'),
+('BERHO-ETCHEVERRIA', 'Andoni', 'andoni.berho-etcheverria@iutbayonne.univ-pau.fr', '$2y$10$randomhash7', 'utilisateurBase.png', false, 'actif'),
+('BIREMBAUX', 'Theo', 'theo.birembaux@iutbayonne.univ-pau.fr', '$2y$10$randomhash8', 'utilisateurBase.png', false, 'actif'),
+('BOISSEAU', 'Robin', 'robin.boisseau@iutbayonne.univ-pau.fr', '$2y$10$randomhash9', 'utilisateurBase.png', false, 'actif'),
+('BONNEAU', 'Florian', 'florian.bonneau@iutbayonne.univ-pau.fr', '$2y$10$randomhash10', 'utilisateurBase.png', false, 'actif'),
+('BOURCIEZ', 'Maxime', 'maxime.bourciez@iutbayonne.univ-pau.fr', '$2y$10$randomhash11', 'utilisateurBase.png', false, 'actif'),
+('CAMPISTRON', 'Julian', 'julian.campistron@iutbayonne.univ-pau.fr', '$2y$10$randomhash12', 'utilisateurBase.png', false, 'actif'),
+('CAZALAA', 'Emile', 'emile.cazalaa@iutbayonne.univ-pau.fr', '$2y$10$randomhash13', 'utilisateurBase.png', false, 'actif'),
+('CHA', 'Baptiste', 'baptiste.cha@iutbayonne.univ-pau.fr', '$2y$10$randomhash14', 'utilisateurBase.png', false, 'actif'),
+('LOHER', 'Marylou', 'marylou.loher@iutbayonne.univ-pau.fr', '$2y$10$randomhash16', 'utilisateurBase.png', false, 'actif'),
+('LOUSTAU-CAZAUX', 'David', 'david.loustau-cazaux@iutbayonne.univ-pau.fr', '$2y$10$randomhash17', 'utilisateurBase.png', false, 'actif'),
+('LUCAS', 'Liam', 'liam.lucas@iutbayonne.univ-pau.fr', '$2y$10$randomhash18', 'utilisateurBase.png', false, 'actif'),
+('MAHSSINI', 'Imane', 'imane.mahssini@iutbayonne.univ-pau.fr', '$2y$10$randomhash19', 'utilisateurBase.png', false, 'actif'),
+('MARQUES DA SILVA', 'Thomas', 'thomas.marques@iutbayonne.univ-pau.fr', '$2y$10$randomhash20', 'utilisateurBase.png', false, 'actif'),
+('MARSAN', 'Louis', 'louis.marsan@iutbayonne.univ-pau.fr', '$2y$10$randomhash21', 'utilisateurBase.png', false, 'actif'),
+('MOHTAR', 'Lamina', 'lamina.mohtar@iutbayonne.univ-pau.fr', '$2y$10$randomhash23', 'utilisateurBase.png', false, 'actif'),
+('NOVION', 'Tatiana', 'tatiana.novion@iutbayonne.univ-pau.fr', '$2y$10$randomhash24', 'utilisateurBase.png', false, 'actif'),
+('OULAI', 'Kevin', 'kevin.oulai@iutbayonne.univ-pau.fr', '$2y$10$randomhash25', 'utilisateurBase.png', false, 'actif'),
+('PIGNEAUX', 'Loris', 'loris.pigneaux@iutbayonne.univ-pau.fr', '$2y$10$randomhash26', 'utilisateurBase.png', false, 'actif'),
+('RIVRAIS-NOWAKOWSKI', 'Mathis', 'mathis.rivrais@iutbayonne.univ-pau.fr', '$2y$10$randomhash27', 'utilisateurBase.png', false, 'actif'),
+('ROSALIE', 'Thibault', 'thibault.rosalie@iutbayonne.univ-pau.fr', '$2y$10$randomhash28', 'utilisateurBase.png', false, 'actif'),
+('TRETEAU', 'Jonathan', 'jonathan.treteau@iutbayonne.univ-pau.fr', '$2y$10$randomhash29', 'utilisateurBase.png', false, 'actif'),
+('TROUILH', 'Sylvain', 'sylvain.trouilh@iutbayonne.univ-pau.fr', '$2y$10$randomhash30', 'utilisateurBase.png', false, 'actif'),
+('VINET LATRILLE', 'Jules', 'jules.vinet@iutbayonne.univ-pau.fr', '$2y$10$randomhash31', 'utilisateurBase.png', false, 'actif');
 
 
 --
@@ -283,7 +310,7 @@ CREATE TABLE IF NOT EXISTS `timeharmony_contacter` (
 --
 
 INSERT INTO `timeharmony_contacter` (`idUtilisateur1`, `idUtilisateur2`) VALUES
- (1, 2), (1, 3), (1, 4), (1, 5), 
+ (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10), (1, 11), (1, 12), (1, 13), (1, 14), (1, 15), (1, 16),
  (2, 1), (2, 3), (2, 4), (2, 5), 
  (3, 1), (3, 2), (3, 4), 
  (4, 1), (4, 2), (4, 3), 
