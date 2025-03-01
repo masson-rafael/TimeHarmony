@@ -73,34 +73,145 @@ checkRelatedGroups() {
     }
 
     addToObligatoryTable() {
+        // Vérifier si l'élément existe déjà dans la table obligatoire
+        if (this.checkIfAlreadyInTable()) {
+            // Si l'élément existe déjà, ne pas l'ajouter à nouveau
+            return;
+        }
+    
         const tableObligatoire = document.getElementById('tableObligatoire');
         const tbody = tableObligatoire.querySelector('tbody');
-
+    
         const row = document.createElement('tr');
         
-        // Cellule checkbox
+        // Cellule checkbox remplacée par boutons radio selon le commentaire
         const checkboxCell = document.createElement('td');
         checkboxCell.className = 'bg-secondary';
-        const checkbox = document.createElement('input');
-        checkbox.className = 'form-check-input';
-        checkbox.type = 'checkbox';
-        checkbox.name = 'contactsObligatoires[]';
-        checkbox.value = this.value;
-        checkbox.id = `contactCheck${this.value}`;
-        checkbox.checked = false;
-        checkboxCell.appendChild(checkbox);
-
+        
+        // Premier bouton radio (Présent)
+        const checkBox1 = document.createElement('input');
+        checkBox1.className = 'btn-check';
+        checkBox1.type = 'radio';
+        checkBox1.name = `contactStatus${this.value}`;  // Nom unique par contact
+        checkBox1.value = 'present';
+        checkBox1.id = `contactCheckP${this.value}`;
+        checkBox1.checked = true;
+        checkBox1.autocomplete = 'off';
+        
+        const label1 = document.createElement('label');
+        label1.className = 'btn';
+        label1.htmlFor = `contactCheckP${this.value}`;
+        label1.textContent = 'Présent';
+        
+        checkboxCell.appendChild(checkBox1);
+        checkboxCell.appendChild(label1);
+    
+        // Deuxième bouton radio (Obligatoire)
+        const checkBox2 = document.createElement('input');
+        checkBox2.className = 'btn-check';
+        checkBox2.type = 'radio';
+        checkBox2.name = `contactStatus${this.value}`;  // Même nom pour grouper les radios
+        checkBox2.value = 'obligatoire';
+        checkBox2.id = `contactCheckO${this.value}`;
+        checkBox2.checked = false;
+        checkBox2.autocomplete = 'off';
+        
+        const label2 = document.createElement('label');
+        label2.className = 'btn';
+        label2.htmlFor = `contactCheckO${this.value}`;
+        label2.textContent = 'Obligatoire';
+        
+        checkboxCell.appendChild(checkBox2);
+        checkboxCell.appendChild(label2);
+        
+        // Input caché pour conserver la valeur pour le formulaire
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'contactsObligatoires[]';
+        hiddenInput.value = this.value;
+        checkboxCell.appendChild(hiddenInput);
+    
         // Cellule nom
         const nameCell = document.createElement('td');
         nameCell.className = 'bg-secondary';
         nameCell.textContent = this.name;
-
+    
         row.appendChild(checkboxCell);
         row.appendChild(nameCell);
         tbody.appendChild(row);
-
-        this.obligatoryElement = checkbox;
-        this.bindObligatoryEvents();
+    
+        // Mise à jour de la référence à l'élément obligatoire
+        this.obligatoryElement = hiddenInput;
+        
+        // Ajout des événements pour les boutons radio
+        this.bindRadioEvents(checkBox1, checkBox2);
+    }
+    
+    // Nouvelle méthode pour vérifier si un contact est déjà dans la table
+    checkIfAlreadyInTable() {
+        const tableObligatoire = document.getElementById('tableObligatoire');
+        if (!tableObligatoire) return false;
+        
+        const tbody = tableObligatoire.querySelector('tbody');
+        if (!tbody) return false;
+        
+        // Rechercher un élément caché avec la même valeur
+        const existingInput = tbody.querySelector(`input[type="hidden"][name="contactsObligatoires[]"][value="${this.value}"]`);
+        
+        // Rechercher les boutons radio associés
+        const existingRadioP = tbody.querySelector(`#contactCheckP${this.value}`);
+        const existingRadioO = tbody.querySelector(`#contactCheckO${this.value}`);
+        
+        // Si l'un des éléments existe, le contact est déjà dans la table
+        const alreadyExists = existingInput || existingRadioP || existingRadioO;
+        
+        // Si le contact existe déjà, mettre à jour la référence à l'élément obligatoire
+        if (alreadyExists && existingInput) {
+            this.obligatoryElement = existingInput;
+        }
+        
+        return alreadyExists;
+    }
+    
+    // Nouvelle méthode pour gérer les événements des boutons radio
+    bindRadioEvents(presentRadio, obligatoireRadio) {
+        // Les deux boutons pour ce contact
+        presentRadio.addEventListener('change', () => {
+            if (presentRadio.checked) {
+                // L'utilisateur a sélectionné "Présent"
+                // On garde le contact dans la table mais on le marque comme non obligatoire
+                obligatoireRadio.checked = false;
+            }
+        });
+        
+        obligatoireRadio.addEventListener('change', () => {
+            if (obligatoireRadio.checked) {
+                // L'utilisateur a sélectionné "Obligatoire"
+                // On garde le contact dans la table et on le marque comme obligatoire
+                presentRadio.checked = false;
+            }
+        });
+        
+        // Remplacer la méthode bindObligatoryEvents par cette logique
+        const row = presentRadio.closest('tr');
+        row.addEventListener('dblclick', () => {
+            // Double-clic sur la ligne supprime le contact de la table
+            this.removeFromObligatoryTable();
+            this.element.checked = false;
+            this.uncheckRelatedGroups();
+            GroupManager.updateGroupSelectionState();
+        });
+    }
+    
+    // Modifier la méthode removeFromObligatoryTable pour s'adapter au nouveau système
+    removeFromObligatoryTable() {
+        if (this.obligatoryElement) {
+            const row = this.obligatoryElement.closest('tr');
+            if (row) {
+                row.remove();
+            }
+            this.obligatoryElement = null;
+        }
     }
 
 // Modification de la méthode bindObligatoryEvents pour utiliser aussi checkRelatedGroups
@@ -120,15 +231,7 @@ bindObligatoryEvents() {
     });
 }
 
-    removeFromObligatoryTable() {
-        if (this.obligatoryElement) {
-            const row = this.obligatoryElement.closest('tr');
-            if (row) {
-                row.remove();
-            }
-            this.obligatoryElement = null;
-        }
-    }
+
 
     checkIfLastInGroup() {
         Object.keys(membres2).forEach(groupId => {
