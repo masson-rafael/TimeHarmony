@@ -80,6 +80,7 @@ checkRelatedGroups() {
         
         // Cellule checkbox
         const checkboxCell = document.createElement('td');
+        checkboxCell.className = 'bg-secondary';
         const checkbox = document.createElement('input');
         checkbox.className = 'form-check-input';
         checkbox.type = 'checkbox';
@@ -91,6 +92,7 @@ checkRelatedGroups() {
 
         // Cellule nom
         const nameCell = document.createElement('td');
+        nameCell.className = 'bg-secondary';
         nameCell.textContent = this.name;
 
         row.appendChild(checkboxCell);
