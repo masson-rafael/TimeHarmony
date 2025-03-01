@@ -117,7 +117,7 @@ class ControllerAssistant extends Controller
 
         // var_dump($_POST);
 
-        if(isset($_SESSION['contacts'])) {
+        if (isset($_SESSION['contacts'])) {
             $_POST['contacts'] = $_SESSION['contacts'];
         }
 
@@ -257,7 +257,7 @@ class ControllerAssistant extends Controller
             // Génération des dates pour la période
             $dates = $assistantRecherche->genererDates($debut, $fin);
 
-            if($debugMode == true) {
+            if ($debugMode == true) {
                 $chronoEnd = new DateTime();
                 $chronoInterval = $chronoStart->diff($chronoEnd);
                 $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
@@ -270,7 +270,7 @@ class ControllerAssistant extends Controller
             $matrice = $assistantRecherche->initMatrice($tableauUtilisateur, $dates, $debut, $fin, $debutHoraire, $finHoraire, $dureeMin);
             $debugMode == true ? var_dump($matrice) : null;
 
-            if($debugMode == true) {
+            if ($debugMode == true) {
                 $chronoEnd = new DateTime();
                 $chronoInterval = $chronoStart->diff($chronoEnd);
                 $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
@@ -289,7 +289,7 @@ class ControllerAssistant extends Controller
                     $allEvents = $agenda->recuperationEvenementsAgenda($urlIcs, $debut, $fin, $allEvents);
                 }
 
-                if($debugMode == true) {
+                if ($debugMode == true) {
                     $chronoEnd = new DateTime();
                     $chronoInterval = $chronoStart->diff($chronoEnd);
                     $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
@@ -309,7 +309,7 @@ class ControllerAssistant extends Controller
                     $assistantRecherche->remplirCreneau($matrice, $datetime_debut, $datetime_fin, $utilisateurCourant);
                 }
 
-                if($debugMode == true) {
+                if ($debugMode == true) {
                     $chronoEnd = new DateTime();
                     $chronoInterval = $chronoStart->diff($chronoEnd);
                     $chronoSeconds = $chronoEnd->getTimestamp() - $chronoStart->getTimestamp();
@@ -322,7 +322,7 @@ class ControllerAssistant extends Controller
             $datesCommunes = $assistantRecherche->getCreneauxCommunsExact($matrice, $_SESSION['nbUserSelectionné'], $debutHoraire, $finHoraire, $debut, $fin, $contactsPrioritaires, $aDesPriorites);
 
             // exit;
-            if($debugMode == true) {
+            if ($debugMode == true) {
                 $chronoEndGen = new DateTime();
                 $chronoInterval = $chronoStartGen->diff($chronoEndGen);
                 $chronoSeconds = $chronoEndGen->getTimestamp() - $chronoStartGen->getTimestamp();
@@ -384,90 +384,62 @@ class ControllerAssistant extends Controller
     {
         // Formater les créneaux pour le calendrier FullCalendar
         $evenements = [];
-
-        foreach ($creneaux as $date => $plagesHoraires) {
-
-            $mergedEvent = null;
-
-            foreach ($plagesHoraires as $plage => $participants) {
-
-                // Récupérer les dates de début et de fin
-                list($debut, $fin) = explode(' - ', $plage);
-                $start = DateTime::createFromFormat('d-m-Y H:i', "$date $debut");
-                $end = DateTime::createFromFormat('d-m-Y H:i', "$date $fin");
-
-                // Récupérer l'heure de début et de fin initiales
-                $heureDebut = $_SESSION['debutPlageH'];
-                $heureFin = $_SESSION['finPlageH'];
-                $heuresInitiales = [$heureDebut, $heureFin];
-
-                // Vérifier si on doit fusionner les événements (interval de 30 minutes)
-                if (!$mergedEvent) {
-                    // Premier événement
-                    $mergedEvent = [
-                        'start' => $start,
-                        'end' => $end,
-                    ];
-                } else {
-                    $diffSeconds = $start->getTimestamp() - $mergedEvent['end']->getTimestamp();
-                    if ($diffSeconds <= 30 * 60) { // 30 minutes = 1800 secondes
-                        // Si les événements se chevauchent ou si l'écart est inférieur ou égal à 30 minutes, on fusionne
-                        if ($end > $mergedEvent['end']) {
-                            $mergedEvent['end'] = $end;
-                        }
-                    } else {
-                        // Sinon, on ajoute l'événement fusionné et on réinitialise
-                        $evenements[] = $this->createEventObject($mergedEvent);
-                        $mergedEvent = [
-                            'start' => $start,
-                            'end' => $end,
-                        ];
-                    }
-                }
-            }
-
-            // Ajouter le dernier événement fusionné
-            if ($mergedEvent) {
-                $evenements[] = $this->createEventObject($mergedEvent);
-            }
-        }
-
-        // Faire un tableau de correspondance entre les id et les noms des utilisateurs
-        $tabIdsNoms = [];
         $pdo = $this->getPdo();
         $manager = new UtilisateurDAO($pdo);
 
-        foreach ($participants as $id => $dispo) {
-            $user = $manager->find($id);
-            $tabIdsNoms[$id] = $user->getNom() . " " . $user->getPrenom();
+        foreach ($creneaux as $date => $plagesHoraires) {
+            foreach ($plagesHoraires as $plage => $participants) {
+
+                // Convertir la date "DD-MM-YYYY" en "YYYY-MM-DD"
+                $dateObj = DateTime::createFromFormat('d-m-Y', $date);
+                $dateFormatted = $dateObj->format('Y-m-d'); // Format correct pour la suite
+
+                // Récupérer les heures de début et de fin depuis la chaîne, par ex. "08:00 - 08:30"
+                $parts = explode(' - ', $plage);
+                list($debut, $fin) = $parts;
+
+                // Créer les objets DateTime en utilisant le format attendu "Y-m-d H:i"
+                $startObj = DateTime::createFromFormat('Y-m-d H:i', "$dateFormatted $debut");
+                $endObj   = DateTime::createFromFormat('Y-m-d H:i', "$dateFormatted $fin");
+
+                // Formater les dates pour FullCalendar en format ISO
+                $start = $startObj->format('Y-m-d\TH:i:s');
+                $end   = $endObj->format('Y-m-d\TH:i:s');
+
+                // Récupérer les noms des participants
+                foreach ($participants as $id => $dispo) {
+                    $user = $manager->find($id);
+                    $nom = $user->getNom();
+                    $prenom = $user->getPrenom();
+                    // Mettre une majuscule à la première lettre du prénom et du nom
+                    $participants[$id] = ucfirst($prenom) . ' ' . ucfirst($nom);
+                }
+
+                // Ajouter le créneau aux événements
+                $evenements[] = [
+                    'start' => $start,
+                    'end' => $end,
+                    'participants' => $participants,
+                ];
+            }
         }
 
-        // Récupérer la première dans la liste des événements
         $dateDebut = $evenements[0]['start'];
 
+        // Créer les heures de début et de fin à partir des événements
         $heureDebut1 = new DateTime($dateDebut);
         $heureDebut1 = $heureDebut1->format('H:i');
         $heureFin1 = new DateTime($evenements[count($evenements) - 1]['end']);
         $heureFin1 = $heureFin1->format('H:i');
 
-        // Récupérer l'heure de début et de fin saisies
         $heureDebut2 = new DateTime($_SESSION['debutPlageH']);
         $heureFin2 = new DateTime($_SESSION['finPlageH']);
-
         $heureDebut2 = $heureDebut2->format('H:i');
         $heureFin2 = $heureFin2->format('H:i');
 
-        // Comparer les heures et les dates de début, et garder la plus petites
-        if($heureDebut1 < $heureDebut2) {
-            $heureDebut = strval($heureDebut1);
-        }
-        else {
-            $heureDebut = strval($heureDebut2);
-        }
-        // Pareil pour les dates de fin, mais en gardant la plus grande
-        if($heureFin1 > $heureFin2) {
-            $heureFin = strval($heureFin);
-        }
+        // Comparer les heures et garder la plus petite pour le début et la plus grande pour la fin
+        $heureDebut = ($heureDebut1 < $heureDebut2) ? $heureDebut1 : $heureDebut2;
+        $heureFin = ($heureFin1 > $heureFin2) ? $heureFin1 : $heureFin2;
 
         $template = $this->getTwig()->load('resultat.html.twig');
 
@@ -477,7 +449,6 @@ class ControllerAssistant extends Controller
             'nbrUtilisateursMin' => $nbrUtilisateursMin,
             'nombreUtilisateursSeclectionnes' => $nombreUtilisateursSeclectionnes,
             'evenements' => $evenements,
-            'tabIdsNoms' => $tabIdsNoms,
             'dateDebut' => $dateDebut,
             'heureDebut' => $heureDebut,
             'heureFin' => $heureFin,
@@ -485,19 +456,6 @@ class ControllerAssistant extends Controller
         ]);
     }
 
-    /**
-     * Créer un objet événement pour FullCalendar
-     * @param array $mergedEvent
-     * @return array
-     */
-    private function createEventObject(array $mergedEvent): array
-    {
-        return [
-            "title" => "Créneau disponible",
-            'start' => $mergedEvent['start']->format('Y-m-d\TH:i:s'),
-            'end' => $mergedEvent['end']->format('Y-m-d\TH:i:s'),
-        ];
-    }
 
     /**
      * Fonction permettant de générer la vue par defaut de l'application
@@ -509,14 +467,15 @@ class ControllerAssistant extends Controller
         echo $template->render(array());
     }
 
-        /**
+    /**
      * Fonction qui permet d'afficher la premiere page de la recherche : personnes obligatoires
      * 
      * @param array|null $tabMessages tableau contenant les messages d'erreurs
      * @param bool|null $contientErreurs booleen indiquant si la page contient des erreurs
      * @return void
      */
-    public function afficherPersonnesObligatoires(?array $tabMessages = null, ?bool $contientErreurs = false): void {
+    public function afficherPersonnesObligatoires(?array $tabMessages = null, ?bool $contientErreurs = false): void
+    {
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->find($_SESSION['utilisateur']);
         $contacts = $utilisateur->getContact($utilisateur->getId());
@@ -528,7 +487,7 @@ class ControllerAssistant extends Controller
         $manager = new GroupeDao($pdo);
 
         // Récupérer les membres de chaque groupe
-        if(!empty($groupes)) {
+        if (!empty($groupes)) {
             foreach ($groupes as $groupe) {
                 $membresGroupe = $manager->getUsersFromGroup($groupe->getId());
 
@@ -557,12 +516,13 @@ class ControllerAssistant extends Controller
         ));
     }
 
-    public function afficherParametres(?array $tabMessages = null, ?bool $contientErreurs = false): void {
-        if(isset($_POST['contacts'])) {
+    public function afficherParametres(?array $tabMessages = null, ?bool $contientErreurs = false): void
+    {
+        if (isset($_POST['contacts'])) {
             $_SESSION['contacts'] = $_POST['contacts'];
         }
 
-        if(isset($_POST['contactsPrioritaires'])) {
+        if (isset($_POST['contactsPrioritaires'])) {
             unset($_SESSION['contactsPrioritaires']);
             $_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
         }

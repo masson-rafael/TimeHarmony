@@ -451,14 +451,27 @@ $accordion-button-active-color: $secondary;
   color: $body-color;
 }
 
+.fc-timegrid-event-harness, .fc-timegrid-event-harness-inset {
+    width:25% !important;
+}
+
 #modalResult .modal-dialog {
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-}
 
-.modal-body {
-    max-height: 70vh;
-    overflow-y: auto;
+    .modal-content {
+        .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+        
+            .creneau-item{
+                border: none;
+            }
+        }
+        .modal-footer {
+            border: none;
+        }
+    }
 }

@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Récupérer les données JSON depuis les attributs data
     var evenements = JSON.parse(calendarEl.dataset.evenements);
     var creneaux = JSON.parse(calendarEl.dataset.creneaux);
-    var tabIdsNoms = JSON.parse(calendarEl.dataset.tabIdsNoms);
     var dateDebut = JSON.parse(calendarEl.dataset.dateDebut);
     var heureDebut = JSON.parse(calendarEl.dataset.heureDebut);
     var heureFin = JSON.parse(calendarEl.dataset.heureFin);
@@ -16,8 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
         var year = date.getFullYear();
         return day + '-' + month + '-' + year;
     }
-
-
 
     // Création de l'instance FullCalendar
     var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -32,9 +29,10 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         locale: 'fr',
         events: evenements,
-        allDaySlot: false,
+        displayEventTime: false,
+        allDaySlot: false,           
         eventClick: function (info) {
-            // Récupération des dates de l'événement cliqué
+        // Récupération des dates de l'événement cliqué
             var debut = info.event.start;
             var fin = info.event.end;
 
@@ -73,19 +71,13 @@ document.addEventListener('DOMContentLoaded', function () {
                             // Parcourir les disponibilités pour cette plage
                             for (var id in disponibilites) {
                                 if (disponibilites.hasOwnProperty(id) && parseInt(disponibilites[id], 10) === 1) {
-                                    var nomComplet = tabIdsNoms[id];
+                                    var nomComplet = info.event.extendedProps.participants[id];
                                     if (nomComplet) {
-                                        // Formater le nom : mettre en majuscule la première lettre du prénom et du nom
-                                        let parts = nomComplet.split(' ');
-                                        let nom = parts[0];
-                                        let prenom = parts[1] || "";
-                                        nom = nom.charAt(0).toUpperCase() + nom.slice(1);
-                                        prenom = prenom.charAt(0).toUpperCase() + prenom.slice(1);
-                                        personnes.push(prenom + ' ' + nom);
+                                        personnes.push(nomComplet);
                                     }
                                 }
                             }
-                            html += `<div class="creneau-item border rounded p-3 mb-1">
+                            html += `<div class="creneau-item p-3 mb-1">
                                         <strong>Plage horaire :</strong> ${plage}<br>
                                         <strong>Personnes disponibles :</strong> ${personnes.join(', ')}
                                      </div>`;

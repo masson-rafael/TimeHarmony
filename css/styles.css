@@ -12392,17 +12392,26 @@ textarea.form-control-lg {
   color: #111;
 }
 
+.fc-timegrid-event-harness, .fc-timegrid-event-harness-inset {
+  width: 25% !important;
+}
+
 #modalResult .modal-dialog {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
 }
-
-.modal-body {
+#modalResult .modal-dialog .modal-content .modal-body {
   max-height: 70vh;
   overflow-y: auto;
 
+}
+#modalResult .modal-dialog .modal-content .modal-body .creneau-item {
+  border: none;
+}
+#modalResult .modal-dialog .modal-content .modal-footer {
+  border: none;
 }
 
 /*# sourceMappingURL=styles.css.map */

@@ -312,38 +312,34 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 
 
 		{% block javascripts %}
-			<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-			<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-			<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-			<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-			<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.2/js/bootstrap.min.js"></script>
-			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-QFQg2ugGQhBZG9CVUoJBPcTMkL1AdwyZ6YCeEUPXpCk+hFnsmCCH2Cf9DJiug6gk" crossorigin="anonymous"></script>
-			<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
-			<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/fr.min.js'></script>
-			<script>
-				document.addEventListener('DOMContentLoaded', function () {
-var toastElement = document.getElementById('toast');
-var toast = new bootstrap.Toast(toastElement);
-toast.show();
+        <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.2/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-QFQg2ugGQhBZG9CVUoJBPcTMkL1AdwyZ6YCeEUPXpCk+hFnsmCCH2Cf9DJiug6gk" crossorigin="anonymous"></script>
+        <script>  
+        document.addEventListener('DOMContentLoaded', function () {
+            var toastElement = document.getElementById('toast');
+            var toast = new bootstrap.Toast(toastElement);
+            toast.show();
 
-// Cacher le toast après 10 secondes
-setTimeout(function () {
-toast.hide();
-}, 5000);
-});
+            // Cacher le toast après 10 secondes
+            setTimeout(function () {
+                toast.hide();
+            }, 5000);
+        });     
+        
+        // Tutoriel
+        document.getElementById('aide').addEventListener('click', function () {
+            var fenetreAide = document.getElementById('fenetreAide');
+            fenetreAide.classList.toggle('ouvert'); // Ajoute si absente, enlève si présente
+        });
 
-// Tutoriel
-document.getElementById('aide').addEventListener('click', function () {
-    var fenetreAide = document.getElementById('fenetreAide');
-    fenetreAide.classList.toggle('ouvert'); // Ajoute si absente, enlève si présente
-});
-
-document.getElementById('fermerAide').addEventListener('click', function () {
-    var fenetreAide = document.getElementById('fenetreAide');
-    fenetreAide.classList.remove('ouvert'); // Assure la fermeture
-});
-
-
+        document.getElementById('fermerAide').addEventListener('click', function () {
+            var fenetreAide = document.getElementById('fenetreAide');
+            fenetreAide.classList.remove('ouvert'); // Assure la fermeture
+        });
 			</script>
 		{% endblock %}
 	</html>
