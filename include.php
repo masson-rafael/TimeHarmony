@@ -38,6 +38,6 @@ require_once 'modeles/creneauRdv.dao.php';
 require_once 'modeles/assistantRecherche.class.php';
 
 //Ajout du mail PHP
-require_once 'phpmailer/src/Exception.php';
-require_once 'phpmailer/src/PHPMailer.php';
-require_once 'phpmailer/src/SMTP.php';
+require_once 'vendor/phpmailer/phpmailer/src/Exception.php';
+require_once 'vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require_once 'vendor/phpmailer/phpmailer/src/SMTP.php';

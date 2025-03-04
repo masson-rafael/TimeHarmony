@@ -93,17 +93,10 @@ class ControllerInformations extends Controller {
             $mail->SMTPAuth = true;
             $mail->Username = MAIL_ADDRESS;
             $mail->Password = MAIL_PASS;
-            $mail->SMTPSecure = 'ssl';
-            $mail->Port = 587;
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Cryptage TLS
+            $mail->Port = 587; // Port 587 pour TLS            
 
-            $mail->setFrom($_POST['email']);
-
-            // $mailExpediteur = $_POST['email'];
-            // $description = $_POST['description'];
-            // $sujet = $_POST['motif'];
-
-            // Adresse principale à no-reply
-            //$emailPrincipal = 'no-reply@timeharmony.com';
+            $mail->setFrom($_POST['email'], $_POST['email']);
 
             // Récupérer les emails des administrateurs
             $pdo = $this->getPdo();
@@ -119,12 +112,6 @@ class ControllerInformations extends Controller {
             // Ajout du contenu du mail
             $mail->Subject = $_POST['motif'];
             $mail->Body = $_POST['description'];
-
-            // Construire les en-têtes
-            // $headers = 'From: ' . $mailExpediteur . "\r\n";
-            // $headers .= 'Reply-To: ' . $mailExpediteur . "\r\n";
-            // $headers .= 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
-            // $headers .= 'Cc: ' . implode(",", $emailsAdmin) . "\r\n";
 
             // Envoyer l'email
             if ($mail->send()) {
