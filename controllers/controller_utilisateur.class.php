@@ -2,6 +2,8 @@
 
 use LDAP\Result;
 use Twig\Profiler\Dumper\BaseDumper;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 require_once 'include.php';
 
@@ -609,15 +611,31 @@ class ControllerUtilisateur extends Controller
             $token = $utilisateur->genererTokenReinitialisation();
             $manager->miseAJourUtilisateur($utilisateur);
             $template = $this->getTwig()->load('connexion.html.twig');
+            $destinataire = $_POST['email'];
+
+            // Création de l'objet mail
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = MAIL_ADDRESS;
+            $mail->Password = MAIL_PASS;
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Cryptage TLS
+            $mail->Port = 587; // Port 587 pour TLS            
+            $mail->setFrom(MAIL_ADDRESS, 'TimeHarmony');
+            $mail->addAddress($destinataire);
+            $mail->isHTML(true);
+
+            // Ajout du contenu du mail
+            $sujet = "Reinitialisation de votre mot de passe";
+            $mail->Subject = $sujet;
 
             // En-têtes du mail
-            $headers = "From: no-reply@timeharmony.com\r\n";
-            $headers .= "MIME-Version: 1.0\r\n";
-            $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-
-            $sujet = "Reinitialisation de votre mot de passe";
-            $destinataire = $_POST['email'];
-            $lien = "http://lakartxela.iutbayonne.univ-pau.fr/~tlatxague/TimeHarmony/index.php?controleur=utilisateur&methode=mailRecu&token=$token&email=$destinataire";
+            if(DB_HOST != 'localhost') {
+                $lien = "http://lakartxela.iutbayonne.univ-pau.fr/~tlatxague/TimeHarmony/index.php?controleur=utilisateur&methode=mailRecu&token=$token&email=$destinataire";
+            } else {
+                $lien = "http://localhost/TimeHarmony/index.php?controleur=utilisateur&methode=mailRecu&token=$token&email=$destinataire";
+            }
 
             // Corps du message (format HTML)
             $message = "
@@ -636,8 +654,11 @@ class ControllerUtilisateur extends Controller
                 </body>
             </html>";
 
-            if (mail($destinataire, $sujet, $message, $headers)) {
+            $mail->Body = $message;
+
+            if ($mail->send()) {
                 $messageErreur[] = "L'e-mail a été envoyé avec succès à $destinataire.";
+                $this->deconnecter();
             } else {
                 $messageErreur[] = "Erreur : L'e-mail n'a pas pu être envoyé à $destinataire.";
             }
