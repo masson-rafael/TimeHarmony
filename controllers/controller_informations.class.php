@@ -1,5 +1,8 @@
 <?php
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 /**
  * @author Thibault Latxague
  * @brief Controller des informations du site (A propos, Conditions générales d'utilisation et Contact)
@@ -83,12 +86,17 @@ class ControllerInformations extends Controller {
         $template = $this->getTwig()->load('menu.html.twig');
 
         if ($valideMail && $valideDescription && $valideSujet) {
-            $mailExpediteur = $_POST['email'];
-            $description = $_POST['description'];
-            $sujet = $_POST['motif'];
+            // Création de l'objet mail
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = MAIL_ADDRESS;
+            $mail->Password = MAIL_PASS;
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Cryptage TLS
+            $mail->Port = 587; // Port 587 pour TLS            
 
-            // Adresse principale à no-reply
-            $emailPrincipal = 'no-reply@timeharmony.com';
+            $mail->setFrom($_POST['email'], $_POST['email']);
 
             // Récupérer les emails des administrateurs
             $pdo = $this->getPdo();
@@ -97,17 +105,16 @@ class ControllerInformations extends Controller {
 
             // Extraire les emails des administrateurs
             foreach ($mails as $user) {
-                $emailsAdmin[] = $user->getEmail();
+                $mail->addAddress($user->getEmail());
             }
+            $mail->isHTML(true);
 
-            // Construire les en-têtes
-            $headers = 'From: ' . $mailExpediteur . "\r\n";
-            $headers .= 'Reply-To: ' . $mailExpediteur . "\r\n";
-            $headers .= 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
-            $headers .= 'Cc: ' . implode(",", $emailsAdmin) . "\r\n";
+            // Ajout du contenu du mail
+            $mail->Subject = $_POST['motif'];
+            $mail->Body = $_POST['description'];
 
             // Envoyer l'email
-            if (mail($emailPrincipal, $sujet, $description, $headers)) {
+            if ($mail->send()) {
                 $tableauErreurs[] = "Email envoyé avec succès à no-reply@timeharmony.com avec les administrateurs en copie.";
                 $utilisateurEstConnecte == true ? $this->afficherMenu($tableauErreurs, false) : $this->afficherFormulaireContact($tableauErreurs, false);
             } else {
