@@ -643,16 +643,36 @@ class ControllerUtilisateur extends Controller
                 <head>
                     <title>$sujet</title>
                 </head>
-                <body>
-                    <h3>Bonjour $destinataire,</h3>
-                    <p>Vous avez fait une demande de réinitialisation de votre mot de passe</p>
-                    <p>Pour cela, cliquez sur le lien ci-dessous et suivez les instructions :</p>
-                    <p>
-                        <a href='$lien' style='color: #1a0dab; font-size: 16px; text-decoration: none;'>Accéder au site</a>
-                    </p>
-                    <p>Merci et à bientôt !</p>
+                <body style='background-color: #f6f6f6; font-family: Arial, sans-serif; text-align: center; padding: 20px;'>
+                    
+                    <table align='center' width='100%' cellspacing='0' cellpadding='0' border='0'>
+                        <tr>
+                            <td align='center'>
+                                <table width='500' cellspacing='0' cellpadding='0' border='0' style='background: #F5F5DC; padding: 20px; border-radius: 8px;'>
+                                    <tr>
+                                        <td align='center' style='background-color: #64a19d; padding: 20px; border-radius: 5px;'>
+                                            <img src='https://i.imgur.com/V6Rf8oL.png' alt='Logo TimeHarmony' style='width: 100px; margin-bottom: 10px; display: block;'>
+                                            <h2 style='color: #f6f6f6; margin: 0;'>TimeHarmony</h2>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align='center' style='padding: 20px;'>
+                                            <h3 style='color: #64a19d;'>Bonjour $destinataire,</h3>
+                                            <p style='color: #64a19d; white-space: pre-line;'>Vous avez fait une demande de réinitialisation de votre mot de passe.</p>
+                                            <p style='color: #64a19d; white-space: pre-line;'>Pour cela, cliquez sur le bouton ci-dessous et suivez les instructions :</p>
+                                            <a href='$lien' style='display: inline-block; background-color: #64a19d; color: #f6f6f6; padding: 12px 20px; border-radius: 5px; font-size: 16px; text-decoration: none; margin-top: 10px;'>Réinitialiser le mot de passe</a>
+                                            <p style='margin-top: 20px; font-size: 14px; color: #bbbbbb;'>Si vous n'êtes pas à l'origine de cette demande, ignorez ce message.</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
                 </body>
             </html>";
+            
+            
+            
 
             $mail->Body = $message;
 
