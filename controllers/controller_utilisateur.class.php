@@ -670,9 +670,6 @@ class ControllerUtilisateur extends Controller
                     </table>
                 </body>
             </html>";
-            
-            
-            
 
             $mail->Body = $message;
 
@@ -865,14 +862,33 @@ class ControllerUtilisateur extends Controller
             <head>
                 <title>$sujet</title>
             </head>
-            <body>
-                <h3>Bonjour $email,</h3>
-                <p>Vous avez fait une demande de création de compte sur notre site TimeHarmony</p>
-                <p>Pour cela, cliquez sur le lien ci-dessous et suivez les instructions :</p>
-                <p>
-                    <a href='$lien' style='color: #1a0dab; font-size: 16px; text-decoration: none;'>Accéder au site</a>
-                </p>
-                <p>Merci et à bientôt !</p>
+            <body style='background-color: #f6f6f6; font-family: Arial, sans-serif; text-align: center; padding: 20px;'>
+                
+                <table align='center' width='100%' cellspacing='0' cellpadding='0' border='0'>
+                    <tr>
+                        <td align='center'>
+                            <table width='500' cellspacing='0' cellpadding='0' border='0' style='background: #F5F5DC; padding: 20px; border-radius: 8px;'>
+                                <tr>
+                                    <td align='center' style='background-color: #64a19d; padding: 20px; border-radius: 5px;'>
+                                        <img src='https://i.imgur.com/V6Rf8oL.png' alt='Logo TimeHarmony' style='width: 100px; margin-bottom: 10px; display: block;'>
+                                        <h2 style='color: #f6f6f6; margin: 0;'>TimeHarmony</h2>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center' style='padding: 20px;'>
+                                        <h3 style='color: #64a19d;'>Bonjour $email,</h3>
+                                        <p style='color: #64a19d; font-size: 16px;'>Nous avons bien reçu votre demande de création de compte sur TimeHarmony. Nous sommes ravis de vous accueillir parmi nous !</p>
+                                        <p style='color: #64a19d; font-size: 16px;'>Pour finaliser la création de votre compte et accéder à toutes nos fonctionnalités, veuillez cliquer sur le lien ci-dessous :</p>
+                                        <a href='$lien' style='display: inline-block; background-color: #64a19d; color: #f6f6f6; padding: 12px 20px; border-radius: 5px; font-size: 16px; text-decoration: none; margin-top: 10px;'>Accéder au site</a>
+                                        <p style='color: #64a19d; font-size: 16px; margin-top: 20px;'>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer ce message.</p>
+                                        <p style='margin-top: 20px; font-size: 14px; color: #bbbbbb;'>Merci pour votre confiance et à bientôt sur TimeHarmony !</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+        
             </body>
         </html>";
 
