@@ -1,7 +1,10 @@
 <?php
 
 use ICal\ICal;
-
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use Sabre\VObject\Component\VCalendar;
+use Sabre\VObject\Component\VEvent;
 
 /**
  * @author Félix Autant
@@ -553,11 +556,7 @@ class ControllerAssistant extends Controller
             unset($_SESSION['contactsPrioritaires']);
             $_SESSION['contactsPrioritaires'] = $_POST['contactsPrioritaires'];
         }
-    
-        // Afficher des informations de débogage si nécessaire
-        // var_dump($_SESSION['contactsPresents']);
-        // var_dump($_SESSION['contactsObligatoires']);
-    
+
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render(array(
             'page' => 2,
@@ -566,5 +565,139 @@ class ControllerAssistant extends Controller
             'contactsPresents' => $_SESSION['contactsPresents'] ?? [],
             'contactsObligatoires' => $_SESSION['contactsObligatoires'] ?? []
         ));
+    }
+
+    /**
+     * Fonction qui envoie un mail d'invitation à un créneau (ics) commun à tout les utilisateurs concernés
+     * @return void
+     */
+    public function envoyerMailInvitationCreneau($userIds, $startDate, $endDate): void {
+        $tableauErreurs = [];
+
+        // Récupérer l'adresse mail de l'utilisateur connecté
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $utilisateur = $manager->find($_SESSION['utilisateur']);
+        $emailExpediteur = $utilisateur->getEmail();
+        $nomExpediteur = $utilisateur->getNom();
+        $prenomExpediteur = $utilisateur->getPrenom();
+        
+        // Récupérer les emails des utilisateurs
+        $pdo = $this->getPdo();
+        $manager = new UtilisateurDao($pdo);
+        $emails = [];
+        foreach ($userIds as $userId) {
+            $user = $manager->find($userId);
+            $emails[] = $user->getEmail();
+        }
+
+        // Date formatté au format pour iClandar (UTC)
+        $startDateFormatted = DateTime::createFromFormat('Y-m-d H:i:s', $startDate)->format('Ymd\THis\Z');
+        $endDateFormatted = DateTime::createFromFormat('Y-m-d H:i:s', $endDate)->format('Ymd\THis\Z');
+
+        // Création de l'événement
+        $vcalendar = new VCalendar();
+
+        // Création du composant VEVENT
+        $vevent = $vcalendar->createComponent('VEVENT');
+        $vevent->SUMMARY = 'Créneau commun';
+        $vevent->DTSTART = $startDateFormatted;
+        $vevent->DTEND = $endDateFormatted;
+        $vevent->DESCRIPTION = 'Créneau commun pour une réunion, un rendez-vous, etc.';
+        $vevent->ORGANIZER = 'mailto:' . $emailExpediteur;
+        $vevent->ATTENDEE = 'mailto:' . implode(', mailto:', $emails);
+
+        // Ajouter l'événement au calendrier
+        $vcalendar->add($vevent);
+
+        // Générer le fichier ICS
+        $ics = $vcalendar->serialize();
+        file_put_contents('invitation.ics', $ics);
+
+        // Envoi de l'email
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = MAIL_ADDRESS;
+            $mail->Password = MAIL_PASS;
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Cryptage TLS
+            $mail->Port = 587; // Port 587 pour TLS
+
+            // Expéditeur et destinataire
+            $mail->setFrom($emailExpediteur, $nomExpediteur . ' ' . $prenomExpediteur);
+            foreach ($emails as $email) {
+                $mail->addAddress($email);
+            }
+
+            // Pièce jointe
+            $mail->addAttachment('invitation.ics');
+
+            // Récupérer les horaires
+            $start = new DateTime($startDate);
+            $end = new DateTime($endDate);
+            $startDateFormatted = $start->format('d F Y');
+            $startTimeFormatted = $start->format('H:i');
+            $endTimeFormatted = $end->format('H:i');
+
+            // Contenu du mail
+            $mail->isHTML(true);
+            $mail->CharSet = 'UTF-8';
+            $sujet = 'Invitation à un créneau commun';
+            $mail->Subject = $sujet;
+            $mail->Body    = "
+            <html>
+                <head>
+                    <title>$sujet</title>
+                </head>
+                <body style='background-color: #f6f6f6; font-family: Arial, sans-serif; text-align: center; padding: 20px;'>
+                    <table align='center' width='100%' cellspacing='0' cellpadding='0' border='0'>
+                        <tr>
+                            <td align='center'>
+                                <table width='500' cellspacing='0' cellpadding='0' border='0' style='background: #F5F5DC; padding: 20px; border-radius: 8px;'>
+                                    <tr>
+                                        <td align='center' style='background-color: #64a19d; padding: 20px; border-radius: 5px;'>
+                                            <img src='https://i.imgur.com/V6Rf8oL.png' alt='Logo TimeHarmony' style='width: 100px; margin-bottom: 10px; display: block;'>
+                                            <h2 style='color: #f6f6f6; margin: 0;'>TimeHarmony</h2>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align='center' style='padding: 20px;'>
+                                            <h3 style='color: #64a19d;'>Bonjour,</h3>
+                                            <p style='color: #64a19d; white-space: pre-line;'>Vous avez reçu une nouvelle invitation à un créneau commun :</p>
+                                            <ul style='color: #64a19d; list-style-type: none; padding: 0;'>
+                                                <li><strong>📅 Date :</strong> $startDateFormatted</li>
+                                                <li><strong>⏰ Heure :</strong> $startTimeFormatted - $endTimeFormatted</li>
+                                            </ul>
+                                            <p style='color: #64a19d; white-space: pre-line;'>Pour ajouter cet événement à votre calendrier, veuillez télécharger le fichier joint à cet e-mail.</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+            </html>";
+
+            // foreach ($emails as $email) {
+            //     $mail->addAddress($email);
+
+            //     if ($mail->send()) {
+            //         $tableauErreurs[] = "Email envoyé avec succès à $email.";
+            //     } else {
+            //         $tableauErreurs[] = "Échec de l'envoi de l'email à $email.";
+            //     }
+
+            //     $mail->clearAddresses();
+            // }
+
+            $mail->send();
+        } catch (Exception $e) {
+            $tableauErreurs[] = "Erreur lors de l'envoi de l'email : " . $mail->ErrorInfo;
+        }
+
+        // Supprimer le fichier ICS
+        unlink('invitation.ics');
     }
 }
