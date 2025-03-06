@@ -453,6 +453,7 @@ class ControllerAssistant extends Controller
             'nombreUtilisateursSeclectionnes' => $nombreUtilisateursSeclectionnes,
             'evenements' => $evenements,
             'dateDebut' => $dateDebut,
+            'dateFin' => $heureFin1,
             'heureDebut' => $heureDebut,
             'heureFin' => $heureFin,
             'page' => 3
@@ -571,8 +572,12 @@ class ControllerAssistant extends Controller
      * Fonction qui envoie un mail d'invitation à un créneau (ics) commun à tout les utilisateurs concernés
      * @return void
      */
-    public function envoyerMailInvitationCreneau($userIds, $startDate, $endDate): void {
+    public function envoyerMailInvitationCreneau(): void {
         $tableauErreurs = [];
+        $users = $_GET['userIds'];
+        $userIds = array_map('intval', explode(',', trim($users)));
+        $startDate = $_GET['startDate'];
+        $endDate = $_GET['endDate'];
 
         // Récupérer l'adresse mail de l'utilisateur connecté
         $pdo = $this->getPdo();
@@ -591,9 +596,13 @@ class ControllerAssistant extends Controller
             $emails[] = $user->getEmail();
         }
 
-        // Date formatté au format pour iClandar (UTC)
-        $startDateFormatted = DateTime::createFromFormat('Y-m-d H:i:s', $startDate)->format('Ymd\THis\Z');
-        $endDateFormatted = DateTime::createFromFormat('Y-m-d H:i:s', $endDate)->format('Ymd\THis\Z');
+        // Nettoyer la chaîne pour supprimer tout ce qui vient après "GMT" et le texte entre parenthèses
+        $startDateCleaned = preg_replace('/ GMT.*$/', '', $startDate);
+        $endDateCleaned = preg_replace('/ GMT.*$/', '', $endDate);
+
+        // Convertir les dates en objets DateTime avec le format attendu
+        $startDateObj = DateTime::createFromFormat('D M d Y H:i:s', $startDateCleaned);
+        $endDateObj = DateTime::createFromFormat('D M d Y H:i:s', $endDateCleaned);
 
         // Création de l'événement
         $vcalendar = new VCalendar();
@@ -601,8 +610,8 @@ class ControllerAssistant extends Controller
         // Création du composant VEVENT
         $vevent = $vcalendar->createComponent('VEVENT');
         $vevent->SUMMARY = 'Créneau commun';
-        $vevent->DTSTART = $startDateFormatted;
-        $vevent->DTEND = $endDateFormatted;
+        $vevent->DTSTART = $startDateObj;
+        $vevent->DTEND = $endDateObj;
         $vevent->DESCRIPTION = 'Créneau commun pour une réunion, un rendez-vous, etc.';
         $vevent->ORGANIZER = 'mailto:' . $emailExpediteur;
         $vevent->ATTENDEE = 'mailto:' . implode(', mailto:', $emails);
@@ -635,8 +644,8 @@ class ControllerAssistant extends Controller
             $mail->addAttachment('invitation.ics');
 
             // Récupérer les horaires
-            $start = new DateTime($startDate);
-            $end = new DateTime($endDate);
+            $start = new DateTime($startDateCleaned);
+            $end = new DateTime($endDateCleaned);
             $startDateFormatted = $start->format('d F Y');
             $startTimeFormatted = $start->format('H:i');
             $endTimeFormatted = $end->format('H:i');
@@ -680,24 +689,25 @@ class ControllerAssistant extends Controller
                 </body>
             </html>";
 
-            // foreach ($emails as $email) {
-            //     $mail->addAddress($email);
+            foreach ($emails as $email) {
+                $mail->addAddress($email);
 
-            //     if ($mail->send()) {
-            //         $tableauErreurs[] = "Email envoyé avec succès à $email.";
-            //     } else {
-            //         $tableauErreurs[] = "Échec de l'envoi de l'email à $email.";
-            //     }
+                if ($mail->send()) {
+                    $tableauErreurs[] = "Email envoyé avec succès à $email.";
+                } else {
+                    $tableauErreurs[] = "Échec de l'envoi de l'email à $email.";
+                }
 
-            //     $mail->clearAddresses();
-            // }
-
-            $mail->send();
+                $mail->clearAddresses();
+            }
         } catch (Exception $e) {
             $tableauErreurs[] = "Erreur lors de l'envoi de l'email : " . $mail->ErrorInfo;
         }
 
         // Supprimer le fichier ICS
         unlink('invitation.ics');
+
+        // Afficher la page de recherche de créneau
+        $this->afficherPersonnesObligatoires($tableauErreurs);
     }
 }

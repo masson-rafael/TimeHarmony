@@ -68,8 +68,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (slotStart >= debut && slotEnd <= fin) {
                             var disponibilites = disponibilitesParPlage[plage];
                             var personnes = [];
+                            var idPersonnes = [];
                             // Parcourir les disponibilités pour cette plage
                             for (var id in disponibilites) {
+                                idPersonnes.push(id);
                                 if (disponibilites.hasOwnProperty(id) && parseInt(disponibilites[id], 10) === 1) {
                                     var nomComplet = info.event.extendedProps.participants[id];
                                     if (nomComplet) {
@@ -79,8 +81,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                             html += `<div class="creneau-item p-3 mb-1">
                                         <strong>Plage horaire :</strong> ${plage}<br>
-                                        <strong>Personnes disponibles :</strong> ${personnes.join(', ')}
-                                     </div>`;
+                                        <strong>Personnes disponibles :</strong> ${personnes.join(', ')} <br>
+                                        <a class="px-5 btn btn-primary" href="index.php?controleur=assistant&methode=envoyerMailInvitationCreneau&userIds=${idPersonnes}&startDate=${new Date(debut.getFullYear(), debut.getMonth(), debut.getDate(), parseInt(slotStartParts[0], 10), parseInt(slotStartParts[1], 10))}&endDate=${new Date(debut.getFullYear(), debut.getMonth(), debut.getDate(), parseInt(slotEndParts[0], 10), parseInt(slotEndParts[1], 10))}" role="button">Envoyer un mail d'ajout du créneau</a>
+                                    </div>`;
                         }
                     }
                 }
