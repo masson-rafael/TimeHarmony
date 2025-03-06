@@ -367,7 +367,7 @@ class ControllerUtilisateur extends Controller
         $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
         $utilisateur->getDemandes();
         $manager->miseAJourUtilisateur($utilisateur);
-        $_SESSION['utilisateur'] = $utilisateur;
+        $_SESSION['utilisateur'] = $utilisateur->getId();
         $utilisateurEnvoieDemande = $manager->find($idReceveur);
 
         $utilisateurCourant = new Utilisateur(
@@ -394,11 +394,11 @@ class ControllerUtilisateur extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $tabDemandesPourMoi = $manager->accepterDemandeContact($idReceveur, $_SESSION['utilisateur']);
-        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur = $manager->getObjetUtilisateur($manager->find($_SESSION['utilisateur'])->getEmail());
         $utilisateur->getDemandes();
         $manager->miseAJourUtilisateur($utilisateur);
         $utilisateurEnvoieDemande = $manager->find($idReceveur);
-        $_SESSION['utilisateur'] = $utilisateur;
+        $_SESSION['utilisateur'] = $utilisateur->getId();
 
         $utilisateurCourant = new Utilisateur(
             $utilisateur->getId(),
