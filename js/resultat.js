@@ -82,7 +82,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             html += `<div class="creneau-item p-3 mb-1">
                                         <strong>Plage horaire :</strong> ${plage}<br>
                                         <strong>Personnes disponibles :</strong> ${personnes.join(', ')} <br>
-                                        <a class="px-5 btn btn-primary" href="index.php?controleur=assistant&methode=envoyerMailInvitationCreneau&userIds=${idPersonnes}&startDate=${new Date(debut.getFullYear(), debut.getMonth(), debut.getDate(), parseInt(slotStartParts[0], 10), parseInt(slotStartParts[1], 10))}&endDate=${new Date(debut.getFullYear(), debut.getMonth(), debut.getDate(), parseInt(slotEndParts[0], 10), parseInt(slotEndParts[1], 10))}" role="button">Envoyer un mail d'ajout du créneau</a>
+                                        <div class="text-center mt-4">
+                                            <a class="px-5 btn btn-primary" href="index.php?controleur=assistant&methode=envoyerMailInvitationCreneau&userIds=${idPersonnes}&startDate=${new Date(debut.getFullYear(), debut.getMonth(), debut.getDate(), parseInt(slotStartParts[0], 10), parseInt(slotStartParts[1], 10))}&endDate=${new Date(debut.getFullYear(), debut.getMonth(), debut.getDate(), parseInt(slotEndParts[0], 10), parseInt(slotEndParts[1], 10))}" role="button">Envoyer un mail d'ajout du créneau</a>
+                                        </div>
                                     </div>`;
                         }
                     }
