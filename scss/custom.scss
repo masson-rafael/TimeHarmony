@@ -38,7 +38,6 @@ $accordion-button-color:$secondary;
 $accordion-button-active-bg: $primary-hover;
 $accordion-button-active-color: $secondary;
 
-
 @import "../node_modules/bootstrap/scss/maps";
 @import "../node_modules/bootstrap/scss/mixins";
 @import "../node_modules/bootstrap/scss/root";
@@ -465,7 +464,7 @@ $accordion-button-active-color: $secondary;
         .modal-body {
             max-height: 70vh;
             overflow-y: auto;
-        
+
             .creneau-item{
                 border: none;
             }
@@ -474,4 +473,20 @@ $accordion-button-active-color: $secondary;
             border: none;
         }
     }
+}
+
+.couleur {
+    width: 50px;
+    height: 50px;
+    border: 3px solid $secondary !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    outline: none !important;
+    appearance: none !important;
+}
+
+.fas, .fa-arrow-left {
+    font-size: 1.5rem;
+    color: black;
+    margin: 10px;
 }
