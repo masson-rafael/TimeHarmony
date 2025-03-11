@@ -364,7 +364,7 @@ class ControllerUtilisateur extends Controller
         $pdo = $this->getPdo();
         $manager = new UtilisateurDao($pdo);
         $tabDemandesPourMoi = $manager->refuserDemandeContact($_SESSION['utilisateur'], $idReceveur);
-        $utilisateur = $manager->getObjetUtilisateur($_SESSION['utilisateur']->getEmail());
+        $utilisateur = $manager->getObjetUtilisateur($manager->find($_SESSION['utilisateur'])->getEmail());
         $utilisateur->getDemandes();
         $manager->miseAJourUtilisateur($utilisateur);
         $_SESSION['utilisateur'] = $utilisateur->getId();

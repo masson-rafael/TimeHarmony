@@ -17,12 +17,12 @@ btn.addEventListener('click', sauvegarderVariables);
 // Fonction de préparation des champs
 function preparationChamps() {
     btn.disabled = true;
-    email.value = localStorage.getItem('email');
+    //email.value = localStorage.getItem('email');
     if (email.value) {
         mdp.focus();
     } else {
-        email.style.borderColor = 'red';
-        emailError.textContent = 'Veuillez saisir votre adresse email.';
+        //email.style.borderColor = 'red';
+        //emailError.textContent = 'Veuillez saisir votre adresse email.';
         email.focus();
     }
     mdp.style.borderColor = '';
@@ -34,7 +34,7 @@ function verifierPatternMail(email) {
     const motifEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if(email.value === '') {
-        email.style.borderColor = 'red'; // Bordure rouge en cas d'erreur
+        email.style.borderColor = 'black'; // Bordure rouge en cas d'erreur
         emailError.textContent = 'Veuillez saisir votre adresse email.';
         return false;
     }
@@ -98,5 +98,5 @@ function verifierTousLesChamps() {
 
 // Fonction de sauvegarde des variables
 function sauvegarderVariables() {
-    localStorage.setItem('email', email.value);
+    //localStorage.setItem('email', email.value);
 }

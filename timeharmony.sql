@@ -160,8 +160,8 @@ INSERT INTO `timeharmony_utilisateur` (`nom`, `prenom`, `email`, `motDePasse`, `
 ('ROSALIE', 'Thibault', 'thibault.rosalie@iutbayonne.univ-pau.fr', '$2y$10$randomhash28', 'utilisateurBase.png', false, 'actif'),
 ('TRETEAU', 'Jonathan', 'jonathan.treteau@iutbayonne.univ-pau.fr', '$2y$10$randomhash29', 'utilisateurBase.png', false, 'actif'),
 ('TROUILH', 'Sylvain', 'sylvain.trouilh@iutbayonne.univ-pau.fr', '$2y$10$randomhash30', 'utilisateurBase.png', false, 'actif'),
-('VINET LATRILLE', 'Jules', 'jules.vinet@iutbayonne.univ-pau.fr', '$2y$10$randomhash31', 'utilisateurBase.png', false, 'actif');
-
+('VINET LATRILLE', 'Jules', 'jules.vinet@iutbayonne.univ-pau.fr', '$2y$10$randomhash31', 'utilisateurBase.png', false, 'actif'),
+('VALLES-PARLANGEAU', 'Nathalie', 'nathalie.valles-parlangeau@iutbayonne.univ-pau.fr', '$2y$10$randomhash32', 'utilisateurBase.png', false, 'actif');
 
 --
 -- Déchargement des données de la table 'utilisateur'

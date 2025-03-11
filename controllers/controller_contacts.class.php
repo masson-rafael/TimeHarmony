@@ -76,7 +76,7 @@ class ControllerContacts extends Controller
      * 
      * @return void
      */
-    function afficherUtilisateurs(): void {
+    function afficherUtilisateurs(?array $tableauMessages = null, ?bool $contientErreurs = false): void {
         $pdo = $this->getPdo();
         $managerUtilisateur = new UtilisateurDao($pdo);
         $utilisateursPasContacts = $managerUtilisateur->recupererIdsUtilisateursPasContacts($_SESSION['utilisateur']);
@@ -85,7 +85,9 @@ class ControllerContacts extends Controller
         $template = $this->getTwig()->load('contacts.html.twig');
         echo $template->render(array(
             'menu' => 'contacts',
-            'utilisateurs' => $utilisateurs
+            'utilisateurs' => $utilisateurs,
+            'message' => $tableauMessages,
+            'contientErreurs' => $contientErreurs
         ));
     }
 
@@ -103,6 +105,6 @@ class ControllerContacts extends Controller
         $manager->ajouterDemandeContact($id1,$id2);
         $utilisateurDemandeEnContact = $manager->find($id2);
         $tableauMessages[] = "Contact " . $utilisateurDemandeEnContact->getNom() . " " . $utilisateurDemandeEnContact->getPrenom() . " ajouté avec succès !";
-        $this->lister($tableauMessages, false);
+        $this->afficherUtilisateurs($tableauMessages, false);
     }
 }
