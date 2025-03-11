@@ -1,3 +1,5 @@
+const tableObligatoire = document.getElementById('tableObligatoire');
+
 class Contact {
     constructor(element) {
         this.element = element;
@@ -79,7 +81,36 @@ checkRelatedGroups() {
             return;
         }
     
-        const tableObligatoire = document.getElementById('tableObligatoire');
+        console.log(tableObligatoire);
+        // If the table doesn't exist, create it and add it to the DOM
+        if (!tableObligatoire) {
+            // Find a suitable container to append the table to
+            const container = document.querySelector('.container') || document.body;
+            
+            // Create the table HTML structure
+            const tableHTML = `
+                <table id="tableObligatoire" class="table table-bordered table-hover">
+                    <thead>
+                        <tr class="table-primary">
+                            <th class="bg-primary text-secondary" scope="col">Spécifiez le type de présence</th>
+                            <th class="bg-primary text-secondary" scope="col">Nom des contacts présents</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            `;
+            
+            // Create a div to hold the table
+            const tableDiv = document.createElement('div');
+            tableDiv.innerHTML = tableHTML;
+            
+            // Append the table to the container
+            container.appendChild(tableDiv.firstChild);
+            
+            console.log('Created obligatory table');
+        }
+
         const tbody = tableObligatoire.querySelector('tbody');
     
         const row = document.createElement('tr');
@@ -149,11 +180,17 @@ checkRelatedGroups() {
     
     // Nouvelle méthode pour vérifier si un contact est déjà dans la table
     checkIfAlreadyInTable() {
-        const tableObligatoire = document.getElementById('tableObligatoire');
-        if (!tableObligatoire) return false;
+        //const tableObligatoire = document.getElementById('tableObligatoire');
+        if (!tableObligatoire) {
+            console.log("Pas de table");
+            return false;
+        };
         
         const tbody = tableObligatoire.querySelector('tbody');
-        if (!tbody) return false;
+        if (!tbody) {
+            console.log("Pas de tbody");
+            return false;
+        }
         
         // Rechercher un élément caché avec la même valeur
         const existingInput = tbody.querySelector(`input[type="hidden"][name="contactsObligatoires[]"][value="${this.value}"]`);
@@ -211,6 +248,17 @@ checkRelatedGroups() {
                 row.remove();
             }
             this.obligatoryElement = null;
+            console.log('Removed from table');
+        }
+        
+        // Check if the table exists
+        //let tableObligatoire = document.getElementById('tableObligatoire');
+        if (tableObligatoire) {
+            // Check if the table is empty
+            if (tableObligatoire.querySelector('tbody').childElementCount === 0) {
+                tableObligatoire.remove();
+                console.log('Removed obligatory table');
+            }
         }
     }
 
@@ -230,8 +278,6 @@ bindObligatoryEvents() {
         }
     });
 }
-
-
 
     checkIfLastInGroup() {
         Object.keys(membres2).forEach(groupId => {
