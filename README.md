@@ -35,5 +35,5 @@ Pour installer TimeHarmony sur un serveur, il faut :
   - Mettre les logins de votre base de données aux endroits indiqués dans ce fichier config_app.php
   - Installer les libraires que l'application utilise avec les commandes suivantes :
     - Composer pour Twig https://twig.symfony.com/ , ics-parser https://github.com/u01jmg3/ics-parser , phpmailer https://github.com/PHPMailer/PHPMailer et sabre/vobject https://sabre.io/vobject/ ```composer install```
-    - Npm pour Bootstrap https://getbootstrap.com/ et Sass https://sass-lang.com/ ```npm install``` (attention si vous n'avez pas Npm il vous faudra d'abord installer node.js)
+    - Npm pour Bootstrap https://getbootstrap.com/ , Sass https://sass-lang.com/ et FullCalendar https://fullcalendar.io/ ```npm install``` (attention si vous n'avez pas Npm il vous faudra d'abord installer node.js)
   - Vous pouvez maintenant travailler ! 🎆
