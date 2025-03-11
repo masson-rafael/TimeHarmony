@@ -331,3 +331,9 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
     outline: none !important;
     appearance: none !important;
 }
+
+.fas, .fa-arrow-left {
+    font-size: 1.5rem;
+    color: black;
+    margin: 10px;
+}

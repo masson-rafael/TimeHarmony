@@ -12290,4 +12290,10 @@ textarea.form-control-lg {
   appearance: none !important;
 }
 
+.fas, .fa-arrow-left {
+  font-size: 1.5rem;
+  color: black;
+  margin: 10px;
+}
+
 /*# sourceMappingURL=styles.css.map */
