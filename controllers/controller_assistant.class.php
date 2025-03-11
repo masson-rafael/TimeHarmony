@@ -420,6 +420,7 @@ class ControllerAssistant extends Controller
 
                 // Ajouter le créneau aux événements
                 $evenements[] = [
+                    'title' => '4/4',
                     'start' => $start,
                     'end' => $end,
                     'participants' => $participants,

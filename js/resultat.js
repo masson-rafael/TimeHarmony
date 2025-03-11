@@ -28,9 +28,10 @@ document.addEventListener('DOMContentLoaded', function () {
             right: ''
         },
         locale: 'fr',
+        eventColor: '#008020',
         events: evenements,
         displayEventTime: false,
-        allDaySlot: false,           
+        allDaySlot: false,
         eventClick: function (info) {
         // Récupération des dates de l'événement cliqué
             var debut = info.event.start;
