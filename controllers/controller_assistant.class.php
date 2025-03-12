@@ -403,7 +403,7 @@ class ControllerAssistant extends Controller
 
                 // Créer les objets DateTime en utilisant le format attendu "Y-m-d H:i"
                 $startObj = DateTime::createFromFormat('Y-m-d H:i', "$dateFormatted $debut");
-                $endObj   = DateTime::createFromFormat('Y-m-d H:i', "$dateFormatted $fin");
+                $endObj = DateTime::createFromFormat('Y-m-d H:i', "$dateFormatted $fin");
 
                 // Formater les dates pour FullCalendar en format ISO
                 $start = $startObj->format('Y-m-d\TH:i:s');
@@ -420,7 +420,7 @@ class ControllerAssistant extends Controller
 
                 // Ajouter le créneau aux événements
                 $evenements[] = [
-                    'title' => '4/4',
+                    'title' => '9/9',
                     'start' => $start,
                     'end' => $end,
                     'participants' => $participants,
@@ -604,6 +604,8 @@ class ControllerAssistant extends Controller
         // Convertir les dates en objets DateTime avec le format attendu
         $startDateObj = DateTime::createFromFormat('D M d Y H:i:s', $startDateCleaned);
         $endDateObj = DateTime::createFromFormat('D M d Y H:i:s', $endDateCleaned);
+        $startDateObj->sub(new DateInterval('PT1H'));
+        $endDateObj->sub(new DateInterval('PT1H'));
 
         // Création de l'événement
         $vcalendar = new VCalendar();
